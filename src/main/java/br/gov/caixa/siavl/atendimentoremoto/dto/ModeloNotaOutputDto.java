@@ -1,0 +1,36 @@
+package br.gov.caixa.siavl.atendimentoremoto.dto;
+
+import java.util.Date;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "ModeloNotaOutputDto")
+public class ModeloNotaOutputDto {
+
+	@XmlElement(name = "numeroModeloNota")
+	private String numeroModeloNota;
+
+	@XmlElement(name = "numeroAcaoProduto")
+	private String numeroAcaoProduto;
+
+	@XmlElement(name = "descricaoAcaoProduto")
+	private String descricaoAcaoProduto;
+
+	@JsonIgnore
+	@XmlElement(name = "dataEscolhaFavorito")
+	private Date dataEscolhaFavorito;
+
+}
