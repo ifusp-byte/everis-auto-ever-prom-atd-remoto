@@ -7,17 +7,27 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaIdentificacaoPositivaInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaIdentificacaoPositivaService;
+import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.service.ConsultaNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ContrataNotaService;
+import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
+import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
 
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(AtendimentoRemotoController.BASE_URL)
+@SuppressWarnings({ "squid:S6813" })
 public class AtendimentoRemotoController {
 
 	public static final String BASE_URL = "/v1/atendimento-remoto";
@@ -31,37 +41,70 @@ public class AtendimentoRemotoController {
 	@Autowired
 	ModeloNotaService modeloNotaService;
 
-	/*
-	@GetMapping
-	public ResponseEntity<Object> consultaNota(@RequestHeader(value = "token", required = true) String token) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(consultaNotaService.consultaNota(token));
+	@Autowired
+	GeraProtocoloService geraProtocoloService;
+
+	@Autowired
+	DesafioService desafioService;
+
+	@Autowired
+	AuditoriaIdentificacaoPositivaService auditoriaIdentificacaoPositivaService;
+
+	@PostMapping("/protocolo")
+	public ResponseEntity<GeraProtocoloOutputDTO> geraProtocolo(
+			@RequestHeader(value = "token", required = true) String token,
+			@RequestBody GeraProtocoloInputDTO geraProtocoloInputDTO) {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(geraProtocoloService.geraProtocolo(token, geraProtocoloInputDTO));
 	}
 
-	@PutMapping("/contrata-nota/{idNegociacao}")
-	public ResponseEntity<Object> contrataNota(@PathVariable Long idNegociacao) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(contrataNotaService.contrataNota(idNegociacao));
+	@PostMapping("/desafio-criar/{cpf}")
+	public ResponseEntity<CriaDesafioOutputDTO> desafioCriar(
+			@RequestHeader(value = "token", required = true) String token, @PathVariable String cpf) throws Exception {
+
+		return ResponseEntity.status(HttpStatus.OK).body(desafioService.desafioCriar(token, cpf));
 	}
-	*/
-	
+
+	@PostMapping("/desafio-responder/{idDesafio}")
+	public ResponseEntity<RespondeDesafioOutputDTO> desafioResponder(
+			@RequestHeader(value = "token", required = true) String token, @PathVariable String idDesafio,
+			@RequestBody String respostaDesafio) throws Exception {
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(desafioService.desafioResponder(token, idDesafio, respostaDesafio));
+
+	}
+
+	@PostMapping("/auditoria-identificacao-positiva")
+	public ResponseEntity<Object> auditar(@RequestHeader(value = "token", required = true) String token,
+			@RequestBody AuditoriaIdentificacaoPositivaInputDTO auditoriaIdentificacaoPositivaInputDTO) {
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(auditoriaIdentificacaoPositivaService.auditar(token, auditoriaIdentificacaoPositivaInputDTO));
+
+	}
+
 	@GetMapping("/modelo-nota")
 	public ResponseEntity<Object> consultaModeloFavorita() {
 		return ResponseEntity.status(HttpStatus.CREATED).body(modeloNotaService.consultaModeloNota());
 	}
-	
+
 	@GetMapping("/modelo-nota-favorita")
-	public ResponseEntity<Object> consultaModeloNotaFavorita(@RequestHeader(value = "token", required = true) String token) {
+	public ResponseEntity<Object> consultaModeloNotaFavorita(
+			@RequestHeader(value = "token", required = true) String token) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(modeloNotaService.consultaModeloNotaFavorita(token));
 	}
-	
+
 	@PostMapping("/modelo-nota-favorita/{numeroModeloNota}")
-	public ResponseEntity<Object> adicionaModeloNotaFavorita(@RequestHeader(value = "token", required = true) String token, @PathVariable Long numeroModeloNota) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(modeloNotaService.adicionaModeloNotaFavorita(token, numeroModeloNota));
+	public ResponseEntity<Object> adicionaModeloNotaFavorita(
+			@RequestHeader(value = "token", required = true) String token, @PathVariable Long numeroModeloNota) {
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(modeloNotaService.adicionaModeloNotaFavorita(token, numeroModeloNota));
 	}
-	
+
 	@GetMapping("/modelo-nota-mais-utilizada")
 	public ResponseEntity<Object> consultaModeloMaisUtilizada() {
 		return ResponseEntity.status(HttpStatus.CREATED).body(modeloNotaService.consultaModeloNotaMaisUtilizada());
 	}
-
 
 }
