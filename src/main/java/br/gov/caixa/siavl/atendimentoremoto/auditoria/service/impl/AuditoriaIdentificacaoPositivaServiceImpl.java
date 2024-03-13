@@ -98,7 +98,7 @@ public class AuditoriaIdentificacaoPositivaServiceImpl implements AuditoriaIdent
 	private Date formataDataBanco() {
 
 		Calendar time = Calendar.getInstance();
-		//time.add(Calendar.HOUR, -6);
+		time.add(Calendar.HOUR, -3);
 		return time.getTime();
 	}
 
