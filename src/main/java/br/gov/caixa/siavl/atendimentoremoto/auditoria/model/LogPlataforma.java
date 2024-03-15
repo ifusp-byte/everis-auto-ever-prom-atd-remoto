@@ -13,6 +13,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,6 +58,7 @@ public class LogPlataforma implements Serializable {
 	@Column(name = "NU_ANO_MES_REFERENCIA")
 	private Long anoMesReferencia;
 
+	@Transient
 	@Column(name = "DE_LOG_PLATAFORMA")
 	private Clob jsonLogPlataforma;
 	
