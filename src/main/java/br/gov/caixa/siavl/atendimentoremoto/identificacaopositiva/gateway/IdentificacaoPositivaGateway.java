@@ -29,7 +29,7 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 @Service
 @SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813" })
 public class IdentificacaoPositivaGateway {
-	
+
 	static Logger LOG = Logger.getLogger(IdentificacaoPositivaGateway.class.getName());
 
 	private static String AUTHORIZATION = "Authorization";
@@ -88,7 +88,7 @@ public class IdentificacaoPositivaGateway {
 
 			response = restTemplateUtils.newRestTemplate().postForEntity(URL_BASE,
 					newRequestEntityDesafioCriar(token, criaDesafioMap), String.class);
-			
+
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC " + response);
 
 			String statusMessage = validateGatewayStatusDesafioCriar(
@@ -98,7 +98,7 @@ public class IdentificacaoPositivaGateway {
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
 					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
 					.statusCreated(true).dataCreated(formataData(new Date())).build();
-			
+
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta View " + criaDesafioOutputDTO);
 
 		} catch (RestClientResponseException e) {
@@ -106,9 +106,9 @@ public class IdentificacaoPositivaGateway {
 			e.printStackTrace();
 
 			jsonNode = mapper.readTree(e.getResponseBodyAsString());
-			
+
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC " + jsonNode);
-			
+
 			codigo422 = Objects.requireNonNull(jsonNode.path("codigo").asText());
 			String statusMessage = validateGatewayStatusDesafioCriar(Objects.requireNonNull(e.getRawStatusCode()),
 					codigo422);
@@ -117,7 +117,7 @@ public class IdentificacaoPositivaGateway {
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
 					.response(Objects.requireNonNull(e.getResponseBodyAsString())).statusMessage(statusMessage)
 					.statusCreated(false).dataCreated(formataData(new Date())).build();
-			
+
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta View " + criaDesafioOutputDTO);
 
 		}
@@ -139,8 +139,9 @@ public class IdentificacaoPositivaGateway {
 			response = restTemplateUtils.newRestTemplate().postForEntity(
 					URL_BASE + "/" + Integer.parseInt(idDesafio.trim()) + "/enviar-respostas",
 					newRequestEntityDesafioResponder(token, respondeDesafioInputDTO), String.class);
-			
-			LOG.info("Identificação Positiva - Desafio Responder - Resposta SIIPC " + response);
+
+			LOG.info("Identificação Positiva - Desafio Responder - Resposta SIIPC "
+					+ mapper.writeValueAsString(response));
 
 			String statusMessage = validateGatewayStatusDesafioResponder(
 					Objects.requireNonNull(response.getStatusCodeValue()), StringUtils.EMPTY);
@@ -149,17 +150,18 @@ public class IdentificacaoPositivaGateway {
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
 					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
 					.statusCreated(true).dataCreated(formataData(new Date())).build();
-			
-			LOG.info("Identificação Positiva - Desafio Responder - Resposta View " + respondeDesafioOutputDTO);
+			LOG.info("Identificação Positiva - Desafio Responder - Resposta View "
+					+ mapper.writeValueAsString(respondeDesafioOutputDTO));
 
 		} catch (RestClientResponseException e) {
 
 			e.printStackTrace();
 
 			jsonNode = mapper.readTree(e.getResponseBodyAsString());
-			
-			LOG.info("Identificação Positiva - Desafio Responder - Resposta SIIPC " + jsonNode);
-			
+
+			LOG.info("Identificação Positiva - Desafio Responder - Resposta SIIPC "
+					+ mapper.writeValueAsString(jsonNode));
+
 			codigo422 = Objects.requireNonNull(jsonNode.path("codigo").asText());
 			String statusMessage = validateGatewayStatusDesafioResponder(Objects.requireNonNull(e.getRawStatusCode()),
 					codigo422);
@@ -168,8 +170,9 @@ public class IdentificacaoPositivaGateway {
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
 					.response(Objects.requireNonNull(e.getResponseBodyAsString())).statusMessage(statusMessage)
 					.statusCreated(false).dataCreated(formataData(new Date())).build();
-			
-			LOG.info("Identificação Positiva - Desafio Responder - Resposta View " + respondeDesafioOutputDTO);
+
+			LOG.info("Identificação Positiva - Desafio Responder - Resposta View "
+					+ mapper.writeValueAsString(respondeDesafioOutputDTO));
 
 		}
 
