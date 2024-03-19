@@ -89,7 +89,7 @@ public class IdentificacaoPositivaGateway {
 			response = restTemplateUtils.newRestTemplate().postForEntity(URL_BASE,
 					newRequestEntityDesafioCriar(token, criaDesafioMap), String.class);
 
-			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC " + response);
+			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC " + mapper.writeValueAsString(response));
 
 			String statusMessage = validateGatewayStatusDesafioCriar(
 					Objects.requireNonNull(response.getStatusCodeValue()), StringUtils.EMPTY);
@@ -99,7 +99,7 @@ public class IdentificacaoPositivaGateway {
 					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
 					.statusCreated(true).dataCreated(formataData(new Date())).build();
 
-			LOG.info("Identificação Positiva - Desafio Criar - Resposta View " + criaDesafioOutputDTO);
+			LOG.info("Identificação Positiva - Desafio Criar - Resposta View " + mapper.writeValueAsString(criaDesafioOutputDTO));
 
 		} catch (RestClientResponseException e) {
 
@@ -107,7 +107,7 @@ public class IdentificacaoPositivaGateway {
 
 			jsonNode = mapper.readTree(e.getResponseBodyAsString());
 
-			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC " + jsonNode);
+			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC " + mapper.writeValueAsString(jsonNode));
 
 			codigo422 = Objects.requireNonNull(jsonNode.path("codigo").asText());
 			String statusMessage = validateGatewayStatusDesafioCriar(Objects.requireNonNull(e.getRawStatusCode()),
@@ -118,7 +118,7 @@ public class IdentificacaoPositivaGateway {
 					.response(Objects.requireNonNull(e.getResponseBodyAsString())).statusMessage(statusMessage)
 					.statusCreated(false).dataCreated(formataData(new Date())).build();
 
-			LOG.info("Identificação Positiva - Desafio Criar - Resposta View " + criaDesafioOutputDTO);
+			LOG.info("Identificação Positiva - Desafio Criar - Resposta View " + mapper.writeValueAsString(criaDesafioOutputDTO));
 
 		}
 
