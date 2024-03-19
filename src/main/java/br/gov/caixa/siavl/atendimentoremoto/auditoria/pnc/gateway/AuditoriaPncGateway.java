@@ -18,7 +18,7 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 @SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S3457" })
 public class AuditoriaPncGateway {
 
-	static Logger logger = Logger.getLogger(AuditoriaPncGateway.class.getName());
+	static Logger LOG = Logger.getLogger(AuditoriaPncGateway.class.getName());
 
 	private static String AUTHORIZATION = "Authorization";
 
@@ -58,11 +58,11 @@ public class AuditoriaPncGateway {
 			response = restTemplateUtils.newRestTemplate().postForEntity(URL_BASE,
 					newRequestEntityAuditoriaPncSalvar(token, auditoriaPncInputDTO), String.class);
 
-			logger.log(Level.INFO, "Sucesso Auditoria PNC " + String.valueOf(response));
+			LOG.log(Level.INFO, "Sucesso Auditoria PNC " + String.valueOf(response));
 
 		} catch (RestClientResponseException e) {
 			e.printStackTrace();
-			logger.log(Level.INFO, "Erro Auditoria PNC " + String.valueOf(e.getResponseBodyAsString()));
+			LOG.log(Level.INFO, "Erro Auditoria PNC " + String.valueOf(e.getResponseBodyAsString()));
 
 		}
 
