@@ -24,6 +24,6 @@ public class AuditoriaPncProtocoloInputDTO {
 	private String numeroProtocolo;
 	private String dataInicioAtendimento;
 	private String matriculaAtendente;
-	private String transacaoSistema = "287";
+	private String transacaoSistema;
 
 }

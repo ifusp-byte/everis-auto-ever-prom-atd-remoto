@@ -65,7 +65,8 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 				.canal(canalAtendimento)
 				.numeroProtocolo(String.valueOf(atendimentoCliente.getNumeroProtocolo()))
 				.dataInicioAtendimento(String.valueOf(new Date()))
-				.matriculaAtendente(String.valueOf(matriculaAtendente))					
+				.matriculaAtendente(String.valueOf(matriculaAtendente))			
+				.transacaoSistema("287"))
 				.build();
 		
 		String descricaoTransacao = null;

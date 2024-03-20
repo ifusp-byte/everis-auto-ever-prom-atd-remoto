@@ -74,6 +74,7 @@ public class DesafioServiceImpl implements DesafioService {
 				.matriculaAtendente(tokenUtils.getMatriculaFromToken(token))
 				.statusValidacao(String.valueOf(respondeDesafio.isStatusCreated()))
 				.tipoPessoa(PERSON_TYPE)
+				.transacaoSistema("144")
 				.build();
 				
 		String descricaoTransacao = null;

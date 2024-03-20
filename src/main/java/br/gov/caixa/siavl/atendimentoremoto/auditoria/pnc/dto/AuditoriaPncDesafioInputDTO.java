@@ -23,7 +23,7 @@ public class AuditoriaPncDesafioInputDTO {
 	private String matriculaAtendente;
 	private String statusValidacao; 
 	private String tipoPessoa; 
-	private String transacaoSistema = "144";
+	private String transacaoSistema;
 	
 }
 
