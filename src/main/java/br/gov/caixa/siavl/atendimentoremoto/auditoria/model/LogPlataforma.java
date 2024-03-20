@@ -58,7 +58,6 @@ public class LogPlataforma implements Serializable {
 	@Column(name = "NU_ANO_MES_REFERENCIA")
 	private Long anoMesReferencia;
 
-	@Transient
 	@Column(name = "DE_LOG_PLATAFORMA")
 	private Clob jsonLogPlataforma;
 	
