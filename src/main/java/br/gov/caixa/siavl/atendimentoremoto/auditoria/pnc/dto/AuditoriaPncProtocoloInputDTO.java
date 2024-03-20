@@ -24,6 +24,5 @@ public class AuditoriaPncProtocoloInputDTO {
 	private String numeroProtocolo;
 	private String dataInicioAtendimento;
 	private String matriculaAtendente;
-	private String tipoAuditoria = "Seleção Tipo Atendimento";
 
 }
