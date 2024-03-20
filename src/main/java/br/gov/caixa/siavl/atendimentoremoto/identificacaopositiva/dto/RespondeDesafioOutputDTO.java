@@ -37,4 +37,6 @@ public class RespondeDesafioOutputDTO {
 
 	@XmlElement(name = "dataCreated")
 	private String dataCreated;
+	
+	
 }

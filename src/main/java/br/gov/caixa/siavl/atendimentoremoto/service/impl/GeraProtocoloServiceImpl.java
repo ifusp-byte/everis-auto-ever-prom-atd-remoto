@@ -28,6 +28,8 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 
 	@Autowired
 	AuditoriaPncGateway auditoriaPncGateway;
+	
+	private static final String DEFAULT_USER_IP = "123";
 
 	private static ObjectMapper mapper = new ObjectMapper();
 
@@ -79,7 +81,7 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 
 		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder()
 				.descricaoTransacao(descricaoTransacao)
-				.ipTerminalUsuario("123.1235.24")
+				.ipTerminalUsuario(DEFAULT_USER_IP)
 				.nomeMfe("mfe_avl_atendimentoremoto")
 				.numeroUnidadeLotacaoUsuario(50)
 				.build();
