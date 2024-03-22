@@ -2,6 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.service;
 
 import java.util.List;
 
+import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaOutputDto;
 
 public interface ModeloNotaService {
@@ -13,5 +14,7 @@ public interface ModeloNotaService {
 	Boolean adicionaModeloNotaFavorita(String token, Long numeroModeloNota);
 	
 	List<ModeloNotaOutputDto> consultaModeloNotaMaisUtilizada();
+	
+	Object modeloNotaDinamico (String token, Long numeroModeloNota, ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO);
 
 }

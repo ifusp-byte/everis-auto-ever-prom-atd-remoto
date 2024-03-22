@@ -16,6 +16,7 @@ import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaIdentificacao
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaIdentificacaoPositivaService;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.service.ConsultaNotaService;
@@ -105,6 +106,15 @@ public class AtendimentoRemotoController {
 	@GetMapping("/modelo-nota-mais-utilizada")
 	public ResponseEntity<Object> consultaModeloMaisUtilizada() {
 		return ResponseEntity.status(HttpStatus.CREATED).body(modeloNotaService.consultaModeloNotaMaisUtilizada());
+	}
+	
+	@PostMapping("/modelo-nota-dinamico/{numeroModeloNota}")
+	public ResponseEntity<Object> modeloNotaDinamico(
+			@RequestHeader(value = "token", required = true) String token, @PathVariable Long numeroModeloNota, @RequestBody ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO) {
+		return ResponseEntity
+				.status(HttpStatus.CREATED)
+				.body(modeloNotaService
+				.modeloNotaDinamico(token, numeroModeloNota, modeloNotaDinamicoInputDTO));
 	}
 
 }

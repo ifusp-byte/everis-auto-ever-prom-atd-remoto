@@ -10,9 +10,18 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinamicoOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaNumeroOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocioFavorito;
+import br.gov.caixa.siavl.atendimentoremoto.model.NegocioAgenciaVirtual;
+import br.gov.caixa.siavl.atendimentoremoto.model.NotaNegociacao;
+import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoNegocioRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
@@ -24,6 +33,15 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	@Autowired
 	ModeloNotaRepository modeloNotaRepository;
+	
+	@Autowired
+	NegocioAgenciaVirtualRepository negocioAgenciaVirtualRepository; 
+	
+	@Autowired
+	AtendimentoNegocioRepository atendimentoNegocioRepository;
+	
+	@Autowired
+	NotaNegociacaoRepository notaNegociacaoRepository; 
 
 	public List<ModeloNotaOutputDto> consultaModeloNota() {
 		List<ModeloNotaOutputDto> modelosNota = new ArrayList<>();
@@ -111,6 +129,86 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		modeloNotaRepository.save(modeloNotaNegocioFavorito);
 		statusNotaFavorita = true;
 		return statusNotaFavorita;
+	}
+	
+	
+	public Object modeloNotaDinamico (String token, Long numeroModeloNota, ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO) {
+		
+		NegocioAgenciaVirtual negocioAgenciaVirtual = new NegocioAgenciaVirtual();
+		negocioAgenciaVirtual.setDataCriacaoNegocio(new Date());
+		negocioAgenciaVirtual.setSituacaoNegocio("E".charAt(0)); 		
+		negocioAgenciaVirtual = negocioAgenciaVirtualRepository.save(negocioAgenciaVirtual); 
+			
+		NotaNegociacao notaNegociacao = new NotaNegociacao(); 
+		notaNegociacao.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
+		notaNegociacao.setNumeroModeloNota(numeroModeloNota);	
+		notaNegociacao.setDataCriacaoNota(new Date()); 
+		notaNegociacao.setDataModificacaoNota(new Date());
+		notaNegociacao.setNumeroMatriculaCriacaoNota(matriculaCriacaoNota(token));
+		notaNegociacao.setNumeroMatriculaModificacaoNota(matriculaCriacaoNota(token));
+		notaNegociacao.setNumeroSituacaoNota(23L); //VERIFICAR
+		notaNegociacao.setQtdItemNegociacao(1L);
+		notaNegociacao.setIcOrigemNota(1L); 	
+		
+		notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);	
+		
+		ModeloNotaDinamicoMenuNotaNumeroOutputDTO modeloNotaDinamicoMenuNotaNumeroOutputDTO = new ModeloNotaDinamicoMenuNotaNumeroOutputDTO(); 
+		modeloNotaDinamicoMenuNotaNumeroOutputDTO.setDataModificacao(String.valueOf(new Date())); 
+		modeloNotaDinamicoMenuNotaNumeroOutputDTO.setNumeroNota(String.valueOf(notaNegociacao.getNumeroNota()));	
+		
+		
+		
+		
+		
+		
+		List<ModeloNotaDinamicoMenuNotaDinamicoOutputDTO> dinamicos = new ArrayList<>(); 
+		
+		
+		modeloNotaRepository.modeloNotaDinamico(numeroModeloNota).stream().forEach(dinamico ->
+
+		{
+			ModeloNotaDinamicoMenuNotaDinamicoOutputDTO modeloDinamico = null;
+
+			modeloDinamico = ModeloNotaDinamicoMenuNotaDinamicoOutputDTO.builder()
+					.idModeloNota(String.valueOf(dinamico[0]))
+					.idCampoModeloNota(String.valueOf(dinamico[1]))
+					.numeroOrdemCampo(String.valueOf(dinamico[2]))
+					.nomeCampoModeloNota(String.valueOf(dinamico[3]))
+					.campoDefinido(String.valueOf(dinamico[4]))
+					.campoEditavel(String.valueOf(dinamico[5]))
+					.campoObrigatorio(String.valueOf(dinamico[6]))
+					.espacoReservado(String.valueOf(dinamico[7]))
+					.tipoDadoCampo(String.valueOf(dinamico[8]))
+					.tipoEntradaCampo(String.valueOf(dinamico[9]))
+					.descricaoCampo(String.valueOf(dinamico[10]))
+					.quantidadeCaracterCampo(String.valueOf(dinamico[11]))
+					.valorInicialCampo(String.valueOf(dinamico[12]))
+					.mascaraCampo(String.valueOf(dinamico[13]))
+					.numeroConteudoCampoMultiplo(String.valueOf(dinamico[14]))
+					.descricaoConteudoCampoMultiplo(String.valueOf(dinamico[15])).build();
+
+			dinamicos.add(modeloDinamico);
+		});
+		
+		
+		ModeloNotaDinamicoOutputDTO modeloNotaDinamicoOutputDTO = new ModeloNotaDinamicoOutputDTO(); 
+		modeloNotaDinamicoOutputDTO.setMenuNotaNumero(modeloNotaDinamicoMenuNotaNumeroOutputDTO);	
+		modeloNotaDinamicoOutputDTO.setMenuNotaDinamico(dinamicos);		
+		/*
+		
+		notaNegociacaoRepository
+		
+		
+		
+		AtendimentoNegocio atendimentoNegocio = new AtendimentoNegocio();
+		atendimentoNegocio.setNumeroProtocolo(Long.parseLong(modeloNotaDinamicoInputDTO.getProtocolo()));
+		atendimentoNegocio.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
+		atendimentoNegocio = atendimentoNegocioRepository.save(atendimentoNegocio);	
+		
+		*/
+		
+		
+		return modeloNotaDinamicoOutputDTO; 
 	}
 
 	public Long matriculaCriacaoNota(String token) {

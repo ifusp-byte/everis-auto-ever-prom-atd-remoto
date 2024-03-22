@@ -7,9 +7,12 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -26,9 +29,11 @@ import lombok.NoArgsConstructor;
 public class NotaNegociacao implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
 	@Column(name = "NU_NOTA_NEGOCIACAO")
+	@SequenceGenerator(name = "AVLSQ011_NU_NOTA_NEGOCIACAO", sequenceName = "AVLSQ011_NU_NOTA_NEGOCIACAO", allocationSize = 1, schema = "AVL")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AVLSQ011_NU_NOTA_NEGOCIACAO")
 	private Long numeroNota;
 
 	@Column(name = "NU_NEGOCIO_AGENCIA_VIRTUAL")
@@ -56,5 +61,17 @@ public class NotaNegociacao implements Serializable {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "NU_MODELO_NOTA_NEGOCIO", nullable = true, insertable = false, updatable = false)
 	private ModeloNotaNegocio modeloNotaNegociacao;
+	
+	@Column(name = "DT_ULTIMA_MODIFICACAO_NOTA")
+	private Date dataModificacaoNota;
+	
+	@Column(name = "NU_MATRICULA_MODIFICACAO_NOTA")
+	private Long numeroMatriculaModificacaoNota;
+	
+	@Column(name = "QT_ITEM_NOTA_NEGOCIACAO")
+	private Long qtdItemNegociacao;
+	
+	@Column(name = "IC_ORIGEM_NOTA_NEGOCIACAO")
+	private Long icOrigemNota;
 
 }
