@@ -1,7 +1,5 @@
 package br.gov.caixa.siavl.atendimentoremoto.dto;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -23,13 +21,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "ModeloNotaDinamicoMenuNotaDinamicoOutputDTO")
-public class ModeloNotaDinamicoMenuNotaDinamicoOutputDTO {
-
-	@JsonIgnore
-	@XmlElement(name = "idModeloNota")
-	private String idModeloNota;
+@XmlRootElement(name = "ModeloNotaDinamicoMenuNotaDinamicoCamposOutputDTO")
+public class ModeloNotaDinamicoMenuNotaDinamicoCamposOutputDTO {
 	
+	/*
+	@JsonIgnore
 	@XmlElement(name = "idCampoModeloNota")
 	private String idCampoModeloNota;
 	
@@ -68,7 +64,13 @@ public class ModeloNotaDinamicoMenuNotaDinamicoOutputDTO {
 
 	@XmlElement(name = "mascaraCampo")
 	private String mascaraCampo;
+	
+	*/
 
-	List<ModeloNotaDinamicoMenuNotaDinamicoCamposOutputDTO> options;
+	@XmlElement(name = "numeroConteudoCampoMultiplo")
+	private String numeroConteudoCampoMultiplo;
+
+	@XmlElement(name = "descricaoConteudoCampoMultiplo")
+	private String descricaoConteudoCampoMultiplo;
 
 }

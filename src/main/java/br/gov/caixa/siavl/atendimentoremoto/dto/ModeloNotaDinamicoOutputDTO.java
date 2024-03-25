@@ -1,10 +1,10 @@
 package br.gov.caixa.siavl.atendimentoremoto.dto;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonRawValue;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +26,8 @@ public class ModeloNotaDinamicoOutputDTO {
 	private String menuSicli;
 	private String menuNotaProduto;
 	private ModeloNotaDinamicoMenuNotaNumeroOutputDTO menuNotaNumero;
-	private List<ModeloNotaDinamicoMenuNotaDinamicoOutputDTO> menuNotaDinamico;
+	
+	@JsonRawValue
+	private String menuNotaDinamico;
 
 }
