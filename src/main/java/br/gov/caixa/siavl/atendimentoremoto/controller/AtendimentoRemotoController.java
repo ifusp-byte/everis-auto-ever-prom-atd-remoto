@@ -110,7 +110,7 @@ public class AtendimentoRemotoController {
 	
 	@PostMapping("/modelo-nota-dinamico/{numeroModeloNota}")
 	public ResponseEntity<Object> modeloNotaDinamico(
-			@RequestHeader(value = "token", required = true) String token, @PathVariable Long numeroModeloNota, @RequestBody ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO) {
+			@RequestHeader(value = "token", required = true) String token, @PathVariable Long numeroModeloNota, @RequestBody ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO) throws Exception {
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
 				.body(modeloNotaService

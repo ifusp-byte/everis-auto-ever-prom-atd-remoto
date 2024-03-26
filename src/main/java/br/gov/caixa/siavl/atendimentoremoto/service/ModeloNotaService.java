@@ -15,6 +15,6 @@ public interface ModeloNotaService {
 	
 	List<ModeloNotaOutputDto> consultaModeloNotaMaisUtilizada();
 	
-	Object modeloNotaDinamico (String token, Long numeroModeloNota, ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO);
+	Object modeloNotaDinamico (String token, Long numeroModeloNota, ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO) throws Exception;
 
 }

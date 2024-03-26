@@ -10,11 +10,11 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinamicoCamposOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinamicoNotaProdutoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinamicoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaNumeroOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoOutputDTO;
@@ -28,6 +28,8 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
+import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContaAtendimentoOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.sicli.gateway.SicliGateway;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
@@ -50,6 +52,9 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	@Autowired
 	CampoModeloNotaRepository campoModeloNotaRepository;
+
+	@Autowired
+	SicliGateway sicliGateway;
 
 	private static ObjectMapper mapper = new ObjectMapper();
 
@@ -140,7 +145,22 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 	}
 
 	public Object modeloNotaDinamico(String token, Long numeroModeloNota,
-			ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO) {
+			ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO) throws Exception {
+
+		ContaAtendimentoOutputDTO contaAtendimentoOutputDTO = new ContaAtendimentoOutputDTO();
+		contaAtendimentoOutputDTO = sicliGateway.contaAtendimento(token, modeloNotaDinamicoInputDTO.getCpfCnpj());
+
+		List<ModeloNotaDinamicoMenuNotaDinamicoNotaProdutoOutputDTO> notaProdutoLista = new ArrayList<>();
+
+		modeloNotaRepository.notaProduto(numeroModeloNota).stream().forEach(notaProduto -> {
+
+			ModeloNotaDinamicoMenuNotaDinamicoNotaProdutoOutputDTO notaProdutoItem = null;
+			notaProdutoItem = ModeloNotaDinamicoMenuNotaDinamicoNotaProdutoOutputDTO.builder()
+					.nota(String.valueOf(notaProduto[0]))
+					.produto(String.valueOf(notaProduto[1])).build();
+
+			notaProdutoLista.add(notaProdutoItem);
+		});
 
 		NegocioAgenciaVirtual negocioAgenciaVirtual = new NegocioAgenciaVirtual();
 		negocioAgenciaVirtual.setDataCriacaoNegocio(new Date());
@@ -161,63 +181,30 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);
 
 		ModeloNotaDinamicoMenuNotaNumeroOutputDTO modeloNotaDinamicoMenuNotaNumeroOutputDTO = new ModeloNotaDinamicoMenuNotaNumeroOutputDTO();
-		modeloNotaDinamicoMenuNotaNumeroOutputDTO.setDataModificacao(String.valueOf(new Date()));
+		modeloNotaDinamicoMenuNotaNumeroOutputDTO.setDataModificacao(formataData(new Date()));
 		modeloNotaDinamicoMenuNotaNumeroOutputDTO.setNumeroNota(String.valueOf(notaNegociacao.getNumeroNota()));
 
 		List<ModeloNotaDinamicoMenuNotaDinamicoOutputDTO> dinamicos = new ArrayList<>();
 		modeloNotaRepository.modeloNotaDinamico(numeroModeloNota).stream().forEach(dinamico -> {
 
 			ModeloNotaDinamicoMenuNotaDinamicoOutputDTO modeloDinamico = null;
-
 			modeloDinamico = ModeloNotaDinamicoMenuNotaDinamicoOutputDTO.builder()
-					.idModeloNota(String.valueOf(dinamico[0]))
-					.idCampoModeloNota(String.valueOf(dinamico[1]))					
-					.numeroOrdemCampo(String.valueOf(dinamico[2]))
-					.nomeCampoModeloNota(String.valueOf(dinamico[3]))
-					.campoDefinido(String.valueOf(dinamico[4]))
-					.campoEditavel(String.valueOf(dinamico[5]))
-					.campoObrigatorio(String.valueOf(dinamico[6]))
-					.espacoReservado(String.valueOf(dinamico[7]))
-					.tipoDadoCampo(String.valueOf(dinamico[8]))
-					.tipoEntradaCampo(String.valueOf(dinamico[9]))
-					.descricaoCampo(String.valueOf(dinamico[10]))
-					.quantidadeCaracterCampo(String.valueOf(dinamico[11]))
-					.valorInicialCampo(String.valueOf(dinamico[12]))
-					.mascaraCampo(String.valueOf(dinamico[13]))						
-					.build();
-
+					.idModeloNota(String.valueOf(dinamico[0])).idCampoModeloNota(String.valueOf(dinamico[1]))
+					.numeroOrdemCampo(String.valueOf(dinamico[2])).nomeCampoModeloNota(String.valueOf(dinamico[3]))
+					.campoDefinido(String.valueOf(dinamico[4])).campoEditavel(String.valueOf(dinamico[5]))
+					.campoObrigatorio(String.valueOf(dinamico[6])).espacoReservado(String.valueOf(dinamico[7]))
+					.tipoDadoCampo(String.valueOf(dinamico[8])).tipoEntradaCampo(String.valueOf(dinamico[9]))
+					.descricaoCampo(String.valueOf(dinamico[10])).quantidadeCaracterCampo(String.valueOf(dinamico[11]))
+					.valorInicialCampo(String.valueOf(dinamico[12])).mascaraCampo(String.valueOf(dinamico[13])).build();
 			dinamicos.add(modeloDinamico);
-
 		});
 
 		dinamicos.stream().forEach(dinamico -> {
-
 			List<ModeloNotaDinamicoMenuNotaDinamicoCamposOutputDTO> options = new ArrayList<>();
-
 			campoModeloNotaRepository.modeloNotaDinamicoCampos(Long.parseLong(dinamico.getIdCampoModeloNota())).stream()
 					.forEach(campo -> {
-
 						ModeloNotaDinamicoMenuNotaDinamicoCamposOutputDTO modeloDinamicoCampos = null;
-
 						modeloDinamicoCampos = ModeloNotaDinamicoMenuNotaDinamicoCamposOutputDTO.builder()
-
-								/*
-								//.idCampoModeloNota(String.valueOf(campo[0]))
-								//.numeroOrdemCampo(String.valueOf(campo[1]))
-								//.nomeCampoModeloNota(String.valueOf(campo[2]))
-								//.campoDefinido(String.valueOf(campo[3]))
-								.campoEditavel(String.valueOf(campo[4]))
-								.campoObrigatorio(String.valueOf(campo[5]))
-								.espacoReservado(String.valueOf(campo[6]))
-								.tipoDadoCampo(String.valueOf(campo[7]))
-								.tipoEntradaCampo(String.valueOf(campo[8]))
-								.descricaoCampo(String.valueOf(campo[9]))
-								.quantidadeCaracterCampo(String.valueOf(campo[10]))
-								.valorInicialCampo(String.valueOf(campo[11]))
-								.mascaraCampo(String.valueOf(campo[12]))
-								
-								*/
-								
 								.numeroConteudoCampoMultiplo(String.valueOf(campo[0]))
 								.descricaoConteudoCampoMultiplo(String.valueOf(campo[1]))
 
@@ -229,25 +216,12 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 			dinamico.setOptions(options);
 		});
 
-		/*
-		 * 
-		 * Map<String, List<ModeloNotaDinamicoMenuNotaDinamicoOutputDTO>>
-		 * dinamicosByIdCampo = dinamicos.stream() .collect(Collectors.groupingBy(m ->
-		 * m.getIdCampoModeloNota()));
-		 * 
-		 */
-		String nu = null;
-		try {
-			nu = mapper.writeValueAsString(dinamicos);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// System.err.println(nu);
 		ModeloNotaDinamicoOutputDTO modeloNotaDinamicoOutputDTO = new ModeloNotaDinamicoOutputDTO();
 		modeloNotaDinamicoOutputDTO.setMenuNotaNumero(modeloNotaDinamicoMenuNotaNumeroOutputDTO);
-		modeloNotaDinamicoOutputDTO.setMenuNotaDinamico(nu);
+		modeloNotaDinamicoOutputDTO.setMenuNotaDinamico(mapper.writeValueAsString(dinamicos));
+		modeloNotaDinamicoOutputDTO.setMenuSicli(contaAtendimentoOutputDTO);
+		modeloNotaDinamicoOutputDTO.setMenuNotaProduto(notaProdutoLista.get(0));
+
 		/*
 		 * 
 		 * notaNegociacaoRepository
@@ -281,6 +255,15 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		return data;
+	}
+	
+	private String formataData(Date dateInput) {
+
+		String data = null;
+		Locale locale = new Locale("pt", "BR");
+		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
+		data = String.valueOf(sdfOut.format(dateInput));
 		return data;
 	}
 
