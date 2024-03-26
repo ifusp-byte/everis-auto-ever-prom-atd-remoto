@@ -146,10 +146,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	public Object modeloNotaDinamico(String token, Long numeroModeloNota,
 			ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO) throws Exception {
-
-		ContaAtendimentoOutputDTO contaAtendimentoOutputDTO = new ContaAtendimentoOutputDTO();
-		contaAtendimentoOutputDTO = sicliGateway.contaAtendimento(token, modeloNotaDinamicoInputDTO.getCpfCnpj());
-
+		
 		List<ModeloNotaDinamicoMenuNotaDinamicoNotaProdutoOutputDTO> notaProdutoLista = new ArrayList<>();
 
 		modeloNotaRepository.notaProduto(numeroModeloNota).stream().forEach(notaProduto -> {
@@ -219,7 +216,6 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		ModeloNotaDinamicoOutputDTO modeloNotaDinamicoOutputDTO = new ModeloNotaDinamicoOutputDTO();
 		modeloNotaDinamicoOutputDTO.setMenuNotaNumero(modeloNotaDinamicoMenuNotaNumeroOutputDTO);
 		modeloNotaDinamicoOutputDTO.setMenuNotaDinamico(mapper.writeValueAsString(dinamicos));
-		modeloNotaDinamicoOutputDTO.setMenuSicli(contaAtendimentoOutputDTO);
 		modeloNotaDinamicoOutputDTO.setMenuNotaProduto(notaProdutoLista.get(0));
 
 		/*

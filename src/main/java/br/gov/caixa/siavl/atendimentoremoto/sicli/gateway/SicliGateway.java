@@ -1,7 +1,9 @@
 package br.gov.caixa.siavl.atendimentoremoto.sicli.gateway;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -18,9 +20,11 @@ import org.springframework.web.client.RestClientResponseException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import br.gov.caixa.siavl.atendimentoremoto.sicli.constants.SicliGatewayMessages;
 import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContaAtendimentoOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContasOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
@@ -38,7 +42,7 @@ public class SicliGateway {
 	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
 
 	private static String URL_BASE_1 = "https://api.des.caixa:8443/cadastro/v2/clientes?cpfcnpj=";
-	private static String URL_BASE_2 = "&campos=contratos";
+	private static String URL_BASE_2 = "&campos=dadosbasicos,enderecos,contratos,documentos,nicho,carteiragrc,vinculo,dadosatualizacaocadastral,meiocomunicacao,rendas,profissaosiric&classe=1";
 
 	@Autowired
 	RestTemplateUtils restTemplateUtils;
@@ -64,8 +68,10 @@ public class SicliGateway {
 
 		ContaAtendimentoOutputDTO contaAtendimentoOutputDTO = new ContaAtendimentoOutputDTO();
 		ResponseEntity<String> response = null;
-		JsonNode jsonNode;
-		String retorno = null;
+		JsonNode body;
+		ArrayNode contratos;
+		boolean statusCreated = false; 
+		List<ContasOutputDTO> contasAtendimento = new ArrayList<>();
 
 		try {
 
@@ -77,14 +83,35 @@ public class SicliGateway {
 			String statusMessage = validateGatewayStatusAtendimentoConta(
 					Objects.requireNonNull(response.getStatusCodeValue()));
 
-			jsonNode = mapper.readTree(String.valueOf(response));
-
+			body = mapper.readTree(String.valueOf(response.getBody()));
+			contratos = (ArrayNode) body.get("contratos");
+			
+			String nomeCliente = Objects.requireNonNull(body.path("dadosBasicos").path("nome")).asText();
+			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento")).asText();
+			
+			for (JsonNode node : contratos) {				
+				ContasOutputDTO conta = new ContasOutputDTO(); 
+				String contaInput = node.path("nuUnidade").asText() +  node.path("nuProduto").asText() + node.path("coIdentificacao").asText();  	
+				conta.setConta(contaInput);			
+    			contasAtendimento.add(conta); 		
+			}
+			
+			if (!contasAtendimento.isEmpty() && !nomeCliente.isEmpty() && !cpfCliente.isEmpty()) {			
+				statusCreated = true; 
+			}
+			
 			// montaContas(jsonNode);
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
-					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
-					.statusCreated(true).dataCreated(formataData(new Date())).build();
+					.response(String.valueOf(Objects.requireNonNull(response.getBody())))
+					.statusMessage(statusMessage)
+					.statusCreated(statusCreated)
+					.dataCreated(formataData(new Date()))
+					.nomeCliente(nomeCliente)
+					.cpfCnpjCliente(cpfCliente)
+					.contas(contasAtendimento)
+					.build();
 
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
 					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
@@ -93,10 +120,10 @@ public class SicliGateway {
 
 			e.printStackTrace();
 
-			jsonNode = mapper.readTree(e.getResponseBodyAsString());
-			JsonNode retornoSicli = Objects.requireNonNull(jsonNode.path("retorno"));
+			body = mapper.readTree(e.getResponseBodyAsString());
+			JsonNode retornoSicli = Objects.requireNonNull(body.path("retorno"));
 
-			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(jsonNode));
+			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(body));
 			String statusMessage = validateGatewayStatusAtendimentoConta(Objects.requireNonNull(e.getRawStatusCode()));
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
@@ -110,17 +137,6 @@ public class SicliGateway {
 		}
 		return contaAtendimentoOutputDTO;
 	}
-
-	/*
-	public void montaContas(JsonNode jsonNode) {
-
-		List<Map<String, Object>> contratos;
-
-		contratos = (List<Map<String, Object>>) Objects.requireNonNull(jsonNode.path("contratos").asText());
-
-	}
-	
-	*/
 
 	public String validateGatewayStatusAtendimentoConta(int statusCode) {
 

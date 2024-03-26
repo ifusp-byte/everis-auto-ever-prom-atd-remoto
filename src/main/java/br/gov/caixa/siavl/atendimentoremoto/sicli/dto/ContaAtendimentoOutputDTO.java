@@ -1,5 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.sicli.dto;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -21,7 +23,7 @@ import lombok.Setter;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "ContaAtendimentoOutputDTO")
 public class ContaAtendimentoOutputDTO {
-	
+
 	@JsonRawValue
 	@XmlElement(name = "response")
 	private String response;
@@ -37,5 +39,13 @@ public class ContaAtendimentoOutputDTO {
 
 	@XmlElement(name = "dataCreated")
 	private String dataCreated;
+
+	@XmlElement(name = "nomeCliente")
+	private String nomeCliente;
+
+	@XmlElement(name = "cpfCnpjCliente")
+	private String cpfCnpjCliente;
+
+	private List<ContasOutputDTO> contas;
 
 }

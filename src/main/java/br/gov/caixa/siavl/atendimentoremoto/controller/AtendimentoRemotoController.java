@@ -24,6 +24,7 @@ import br.gov.caixa.siavl.atendimentoremoto.service.ContrataNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
 import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
+import br.gov.caixa.siavl.atendimentoremoto.sicli.gateway.SicliGateway;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -50,6 +51,9 @@ public class AtendimentoRemotoController {
 
 	@Autowired
 	AuditoriaIdentificacaoPositivaService auditoriaIdentificacaoPositivaService;
+
+	@Autowired
+	SicliGateway sicliGateway;
 
 	@PostMapping("/protocolo")
 	public ResponseEntity<GeraProtocoloOutputDTO> geraProtocolo(
@@ -107,14 +111,19 @@ public class AtendimentoRemotoController {
 	public ResponseEntity<Object> consultaModeloMaisUtilizada() {
 		return ResponseEntity.status(HttpStatus.CREATED).body(modeloNotaService.consultaModeloNotaMaisUtilizada());
 	}
-	
+
 	@PostMapping("/modelo-nota-dinamico/{numeroModeloNota}")
-	public ResponseEntity<Object> modeloNotaDinamico(
-			@RequestHeader(value = "token", required = true) String token, @PathVariable Long numeroModeloNota, @RequestBody ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO) throws Exception {
-		return ResponseEntity
-				.status(HttpStatus.CREATED)
-				.body(modeloNotaService
-				.modeloNotaDinamico(token, numeroModeloNota, modeloNotaDinamicoInputDTO));
+	public ResponseEntity<Object> modeloNotaDinamico(@RequestHeader(value = "token", required = true) String token,
+			@PathVariable Long numeroModeloNota, @RequestBody ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO)
+			throws Exception {
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(modeloNotaService.modeloNotaDinamico(token, numeroModeloNota, modeloNotaDinamicoInputDTO));
+	}
+
+	@GetMapping("/conta-atendimento/{cpfCnpj}")
+	public ResponseEntity<Object> modeloNotaDinamico(@RequestHeader(value = "token", required = true) String token,
+			@PathVariable String cpfCnpj) throws Exception {
+		return ResponseEntity.status(HttpStatus.CREATED).body(sicliGateway.contaAtendimento(token, cpfCnpj));
 	}
 
 }

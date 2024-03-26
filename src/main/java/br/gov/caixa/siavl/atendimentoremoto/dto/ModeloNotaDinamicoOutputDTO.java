@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonRawValue;
 
-import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContaAtendimentoOutputDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +23,6 @@ import lombok.Setter;
 @XmlRootElement(name = "ModeloNotaDinamicoOutputDTO")
 public class ModeloNotaDinamicoOutputDTO {
 
-	private ContaAtendimentoOutputDTO menuSicli;
 	private ModeloNotaDinamicoMenuNotaDinamicoNotaProdutoOutputDTO menuNotaProduto;
 	private ModeloNotaDinamicoMenuNotaNumeroOutputDTO menuNotaNumero;
 	
