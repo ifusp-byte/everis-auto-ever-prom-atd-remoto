@@ -98,6 +98,7 @@ public class SicliGateway {
 			
 			if (!contasAtendimento.isEmpty() && !nomeCliente.isEmpty() && !cpfCliente.isEmpty()) {			
 				statusCreated = true; 
+				statusMessage = SicliGatewayMessages.SICLI_CONTA_ATENDIMENTO_RETORNO_NAO_200;
 			}
 			
 			// montaContas(jsonNode);
