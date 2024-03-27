@@ -27,8 +27,8 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.CampoModeloNotaRepository
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.RoteiroFechamentoNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
-import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContaAtendimentoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.sicli.gateway.SicliGateway;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
@@ -55,6 +55,9 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	@Autowired
 	SicliGateway sicliGateway;
+	
+	@Autowired
+	RoteiroFechamentoNotaRepository roteiroFechamentoNotaRepository; 
 
 	private static ObjectMapper mapper = new ObjectMapper();
 
@@ -212,12 +215,22 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 			dinamico.setOptions(options);
 		});
+		
 
 		ModeloNotaDinamicoOutputDTO modeloNotaDinamicoOutputDTO = new ModeloNotaDinamicoOutputDTO();
 		modeloNotaDinamicoOutputDTO.setMenuNotaNumero(modeloNotaDinamicoMenuNotaNumeroOutputDTO);
 		modeloNotaDinamicoOutputDTO.setMenuNotaDinamico(mapper.writeValueAsString(dinamicos));
 		modeloNotaDinamicoOutputDTO.setMenuNotaProduto(notaProdutoLista.get(0));
-
+		
+		roteiroFechamentoNotaRepository.roteiro(numeroModeloNota).stream().forEach(roteiro ->
+		
+		{
+			
+			modeloNotaDinamicoOutputDTO.setRoteiroFechamento(String.valueOf(roteiro[0]));
+			
+		}
+				
+				);;
 		/*
 		 * 
 		 * notaNegociacaoRepository

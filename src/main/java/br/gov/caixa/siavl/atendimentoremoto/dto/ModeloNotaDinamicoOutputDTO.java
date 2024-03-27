@@ -28,5 +28,7 @@ public class ModeloNotaDinamicoOutputDTO {
 	
 	@JsonRawValue
 	private String menuNotaDinamico;
+	
+	private String roteiroFechamento;
 
 }
