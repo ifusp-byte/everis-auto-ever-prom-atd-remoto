@@ -1,5 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
+import java.sql.Clob;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,9 +56,9 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	@Autowired
 	SicliGateway sicliGateway;
-	
+
 	@Autowired
-	RoteiroFechamentoNotaRepository roteiroFechamentoNotaRepository; 
+	RoteiroFechamentoNotaRepository roteiroFechamentoNotaRepository;
 
 	private static ObjectMapper mapper = new ObjectMapper();
 
@@ -149,15 +150,14 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	public Object modeloNotaDinamico(String token, Long numeroModeloNota,
 			ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO) throws Exception {
-		
+
 		List<ModeloNotaDinamicoMenuNotaDinamicoNotaProdutoOutputDTO> notaProdutoLista = new ArrayList<>();
 
 		modeloNotaRepository.notaProduto(numeroModeloNota).stream().forEach(notaProduto -> {
 
 			ModeloNotaDinamicoMenuNotaDinamicoNotaProdutoOutputDTO notaProdutoItem = null;
 			notaProdutoItem = ModeloNotaDinamicoMenuNotaDinamicoNotaProdutoOutputDTO.builder()
-					.nota(String.valueOf(notaProduto[0]))
-					.produto(String.valueOf(notaProduto[1])).build();
+					.nota(String.valueOf(notaProduto[0])).produto(String.valueOf(notaProduto[1])).build();
 
 			notaProdutoLista.add(notaProdutoItem);
 		});
@@ -215,27 +215,20 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 			dinamico.setOptions(options);
 		});
-		
 
 		ModeloNotaDinamicoOutputDTO modeloNotaDinamicoOutputDTO = new ModeloNotaDinamicoOutputDTO();
 		modeloNotaDinamicoOutputDTO.setMenuNotaNumero(modeloNotaDinamicoMenuNotaNumeroOutputDTO);
 		modeloNotaDinamicoOutputDTO.setMenuNotaDinamico(mapper.writeValueAsString(dinamicos));
 		modeloNotaDinamicoOutputDTO.setMenuNotaProduto(notaProdutoLista.get(0));
-		
-		roteiroFechamentoNotaRepository.roteiro(numeroModeloNota).stream().forEach(roteiro ->
-		
-		{
-			
-			modeloNotaDinamicoOutputDTO.setRoteiroFechamento(String.valueOf(roteiro[0]));
-			
-		}
-				
-				);;
+
+		Clob roteiro = roteiroFechamentoNotaRepository.roteiro(numeroModeloNota);
+		int tamanho = Integer.parseInt(String.valueOf(roteiro.length()));
+
+		modeloNotaDinamicoOutputDTO.setRoteiroFechamento(String.valueOf(roteiro.getSubString(1, tamanho)));
+
 		/*
 		 * 
 		 * notaNegociacaoRepository
-		 * 
-		 * 
 		 * 
 		 * AtendimentoNegocio atendimentoNegocio = new AtendimentoNegocio();
 		 * atendimentoNegocio.setNumeroProtocolo(Long.parseLong(
@@ -266,7 +259,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		}
 		return data;
 	}
-	
+
 	private String formataData(Date dateInput) {
 
 		String data = null;
