@@ -17,6 +17,7 @@ import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaIdentific
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.service.ConsultaNotaService;
@@ -24,6 +25,7 @@ import br.gov.caixa.siavl.atendimentoremoto.service.ContrataNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
 import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
+import br.gov.caixa.siavl.atendimentoremoto.service.RegistroNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.sicli.gateway.SicliGateway;
 
 @RestController
@@ -48,6 +50,9 @@ public class AtendimentoRemotoController {
 
 	@Autowired
 	DesafioService desafioService;
+	
+	@Autowired
+	RegistroNotaService registroNotaService;
 
 	@Autowired
 	AuditoriaIdentificacaoPositivaService auditoriaIdentificacaoPositivaService;
@@ -124,6 +129,14 @@ public class AtendimentoRemotoController {
 	public ResponseEntity<Object> modeloNotaDinamico(@RequestHeader(value = "token", required = true) String token,
 			@PathVariable String cpfCnpj) throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED).body(sicliGateway.contaAtendimento(token, cpfCnpj));
+	}
+	
+	@PostMapping("/nota/{numeroNota}")
+	public ResponseEntity<Object> modeloNotaDinamico(@RequestHeader(value = "token", required = true) String token,
+			@PathVariable Long numeroNota, @RequestBody RegistraNotaInputDto registraNotaInputDto)
+			throws Exception {
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(registroNotaService.registraNota(token, numeroNota, registraNotaInputDto));
 	}
 
 }
