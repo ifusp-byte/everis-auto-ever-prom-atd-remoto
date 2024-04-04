@@ -22,6 +22,11 @@ public interface NotaNegociacaoRepository extends JpaRepository<NotaNegociacao, 
 	@Query("UPDATE NotaNegociacao A SET A.numeroSituacaoNota = 14 WHERE A.numeroNota = ?1")
 	void updateSituacaoNota(Long idNegociacao); 
 	
+	@Modifying
+	@Transactional
+	@Query("UPDATE NotaNegociacao A SET A.numeroSituacaoNota = 22 WHERE A.numeroNota = ?1")
+	void enviaNotaCliente(Long numeroNota); 
+	
 }
 
 

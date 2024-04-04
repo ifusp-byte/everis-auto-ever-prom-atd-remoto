@@ -57,4 +57,14 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		return registraNotaOutputDto;
 	}
 
+	@Override
+	public Boolean enviaCliente(Long numeroNota) {
+		Boolean statusContratacao = null;
+		
+		notaNegociacaoRepository.enviaNotaCliente(numeroNota);
+		statusContratacao = true;
+		
+		return statusContratacao;
+	}
+
 }
