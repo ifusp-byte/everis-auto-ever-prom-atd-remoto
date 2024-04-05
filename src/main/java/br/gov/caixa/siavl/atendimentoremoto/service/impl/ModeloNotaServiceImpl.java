@@ -20,6 +20,7 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinami
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaNumeroOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaOutputDto;
+import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNegocio;
 import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocioFavorito;
 import br.gov.caixa.siavl.atendimentoremoto.model.NegocioAgenciaVirtual;
 import br.gov.caixa.siavl.atendimentoremoto.model.NotaNegociacao;
@@ -226,17 +227,10 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 		modeloNotaDinamicoOutputDTO.setRoteiroFechamento(String.valueOf(roteiro.getSubString(1, tamanho)));
 
-		/*
-		 * 
-		 * notaNegociacaoRepository
-		 * 
-		 * AtendimentoNegocio atendimentoNegocio = new AtendimentoNegocio();
-		 * atendimentoNegocio.setNumeroProtocolo(Long.parseLong(
-		 * modeloNotaDinamicoInputDTO.getProtocolo()));
-		 * atendimentoNegocio.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio())
-		 * ; atendimentoNegocio = atendimentoNegocioRepository.save(atendimentoNegocio);
-		 * 
-		 */
+		AtendimentoNegocio atendimentoNegocio = new AtendimentoNegocio();
+		atendimentoNegocio.setNumeroProtocolo(Long.parseLong(modeloNotaDinamicoInputDTO.getProtocolo()));
+		atendimentoNegocio.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
+	    atendimentoNegocio = atendimentoNegocioRepository.save(atendimentoNegocio);
 
 		return modeloNotaDinamicoOutputDTO;
 	}
