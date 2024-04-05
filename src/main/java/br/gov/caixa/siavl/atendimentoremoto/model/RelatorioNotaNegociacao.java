@@ -25,8 +25,8 @@ public class RelatorioNotaNegociacao {
 	
 	@Id
 	@Column(name = "NU_RELATORIO_NOTA_NEGOCIACAO")
-	@SequenceGenerator(name = "AVLSQ065_RLTRO_NOTA_NEGOCIACAO", sequenceName = "AVLSQ065_RLTRO_NOTA_NEGOCIACAO", allocationSize = 1, schema = "AVL")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AVLSQ065_RLTRO_NOTA_NEGOCIACAO")
+	@SequenceGenerator(name = "AVLSQ011_NU_NOTA_NEGOCIACAO", sequenceName = "AVLSQ011_NU_NOTA_NEGOCIACAO", allocationSize = 1, schema = "AVL")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AVLSQ011_NU_NOTA_NEGOCIACAO")
 	private Long numeroRelatorioNota;
 	
 
