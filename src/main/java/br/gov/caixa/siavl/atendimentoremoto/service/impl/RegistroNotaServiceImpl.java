@@ -1,7 +1,9 @@
 package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import java.sql.Clob;
+
 import javax.sql.rowset.serial.SerialClob;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
+import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.model.RelatorioNotaNegociacao;
+import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.EquipeAtendimentoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RelatorioNotaNegociacaoRepository;
@@ -27,6 +31,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	@Autowired
 	NotaNegociacaoRepository notaNegociacaoRepository;
+	
+	@Autowired
+	AtendimentoClienteRepository atendimentoClienteRepository;
 
 	@Autowired
 	TokenUtils tokenUtils;
@@ -49,8 +56,19 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			registraNotaOutputDto = RegistraNotaOutputDto.builder().statusNotaRegistrada(false)
 					.mensagem("A unidade não possui equipe vinculada.").build();
 
-		} else {				
-
+		} else {		
+			
+			AtendimentoCliente atendimentoCliente = new AtendimentoCliente(); 
+			atendimentoCliente.setNumeroProtocolo(Long.parseLong(registraNotaInputDto.getNumeroProtocolo())); 
+			atendimentoCliente.setNomeCliente(registraNotaInputDto.getNomeCliente());
+				
+			if (registraNotaInputDto.getCpfCnpj().length() == 11) {
+				atendimentoCliente.setCpfCliente(Long.parseLong(registraNotaInputDto.getCpfCnpj()));
+			} else {
+				atendimentoCliente.setCnpjCliente(Long.parseLong(registraNotaInputDto.getCpfCnpj()));
+			}
+			
+			atendimentoClienteRepository.save(atendimentoCliente);
 			
 			String dsRelatorioNota = mapper.writeValueAsString(registraNotaInputDto);
 			Clob relatorioNota = new SerialClob(dsRelatorioNota.toCharArray());
