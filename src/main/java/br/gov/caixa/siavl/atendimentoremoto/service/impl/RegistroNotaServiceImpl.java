@@ -4,6 +4,9 @@ import java.sql.Clob;
 import javax.sql.rowset.serial.SerialClob;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.model.RelatorioNotaNegociacao;
@@ -27,6 +30,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	@Autowired
 	TokenUtils tokenUtils;
+	
+	private static ObjectMapper mapper = new ObjectMapper();
 
 	@Override
 	public Object registraNota(String token, Long numeroNota, RegistraNotaInputDto registraNotaInputDto)
@@ -44,11 +49,16 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			registraNotaOutputDto = RegistraNotaOutputDto.builder().statusNotaRegistrada(false)
 					.mensagem("A unidade não possui equipe vinculada.").build();
 
-		} else {
-			Clob relatorioNota = new SerialClob(registraNotaInputDto.getRelatorioNota().toCharArray());
+		} else {				
+
+			
+			String dsRelatorioNota = mapper.writeValueAsString(registraNotaInputDto);
+			Clob relatorioNota = new SerialClob(dsRelatorioNota.toCharArray());
+			
 			RelatorioNotaNegociacao relatorioNotaNegociacao = new RelatorioNotaNegociacao(); 
-			relatorioNotaNegociacao.setNumeroEquipe(numeroEquipe);
-			relatorioNotaNegociacao.setRelatorioNota(relatorioNota);		
+			relatorioNotaNegociacao.setNumeroEquipe(numeroEquipe);		
+			relatorioNotaNegociacao.setRelatorioNota(relatorioNota);	
+			
 			relatorioNotaNegociacaoRepository.save(relatorioNotaNegociacao);		
 			registraNotaOutputDto = RegistraNotaOutputDto.builder().statusNotaRegistrada(true)
 					.mensagem("Nota registrada com sucesso!").build();

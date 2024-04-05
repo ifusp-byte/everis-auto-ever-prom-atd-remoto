@@ -127,13 +127,13 @@ public class AtendimentoRemotoController {
 	}
 
 	@GetMapping("/conta-atendimento/{cpfCnpj}")
-	public ResponseEntity<Object> modeloNotaDinamico(@RequestHeader(value = "token", required = true) String token,
+	public ResponseEntity<Object> contaAtendimento(@RequestHeader(value = "token", required = true) String token,
 			@PathVariable String cpfCnpj) throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED).body(sicliGateway.contaAtendimento(token, cpfCnpj));
 	}
 	
 	@PostMapping("/nota/{numeroNota}")
-	public ResponseEntity<Object> modeloNotaDinamico(@RequestHeader(value = "token", required = true) String token,
+	public ResponseEntity<Object> registraNota(@RequestHeader(value = "token", required = true) String token,
 			@PathVariable Long numeroNota, @RequestBody RegistraNotaInputDto registraNotaInputDto)
 			throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED)
