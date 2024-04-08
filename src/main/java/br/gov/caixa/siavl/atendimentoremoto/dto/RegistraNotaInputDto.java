@@ -26,7 +26,10 @@ public class RegistraNotaInputDto {
 	private String cpfCnpj;
 	private String nomeCliente;
 	private String numeroProtocolo; 
-	
+	private String contaAtendimento;
+	private String quantidadeMeta;
+	private String valorMeta;
+	private String valorCampoNota;
 	private JsonNode relatorioNota; 
 
 }

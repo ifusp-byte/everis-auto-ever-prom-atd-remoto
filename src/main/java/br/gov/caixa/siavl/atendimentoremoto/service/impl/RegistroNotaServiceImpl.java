@@ -68,7 +68,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				atendimentoCliente.setCnpjCliente(Long.parseLong(registraNotaInputDto.getCpfCnpj()));
 			}
 			
-			atendimentoClienteRepository.save(atendimentoCliente);
+			//atendimentoClienteRepository.save(atendimentoCliente);
 			
 			String dsRelatorioNota = mapper.writeValueAsString(registraNotaInputDto);
 			Clob relatorioNota = new SerialClob(dsRelatorioNota.toCharArray());
