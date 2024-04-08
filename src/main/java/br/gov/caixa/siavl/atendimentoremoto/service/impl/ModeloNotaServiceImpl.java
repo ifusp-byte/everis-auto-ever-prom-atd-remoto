@@ -4,6 +4,7 @@ import java.sql.Clob;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -171,8 +172,8 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		NotaNegociacao notaNegociacao = new NotaNegociacao();
 		notaNegociacao.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
 		notaNegociacao.setNumeroModeloNota(numeroModeloNota);
-		notaNegociacao.setDataCriacaoNota(new Date());
-		notaNegociacao.setDataModificacaoNota(new Date());
+		notaNegociacao.setDataCriacaoNota(formataDataBanco());
+		notaNegociacao.setDataModificacaoNota(formataDataBanco());
 		notaNegociacao.setNumeroMatriculaCriacaoNota(matriculaCriacaoNota(token));
 		notaNegociacao.setNumeroMatriculaModificacaoNota(matriculaCriacaoNota(token));
 		notaNegociacao.setNumeroSituacaoNota(23L); // VERIFICAR
@@ -261,6 +262,13 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
 		data = String.valueOf(sdfOut.format(dateInput));
 		return data;
+	}
+	
+	private Date formataDataBanco() {
+
+		Calendar time = Calendar.getInstance();
+		time.add(Calendar.HOUR, -3);
+		return time.getTime();
 	}
 
 }
