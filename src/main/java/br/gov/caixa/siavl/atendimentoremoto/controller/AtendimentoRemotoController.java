@@ -64,7 +64,7 @@ public class AtendimentoRemotoController {
 	@PostMapping("/protocolo")
 	public ResponseEntity<GeraProtocoloOutputDTO> geraProtocolo(
 			@RequestHeader(value = "token", required = true) String token,
-			@RequestBody GeraProtocoloInputDTO geraProtocoloInputDTO) {
+			@RequestBody GeraProtocoloInputDTO geraProtocoloInputDTO) throws Exception {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(geraProtocoloService.geraProtocolo(token, geraProtocoloInputDTO));
 	}
