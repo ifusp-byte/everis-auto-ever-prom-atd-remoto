@@ -92,6 +92,7 @@ public class DesafioServiceImpl implements DesafioService {
 				.descricaoTransacao(descricaoTransacao)
 				.ipTerminalUsuario(DEFAULT_USER_IP)
 				.nomeMfe("mfe_avl_atendimentoremoto")
+				.ambienteAplicacao("NACIONAL")
 				.numeroUnidadeLotacaoUsuario(50)
 				.build();
 

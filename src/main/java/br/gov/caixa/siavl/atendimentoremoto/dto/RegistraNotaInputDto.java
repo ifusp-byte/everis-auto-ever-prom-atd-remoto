@@ -29,7 +29,7 @@ public class RegistraNotaInputDto {
 	private String contaAtendimento;
 	private String quantidadeMeta;
 	private String valorMeta;
-	private String valorCampoNota;
+	private String versaoSistema;
 	private JsonNode relatorioNota; 
 
 }

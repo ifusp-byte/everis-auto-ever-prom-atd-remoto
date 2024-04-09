@@ -13,22 +13,17 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class DsLogPlataformaDTO {
-
+public class AuditoriaRegistraNotaDsLogPlataformaDTO {
+	
 	private String cpfCnpj;
-
 	private String matriculaAtendente;
-
-	private String statusIdentificacaoPositiva;
-
-	private String dataCriacao;
-
+	private String statusRetornoSicli;
 	private String numeroProtocolo;
-
+	private String numeroContaAtendimento;
+	private String numeroNota;
+	private String dataRegistroNota;
 	private String versaoSistema;
-
 	private String ipUsuario;
-
 	private String tipoPessoa;
-
+	
 }

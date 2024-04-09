@@ -6,54 +6,50 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
 import javax.sql.rowset.serial.SerialClob;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaIdentificacaoPositivaInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaIdentificacaoPositivaDsLogPlataformaDTO;
+import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaRegistraNotaSicliDsLogPlataformaDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.model.LogPlataforma;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.repository.LogPlataformaRepository;
-import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaIdentificacaoPositivaService;
+import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaRegistraNotaSicliService;
+import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContaAtendimentoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
-public class AuditoriaIdentificacaoPositivaServiceImpl implements AuditoriaIdentificacaoPositivaService {
-
+public class AuditoriaRegistraNotaSicliServiceImpl implements AuditoriaRegistraNotaSicliService {
+	
 	@Autowired
 	TokenUtils tokenUtils;
 
 	@Autowired
 	LogPlataformaRepository logPlataformaRepository;
-
-	private static ObjectMapper mapper = new ObjectMapper();
-
-	private static final Long TRANSACAO_SISTEMA = 144L;
-
-	private static final String PERSON_TYPE = "PF";
 	
+	private static ObjectMapper mapper = new ObjectMapper();
+	private static final Long TRANSACAO_SISTEMA_SUCESSO_SICLI = 284L;
+	private static final String PERSON_TYPE = "PF";
 	private static final String DEFAULT_USER_IP = "123";
-
-	public Boolean auditar(String token,
-			AuditoriaIdentificacaoPositivaInputDTO auditoriaIdentificacaoPositivaInputDTO) {
-
-		boolean statusAudtoria = false;
+	
+	
+	public void auditar(ContaAtendimentoOutputDTO contaAtendimento, String token, String cpfCnpj) {
+		
 		LogPlataforma logPlataforma = new LogPlataforma();
-		AuditoriaIdentificacaoPositivaDsLogPlataformaDTO dsLogPlataformaDTO = new AuditoriaIdentificacaoPositivaDsLogPlataformaDTO();
-
-		dsLogPlataformaDTO = AuditoriaIdentificacaoPositivaDsLogPlataformaDTO.builder().cpfCnpj(auditoriaIdentificacaoPositivaInputDTO.getCpfCnpj())
-				.matriculaAtendente(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", ""))
-				.statusIdentificacaoPositiva(auditoriaIdentificacaoPositivaInputDTO.getStatusCreated())
-				.dataCriacao(formataData(new Date()))
-				.numeroProtocolo(auditoriaIdentificacaoPositivaInputDTO.getNumeroProtocolo())
-				.versaoSistema(auditoriaIdentificacaoPositivaInputDTO.getVersaoSistemaAgenciaVirtual())
-				.ipUsuario(tokenUtils.getIpFromToken(token)).tipoPessoa(PERSON_TYPE).build();
-
+		AuditoriaRegistraNotaSicliDsLogPlataformaDTO dsLogPlataformaDTO = new AuditoriaRegistraNotaSicliDsLogPlataformaDTO();
+		String matriculaAtendente = tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", "");
+		
+		dsLogPlataformaDTO = AuditoriaRegistraNotaSicliDsLogPlataformaDTO.builder()			
+				.contaAtendimento(contaAtendimento)
+				.cpfCnpj(cpfCnpj)
+				.matriculaAtendente(matriculaAtendente)
+				.dataChamadaSicli(formataData(new Date()))
+				.versaoSistema("1.7.0_API")
+				.ipUsuario(tokenUtils.getIpFromToken(token))
+				.tipoPessoa(PERSON_TYPE)
+				.build();
+		
+		
 		String dsLogPlataformaJson = null;
 		Clob dsLogPlataformaClob = null;
 
@@ -65,27 +61,22 @@ public class AuditoriaIdentificacaoPositivaServiceImpl implements AuditoriaIdent
 			e.printStackTrace();
 		}
 
-		logPlataforma = LogPlataforma.builder().transacaoSistema(TRANSACAO_SISTEMA)
-				.matriculaAtendente(Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", "")))
+		logPlataforma = LogPlataforma.builder()
+				.transacaoSistema(TRANSACAO_SISTEMA_SUCESSO_SICLI)
+				.matriculaAtendente(Long.parseLong(matriculaAtendente.replaceAll("[a-zA-Z]", "")))
 				.dataCriacaoLogPlataforma(formataDataBanco())
 				.ipUsuario(DEFAULT_USER_IP)
-				.versaoSistemaAgenciaVirtual(auditoriaIdentificacaoPositivaInputDTO.getVersaoSistemaAgenciaVirtual())
-				.cpfCnpj(Long.parseLong(
-						auditoriaIdentificacaoPositivaInputDTO.getCpfCnpj().replace(".", "").replace("-", "").trim()))
+				.versaoSistemaAgenciaVirtual("1.7.0_API")
+				.cpfCnpj(Long.parseLong(cpfCnpj.replace(".", "").replace("-", "").trim()))
 				.tipoPessoa(PERSON_TYPE)
 				.anoMesReferencia(Long.parseLong(formataDataAnoMes(new Date()).replace("-", "")))
-				.jsonLogPlataforma(dsLogPlataformaClob).build();
+				.jsonLogPlataforma(dsLogPlataformaClob)
+				.build();
 
-		logPlataforma = logPlataformaRepository.save(logPlataforma);
-
-		if (logPlataforma.getIdLogPlataforma() != null) {
-			statusAudtoria = true;
-		}
-
-		return statusAudtoria;
-
+		logPlataformaRepository.save(logPlataforma);
+			
 	}
-
+	
 	private String formataData(Date dateInput) {
 
 		String data = null;
