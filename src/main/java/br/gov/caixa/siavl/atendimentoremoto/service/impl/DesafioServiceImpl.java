@@ -93,7 +93,7 @@ public class DesafioServiceImpl implements DesafioService {
 				.ipTerminalUsuario(DEFAULT_USER_IP)
 				.nomeMfe("mfe_avl_atendimentoremoto")
 				.ambienteAplicacao("NACIONAL")
-				.numeroUnidadeLotacaoUsuario(50)
+				.numeroUnidadeLotacaoUsuario(50L)
 				.build();
 
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);

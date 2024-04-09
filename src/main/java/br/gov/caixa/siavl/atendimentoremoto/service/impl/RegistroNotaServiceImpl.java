@@ -59,7 +59,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	public Object registraNota(String token, Long numeroNota, RegistraNotaInputDto registraNotaInputDto)
 			throws Exception {
 
-		int cpfCnpjPnc = Integer.parseInt(registraNotaInputDto.getCpfCnpj().trim());
+		Long cpfCnpjPnc = Long.parseLong(registraNotaInputDto.getCpfCnpj().trim());
 		Long numeroUnidade = Long.parseLong(tokenUtils.getUnidadeFromToken(token));
 		Long numeroEquipe = null;
 		String cpfCnpj = null;
@@ -124,7 +124,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
 		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder().descricaoTransacao(descricaoTransacao)
-				.ipTerminalUsuario(DEFAULT_USER_IP).nomeMfe("mfe_avl_atendimentoremoto").numeroUnidadeLotacaoUsuario(50)
+				.ipTerminalUsuario(DEFAULT_USER_IP).nomeMfe("mfe_avl_atendimentoremoto").numeroUnidadeLotacaoUsuario(50L)
 				.ambienteAplicacao("NACIONAL").tipoDocumento("CPF").numeroIdentificacaoCliente(cpfCnpjPnc).build();
 
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);

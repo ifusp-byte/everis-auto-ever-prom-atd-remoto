@@ -48,9 +48,8 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		
 		Long matriculaAtendente = Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", ""));
 		Long cpfCnpj = Long.parseLong(geraProtocoloInputDTO.getCpfCnpj().trim()); 
-		int cpfCnpjPnc = Integer.parseInt(geraProtocoloInputDTO.getCpfCnpj().trim()); 
+		
 		String canalAtendimento = geraProtocoloInputDTO.getTipoAtendimento();
-	
 		AtendimentoCliente atendimentoCliente = new AtendimentoCliente();
 		
 		atendimentoCliente.setMatriculaAtendente(matriculaAtendente);
@@ -96,10 +95,10 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 				.descricaoTransacao(descricaoTransacao)
 				.ipTerminalUsuario(DEFAULT_USER_IP)
 				.nomeMfe("mfe_avl_atendimentoremoto")
-				.numeroUnidadeLotacaoUsuario(50)
+				.numeroUnidadeLotacaoUsuario(50L)
 				.ambienteAplicacao("NACIONAL")
 				.tipoDocumento("CPF")
-				.numeroIdentificacaoCliente(cpfCnpjPnc)
+				.numeroIdentificacaoCliente(cpfCnpj)
 				.build();
 
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
