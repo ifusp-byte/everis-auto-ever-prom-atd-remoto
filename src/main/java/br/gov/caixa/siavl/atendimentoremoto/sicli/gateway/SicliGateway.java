@@ -68,7 +68,7 @@ public class SicliGateway {
 		return headers;
 	}
 
-	public ContaAtendimentoOutputDTO contaAtendimento(String token, String cpfCnpj) throws Exception {
+	public ContaAtendimentoOutputDTO contaAtendimento(String token, String cpfCnpj, boolean auditar) throws Exception {
 
 		ContaAtendimentoOutputDTO contaAtendimentoOutputDTO = new ContaAtendimentoOutputDTO();
 		ResponseEntity<String> response = null;
@@ -139,7 +139,7 @@ public class SicliGateway {
 
 		}
 		
-		if (!String.valueOf(HttpStatus.CREATED.value()).equals(contaAtendimentoOutputDTO.getStatusCode())) {	
+		if (!String.valueOf(HttpStatus.CREATED.value()).equals(contaAtendimentoOutputDTO.getStatusCode()) && Boolean.TRUE.equals(auditar)) {	
 			auditoriaRegistraNotaSicliService.auditar(contaAtendimentoOutputDTO, token, cpfCnpj);	
 		}
 		

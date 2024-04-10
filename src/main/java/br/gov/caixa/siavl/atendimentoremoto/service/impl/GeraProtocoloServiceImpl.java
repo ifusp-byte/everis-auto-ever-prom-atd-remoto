@@ -56,7 +56,7 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		atendimentoCliente.setCanalAtendimento(canalAtendimento.charAt(0));
 
 		if (geraProtocoloInputDTO.getCpfCnpj().trim().length() == 11) {
-			ContaAtendimentoOutputDTO contaAtendimento = sicliGateway.contaAtendimento(token, geraProtocoloInputDTO.getCpfCnpj().trim());
+			ContaAtendimentoOutputDTO contaAtendimento = sicliGateway.contaAtendimento(token, geraProtocoloInputDTO.getCpfCnpj().trim(), false);
 			atendimentoCliente.setNomeCliente(contaAtendimento.getNomeCliente());
 			atendimentoCliente.setCpfCliente(cpfCnpj);
 		} else {;
