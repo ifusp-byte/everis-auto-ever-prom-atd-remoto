@@ -119,7 +119,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				.versaoSistema(versaoSistema)
 				.tipoPessoa("PF")
 				.ipUsuario("123")
-			    .nomeProduto(registraNotaInputDto.getDescricaoAcaoProduto())				
+			    .produto(registraNotaInputDto.getProduto())				
 			    .build();
 
 		String descricaoTransacao = null;
