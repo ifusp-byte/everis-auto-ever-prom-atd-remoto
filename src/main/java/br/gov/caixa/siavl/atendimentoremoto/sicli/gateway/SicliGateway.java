@@ -140,7 +140,7 @@ public class SicliGateway {
 		}
 		
 		if (!String.valueOf(HttpStatus.CREATED.value()).equals(contaAtendimentoOutputDTO.getStatusCode())) { 			
-			if (Boolean.TRUE.equals(auditar)) {	
+			if (Boolean.TRUE.equals(auditar) && !statusCreated) {	
 			auditoriaRegistraNotaSicliService.auditar(contaAtendimentoOutputDTO, token, cpfCnpj);	
 		} }
 		

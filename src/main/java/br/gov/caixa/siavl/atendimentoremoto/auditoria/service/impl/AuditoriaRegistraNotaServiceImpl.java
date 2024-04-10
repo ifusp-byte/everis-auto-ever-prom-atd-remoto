@@ -64,7 +64,7 @@ public class AuditoriaRegistraNotaServiceImpl implements AuditoriaRegistraNotaSe
 				.transacaoSistema(TRANSACAO_SISTEMA_SUCESSO_SICLI)
 				.matriculaAtendente(Long.parseLong(matriculaAtendente.replaceAll("[a-zA-Z]", "")))
 				.dataCriacaoLogPlataforma(formataDataBanco())
-				.ipUsuario(DEFAULT_USER_IP)
+				.ipUsuario(tokenUtils.getIpFromToken(token))
 				.versaoSistemaAgenciaVirtual(versaoSistema)
 				.cpfCnpj(Long.parseLong(cpfCnpj.replace(".", "").replace("-", "").trim()))
 				.tipoPessoa(PERSON_TYPE)

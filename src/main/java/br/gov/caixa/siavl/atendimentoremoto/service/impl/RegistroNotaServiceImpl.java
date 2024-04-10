@@ -118,7 +118,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				.transacaoSistema("189")
 				.versaoSistema(versaoSistema)
 				.tipoPessoa("PF")
-				.ipUsuario("123")
+				.ipUsuario(tokenUtils.getIpFromToken(token))
 			    .produto(registraNotaInputDto.getProduto())				
 			    .build();
 
@@ -133,11 +133,11 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
 		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder().descricaoTransacao(descricaoTransacao)
-				.ipTerminalUsuario(DEFAULT_USER_IP).nomeMfe("mfe_avl_atendimentoremoto").numeroUnidadeLotacaoUsuario(50L)
+				.ipTerminalUsuario(tokenUtils.getIpFromToken(token)).nomeMfe("mfe_avl_atendimentoremoto").numeroUnidadeLotacaoUsuario(50L)
 				.ambienteAplicacao("NACIONAL").tipoDocumento("CPF").numeroIdentificacaoCliente(cpfCnpjPnc).build();
 
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
-		auditoriaRegistraNotaService.auditar(String.valueOf(formataDataBanco()), token, cpfCnpj, matriculaAtendente,
+		auditoriaRegistraNotaService.auditar(String.valueOf(formataData(new Date())), token, cpfCnpj, matriculaAtendente,
 				String.valueOf(statusRetornoSicli), numeroProtocolo, numeroContaAtendimento, String.valueOf(numeroNota),
 				versaoSistema);
 		

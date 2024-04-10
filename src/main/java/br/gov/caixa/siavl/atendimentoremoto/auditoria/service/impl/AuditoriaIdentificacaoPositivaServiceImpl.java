@@ -68,7 +68,7 @@ public class AuditoriaIdentificacaoPositivaServiceImpl implements AuditoriaIdent
 		logPlataforma = LogPlataforma.builder().transacaoSistema(TRANSACAO_SISTEMA)
 				.matriculaAtendente(Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", "")))
 				.dataCriacaoLogPlataforma(formataDataBanco())
-				.ipUsuario(DEFAULT_USER_IP)
+				.ipUsuario(tokenUtils.getIpFromToken(token))
 				.versaoSistemaAgenciaVirtual(auditoriaIdentificacaoPositivaInputDTO.getVersaoSistemaAgenciaVirtual())
 				.cpfCnpj(Long.parseLong(
 						auditoriaIdentificacaoPositivaInputDTO.getCpfCnpj().replace(".", "").replace("-", "").trim()))

@@ -93,7 +93,7 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 
 		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder()
 				.descricaoTransacao(descricaoTransacao)
-				.ipTerminalUsuario(DEFAULT_USER_IP)
+				.ipTerminalUsuario(tokenUtils.getIpFromToken(token))
 				.nomeMfe("mfe_avl_atendimentoremoto")
 				.numeroUnidadeLotacaoUsuario(50L)
 				.ambienteAplicacao("NACIONAL")
