@@ -25,6 +25,10 @@ public class AuditoriaPncRegistraNotaInputDTO {
 	private String numeroContaAtendimento;
 	private String numeroNota;
 	private String dataRegistroNota;
-    private String transacaoSistema;
+    private String transacaoSistema; 
+	private String versaoSistema;
+	private String ipUsuario;
+	private String tipoPessoa;
+	private String nomeProduto;
 
 }

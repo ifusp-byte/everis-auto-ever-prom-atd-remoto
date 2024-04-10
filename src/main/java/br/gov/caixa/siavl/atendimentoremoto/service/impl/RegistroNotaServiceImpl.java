@@ -1,8 +1,10 @@
 package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import java.sql.Clob;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.sql.rowset.serial.SerialClob;
 
@@ -108,10 +110,17 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		auditoriaPncRegistraNotaInputDTO = AuditoriaPncRegistraNotaInputDTO.builder()
 
 				.cpfCnpj(cpfCnpj).matriculaAtendente(matriculaAtendente)
-				.statusRetornoSicli(String.valueOf(statusRetornoSicli)).numeroProtocolo(numeroProtocolo)
-				.numeroContaAtendimento(numeroContaAtendimento).numeroNota(String.valueOf(numeroNota))
-				.dataRegistroNota(String.valueOf(formataDataBanco()))
-				.transacaoSistema("189").build();
+				.statusRetornoSicli(String.valueOf(statusRetornoSicli))
+				.numeroProtocolo(numeroProtocolo)
+				.numeroContaAtendimento(numeroContaAtendimento)
+				.numeroNota(String.valueOf(numeroNota))
+				.dataRegistroNota(String.valueOf(formataData(new Date())))
+				.transacaoSistema("189")
+				.versaoSistema(versaoSistema)
+				.tipoPessoa("PF")
+				.ipUsuario("123")
+			    .nomeProduto(registraNotaInputDto.getDescricaoAcaoProduto())				
+			    .build();
 
 		String descricaoTransacao = null;
 
@@ -152,5 +161,15 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		time.add(Calendar.HOUR, -3);
 		return time.getTime();
 	}
+	
+	private String formataData(Date dateInput) {
+
+		String data = null;
+		Locale locale = new Locale("pt", "BR");
+		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
+		data = String.valueOf(sdfOut.format(dateInput));
+		return data;
+	}
+
 
 }
