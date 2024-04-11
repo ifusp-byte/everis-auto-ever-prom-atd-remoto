@@ -163,7 +163,6 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				.matriculaAtendente(matriculaAtendente)
 				.statusRetornoSicli(String.valueOf(true))
 				.statusRetornoIdPositiva(String.valueOf(true))
-				.statusContratacao(String.valueOf(true))
 				.dataEnvioNota(String.valueOf(formataData(new Date())))
 				.numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo())				
 				.numeroContaAtendimento(enviaClienteInputDto.getNumeroConta())

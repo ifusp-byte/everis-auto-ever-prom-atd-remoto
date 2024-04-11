@@ -23,7 +23,6 @@ public class AuditoriaPncEnviaNotaInputDTO {
 	private String matriculaAtendente;
 	private String statusRetornoSicli;
 	private String statusRetornoIdPositiva;
-	private String statusContratacao;
 	private String dataEnvioNota;;
 	private String numeroProtocolo;
 	private String numeroContaAtendimento;
