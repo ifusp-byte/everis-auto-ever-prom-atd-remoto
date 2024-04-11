@@ -25,5 +25,7 @@ public class AuditoriaRegistraNotaDsLogPlataformaDTO {
 	private String versaoSistema;
 	private String ipUsuario;
 	private String tipoPessoa;
+	private Long transacaoSistema;
+	private String produto;
 	
 }

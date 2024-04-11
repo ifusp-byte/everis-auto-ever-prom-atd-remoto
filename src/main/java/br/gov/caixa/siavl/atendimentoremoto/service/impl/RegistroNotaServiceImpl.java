@@ -141,7 +141,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
 		auditoriaRegistraNotaService.auditar(String.valueOf(formataData(new Date())), token, cpfCnpj, matriculaAtendente,
 				String.valueOf(statusRetornoSicli), numeroProtocolo, numeroContaAtendimento, String.valueOf(numeroNota),
-				versaoSistema);
+				versaoSistema, registraNotaInputDto.getProduto());
 		
 		return registraNotaOutputDto;
 

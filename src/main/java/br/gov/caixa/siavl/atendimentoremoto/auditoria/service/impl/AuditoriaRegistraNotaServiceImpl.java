@@ -31,7 +31,7 @@ public class AuditoriaRegistraNotaServiceImpl implements AuditoriaRegistraNotaSe
 	private static final String PERSON_TYPE = "PF";
 	private static final String DEFAULT_USER_IP = "123";
 	
-	public void auditar(String dataRegistroNota, String token, String cpfCnpj, String matriculaAtendente, String statusRetornoSicli, String numeroProtocolo, String numeroContaAtendimento, String numeroNota, String versaoSistema) {
+	public void auditar(String dataRegistroNota, String token, String cpfCnpj, String matriculaAtendente, String statusRetornoSicli, String numeroProtocolo, String numeroContaAtendimento, String numeroNota, String versaoSistema, String produto) {
 
 		LogPlataforma logPlataforma = new LogPlataforma();
 		AuditoriaRegistraNotaDsLogPlataformaDTO dsLogPlataformaDTO = new AuditoriaRegistraNotaDsLogPlataformaDTO();
@@ -47,6 +47,8 @@ public class AuditoriaRegistraNotaServiceImpl implements AuditoriaRegistraNotaSe
 				.versaoSistema(versaoSistema)
 				.ipUsuario(tokenUtils.getIpFromToken(token))
 				.tipoPessoa(PERSON_TYPE)
+				.transacaoSistema(TRANSACAO_SISTEMA_SUCESSO_SICLI)
+				.produto(produto)
 				.build();
 
 		String dsLogPlataformaJson = null;
