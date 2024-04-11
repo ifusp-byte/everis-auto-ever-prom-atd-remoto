@@ -88,12 +88,12 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			atendimentoCliente.setNumeroProtocolo(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
 			atendimentoCliente.setNomeCliente(registraNotaInputDto.getNomeCliente());
 
-			if (registraNotaInputDto.getCpfCnpj().length() == 11) {
+			if (cpfCnpjPnc == 11) {
 				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim();
-				atendimentoCliente.setCpfCliente(Long.parseLong(registraNotaInputDto.getCpfCnpj()));
+				atendimentoCliente.setCpfCliente(Long.parseLong(registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim()));
 			} else {
 				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim();
-				atendimentoCliente.setCnpjCliente(Long.parseLong(registraNotaInputDto.getCpfCnpj()));
+				atendimentoCliente.setCnpjCliente(Long.parseLong(registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim()));
 			}
 
 			String dsRelatorioNota = mapper.writeValueAsString(registraNotaInputDto);
