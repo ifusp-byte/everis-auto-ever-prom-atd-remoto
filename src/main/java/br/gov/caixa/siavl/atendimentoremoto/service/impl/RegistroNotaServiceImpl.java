@@ -168,7 +168,6 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				.numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo())				
 				.numeroContaAtendimento(enviaClienteInputDto.getNumeroConta())
 				.numeroNota(String.valueOf(numeroNota))
-				.transacaoSistema("a definir") 
 				.versaoSistema(enviaClienteInputDto.getVersaoSistema())
 				.ipUsuario(tokenUtils.getIpFromToken(token))
 				.tipoPessoa("PF")
