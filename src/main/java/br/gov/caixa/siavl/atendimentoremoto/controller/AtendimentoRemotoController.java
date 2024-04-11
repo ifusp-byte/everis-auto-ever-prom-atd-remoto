@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaIdentificacaoPositivaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaIdentificacaoPositivaService;
+import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.service.ConsultaNotaService;
@@ -24,6 +27,7 @@ import br.gov.caixa.siavl.atendimentoremoto.service.ContrataNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
 import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
+import br.gov.caixa.siavl.atendimentoremoto.service.RegistroNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.sicli.gateway.SicliGateway;
 
 @RestController
@@ -48,6 +52,9 @@ public class AtendimentoRemotoController {
 
 	@Autowired
 	DesafioService desafioService;
+	
+	@Autowired
+	RegistroNotaService registroNotaService;
 
 	@Autowired
 	AuditoriaIdentificacaoPositivaService auditoriaIdentificacaoPositivaService;
@@ -58,7 +65,7 @@ public class AtendimentoRemotoController {
 	@PostMapping("/protocolo")
 	public ResponseEntity<GeraProtocoloOutputDTO> geraProtocolo(
 			@RequestHeader(value = "token", required = true) String token,
-			@RequestBody GeraProtocoloInputDTO geraProtocoloInputDTO) {
+			@RequestBody GeraProtocoloInputDTO geraProtocoloInputDTO) throws Exception {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(geraProtocoloService.geraProtocolo(token, geraProtocoloInputDTO));
 	}
@@ -121,9 +128,22 @@ public class AtendimentoRemotoController {
 	}
 
 	@GetMapping("/conta-atendimento/{cpfCnpj}")
-	public ResponseEntity<Object> modeloNotaDinamico(@RequestHeader(value = "token", required = true) String token,
+	public ResponseEntity<Object> contaAtendimento(@RequestHeader(value = "token", required = true) String token,
 			@PathVariable String cpfCnpj) throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED).body(sicliGateway.contaAtendimento(token, cpfCnpj));
+		return ResponseEntity.status(HttpStatus.CREATED).body(sicliGateway.contaAtendimento(token, cpfCnpj, true));
+	}
+	
+	@PostMapping("/nota/{numeroNota}")
+	public ResponseEntity<Object> registraNota(@RequestHeader(value = "token", required = true) String token,
+			@PathVariable Long numeroNota, @RequestBody RegistraNotaInputDto registraNotaInputDto)
+			throws Exception {
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(registroNotaService.registraNota(token, numeroNota, registraNotaInputDto));
+	}
+	
+	@PutMapping("/nota/{numeroNota}")
+	public ResponseEntity<Object> contrataNota(@RequestHeader(value = "token", required = true) String token, @PathVariable Long numeroNota, @RequestBody EnviaClienteInputDto enviaClienteInputDto) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(registroNotaService.enviaCliente(token, numeroNota, enviaClienteInputDto));
 	}
 
 }

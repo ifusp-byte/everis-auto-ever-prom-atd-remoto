@@ -90,9 +90,10 @@ public class DesafioServiceImpl implements DesafioService {
 
 		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder()
 				.descricaoTransacao(descricaoTransacao)
-				.ipTerminalUsuario(DEFAULT_USER_IP)
+				.ipTerminalUsuario(tokenUtils.getIpFromToken(token))
 				.nomeMfe("mfe_avl_atendimentoremoto")
-				.numeroUnidadeLotacaoUsuario(50)
+				.ambienteAplicacao("NACIONAL")
+				.numeroUnidadeLotacaoUsuario(50L)
 				.build();
 
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);

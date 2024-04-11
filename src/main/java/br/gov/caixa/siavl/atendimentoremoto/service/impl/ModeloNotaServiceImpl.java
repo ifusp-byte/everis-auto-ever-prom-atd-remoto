@@ -4,6 +4,7 @@ import java.sql.Clob;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +21,7 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinami
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaNumeroOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaOutputDto;
+import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNegocio;
 import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocioFavorito;
 import br.gov.caixa.siavl.atendimentoremoto.model.NegocioAgenciaVirtual;
 import br.gov.caixa.siavl.atendimentoremoto.model.NotaNegociacao;
@@ -170,8 +172,8 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		NotaNegociacao notaNegociacao = new NotaNegociacao();
 		notaNegociacao.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
 		notaNegociacao.setNumeroModeloNota(numeroModeloNota);
-		notaNegociacao.setDataCriacaoNota(new Date());
-		notaNegociacao.setDataModificacaoNota(new Date());
+		notaNegociacao.setDataCriacaoNota(formataDataBanco());
+		notaNegociacao.setDataModificacaoNota(formataDataBanco());
 		notaNegociacao.setNumeroMatriculaCriacaoNota(matriculaCriacaoNota(token));
 		notaNegociacao.setNumeroMatriculaModificacaoNota(matriculaCriacaoNota(token));
 		notaNegociacao.setNumeroSituacaoNota(23L); // VERIFICAR
@@ -226,17 +228,10 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 		modeloNotaDinamicoOutputDTO.setRoteiroFechamento(String.valueOf(roteiro.getSubString(1, tamanho)));
 
-		/*
-		 * 
-		 * notaNegociacaoRepository
-		 * 
-		 * AtendimentoNegocio atendimentoNegocio = new AtendimentoNegocio();
-		 * atendimentoNegocio.setNumeroProtocolo(Long.parseLong(
-		 * modeloNotaDinamicoInputDTO.getProtocolo()));
-		 * atendimentoNegocio.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio())
-		 * ; atendimentoNegocio = atendimentoNegocioRepository.save(atendimentoNegocio);
-		 * 
-		 */
+		AtendimentoNegocio atendimentoNegocio = new AtendimentoNegocio();
+		atendimentoNegocio.setNumeroProtocolo(Long.parseLong(modeloNotaDinamicoInputDTO.getProtocolo()));
+		atendimentoNegocio.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
+	    atendimentoNegocio = atendimentoNegocioRepository.save(atendimentoNegocio);
 
 		return modeloNotaDinamicoOutputDTO;
 	}
@@ -267,6 +262,13 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
 		data = String.valueOf(sdfOut.format(dateInput));
 		return data;
+	}
+	
+	private Date formataDataBanco() {
+
+		Calendar time = Calendar.getInstance();
+		time.add(Calendar.HOUR, -3);
+		return time.getTime();
 	}
 
 }
