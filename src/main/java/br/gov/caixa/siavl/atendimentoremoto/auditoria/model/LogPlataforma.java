@@ -63,5 +63,8 @@ public class LogPlataforma implements Serializable {
 	
 	@Column(name = "NU_CPF_CNPJ_CLIENTE")
 	private Long cpfCnpj;
+	
+	@Column(name = "NU_NOTA_NEGOCIACAO")
+	private Long numeroNota;
 
 }

@@ -70,6 +70,7 @@ public class AuditoriaRegistraNotaServiceImpl implements AuditoriaRegistraNotaSe
 				.tipoPessoa(PERSON_TYPE)
 				.anoMesReferencia(Long.parseLong(formataDataAnoMes(new Date()).replace("-", "")))
 				.jsonLogPlataforma(dsLogPlataformaClob)
+				.numeroNota(Long.parseLong(numeroNota))
 				.build();
 
 		logPlataformaRepository.save(logPlataforma);
