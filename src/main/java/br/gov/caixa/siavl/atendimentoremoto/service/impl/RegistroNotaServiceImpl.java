@@ -63,7 +63,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	public Object registraNota(String token, Long numeroNota, RegistraNotaInputDto registraNotaInputDto)
 			throws Exception {
 
-		Long cpfCnpjPnc = Long.parseLong(registraNotaInputDto.getCpfCnpj().trim());
+		Long cpfCnpjPnc = Long.parseLong(registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim());
 		Long numeroUnidade = Long.parseLong(tokenUtils.getUnidadeFromToken(token));
 		Long numeroEquipe = null;
 		String cpfCnpj = null;
@@ -89,10 +89,10 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			atendimentoCliente.setNomeCliente(registraNotaInputDto.getNomeCliente());
 
 			if (registraNotaInputDto.getCpfCnpj().length() == 11) {
-				cpfCnpj = registraNotaInputDto.getCpfCnpj();
+				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim();
 				atendimentoCliente.setCpfCliente(Long.parseLong(registraNotaInputDto.getCpfCnpj()));
 			} else {
-				cpfCnpj = registraNotaInputDto.getCpfCnpj();
+				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim();
 				atendimentoCliente.setCnpjCliente(Long.parseLong(registraNotaInputDto.getCpfCnpj()));
 			}
 
