@@ -150,7 +150,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	@Override
 	public Boolean enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto) {
 		Boolean statusContratacao = null;
-		Long cpfCnpjPnc = Long.parseLong(enviaClienteInputDto.getCpfCnpj().trim());
+		Long cpfCnpjPnc = Long.parseLong(enviaClienteInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim());
 		String matriculaAtendente = tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", "");
 
 		notaNegociacaoRepository.enviaNotaCliente(numeroNota);

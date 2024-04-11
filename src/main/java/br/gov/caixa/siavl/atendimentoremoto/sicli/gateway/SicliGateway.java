@@ -82,7 +82,7 @@ public class SicliGateway {
 
 		try {
 
-			response = restTemplateUtils.newRestTemplate().exchange(URL_BASE_1 + cpfCnpj + URL_BASE_2, HttpMethod.GET,
+			response = restTemplateUtils.newRestTemplate().exchange(URL_BASE_1 + cpfCnpj.replace(".", "").replace("-", "").trim() + URL_BASE_2, HttpMethod.GET,
 					newRequestEntityContaAtendimento(token), String.class);
 
 			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
