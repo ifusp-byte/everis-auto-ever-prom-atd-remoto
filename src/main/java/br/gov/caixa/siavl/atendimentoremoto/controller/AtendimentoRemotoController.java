@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaIdentificacaoPositivaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaIdentificacaoPositivaService;
+import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
@@ -141,8 +142,8 @@ public class AtendimentoRemotoController {
 	}
 	
 	@PutMapping("/nota/{numeroNota}")
-	public ResponseEntity<Object> contrataNota(@PathVariable Long numeroNota) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(registroNotaService.enviaCliente(numeroNota));
+	public ResponseEntity<Object> contrataNota(@RequestHeader(value = "token", required = true) String token, @PathVariable Long numeroNota, @RequestBody EnviaClienteInputDto enviaClienteInputDto) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(registroNotaService.enviaCliente(token, numeroNota, enviaClienteInputDto));
 	}
 
 }

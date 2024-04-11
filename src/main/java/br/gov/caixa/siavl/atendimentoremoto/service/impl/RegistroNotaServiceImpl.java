@@ -14,10 +14,12 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncEnviaNotaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncRegistraNotaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.gateway.AuditoriaPncGateway;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaRegistraNotaService;
+import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
@@ -146,12 +148,54 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	}
 
 	@Override
-	public Boolean enviaCliente(Long numeroNota) {
+	public Boolean enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto) {
 		Boolean statusContratacao = null;
+		Long cpfCnpjPnc = Long.parseLong(enviaClienteInputDto.getCpfCnpj().trim());
+		String matriculaAtendente = tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", "");
 
 		notaNegociacaoRepository.enviaNotaCliente(numeroNota);
 		statusContratacao = true;
+		
+		AuditoriaPncEnviaNotaInputDTO auditoriaPncEnviaNotaInputDTO = new AuditoriaPncEnviaNotaInputDTO();
+		auditoriaPncEnviaNotaInputDTO = AuditoriaPncEnviaNotaInputDTO.builder()
+				
+				.cpfCnpj(enviaClienteInputDto.getCpfCnpj().trim())
+				.matriculaAtendente(matriculaAtendente)
+				.statusRetornoSicli(String.valueOf(true))
+				.statusRetornoIdPositiva(String.valueOf(true))
+				.statusContratacao(String.valueOf(true))
+				.dataEnvioNota(String.valueOf(formataData(new Date())))
+				.numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo())				
+				.numeroContaAtendimento(enviaClienteInputDto.getNumeroConta())
+				.numeroNota(String.valueOf(numeroNota))
+				.transacaoSistema("a definir") 
+				.versaoSistema(enviaClienteInputDto.getVersaoSistema())
+				.ipUsuario(tokenUtils.getIpFromToken(token))
+				.tipoPessoa("PF")
+				.produto(enviaClienteInputDto.getProduto())	
+			    .build();
 
+		String descricaoTransacao = null;
+
+		try {
+			descricaoTransacao = mapper.writeValueAsString(auditoriaPncEnviaNotaInputDTO);
+		} catch (JsonProcessingException e) {
+
+			e.printStackTrace();
+		}
+
+		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
+		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder().descricaoTransacao(descricaoTransacao)
+				.ipTerminalUsuario(tokenUtils.getIpFromToken(token))
+				.nomeMfe("mfe_avl_atendimentoremoto")
+				.numeroUnidadeLotacaoUsuario(50L)
+				.ambienteAplicacao("NACIONAL")
+				.tipoDocumento("CPF")
+				.numeroIdentificacaoCliente(cpfCnpjPnc)
+				.build();
+
+		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
+		
 		return statusContratacao;
 	}
 
