@@ -1,5 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.sicli.gateway;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,6 +8,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Logger;
+
+import javax.swing.text.MaskFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -112,7 +115,7 @@ public class SicliGateway {
 					.statusCreated(statusCreated)
 					.dataCreated(formataData(new Date()))
 					.nomeCliente(nomeCliente)
-					.cpfCnpjCliente(cpfCliente)
+					.cpfCnpjCliente(formataCpf(cpfCliente))
 					.contas(contasAtendimento)
 					.build();
 
@@ -167,6 +170,27 @@ public class SicliGateway {
 		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
 		data = String.valueOf(sdfOut.format(dateInput));
 		return data;
+	}
+	
+	private String formataCpf(Object object) {
+
+		String cpfInput = null;
+		String formatCpf = null;
+		String cpf = null;
+		MaskFormatter cpfMask = null;
+		
+		if (object != null) {
+			cpfInput = String.valueOf(object).replace(".", "").replace("/", "").replace("/", "").replace("-", "");
+			formatCpf = "00000000000".substring(cpfInput.length()) + cpfInput;
+			try {
+				cpfMask = new MaskFormatter("###.###.###-##");
+				cpfMask.setValueContainsLiteralCharacters(false);
+				cpf = cpfMask.valueToString(formatCpf);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return cpf;
 	}
 
 }
