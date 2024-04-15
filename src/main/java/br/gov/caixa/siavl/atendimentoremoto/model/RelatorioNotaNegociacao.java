@@ -28,12 +28,23 @@ public class RelatorioNotaNegociacao {
 	@SequenceGenerator(name = "AVLSQ011_NU_NOTA_NEGOCIACAO", sequenceName = "AVLSQ011_NU_NOTA_NEGOCIACAO", allocationSize = 1, schema = "AVL")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AVLSQ011_NU_NOTA_NEGOCIACAO")
 	private Long numeroRelatorioNota;
-	
 
 	@Column(name = "NU_EQUIPE_ATENDIMENTO")
 	private Long numeroEquipe;
 	
 	@Column(name = "DE_RELATORIO_NOTA_NEGOCIACAO")
 	private Clob relatorioNota;
+	
+	@Column(name = "NU_NOTA_NEGOCIACAO")
+	private Long numeroNota;
+	
+	@Column(name = "NU_PROTOCOLO_ATNTO_CLNTE")
+	private Long numeroProtocolo; 
+	
+	@Column(name = "NO_CLIENTE")
+	private String nomeCliente;
+	
+	@Column(name = "NU_MATRICULA_CRIACAO_NOTA")
+	private Long matriculaAtendente; 
 
 }
