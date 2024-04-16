@@ -23,6 +23,7 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
+import br.gov.caixa.siavl.atendimentoremoto.model.NotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.model.RelatorioNotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.EquipeAtendimentoRepository;
@@ -86,20 +87,26 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			
 			String dsRelatorioNota = mapper.writeValueAsString(registraNotaInputDto);
 			Clob relatorioNota = new SerialClob(dsRelatorioNota.toCharArray());
-
-			AtendimentoCliente atendimentoCliente = new AtendimentoCliente();
+			
 			RelatorioNotaNegociacao relatorioNotaNegociacao = new RelatorioNotaNegociacao();
 			
-			atendimentoCliente.setNumeroProtocolo(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
-			atendimentoCliente.setNomeCliente(registraNotaInputDto.getNomeCliente());
+			NotaNegociacao notaNegociacao = notaNegociacaoRepository.getReferenceById(numeroNota);			
+			notaNegociacao.setIcOrigemNota(1L);	
+			notaNegociacao.setNumeroEquipe(numeroEquipe);		
+			notaNegociacao.setQtdItemNegociacao(Long.parseLong(registraNotaInputDto.getQuantidadeMeta()));		
+			notaNegociacao.setValorSolicitadoNota(Long.parseLong(registraNotaInputDto.getValorMeta()));
+			notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);
+			
+			
+			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
+
+				
 
 			if (registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim().length() == 11) {
 				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim();
-				atendimentoCliente.setCpfCliente(Long.parseLong(cpfCnpj));
 				relatorioNotaNegociacao.setCpf(Long.parseLong(cpfCnpj));
 			} else {
 				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim();
-				atendimentoCliente.setCnpjCliente(Long.parseLong(cpfCnpj));
 				relatorioNotaNegociacao.setCnpj(Long.parseLong(cpfCnpj));		
 			}
 
@@ -111,6 +118,10 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			relatorioNotaNegociacao.setMatriculaAtendente(Long.parseLong(matriculaAtendente));
 			relatorioNotaNegociacao.setMatriculaAlteracao(Long.parseLong(matriculaAtendente));			
 			relatorioNotaNegociacao.setProduto(registraNotaInputDto.getProduto());
+			relatorioNotaNegociacao.setSituacaoNota(22L);
+			relatorioNotaNegociacao.setDataCriacaoNota(notaNegociacao.getDataCriacaoNota());
+			relatorioNotaNegociacao.setInicioAtendimentoNota(notaNegociacao.getDataCriacaoNota());		
+			
 				
 			relatorioNotaNegociacaoRepository.save(relatorioNotaNegociacao);
 			registraNotaOutputDto = RegistraNotaOutputDto.builder().statusNotaRegistrada(true)

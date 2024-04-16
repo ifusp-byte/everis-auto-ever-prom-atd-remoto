@@ -1,6 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.model;
 
 import java.sql.Clob;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -58,5 +59,14 @@ public class RelatorioNotaNegociacao {
 	
 	@Column(name = "NO_PRODUTO")
 	private String produto;
+	
+	@Column(name = "NU_SITUACAO_NOTA")
+	private Long situacaoNota; 
+	
+	@Column(name = "DT_CRIACAO_NOTA")
+	private Date dataCriacaoNota; 
+	
+	@Column(name = "TS_INICIO_ATENDIMENTO_NOTA")
+	private Date inicioAtendimentoNota;
 
 }
