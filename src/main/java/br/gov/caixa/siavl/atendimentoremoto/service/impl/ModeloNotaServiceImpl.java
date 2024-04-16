@@ -176,7 +176,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		notaNegociacao.setDataModificacaoNota(formataDataBanco());
 		notaNegociacao.setNumeroMatriculaCriacaoNota(matriculaCriacaoNota(token));
 		notaNegociacao.setNumeroMatriculaModificacaoNota(matriculaCriacaoNota(token));
-		notaNegociacao.setNumeroSituacaoNota(23L); // VERIFICAR
+		notaNegociacao.setNumeroSituacaoNota(16L); // VERIFICAR
 		notaNegociacao.setQtdItemNegociacao(1L);
 		notaNegociacao.setIcOrigemNota(1L);
 

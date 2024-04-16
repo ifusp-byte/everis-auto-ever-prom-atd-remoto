@@ -73,5 +73,11 @@ public class NotaNegociacao implements Serializable {
 	
 	@Column(name = "IC_ORIGEM_NOTA_NEGOCIACAO")
 	private Long icOrigemNota;
+	
+	@Column(name = "NU_EQUIPE_CRIACAO_NOTA")
+	private Long numeroEquipe;
+	
+	@Column(name = "VR_SOLICITADO_NOTA_NEGOCIACAO")
+	private Long valorSolicitadoNota;
 
 }
