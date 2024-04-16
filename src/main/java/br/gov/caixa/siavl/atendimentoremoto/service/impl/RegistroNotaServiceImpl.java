@@ -93,8 +93,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			NotaNegociacao notaNegociacao = notaNegociacaoRepository.getReferenceById(numeroNota);			
 			notaNegociacao.setIcOrigemNota(1L);	
 			notaNegociacao.setNumeroEquipe(numeroEquipe);		
-			notaNegociacao.setQtdItemNegociacao(Long.parseLong(registraNotaInputDto.getQuantidadeMeta()));		
-			notaNegociacao.setValorSolicitadoNota(Long.parseLong(registraNotaInputDto.getValorMeta()));
+			notaNegociacao.setQtdItemNegociacao(Long.parseLong(registraNotaInputDto.getQuantidadeMeta().replace(".", "").replace(",", "").trim()));
+			notaNegociacao.setValorSolicitadoNota(Long.parseLong(registraNotaInputDto.getValorMeta().replace("R$", "").trim()));
 			notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);
 			
 			
