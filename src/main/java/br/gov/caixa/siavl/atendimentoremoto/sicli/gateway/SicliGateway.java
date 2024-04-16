@@ -192,5 +192,5 @@ public class SicliGateway {
 		}
 		return cpf;
 	}
-
+	
 }
