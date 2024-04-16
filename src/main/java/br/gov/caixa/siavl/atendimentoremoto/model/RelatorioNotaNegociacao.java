@@ -46,5 +46,17 @@ public class RelatorioNotaNegociacao {
 	
 	@Column(name = "NU_MATRICULA_CRIACAO_NOTA")
 	private Long matriculaAtendente; 
+	
+	@Column(name = "NU_MATRICULA_ATENDIMENTO_NOTA")
+	private Long matriculaAlteracao;
+	
+	@Column(name = "NU_CPF_CLIENTE")
+	private Long cpf;
+	
+	@Column(name = "NU_CNPJ_CLIENTE")
+	private Long cnpj;
+	
+	@Column(name = "NO_PRODUTO")
+	private String produto;
 
 }

@@ -65,5 +65,11 @@ public class AtendimentoCliente implements Serializable {
 
 	@Column(name = "IC_VALIDACAO_TOKEN_ATENDIMENTO")
 	private Long validacaoTokenAtendimento = 0L;
+	
+	@Column(name = "DT_INICIAL_CONTATO_CLNTE")
+	private Date dataContatoCliente;
+	
+	@Column(name = "NU_UNIDADE_ATENDIMENTO")
+	private Long numeroUnidade;
 
 }

@@ -83,31 +83,35 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 					.mensagem("A unidade não possui equipe vinculada.").build();
 
 		} else {
+			
+			String dsRelatorioNota = mapper.writeValueAsString(registraNotaInputDto);
+			Clob relatorioNota = new SerialClob(dsRelatorioNota.toCharArray());
 
 			AtendimentoCliente atendimentoCliente = new AtendimentoCliente();
+			RelatorioNotaNegociacao relatorioNotaNegociacao = new RelatorioNotaNegociacao();
+			
 			atendimentoCliente.setNumeroProtocolo(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
 			atendimentoCliente.setNomeCliente(registraNotaInputDto.getNomeCliente());
 
 			if (cpfCnpjPnc == 11) {
 				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim();
-				atendimentoCliente.setCpfCliente(Long.parseLong(registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim()));
+				atendimentoCliente.setCpfCliente(Long.parseLong(cpfCnpj));
+				relatorioNotaNegociacao.setCpf(Long.parseLong(cpfCnpj));
 			} else {
 				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim();
-				atendimentoCliente.setCnpjCliente(Long.parseLong(registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim()));
+				atendimentoCliente.setCnpjCliente(Long.parseLong(cpfCnpj));
+				relatorioNotaNegociacao.setCnpj(Long.parseLong(cpfCnpj));		
 			}
 
-			String dsRelatorioNota = mapper.writeValueAsString(registraNotaInputDto);
-			Clob relatorioNota = new SerialClob(dsRelatorioNota.toCharArray());
-
-			RelatorioNotaNegociacao relatorioNotaNegociacao = new RelatorioNotaNegociacao();
 			relatorioNotaNegociacao.setNumeroEquipe(numeroEquipe);
 			relatorioNotaNegociacao.setRelatorioNota(relatorioNota);
 			relatorioNotaNegociacao.setNumeroNota(numeroNota);
 			relatorioNotaNegociacao.setNumeroProtocolo(Long.parseLong(numeroProtocolo));
 			relatorioNotaNegociacao.setNomeCliente(registraNotaInputDto.getNomeCliente());
 			relatorioNotaNegociacao.setMatriculaAtendente(Long.parseLong(matriculaAtendente));
-			
-			;
+			relatorioNotaNegociacao.setMatriculaAlteracao(Long.parseLong(matriculaAtendente));			
+			relatorioNotaNegociacao.setProduto(registraNotaInputDto.getProduto());
+				
 			relatorioNotaNegociacaoRepository.save(relatorioNotaNegociacao);
 			registraNotaOutputDto = RegistraNotaOutputDto.builder().statusNotaRegistrada(true)
 					.mensagem("Nota registrada com sucesso!").build();
