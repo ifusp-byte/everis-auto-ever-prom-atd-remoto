@@ -93,7 +93,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			atendimentoCliente.setNumeroProtocolo(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
 			atendimentoCliente.setNomeCliente(registraNotaInputDto.getNomeCliente());
 
-			if (cpfCnpjPnc == 11) {
+			if (registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim().length() == 11) {
 				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim();
 				atendimentoCliente.setCpfCliente(Long.parseLong(cpfCnpj));
 				relatorioNotaNegociacao.setCpf(Long.parseLong(cpfCnpj));
