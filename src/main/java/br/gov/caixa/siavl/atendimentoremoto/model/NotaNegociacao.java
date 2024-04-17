@@ -78,6 +78,6 @@ public class NotaNegociacao implements Serializable {
 	private Long numeroEquipe;
 	
 	@Column(name = "VR_SOLICITADO_NOTA_NEGOCIACAO")
-	private Long valorSolicitadoNota;
+	private Double valorSolicitadoNota;
 
 }
