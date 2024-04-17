@@ -129,43 +129,45 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			relatorioNotaNegociacaoRepository.save(relatorioNotaNegociacao);
 			registraNotaOutputDto = RegistraNotaOutputDto.builder().statusNotaRegistrada(true)
 					.mensagem("Nota registrada com sucesso!").build();
-		}
+			
+			
+			AuditoriaPncRegistraNotaInputDTO auditoriaPncRegistraNotaInputDTO = new AuditoriaPncRegistraNotaInputDTO();
+			auditoriaPncRegistraNotaInputDTO = AuditoriaPncRegistraNotaInputDTO.builder()
 
-		AuditoriaPncRegistraNotaInputDTO auditoriaPncRegistraNotaInputDTO = new AuditoriaPncRegistraNotaInputDTO();
-		auditoriaPncRegistraNotaInputDTO = AuditoriaPncRegistraNotaInputDTO.builder()
+					.cpfCnpj(cpfCnpj).matriculaAtendente(matriculaAtendente)
+					.statusRetornoSicli(String.valueOf(statusRetornoSicli))
+					.numeroProtocolo(numeroProtocolo)
+					.numeroContaAtendimento(numeroContaAtendimento)
+					.numeroNota(String.valueOf(numeroNota))
+					.dataRegistroNota(String.valueOf(formataData(new Date())))
+					.transacaoSistema("189")
+					.versaoSistema(versaoSistema)
+					.tipoPessoa("PF")
+					.ipUsuario(tokenUtils.getIpFromToken(token))
+				    .produto(registraNotaInputDto.getProduto())				
+				    .build();
 
-				.cpfCnpj(cpfCnpj).matriculaAtendente(matriculaAtendente)
-				.statusRetornoSicli(String.valueOf(statusRetornoSicli))
-				.numeroProtocolo(numeroProtocolo)
-				.numeroContaAtendimento(numeroContaAtendimento)
-				.numeroNota(String.valueOf(numeroNota))
-				.dataRegistroNota(String.valueOf(formataData(new Date())))
-				.transacaoSistema("189")
-				.versaoSistema(versaoSistema)
-				.tipoPessoa("PF")
-				.ipUsuario(tokenUtils.getIpFromToken(token))
-			    .produto(registraNotaInputDto.getProduto())				
-			    .build();
+			String descricaoTransacao = null;
 
-		String descricaoTransacao = null;
+			try {
+				descricaoTransacao = mapper.writeValueAsString(auditoriaPncRegistraNotaInputDTO);
+			} catch (JsonProcessingException e) {
 
-		try {
-			descricaoTransacao = mapper.writeValueAsString(auditoriaPncRegistraNotaInputDTO);
-		} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
 
-			e.printStackTrace();
-		}
+			AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
+			auditoriaPncInputDTO = AuditoriaPncInputDTO.builder().descricaoTransacao(descricaoTransacao)
+					.ipTerminalUsuario(tokenUtils.getIpFromToken(token)).nomeMfe("mfe_avl_atendimentoremoto").numeroUnidadeLotacaoUsuario(50L)
+					.ambienteAplicacao("NACIONAL").tipoDocumento("CPF").numeroIdentificacaoCliente(cpfCnpjPnc).build();
 
-		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
-		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder().descricaoTransacao(descricaoTransacao)
-				.ipTerminalUsuario(tokenUtils.getIpFromToken(token)).nomeMfe("mfe_avl_atendimentoremoto").numeroUnidadeLotacaoUsuario(50L)
-				.ambienteAplicacao("NACIONAL").tipoDocumento("CPF").numeroIdentificacaoCliente(cpfCnpjPnc).build();
-
-		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
-		auditoriaRegistraNotaService.auditar(String.valueOf(formataData(new Date())), token, cpfCnpj, matriculaAtendente,
-				String.valueOf(statusRetornoSicli), numeroProtocolo, numeroContaAtendimento, String.valueOf(numeroNota),
-				versaoSistema, registraNotaInputDto.getProduto());
+			auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
+			auditoriaRegistraNotaService.auditar(String.valueOf(formataData(new Date())), token, cpfCnpj, matriculaAtendente,
+					String.valueOf(statusRetornoSicli), numeroProtocolo, numeroContaAtendimento, String.valueOf(numeroNota),
+					versaoSistema, registraNotaInputDto.getProduto());
 		
+		}
+
 		return registraNotaOutputDto;
 
 	}
