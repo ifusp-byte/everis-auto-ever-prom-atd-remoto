@@ -215,9 +215,9 @@ public class SicliGateway {
 		String replace = String.valueOf(object1)+String.valueOf(object2);
 		String produtoInput = String.valueOf(object).replace(".", "").replace("-", "");
 		produtoInput = produtoInput.replace(replace, "");
-		//String formatProduto = null;
-		//formatProduto = "0000000000000000".substring(produtoInput.length()) + produtoInput;
-		return produtoInput;
+		String formatProduto = null;
+		formatProduto = "0000000000000000".substring(produtoInput.length()) + produtoInput;
+		return formatProduto;
 	}
 	
 }
