@@ -72,5 +72,7 @@ public class RelatorioNotaNegociacao {
 	@Column(name = "DT_PRAZO_VALIDADE")
 	private Date dataValidade;
 	
+	@Column(name = "DE_ACAO_PRODUTO")
+	private String acaoProduto;
 
 }
