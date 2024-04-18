@@ -217,6 +217,7 @@ public class SicliGateway {
 		produtoInput = produtoInput.replace(replace, "");
 		String formatProduto = null;
 		formatProduto = "0000000000000000".substring(produtoInput.length()) + produtoInput;
+		formatProduto = formatProduto.substring(0, formatProduto.length() - 2);
 		return formatProduto;
 	}
 	
