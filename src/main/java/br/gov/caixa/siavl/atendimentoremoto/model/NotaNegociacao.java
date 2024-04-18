@@ -84,5 +84,16 @@ public class NotaNegociacao implements Serializable {
 	
 	@Column(name = "DT_PRAZO_VALIDADE")
 	private Date dataPrazoValidade; 
+	
+	@Column(name = "NU_AGENCIA_CONTA_CORRENTE")
+	private Long nuUnidade;
+	
+	@Column(name = "NU_OPERACAO_CONTA_CORRENTE")
+	private Long nuProduto;
+	
+	@Column(name = "NU_CONTA_CORRENTE_ATENDIMENTO")
+	private Long coIdentificacao;
+	
+	
 
 }
