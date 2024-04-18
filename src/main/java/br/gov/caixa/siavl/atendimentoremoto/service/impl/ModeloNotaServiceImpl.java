@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -169,7 +170,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 			notaProdutoLista.add(notaProdutoItem);
 		});
 		
-		ModeloNotaNegocio modeloNotaNegocio = modeloNotaRepository.getReferenceById(numeroModeloNota);		
+		ModeloNotaNegocio modeloNotaNegocio = modeloNotaRepository.prazoValidade(numeroModeloNota);	
 		Date dataValidade = formataDataValidade(modeloNotaNegocio.getPrazoValidade(), modeloNotaNegocio.getHoraValidade()); 
 		
 		NegocioAgenciaVirtual negocioAgenciaVirtual = new NegocioAgenciaVirtual();
