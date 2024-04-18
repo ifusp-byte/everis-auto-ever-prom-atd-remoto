@@ -123,7 +123,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			relatorioNotaNegociacao.setSituacaoNota(22L);
 			relatorioNotaNegociacao.setDataCriacaoNota(notaNegociacao.getDataCriacaoNota());
 			relatorioNotaNegociacao.setInicioAtendimentoNota(notaNegociacao.getDataCriacaoNota());	
-			relatorioNotaNegociacao.setDataValidade(notaNegociacao.getDataPrazoValidade());		
+			relatorioNotaNegociacao.setDataValidade(notaNegociacao.getDataPrazoValidade());	
+			relatorioNotaNegociacao.setAcaoProduto(registraNotaInputDto.getAcaoProduto());
 								
 			relatorioNotaNegociacaoRepository.save(relatorioNotaNegociacao);
 			registraNotaOutputDto = RegistraNotaOutputDto.builder().statusNotaRegistrada(true)
