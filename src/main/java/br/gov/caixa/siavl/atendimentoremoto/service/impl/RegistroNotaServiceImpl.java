@@ -103,8 +103,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			
 			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
 
-				
-
+			
 			if (registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim().length() == 11) {
 				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim();
 				relatorioNotaNegociacao.setCpf(Long.parseLong(cpfCnpj));
@@ -123,9 +122,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			relatorioNotaNegociacao.setProduto(registraNotaInputDto.getProduto());
 			relatorioNotaNegociacao.setSituacaoNota(22L);
 			relatorioNotaNegociacao.setDataCriacaoNota(notaNegociacao.getDataCriacaoNota());
-			relatorioNotaNegociacao.setInicioAtendimentoNota(notaNegociacao.getDataCriacaoNota());		
-			
-				
+			relatorioNotaNegociacao.setInicioAtendimentoNota(notaNegociacao.getDataCriacaoNota());	
+			relatorioNotaNegociacao.setDataValidade(notaNegociacao.getDataPrazoValidade());		
+								
 			relatorioNotaNegociacaoRepository.save(relatorioNotaNegociacao);
 			registraNotaOutputDto = RegistraNotaOutputDto.builder().statusNotaRegistrada(true)
 					.mensagem("Nota registrada com sucesso!").build();
