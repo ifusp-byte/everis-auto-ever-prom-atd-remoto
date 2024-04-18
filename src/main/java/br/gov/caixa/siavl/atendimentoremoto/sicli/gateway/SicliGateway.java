@@ -34,7 +34,7 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 @Service
 @SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813" })
 public class SicliGateway {
-	
+
 	@Autowired
 	AuditoriaRegistraNotaSicliService auditoriaRegistraNotaSicliService;
 
@@ -77,12 +77,13 @@ public class SicliGateway {
 		ResponseEntity<String> response = null;
 		JsonNode body;
 		ArrayNode contratos;
-		boolean statusCreated = false; 
+		boolean statusCreated = false;
 		List<ContasOutputDTO> contasAtendimento = new ArrayList<>();
 
 		try {
 
-			response = restTemplateUtils.newRestTemplate().exchange(URL_BASE_1 + cpfCnpj.replace(".", "").replace("-", "").trim() + URL_BASE_2, HttpMethod.GET,
+			response = restTemplateUtils.newRestTemplate().exchange(
+					URL_BASE_1 + cpfCnpj.replace(".", "").replace("-", "").trim() + URL_BASE_2, HttpMethod.GET,
 					newRequestEntityContaAtendimento(token), String.class);
 
 			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
@@ -92,32 +93,29 @@ public class SicliGateway {
 
 			body = mapper.readTree(String.valueOf(response.getBody()));
 			contratos = (ArrayNode) body.get("contratos");
-			
+
 			String nomeCliente = Objects.requireNonNull(body.path("dadosBasicos").path("nome")).asText();
-			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento")).asText();
-			
-			for (JsonNode node : contratos) {				
-				ContasOutputDTO conta = new ContasOutputDTO(); 
-				String contaInput = node.path("nuUnidade").asText() +  node.path("nuProduto").asText() + node.path("coIdentificacao").asText();  	
-				conta.setConta(contaInput);			
-    			contasAtendimento.add(conta); 		
+			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento"))
+					.asText();
+
+			for (JsonNode node : contratos) {
+				ContasOutputDTO conta = new ContasOutputDTO();
+				String contaInput = formataUnidade(node.path("nuUnidade").asText()) + formataProduto(node.path("nuProduto").asText())
+						+ formataCodigoIdentificacao(node.path("coIdentificacao").asText());
+				conta.setConta(contaInput);
+				contasAtendimento.add(conta);
 			}
-			
-			if (!contasAtendimento.isEmpty() && !nomeCliente.isEmpty() && !cpfCliente.isEmpty()) {			
-				statusCreated = true; 
+
+			if (!contasAtendimento.isEmpty() && !nomeCliente.isEmpty() && !cpfCliente.isEmpty()) {
+				statusCreated = true;
 				statusMessage = SicliGatewayMessages.SICLI_CONTA_ATENDIMENTO_RETORNO_NAO_200;
 			}
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
-					.response(String.valueOf(Objects.requireNonNull(response.getBody())))
-					.statusMessage(statusMessage)
-					.statusCreated(statusCreated)
-					.dataCreated(formataData(new Date()))
-					.nomeCliente(nomeCliente)
-					.cpfCnpjCliente(formataCpf(cpfCliente))
-					.contas(contasAtendimento)
-					.build();
+					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
+					.statusCreated(statusCreated).dataCreated(formataData(new Date())).nomeCliente(nomeCliente)
+					.cpfCnpjCliente(formataCpf(cpfCliente)).contas(contasAtendimento).build();
 
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
 					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
@@ -134,20 +132,20 @@ public class SicliGateway {
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.response(Objects.requireNonNull(mapper.writeValueAsString(retornoSicli))).statusMessage(statusMessage)
-					.statusCreated(false).dataCreated(formataData(new Date())).build();
+					.response(Objects.requireNonNull(mapper.writeValueAsString(retornoSicli)))
+					.statusMessage(statusMessage).statusCreated(false).dataCreated(formataData(new Date())).build();
 
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
 					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
 
 		}
-		
-		if (!String.valueOf(HttpStatus.CREATED.value()).equals(contaAtendimentoOutputDTO.getStatusCode())) { 			
-			if (Boolean.TRUE.equals(auditar) && !statusCreated) {	
-			auditoriaRegistraNotaSicliService.auditar(contaAtendimentoOutputDTO, token, cpfCnpj);	
-		} }
-		
-		
+
+		if (!String.valueOf(HttpStatus.CREATED.value()).equals(contaAtendimentoOutputDTO.getStatusCode())) {
+			if (Boolean.TRUE.equals(auditar) && !statusCreated) {
+				auditoriaRegistraNotaSicliService.auditar(contaAtendimentoOutputDTO, token, cpfCnpj);
+			}
+		}
+
 		return contaAtendimentoOutputDTO;
 	}
 
@@ -171,14 +169,14 @@ public class SicliGateway {
 		data = String.valueOf(sdfOut.format(dateInput));
 		return data;
 	}
-	
+
 	private String formataCpf(Object object) {
 
 		String cpfInput = null;
 		String formatCpf = null;
 		String cpf = null;
 		MaskFormatter cpfMask = null;
-		
+
 		if (object != null) {
 			cpfInput = String.valueOf(object).replace(".", "").replace("/", "").replace("/", "").replace("-", "");
 			formatCpf = "00000000000".substring(cpfInput.length()) + cpfInput;
@@ -191,6 +189,33 @@ public class SicliGateway {
 			}
 		}
 		return cpf;
+	}
+
+	private String formataUnidade(Object object) {
+
+		String unidadeInput = String.valueOf(object).replace(".", "").replace("-", "");
+		String formatUnidade = null;
+		formatUnidade = "0000".substring(unidadeInput.length()) + unidadeInput;
+		return formatUnidade;
+	}
+	
+	
+	private String formataProduto(Object object) {
+
+		String produtoInput = String.valueOf(object).replace(".", "").replace("-", "");
+		String formatProduto = null;
+		formatProduto = "0000".substring(produtoInput.length()) + produtoInput;
+		return formatProduto;
+	}
+
+	
+	
+	private String formataCodigoIdentificacao(Object object) {
+
+		String produtoInput = String.valueOf(object).replace(".", "").replace("-", "");
+		String formatProduto = null;
+		formatProduto = "0000000000000000".substring(produtoInput.length()) + produtoInput;
+		return formatProduto;
 	}
 	
 }

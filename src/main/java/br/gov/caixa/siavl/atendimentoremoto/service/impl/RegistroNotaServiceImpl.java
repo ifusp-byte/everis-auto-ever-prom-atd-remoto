@@ -76,6 +76,10 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		String valorMeta = registraNotaInputDto.getValorMeta().replace(".", "").replace("R$", "").replaceAll("\u00A0", "").trim();
 		valorMeta = valorMeta.replace(",", ".");
 		
+		Long nuUnidade = Long.parseLong(registraNotaInputDto.getContaAtendimento().substring(0, 3)); 
+		Long nuProduto = Long.parseLong(registraNotaInputDto.getContaAtendimento().substring(4, 7)); 
+		Long coIdentificacao = Long.parseLong(registraNotaInputDto.getContaAtendimento().substring(8, 23));
+		
 
 		numeroEquipe = equipeAtendimentoRepository.findEquipeByUnidade(numeroUnidade);
 
@@ -98,9 +102,10 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			notaNegociacao.setNumeroEquipe(numeroEquipe);		
 			notaNegociacao.setQtdItemNegociacao(Long.parseLong(registraNotaInputDto.getQuantidadeMeta().replace(".", "").replace(",", "").trim()));
 			notaNegociacao.setValorSolicitadoNota(Double.parseDouble(valorMeta));
+			notaNegociacao.setNuUnidade(nuUnidade);
+			notaNegociacao.setNuProduto(nuProduto);		
+			notaNegociacao.setCoIdentificacao(coIdentificacao);			
 			notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);
-			
-			
 			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
 
 			
