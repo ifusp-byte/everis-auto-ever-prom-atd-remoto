@@ -76,9 +76,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		String valorMeta = registraNotaInputDto.getValorMeta().replace(".", "").replace("R$", "").replaceAll("\u00A0", "").trim();
 		valorMeta = valorMeta.replace(",", ".");
 		
-		Long nuUnidade = Long.parseLong(registraNotaInputDto.getContaAtendimento().substring(0, 3)); 
-		Long nuProduto = Long.parseLong(registraNotaInputDto.getContaAtendimento().substring(4, 7)); 
-		Long coIdentificacao = Long.parseLong(registraNotaInputDto.getContaAtendimento().substring(8, registraNotaInputDto.getContaAtendimento().length()));
+		Long nuUnidade = Long.parseLong(registraNotaInputDto.getContaAtendimento().substring(0, 4)); 
+		Long nuProduto = Long.parseLong(registraNotaInputDto.getContaAtendimento().substring(5, 8)); 
+		Long coIdentificacao = Long.parseLong(registraNotaInputDto.getContaAtendimento().substring(9, registraNotaInputDto.getContaAtendimento().length() - 2));
 		
 
 		numeroEquipe = equipeAtendimentoRepository.findEquipeByUnidade(numeroUnidade);
