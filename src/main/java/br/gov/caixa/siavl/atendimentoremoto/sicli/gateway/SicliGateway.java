@@ -102,7 +102,7 @@ public class SicliGateway {
 				ContasOutputDTO conta = new ContasOutputDTO();
 				String sgSistema = node.path("sgSistema").asText().trim();
 				String contaInput = formataUnidade(node.path("nuUnidade").asText()) + formataProduto(node.path("nuProduto").asText(), sgSistema)
-						+ formataCodigoIdentificacao(node.path("coIdentificacao").asText(), formataUnidade(node.path("nuUnidade").asText()), formataProduto(node.path("nuProduto").asText(), sgSistema));
+						+ formataCodigoIdentificacao(node.path("coIdentificacao").asText(), formataUnidade(node.path("nuUnidade").asText()), formataProduto(node.path("nuProduto").asText(), sgSistema), sgSistema);
 				conta.setConta(contaInput);
 				contasAtendimento.add(conta);
 			}
@@ -216,11 +216,18 @@ public class SicliGateway {
 
 	
 	
-	private String formataCodigoIdentificacao(Object object, Object object1, Object object2) {
+	private String formataCodigoIdentificacao(Object object, Object object1, Object object2, String sgSistema) {
 
+		String replaceSIART = String.valueOf(object1);
 		String replace = String.valueOf(object1)+String.valueOf(object2);
 		String produtoInput = String.valueOf(object).replace(".", "").replace("-", "");
-		produtoInput = produtoInput.replace(replace, "");
+		
+		if ("SIART".equalsIgnoreCase(sgSistema)) {
+			produtoInput = produtoInput.replace(replaceSIART, "");
+		} else {	
+			produtoInput = produtoInput.replace(replace, "");
+		}
+		
 		String formatProduto = null;
 		formatProduto = "0000000000000000".substring(produtoInput.length()) + produtoInput;
 		formatProduto = formatProduto.substring(0, formatProduto.length() - 2);
