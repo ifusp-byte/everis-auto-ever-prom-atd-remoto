@@ -79,5 +79,8 @@ public class NotaNegociacao implements Serializable {
 	
 	@Column(name = "VR_SOLICITADO_NOTA_NEGOCIACAO")
 	private Double valorSolicitadoNota;
+	
+	@Column(name = "DT_PRAZO_VALIDADE")
+	private Date dataPrazoValidade; 
 
 }

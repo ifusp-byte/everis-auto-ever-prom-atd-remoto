@@ -68,5 +68,9 @@ public class RelatorioNotaNegociacao {
 	
 	@Column(name = "TS_INICIO_ATENDIMENTO_NOTA")
 	private Date inicioAtendimentoNota;
+	
+	@Column(name = "DT_PRAZO_VALIDADE")
+	private Date dataValidade;
+	
 
 }
