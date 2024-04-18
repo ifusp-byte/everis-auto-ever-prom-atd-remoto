@@ -213,9 +213,9 @@ public class SicliGateway {
 	private String formataCodigoIdentificacao(Object object) {
 
 		String produtoInput = String.valueOf(object).replace(".", "").replace("-", "");
-		String formatProduto = null;
-		formatProduto = "0000000000000000".substring(produtoInput.length()) + produtoInput;
-		return formatProduto;
+		//String formatProduto = null;
+		//formatProduto = "0000000000000000".substring(produtoInput.length()) + produtoInput;
+		return produtoInput;
 	}
 	
 }
