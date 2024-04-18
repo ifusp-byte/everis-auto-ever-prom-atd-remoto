@@ -51,6 +51,10 @@ public class SicliGateway {
 	private static String URL_BASE_1 = "https://api.des.caixa:8443/cadastro/v2/clientes?cpfcnpj=";
 	private static String URL_BASE_2 = "&campos=dadosbasicos,enderecos,contratos,documentos,nicho,carteiragrc,vinculo,dadosatualizacaocadastral,meiocomunicacao,rendas,profissaosiric&classe=1";
 
+	private static String REPLACE_IDENTIFICACAO = "0000000000000000";
+	private static String REPLACE_CONTA_1 = "0000";
+	private static String REPLACE_CONTA_2 = "000";
+	
 	@Autowired
 	RestTemplateUtils restTemplateUtils;
 
@@ -206,50 +210,6 @@ public class SicliGateway {
 		return cpf;
 	}
 
-	/*
-	private String formataUnidade(Object object) {
-
-		String unidadeInput = String.valueOf(object).replace(".", "").replace("-", "");
-		String formatUnidade = null;
-		formatUnidade = "0000".substring(unidadeInput.length()) + unidadeInput;
-		return formatUnidade;
-	}
-	
-	
-	private String formataProduto(Object object, String sgSistema) {
-		String formatProduto = null;
-		String produtoInput = String.valueOf(object).replace(".", "").replace("-", "");
-		
-		if ("SIDEC".equalsIgnoreCase(sgSistema)) {
-		formatProduto = "000".substring(produtoInput.length()) + produtoInput;
-		} else {
-			formatProduto = "0000".substring(produtoInput.length()) + produtoInput;	
-		}
-		
-		return formatProduto;
-	}
-
-	
-	
-	private String formataCodigoIdentificacao(Object object, Object object1, Object object2, String sgSistema) {
-
-		String replaceSIART = String.valueOf(object1);
-		String replace = String.valueOf(object1)+String.valueOf(object2);
-		String produtoInput = String.valueOf(object).replace(".", "").replace("-", "");
-		
-		if ("SIART".equalsIgnoreCase(sgSistema)) {
-			produtoInput = produtoInput.replace(replaceSIART, "");
-		} else {	
-			produtoInput = produtoInput.replace(replace, "");
-		}
-		
-		String formatProduto = null;
-		formatProduto = "0000000000000000".substring(produtoInput.length()) + produtoInput;
-		formatProduto = formatProduto.substring(0, formatProduto.length() - 2);
-		return formatProduto;
-	}
-	*/
-	
 	private String formataContaTotal (String sgSistema, Object nuUnidade, Object nuProduto, Object coIdentificacao) {
 
 		String contaFormatada = null; 
@@ -259,30 +219,30 @@ public class SicliGateway {
 			String unidade = String.valueOf(nuUnidade);
 			String produto = String.valueOf(nuProduto);	
 			identificacao = identificacao.replace(unidade , ""); 
-			String formataUnidade = "0000".substring(unidade.length())+unidade;	
-			String formataProduto = "0000".substring(produto.length())+produto;
-			String formatIdentificacao = "0000000000000000".substring(identificacao.length())+identificacao;		
+			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length())+unidade;	
+			String formataProduto = REPLACE_CONTA_1.substring(produto.length())+produto;
+			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length())+identificacao;		
 			contaFormatada = formataUnidade+formataProduto+formatIdentificacao; 	
 			
 		} else if ("SIDEC".equalsIgnoreCase(sgSistema)) {
 			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");	
 			String unidade = String.valueOf(nuUnidade);
 			String produto = String.valueOf(nuProduto);			
-			String formatProdutoReplace = "000".substring(produto.length())+produto;
+			String formatProdutoReplace = REPLACE_CONTA_2.substring(produto.length())+produto;
 			identificacao = identificacao.replace(unidade+formatProdutoReplace , ""); 
-			String formatIdentificacao = "0000000000000000".substring(identificacao.length())+identificacao;
-			String formataUnidade = "0000".substring(unidade.length())+unidade;	
-			String formataProduto = "0000".substring(produto.length())+produto;
+			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length())+identificacao;
+			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length())+unidade;	
+			String formataProduto = REPLACE_CONTA_1.substring(produto.length())+produto;
 			contaFormatada = formataUnidade+formataProduto+formatIdentificacao;
 			
 		} else {
 			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");	
 			String unidade = String.valueOf(nuUnidade);
 			String produto = String.valueOf(nuProduto);	
-			String formataUnidade = "0000".substring(unidade.length())+unidade;	
-			String formataProduto = "0000".substring(produto.length())+produto;
+			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length())+unidade;	
+			String formataProduto = REPLACE_CONTA_1.substring(produto.length())+produto;
 			identificacao = identificacao.replace(formataUnidade+ formataProduto, ""); 
-			String formatIdentificacao = "0000000000000000".substring(identificacao.length())+identificacao;	
+			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length())+identificacao;	
 			contaFormatada = formataUnidade+formataProduto+formatIdentificacao;
 		}
 		
