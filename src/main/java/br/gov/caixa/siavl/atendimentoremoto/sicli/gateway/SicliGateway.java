@@ -32,7 +32,7 @@ import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContasOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
-@SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813" })
+@SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S4507" })
 public class SicliGateway {
 
 	@Autowired
