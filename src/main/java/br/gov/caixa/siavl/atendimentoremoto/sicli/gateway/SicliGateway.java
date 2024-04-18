@@ -101,7 +101,7 @@ public class SicliGateway {
 			for (JsonNode node : contratos) {
 				ContasOutputDTO conta = new ContasOutputDTO();
 				String contaInput = formataUnidade(node.path("nuUnidade").asText()) + formataProduto(node.path("nuProduto").asText())
-						+ formataCodigoIdentificacao(node.path("coIdentificacao").asText());
+						+ formataCodigoIdentificacao(node.path("coIdentificacao").asText(), formataUnidade(node.path("nuUnidade").asText()), formataProduto(node.path("nuProduto").asText()));
 				conta.setConta(contaInput);
 				contasAtendimento.add(conta);
 			}
@@ -210,12 +210,14 @@ public class SicliGateway {
 
 	
 	
-	private String formataCodigoIdentificacao(Object object) {
+	private String formataCodigoIdentificacao(Object object, Object object1, Object object2) {
 
+		String replace = String.valueOf(object1)+String.valueOf(object2);
 		String produtoInput = String.valueOf(object).replace(".", "").replace("-", "");
-		//String formatProduto = null;
-		//formatProduto = "0000000000000000".substring(produtoInput.length()) + produtoInput;
-		return produtoInput;
+		produtoInput = produtoInput.replace(replace, "");
+		String formatProduto = null;
+		formatProduto = "0000000000000000".substring(produtoInput.length()) + produtoInput;
+		return formatProduto;
 	}
 	
 }
