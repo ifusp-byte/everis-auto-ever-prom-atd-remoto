@@ -100,7 +100,7 @@ public class SicliGateway {
 
 			for (JsonNode node : contratos) {
 				ContasOutputDTO conta = new ContasOutputDTO();
-				String sgSistema = node.path("sgSistema").asText();
+				String sgSistema = node.path("sgSistema").asText().trim();
 				String contaInput = formataUnidade(node.path("nuUnidade").asText()) + formataProduto(node.path("nuProduto").asText(), sgSistema)
 						+ formataCodigoIdentificacao(node.path("coIdentificacao").asText(), formataUnidade(node.path("nuUnidade").asText()), formataProduto(node.path("nuProduto").asText(), sgSistema));
 				conta.setConta(contaInput);
