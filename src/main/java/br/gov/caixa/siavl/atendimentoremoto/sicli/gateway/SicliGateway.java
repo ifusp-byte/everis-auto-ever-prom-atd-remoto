@@ -100,8 +100,9 @@ public class SicliGateway {
 
 			for (JsonNode node : contratos) {
 				ContasOutputDTO conta = new ContasOutputDTO();
-				String contaInput = formataUnidade(node.path("nuUnidade").asText()) + formataProduto(node.path("nuProduto").asText())
-						+ formataCodigoIdentificacao(node.path("coIdentificacao").asText(), formataUnidade(node.path("nuUnidade").asText()), formataProduto(node.path("nuProduto").asText()));
+				String sgSistema = node.path("sgSistema").asText();
+				String contaInput = formataUnidade(node.path("nuUnidade").asText()) + formataProduto(node.path("nuProduto").asText(), sgSistema)
+						+ formataCodigoIdentificacao(node.path("coIdentificacao").asText(), formataUnidade(node.path("nuUnidade").asText()), formataProduto(node.path("nuProduto").asText(), sgSistema));
 				conta.setConta(contaInput);
 				contasAtendimento.add(conta);
 			}
@@ -200,11 +201,16 @@ public class SicliGateway {
 	}
 	
 	
-	private String formataProduto(Object object) {
-
-		String produtoInput = String.valueOf(object).replace(".", "").replace("-", "");
+	private String formataProduto(Object object, String sgSistema) {
 		String formatProduto = null;
+		String produtoInput = String.valueOf(object).replace(".", "").replace("-", "");
+		
+		if ("SIDEC".equalsIgnoreCase(sgSistema)) {
 		formatProduto = "000".substring(produtoInput.length()) + produtoInput;
+		} else {
+			formatProduto = "0000".substring(produtoInput.length()) + produtoInput;	
+		}
+		
 		return formatProduto;
 	}
 
