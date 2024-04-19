@@ -106,12 +106,14 @@ public class SicliGateway {
 				
 				ContasOutputDTO conta = new ContasOutputDTO();
 				
+				String dtInicio = node.path("dtInicio").asText().trim();
 				String sgSistema = node.path("sgSistema").asText().trim();
 				String nuUnidade = node.path("nuUnidade").asText().trim();
 				String nuProduto = node.path("nuProduto").asText().trim();
 				String coIdentificacao = node.path("coIdentificacao").asText().trim();
+				
 					
-				String contaInput = formataContaTotal(sgSistema, nuUnidade, nuProduto, coIdentificacao); 
+				String contaInput = formataContaTotal(dtInicio, sgSistema, nuUnidade, nuProduto, coIdentificacao); 
 				
 				
 				
@@ -210,7 +212,7 @@ public class SicliGateway {
 		return cpf;
 	}
 
-	private String formataContaTotal (String sgSistema, Object nuUnidade, Object nuProduto, Object coIdentificacao) {
+	private String formataContaTotal (String dtInicio, String sgSistema, Object nuUnidade, Object nuProduto, Object coIdentificacao) {
 
 		String contaFormatada = null; 
 		
@@ -235,6 +237,19 @@ public class SicliGateway {
 			String formataProduto = REPLACE_CONTA_1.substring(produto.length())+produto;
 			contaFormatada = formataUnidade+formataProduto+formatIdentificacao;
 			
+			
+			
+		} else if ("SIIFX".equalsIgnoreCase(sgSistema)) {
+			String dataInicio = String.valueOf(dtInicio).replace(".", "").replace("-", "");	
+			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");	
+			String unidade = String.valueOf(nuUnidade);
+			String produto = String.valueOf(nuProduto);		
+			identificacao = identificacao.replace(dataInicio , ""); 
+			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length())+identificacao;
+			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length())+unidade;	
+			String formataProduto = REPLACE_CONTA_1.substring(produto.length())+produto;	
+			contaFormatada = formataUnidade+formataProduto+formatIdentificacao;
+				
 		} else {
 			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");	
 			String unidade = String.valueOf(nuUnidade);
