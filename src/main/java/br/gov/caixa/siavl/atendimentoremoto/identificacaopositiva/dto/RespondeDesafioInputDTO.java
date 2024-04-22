@@ -5,6 +5,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +22,7 @@ import lombok.Setter;
 @XmlRootElement(name = "RespondeDesafioInputDTO")
 public class RespondeDesafioInputDTO {
 	
+	@JsonIgnore
 	@XmlElement(name = "listaResposta")
 	private String listaResposta;
 	
