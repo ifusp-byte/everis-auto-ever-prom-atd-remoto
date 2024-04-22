@@ -21,6 +21,7 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.service.ConsultaNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ContrataNotaService;
@@ -80,7 +81,7 @@ public class AtendimentoRemotoController {
 	@PostMapping("/desafio-responder/{idDesafio}")
 	public ResponseEntity<RespondeDesafioOutputDTO> desafioResponder(
 			@RequestHeader(value = "token", required = true) String token, @PathVariable String idDesafio,
-			@RequestBody String respostaDesafio) throws Exception {
+			@RequestBody RespondeDesafioInputDTO respostaDesafio) throws Exception {
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(desafioService.desafioResponder(token, idDesafio, respostaDesafio));

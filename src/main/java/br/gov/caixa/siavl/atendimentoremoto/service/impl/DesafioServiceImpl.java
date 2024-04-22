@@ -1,6 +1,5 @@
 package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -59,14 +58,10 @@ public class DesafioServiceImpl implements DesafioService {
 	}
 
 	@Override
-	public RespondeDesafioOutputDTO desafioResponder(String token, String idDesafio, String respostaDesafio) throws Exception {
+	public RespondeDesafioOutputDTO desafioResponder(String token, String idDesafio, RespondeDesafioInputDTO respostaDesafio) throws Exception {
 		
 		Long matriculaAtendente = Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", ""));
-
-		RespondeDesafioInputDTO respondeDesafioInputDTO = new RespondeDesafioInputDTO();
-		respondeDesafioInputDTO = RespondeDesafioInputDTO.builder().request(respostaDesafio).build();
-		
-		RespondeDesafioOutputDTO respondeDesafio = identificacaoPositivaGateway.desafioResponder(token, idDesafio, respondeDesafioInputDTO);
+		RespondeDesafioOutputDTO respondeDesafio = identificacaoPositivaGateway.desafioResponder(token, idDesafio, respostaDesafio);
 		
 		AuditoriaPncDesafioInputDTO auditoriaPncDesafioInputDTO = new AuditoriaPncDesafioInputDTO(); 	
 		auditoriaPncDesafioInputDTO = AuditoriaPncDesafioInputDTO.builder()

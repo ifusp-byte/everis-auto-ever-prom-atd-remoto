@@ -21,7 +21,7 @@ import lombok.Setter;
 public class RespondeDesafioInputDTO {
 	
 	@XmlElement(name = "request")
-	private String request;
+	private String listaResposta;
 	
 	@XmlElement(name = "protocolo")
 	private String protocolo;
