@@ -22,5 +22,8 @@ public class RespondeDesafioInputDTO {
 	
 	@XmlElement(name = "request")
 	private String request;
+	
+	@XmlElement(name = "protocolo")
+	private String protocolo;
 
 }
