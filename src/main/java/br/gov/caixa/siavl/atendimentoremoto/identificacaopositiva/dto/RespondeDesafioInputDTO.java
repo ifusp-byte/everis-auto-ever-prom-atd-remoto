@@ -20,7 +20,7 @@ import lombok.Setter;
 @XmlRootElement(name = "RespondeDesafioInputDTO")
 public class RespondeDesafioInputDTO {
 	
-	@XmlElement(name = "request")
+	@XmlElement(name = "listaResposta")
 	private String listaResposta;
 	
 	@XmlElement(name = "protocolo")
