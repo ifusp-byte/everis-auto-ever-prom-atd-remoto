@@ -70,7 +70,7 @@ public class IdentificacaoPositivaGateway {
 	public HttpEntity<String> newRequestEntityDesafioResponder(String token,
 			RespondeDesafioInputDTO respondeDesafioInputDTO) {
 
-		return new HttpEntity<>(respondeDesafioInputDTO.getRequest(), newHttpHeaders(token));
+		return new HttpEntity<>(respondeDesafioInputDTO.getListaResposta(), newHttpHeaders(token));
 	}
 
 	public HttpHeaders newHttpHeaders(String token) {
