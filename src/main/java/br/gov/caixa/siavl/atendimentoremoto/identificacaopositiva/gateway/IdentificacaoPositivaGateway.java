@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.glassfish.json.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -69,8 +71,20 @@ public class IdentificacaoPositivaGateway {
 
 	public HttpEntity<String> newRequestEntityDesafioResponder(String token,
 			RespondeDesafioInputDTO respondeDesafioInputDTO) {
+		
+		String respostas = null;
+		HashMap<String, String> respondeDesafioMap = new HashMap<String, String>();
+		String request = null;
+		try {
+			respostas = mapper.writeValueAsString(respondeDesafioInputDTO.getListaResposta());	
+			respondeDesafioMap.put("listaResposta", respostas);
+			request = mapper.writeValueAsString(respondeDesafioMap).replaceAll("\\u005C", "");
+			
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
 
-		return new HttpEntity<>(respondeDesafioInputDTO.getListaResposta(), newHttpHeaders(token));
+		return new HttpEntity<>(request, newHttpHeaders(token));
 	}
 
 	public HttpHeaders newHttpHeaders(String token) {
@@ -162,6 +176,7 @@ public class IdentificacaoPositivaGateway {
 			atendimentoCliente.setDescricaoIdentificacaoPositiva("SUCESSO");
 			atendimentoCliente.setDataIdentificacaoPositiva(formataDataBanco());
 			atendimentoCliente.setDataValidacaoPositiva(formataDataBanco());
+			atendimentoClienteRepository.save(atendimentoCliente);
 				
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta View "
 					+ mapper.writeValueAsString(respondeDesafioOutputDTO));
@@ -188,6 +203,7 @@ public class IdentificacaoPositivaGateway {
 			atendimentoCliente.setDescricaoIdentificacaoPositiva("BLOQUEADO");
 			atendimentoCliente.setDataIdentificacaoPositiva(formataDataBanco());
 			atendimentoCliente.setDataValidacaoPositiva(formataDataBanco());
+			atendimentoClienteRepository.save(atendimentoCliente);
 
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta View "
 					+ mapper.writeValueAsString(respondeDesafioOutputDTO));
