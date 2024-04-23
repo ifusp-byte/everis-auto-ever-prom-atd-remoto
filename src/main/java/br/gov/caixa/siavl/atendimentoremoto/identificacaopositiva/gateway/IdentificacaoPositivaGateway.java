@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
-import org.glassfish.json.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -72,13 +71,11 @@ public class IdentificacaoPositivaGateway {
 	public HttpEntity<String> newRequestEntityDesafioResponder(String token,
 			RespondeDesafioInputDTO respondeDesafioInputDTO) {
 		
-		String respostas = null;
-		HashMap<String, String> respondeDesafioMap = new HashMap<String, String>();
+		HashMap<String, Object> respondeDesafioMap = new HashMap<String, Object>();
 		String request = null;
-		try {
-			respostas = mapper.writeValueAsString(respondeDesafioInputDTO.getListaResposta());	
-			respondeDesafioMap.put("listaResposta", respostas);
-			request = mapper.writeValueAsString(respondeDesafioMap).replaceAll("\\u005C", "");
+		try {	
+			respondeDesafioMap.put("listaResposta", respondeDesafioInputDTO.getListaResposta());
+			request = mapper.writeValueAsString(respondeDesafioMap).replaceAll("\\u005C", "").replaceAll("\\n", "");
 			
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
