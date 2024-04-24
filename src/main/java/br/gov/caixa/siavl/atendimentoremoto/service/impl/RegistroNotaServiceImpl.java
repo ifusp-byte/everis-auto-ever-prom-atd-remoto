@@ -63,7 +63,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	public Object registraNota(String token, Long numeroNota, RegistraNotaInputDto registraNotaInputDto)
 			throws Exception {
 
-		Long cpfCnpjPnc = Long.parseLong(registraNotaInputDto.getCpfCnpj().trim());
+		Long cpfCnpjPnc = Long.parseLong(registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim());
 		Long numeroUnidade = Long.parseLong(tokenUtils.getUnidadeFromToken(token));
 		Long numeroEquipe = null;
 		String cpfCnpj = null;
@@ -88,12 +88,12 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			atendimentoCliente.setNumeroProtocolo(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
 			atendimentoCliente.setNomeCliente(registraNotaInputDto.getNomeCliente());
 
-			if (registraNotaInputDto.getCpfCnpj().length() == 11) {
-				cpfCnpj = registraNotaInputDto.getCpfCnpj();
-				atendimentoCliente.setCpfCliente(Long.parseLong(registraNotaInputDto.getCpfCnpj()));
+			if (cpfCnpjPnc == 11) {
+				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim();
+				atendimentoCliente.setCpfCliente(Long.parseLong(registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim()));
 			} else {
-				cpfCnpj = registraNotaInputDto.getCpfCnpj();
-				atendimentoCliente.setCnpjCliente(Long.parseLong(registraNotaInputDto.getCpfCnpj()));
+				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim();
+				atendimentoCliente.setCnpjCliente(Long.parseLong(registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim()));
 			}
 
 			String dsRelatorioNota = mapper.writeValueAsString(registraNotaInputDto);
@@ -150,7 +150,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	@Override
 	public Boolean enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto) {
 		Boolean statusContratacao = null;
-		Long cpfCnpjPnc = Long.parseLong(enviaClienteInputDto.getCpfCnpj().trim());
+		Long cpfCnpjPnc = Long.parseLong(enviaClienteInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim());
 		String matriculaAtendente = tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", "");
 
 		notaNegociacaoRepository.enviaNotaCliente(numeroNota);
@@ -163,12 +163,10 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				.matriculaAtendente(matriculaAtendente)
 				.statusRetornoSicli(String.valueOf(true))
 				.statusRetornoIdPositiva(String.valueOf(true))
-				.statusContratacao(String.valueOf(true))
 				.dataEnvioNota(String.valueOf(formataData(new Date())))
 				.numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo())				
 				.numeroContaAtendimento(enviaClienteInputDto.getNumeroConta())
 				.numeroNota(String.valueOf(numeroNota))
-				.transacaoSistema("a definir") 
 				.versaoSistema(enviaClienteInputDto.getVersaoSistema())
 				.ipUsuario(tokenUtils.getIpFromToken(token))
 				.tipoPessoa("PF")
