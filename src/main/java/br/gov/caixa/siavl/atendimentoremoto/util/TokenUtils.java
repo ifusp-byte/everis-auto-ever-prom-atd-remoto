@@ -63,4 +63,27 @@ public class TokenUtils {
 		}
 		return ipUsuario;
 	}
+	
+	public String getUnidadeFromToken(String jwtToken) {
+
+		String unidade = null;
+
+		String[] split_string = jwtToken.split("\\.");
+		String base64EncodedBody = split_string[1];
+
+		Base64 base64Url = new Base64(true);
+		String body = new String(base64Url.decode(base64EncodedBody));
+
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode jsonToken;
+		try {
+			jsonToken = mapper.readTree(body);
+			if (jsonToken.has("co-unidade")) {
+				unidade = jsonToken.get("co-unidade").asText();
+			}
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return unidade;
+	}
 }

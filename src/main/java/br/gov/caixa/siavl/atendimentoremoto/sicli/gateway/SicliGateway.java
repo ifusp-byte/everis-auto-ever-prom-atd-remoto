@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaRegistraNotaSicliService;
 import br.gov.caixa.siavl.atendimentoremoto.sicli.constants.SicliGatewayMessages;
 import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContaAtendimentoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContasOutputDTO;
@@ -30,6 +31,9 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 @Service
 @SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813" })
 public class SicliGateway {
+	
+	@Autowired
+	AuditoriaRegistraNotaSicliService auditoriaRegistraNotaSicliService;
 
 	static Logger LOG = Logger.getLogger(SicliGateway.class.getName());
 
@@ -64,7 +68,7 @@ public class SicliGateway {
 		return headers;
 	}
 
-	public ContaAtendimentoOutputDTO contaAtendimento(String token, String cpfCnpj) throws Exception {
+	public ContaAtendimentoOutputDTO contaAtendimento(String token, String cpfCnpj, boolean auditar) throws Exception {
 
 		ContaAtendimentoOutputDTO contaAtendimentoOutputDTO = new ContaAtendimentoOutputDTO();
 		ResponseEntity<String> response = null;
@@ -100,8 +104,6 @@ public class SicliGateway {
 				statusCreated = true; 
 				statusMessage = SicliGatewayMessages.SICLI_CONTA_ATENDIMENTO_RETORNO_NAO_200;
 			}
-			
-			// montaContas(jsonNode);
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
@@ -136,6 +138,13 @@ public class SicliGateway {
 					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
 
 		}
+		
+		if (!String.valueOf(HttpStatus.CREATED.value()).equals(contaAtendimentoOutputDTO.getStatusCode())) { 			
+			if (Boolean.TRUE.equals(auditar) && !statusCreated) {	
+			auditoriaRegistraNotaSicliService.auditar(contaAtendimentoOutputDTO, token, cpfCnpj);	
+		} }
+		
+		
 		return contaAtendimentoOutputDTO;
 	}
 
