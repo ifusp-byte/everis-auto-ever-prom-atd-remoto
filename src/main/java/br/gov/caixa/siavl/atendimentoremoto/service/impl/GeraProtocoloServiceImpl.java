@@ -57,8 +57,9 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		atendimentoCliente.setCanalAtendimento(canalAtendimento.charAt(0));
 		atendimentoCliente.setNumeroUnidade(numeroUnidade);
 
+		ContaAtendimentoOutputDTO contaAtendimento = sicliGateway.contaAtendimento(token, geraProtocoloInputDTO.getCpfCnpj().trim(), false);
+		
 		if (geraProtocoloInputDTO.getCpfCnpj().trim().length() == 11) {
-			ContaAtendimentoOutputDTO contaAtendimento = sicliGateway.contaAtendimento(token, geraProtocoloInputDTO.getCpfCnpj().trim(), false);
 			atendimentoCliente.setNomeCliente(contaAtendimento.getNomeCliente());
 			atendimentoCliente.setCpfCliente(cpfCnpj);
 		} else {
@@ -72,6 +73,7 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		GeraProtocoloOutputDTO geraProtocoloOutputDTO = new GeraProtocoloOutputDTO();
 		geraProtocoloOutputDTO.setStatus(true);
 		geraProtocoloOutputDTO.setNumeroProtocolo(String.valueOf(atendimentoCliente.getNumeroProtocolo()));
+		geraProtocoloOutputDTO.setSocios(contaAtendimento.getSocios());		
 		
 		AuditoriaPncProtocoloInputDTO auditoriaPncProtocoloInputDTO = new AuditoriaPncProtocoloInputDTO(); 
 		auditoriaPncProtocoloInputDTO = AuditoriaPncProtocoloInputDTO.builder()

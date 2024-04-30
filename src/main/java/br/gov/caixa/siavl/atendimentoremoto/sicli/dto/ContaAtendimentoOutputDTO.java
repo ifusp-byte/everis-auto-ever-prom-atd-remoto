@@ -47,5 +47,7 @@ public class ContaAtendimentoOutputDTO {
 	private String cpfCnpjCliente;
 
 	private List<ContasOutputDTO> contas;
+	
+	private List<SociosOutputDTO> socios;
 
 }
