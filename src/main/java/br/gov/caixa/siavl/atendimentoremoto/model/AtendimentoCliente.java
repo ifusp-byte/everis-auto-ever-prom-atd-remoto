@@ -50,7 +50,7 @@ public class AtendimentoCliente implements Serializable {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "NU_PROTOCOLO_ATNTO_CLNTE", nullable = true, insertable = false, updatable = false)
 	private AtendimentoNegocio atendimentoNegocio;
-	
+
 	@Column(name = "IC_CANAL_ATENDIMENTO")
 	private char canalAtendimento;
 
@@ -65,5 +65,20 @@ public class AtendimentoCliente implements Serializable {
 
 	@Column(name = "IC_VALIDACAO_TOKEN_ATENDIMENTO")
 	private Long validacaoTokenAtendimento = 0L;
+
+	@Column(name = "DT_INICIAL_CONTATO_CLNTE")
+	private Date dataContatoCliente;
+
+	@Column(name = "NU_UNIDADE_ATENDIMENTO")
+	private Long numeroUnidade;
+
+	@Column(name = "DT_IDNFO_POSITIVA_CLIENTE")
+	private Date dataIdentificacaoPositiva;
+
+	@Column(name = "TS_VALIDACAO_IDNFO_POSITIVA")
+	private Date dataValidacaoPositiva;
+
+	@Column(name = "DE_SITUACAO_IDNFO_POSITIVA")
+	private String descricaoIdentificacaoPositiva;
 
 }

@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,11 +23,13 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaNumero
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNegocio;
+import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocio;
 import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocioFavorito;
 import br.gov.caixa.siavl.atendimentoremoto.model.NegocioAgenciaVirtual;
 import br.gov.caixa.siavl.atendimentoremoto.model.NotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoNegocioRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.CampoModeloNotaRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaFavoritoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
@@ -40,9 +43,12 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	@Autowired
 	TokenUtils tokenUtils;
-
+	
 	@Autowired
 	ModeloNotaRepository modeloNotaRepository;
+
+	@Autowired
+	ModeloNotaFavoritoRepository modeloNotaFavoritoRepository;
 
 	@Autowired
 	NegocioAgenciaVirtualRepository negocioAgenciaVirtualRepository;
@@ -67,7 +73,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 	public List<ModeloNotaOutputDto> consultaModeloNota() {
 		List<ModeloNotaOutputDto> modelosNota = new ArrayList<>();
 
-		modeloNotaRepository.findModeloNota().stream().forEach(modeloNota ->
+		modeloNotaFavoritoRepository.findModeloNota().stream().forEach(modeloNota ->
 
 		{
 			ModeloNotaOutputDto modeloNotaOutputDto = null;
@@ -83,7 +89,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 	public List<ModeloNotaOutputDto> consultaModeloNotaMaisUtilizada() {
 		List<ModeloNotaOutputDto> modelosNota = new ArrayList<>();
 
-		modeloNotaRepository.findModeloNotaMaisUtilizada().stream().forEach(modeloNota ->
+		modeloNotaFavoritoRepository.findModeloNotaMaisUtilizada().stream().forEach(modeloNota ->
 
 		{
 			ModeloNotaOutputDto modeloNotaOutputDto = null;
@@ -105,7 +111,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		List<ModeloNotaOutputDto> modelosNotaFavorita = new ArrayList<>();
 		List<ModeloNotaOutputDto> modelosNotaFavorita2 = new ArrayList<>();
 
-		modeloNotaRepository.findModeloNotaFavorita(matriculaAtendente).stream().forEach(modeloNotaFavorita ->
+		modeloNotaFavoritoRepository.findModeloNotaFavorita(matriculaAtendente).stream().forEach(modeloNotaFavorita ->
 
 		{
 			ModeloNotaOutputDto modeloNotaOutputDto = null;
@@ -145,7 +151,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		modeloNotaNegocioFavorito.setNumeroModeloNota(numeroModeloNota);
 		modeloNotaNegocioFavorito.setDataEscolhaFavorito(new Date());
 
-		modeloNotaRepository.save(modeloNotaNegocioFavorito);
+		modeloNotaFavoritoRepository.save(modeloNotaNegocioFavorito);
 		statusNotaFavorita = true;
 		return statusNotaFavorita;
 	}
@@ -155,7 +161,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 		List<ModeloNotaDinamicoMenuNotaDinamicoNotaProdutoOutputDTO> notaProdutoLista = new ArrayList<>();
 
-		modeloNotaRepository.notaProduto(numeroModeloNota).stream().forEach(notaProduto -> {
+		modeloNotaFavoritoRepository.notaProduto(numeroModeloNota).stream().forEach(notaProduto -> {
 
 			ModeloNotaDinamicoMenuNotaDinamicoNotaProdutoOutputDTO notaProdutoItem = null;
 			notaProdutoItem = ModeloNotaDinamicoMenuNotaDinamicoNotaProdutoOutputDTO.builder()
@@ -163,7 +169,10 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 			notaProdutoLista.add(notaProdutoItem);
 		});
-
+		
+		ModeloNotaNegocio modeloNotaNegocio = modeloNotaRepository.prazoValidade(numeroModeloNota);	
+		Date dataValidade = formataDataValidade(modeloNotaNegocio.getPrazoValidade(), modeloNotaNegocio.getHoraValidade()); 
+		
 		NegocioAgenciaVirtual negocioAgenciaVirtual = new NegocioAgenciaVirtual();
 		negocioAgenciaVirtual.setDataCriacaoNegocio(new Date());
 		negocioAgenciaVirtual.setSituacaoNegocio("E".charAt(0));
@@ -176,9 +185,10 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		notaNegociacao.setDataModificacaoNota(formataDataBanco());
 		notaNegociacao.setNumeroMatriculaCriacaoNota(matriculaCriacaoNota(token));
 		notaNegociacao.setNumeroMatriculaModificacaoNota(matriculaCriacaoNota(token));
-		notaNegociacao.setNumeroSituacaoNota(23L); // VERIFICAR
+		notaNegociacao.setNumeroSituacaoNota(16L); // VERIFICAR
 		notaNegociacao.setQtdItemNegociacao(1L);
 		notaNegociacao.setIcOrigemNota(1L);
+		notaNegociacao.setDataPrazoValidade(dataValidade);
 
 		notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);
 
@@ -187,7 +197,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		modeloNotaDinamicoMenuNotaNumeroOutputDTO.setNumeroNota(String.valueOf(notaNegociacao.getNumeroNota()));
 
 		List<ModeloNotaDinamicoMenuNotaDinamicoOutputDTO> dinamicos = new ArrayList<>();
-		modeloNotaRepository.modeloNotaDinamico(numeroModeloNota).stream().forEach(dinamico -> {
+		modeloNotaFavoritoRepository.modeloNotaDinamico(numeroModeloNota).stream().forEach(dinamico -> {
 
 			ModeloNotaDinamicoMenuNotaDinamicoOutputDTO modeloDinamico = null;
 			modeloDinamico = ModeloNotaDinamicoMenuNotaDinamicoOutputDTO.builder()
@@ -268,6 +278,18 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 		Calendar time = Calendar.getInstance();
 		time.add(Calendar.HOUR, -3);
+		return time.getTime();
+	}
+	
+	
+	private Date formataDataValidade(int prazoValidade, String horaValidade) {
+
+		Calendar time = Calendar.getInstance();
+		time.add(Calendar.HOUR, -3);
+		time.add(Calendar.DATE, prazoValidade);
+		time.add(Calendar.HOUR, Integer.parseInt(horaValidade.substring(0, 1)));
+		time.add(Calendar.MINUTE, Integer.parseInt(horaValidade.substring(3, 4)));
+		
 		return time.getTime();
 	}
 

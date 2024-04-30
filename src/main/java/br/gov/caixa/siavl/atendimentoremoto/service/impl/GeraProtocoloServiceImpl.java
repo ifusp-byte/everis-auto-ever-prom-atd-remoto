@@ -48,12 +48,14 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		
 		Long matriculaAtendente = Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", ""));
 		Long cpfCnpj = Long.parseLong(geraProtocoloInputDTO.getCpfCnpj().trim()); 
+		Long numeroUnidade = Long.parseLong(tokenUtils.getUnidadeFromToken(token));
 		
 		String canalAtendimento = geraProtocoloInputDTO.getTipoAtendimento();
 		AtendimentoCliente atendimentoCliente = new AtendimentoCliente();
 		
 		atendimentoCliente.setMatriculaAtendente(matriculaAtendente);
 		atendimentoCliente.setCanalAtendimento(canalAtendimento.charAt(0));
+		atendimentoCliente.setNumeroUnidade(numeroUnidade);
 
 		if (geraProtocoloInputDTO.getCpfCnpj().trim().length() == 11) {
 			ContaAtendimentoOutputDTO contaAtendimento = sicliGateway.contaAtendimento(token, geraProtocoloInputDTO.getCpfCnpj().trim(), false);
@@ -64,6 +66,7 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		}
 
 		atendimentoCliente.setDataInicialAtendimento(formataDataBanco());
+		atendimentoCliente.setDataContatoCliente(formataDataBanco());
 		atendimentoCliente = geraProtocoloRespository.save(atendimentoCliente);
 
 		GeraProtocoloOutputDTO geraProtocoloOutputDTO = new GeraProtocoloOutputDTO();

@@ -42,11 +42,19 @@ public class ModeloNotaNegocio implements Serializable {
 	@Column(name = "IC_MODELO_NOTA_ATIVO")
 	private Long modeloNotaAtivo;
 
+	/*
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "modeloNotaNegociacao")
 	private NotaNegociacao notaNegociacao;
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "NU_ACAO_PRODUTO", nullable = true, insertable = false, updatable = false)
 	private AcaoProduto acaoProduto;
+	*/
+	
+	@Column(name = "PZ_VALIDADE_MODELO_NOTA")
+	private int prazoValidade;
+	
+	@Column(name = "HH_VALIDADE_MODELO_NOTA")
+	private String horaValidade;
 
 }

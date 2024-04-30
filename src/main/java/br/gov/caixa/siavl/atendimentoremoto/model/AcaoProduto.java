@@ -34,7 +34,9 @@ public class AcaoProduto implements Serializable {
 	@Column(name = "IC_ATIVO")
 	private Long acaoProdutoAtivo;
 
+	/*
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "acaoProduto")
 	private ModeloNotaNegocio modeloNotaNegociacao;
+	*/
 
 }

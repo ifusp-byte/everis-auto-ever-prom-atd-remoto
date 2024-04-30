@@ -32,9 +32,9 @@ import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContasOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
-@SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813" })
+@SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S4507" })
 public class SicliGateway {
-	
+
 	@Autowired
 	AuditoriaRegistraNotaSicliService auditoriaRegistraNotaSicliService;
 
@@ -51,6 +51,10 @@ public class SicliGateway {
 	private static String URL_BASE_1 = "https://api.des.caixa:8443/cadastro/v2/clientes?cpfcnpj=";
 	private static String URL_BASE_2 = "&campos=dadosbasicos,enderecos,contratos,documentos,nicho,carteiragrc,vinculo,dadosatualizacaocadastral,meiocomunicacao,rendas,profissaosiric&classe=1";
 
+	private static String REPLACE_IDENTIFICACAO = "0000000000000000";
+	private static String REPLACE_CONTA_1 = "0000";
+	private static String REPLACE_CONTA_2 = "000";
+	
 	@Autowired
 	RestTemplateUtils restTemplateUtils;
 
@@ -77,12 +81,13 @@ public class SicliGateway {
 		ResponseEntity<String> response = null;
 		JsonNode body;
 		ArrayNode contratos;
-		boolean statusCreated = false; 
+		boolean statusCreated = false;
 		List<ContasOutputDTO> contasAtendimento = new ArrayList<>();
 
 		try {
 
-			response = restTemplateUtils.newRestTemplate().exchange(URL_BASE_1 + cpfCnpj.replace(".", "").replace("-", "").trim() + URL_BASE_2, HttpMethod.GET,
+			response = restTemplateUtils.newRestTemplate().exchange(
+					URL_BASE_1 + cpfCnpj.replace(".", "").replace("-", "").trim() + URL_BASE_2, HttpMethod.GET,
 					newRequestEntityContaAtendimento(token), String.class);
 
 			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
@@ -92,32 +97,46 @@ public class SicliGateway {
 
 			body = mapper.readTree(String.valueOf(response.getBody()));
 			contratos = (ArrayNode) body.get("contratos");
-			
+
 			String nomeCliente = Objects.requireNonNull(body.path("dadosBasicos").path("nome")).asText();
-			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento")).asText();
-			
-			for (JsonNode node : contratos) {				
-				ContasOutputDTO conta = new ContasOutputDTO(); 
-				String contaInput = node.path("nuUnidade").asText() +  node.path("nuProduto").asText() + node.path("coIdentificacao").asText();  	
-				conta.setConta(contaInput);			
-    			contasAtendimento.add(conta); 		
+			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento"))
+					.asText();
+
+			for (JsonNode node : contratos) {
+				
+				ContasOutputDTO conta = new ContasOutputDTO();
+				
+				String dtInicio = node.path("dtInicio").asText().trim();
+				String sgSistema = node.path("sgSistema").asText().trim();
+				String nuUnidade = node.path("nuUnidade").asText().trim();
+				String nuProduto = node.path("nuProduto").asText().trim();
+				String coIdentificacao = node.path("coIdentificacao").asText().trim();
+				
+					
+				String contaInput = formataContaTotal(dtInicio, sgSistema, nuUnidade, nuProduto, coIdentificacao); 
+				
+				
+				
+				
+				/*
+				String contaInput = formataUnidade(node.path("nuUnidade").asText()) + formataProduto(node.path("nuProduto").asText(), sgSistema)
+						+ formataCodigoIdentificacao(node.path("coIdentificacao").asText(), formataUnidade(node.path("nuUnidade").asText()), formataProduto(node.path("nuProduto").asText(), sgSistema), sgSistema);
+				
+				*/
+				conta.setConta(contaInput);
+				contasAtendimento.add(conta);
 			}
-			
-			if (!contasAtendimento.isEmpty() && !nomeCliente.isEmpty() && !cpfCliente.isEmpty()) {			
-				statusCreated = true; 
+
+			if (!contasAtendimento.isEmpty() && !nomeCliente.isEmpty() && !cpfCliente.isEmpty()) {
+				statusCreated = true;
 				statusMessage = SicliGatewayMessages.SICLI_CONTA_ATENDIMENTO_RETORNO_NAO_200;
 			}
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
-					.response(String.valueOf(Objects.requireNonNull(response.getBody())))
-					.statusMessage(statusMessage)
-					.statusCreated(statusCreated)
-					.dataCreated(formataData(new Date()))
-					.nomeCliente(nomeCliente)
-					.cpfCnpjCliente(formataCpf(cpfCliente))
-					.contas(contasAtendimento)
-					.build();
+					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
+					.statusCreated(statusCreated).dataCreated(formataData(new Date())).nomeCliente(nomeCliente)
+					.cpfCnpjCliente(formataCpf(cpfCliente)).contas(contasAtendimento).build();
 
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
 					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
@@ -134,20 +153,20 @@ public class SicliGateway {
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.response(Objects.requireNonNull(mapper.writeValueAsString(retornoSicli))).statusMessage(statusMessage)
-					.statusCreated(false).dataCreated(formataData(new Date())).build();
+					.response(Objects.requireNonNull(mapper.writeValueAsString(retornoSicli)))
+					.statusMessage(statusMessage).statusCreated(false).dataCreated(formataData(new Date())).build();
 
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
 					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
 
 		}
-		
-		if (!String.valueOf(HttpStatus.CREATED.value()).equals(contaAtendimentoOutputDTO.getStatusCode())) { 			
-			if (Boolean.TRUE.equals(auditar) && !statusCreated) {	
-			auditoriaRegistraNotaSicliService.auditar(contaAtendimentoOutputDTO, token, cpfCnpj);	
-		} }
-		
-		
+
+		if (!String.valueOf(HttpStatus.CREATED.value()).equals(contaAtendimentoOutputDTO.getStatusCode())) {
+			if (Boolean.TRUE.equals(auditar) && !statusCreated) {
+				auditoriaRegistraNotaSicliService.auditar(contaAtendimentoOutputDTO, token, cpfCnpj);
+			}
+		}
+
 		return contaAtendimentoOutputDTO;
 	}
 
@@ -171,14 +190,14 @@ public class SicliGateway {
 		data = String.valueOf(sdfOut.format(dateInput));
 		return data;
 	}
-	
+
 	private String formataCpf(Object object) {
 
 		String cpfInput = null;
 		String formatCpf = null;
 		String cpf = null;
 		MaskFormatter cpfMask = null;
-		
+
 		if (object != null) {
 			cpfInput = String.valueOf(object).replace(".", "").replace("/", "").replace("/", "").replace("-", "");
 			formatCpf = "00000000000".substring(cpfInput.length()) + cpfInput;
@@ -193,4 +212,57 @@ public class SicliGateway {
 		return cpf;
 	}
 
+	private String formataContaTotal (String dtInicio, String sgSistema, Object nuUnidade, Object nuProduto, Object coIdentificacao) {
+
+		String contaFormatada = null; 
+		
+		if ("SIART".equalsIgnoreCase(sgSistema)) {	
+			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");	
+			String unidade = String.valueOf(nuUnidade);
+			String produto = String.valueOf(nuProduto);	
+			identificacao = identificacao.replace(unidade , ""); 
+			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length())+unidade;	
+			String formataProduto = REPLACE_CONTA_1.substring(produto.length())+produto;
+			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length())+identificacao;		
+			contaFormatada = formataUnidade+formataProduto+formatIdentificacao; 	
+			
+		} else if ("SIDEC".equalsIgnoreCase(sgSistema)) {
+			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");	
+			String unidade = String.valueOf(nuUnidade);
+			String produto = String.valueOf(nuProduto);			
+			String formatProdutoReplace = REPLACE_CONTA_2.substring(produto.length())+produto;
+			identificacao = identificacao.replace(unidade+formatProdutoReplace , ""); 
+			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length())+identificacao;
+			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length())+unidade;	
+			String formataProduto = REPLACE_CONTA_1.substring(produto.length())+produto;
+			contaFormatada = formataUnidade+formataProduto+formatIdentificacao;
+			
+			
+			
+		} else if ("SIIFX".equalsIgnoreCase(sgSistema)) {
+			String dataInicio = String.valueOf(dtInicio).replace(".", "").replace("-", "");	
+			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");	
+			String unidade = String.valueOf(nuUnidade);
+			String produto = String.valueOf(nuProduto);		
+			identificacao = identificacao.replace(dataInicio , ""); 
+			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length())+identificacao;
+			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length())+unidade;	
+			String formataProduto = REPLACE_CONTA_1.substring(produto.length())+produto;	
+			contaFormatada = formataUnidade+formataProduto+formatIdentificacao;
+				
+		} else {
+			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");	
+			String unidade = String.valueOf(nuUnidade);
+			String produto = String.valueOf(nuProduto);	
+			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length())+unidade;	
+			String formataProduto = REPLACE_CONTA_1.substring(produto.length())+produto;
+			identificacao = identificacao.replace(formataUnidade+ formataProduto, ""); 
+			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length())+identificacao;	
+			contaFormatada = formataUnidade+formataProduto+formatIdentificacao;
+		}
+		
+		return contaFormatada; 
+		
+	}
+	
 }

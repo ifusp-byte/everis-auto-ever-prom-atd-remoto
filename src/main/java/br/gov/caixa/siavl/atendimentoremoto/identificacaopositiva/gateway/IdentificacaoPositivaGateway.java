@@ -1,6 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.gateway;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,11 +26,16 @@ import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.constants.Iden
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
+import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
 @SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813" })
 public class IdentificacaoPositivaGateway {
+	
+	@Autowired
+	AtendimentoClienteRepository atendimentoClienteRepository; 
 
 	static Logger LOG = Logger.getLogger(IdentificacaoPositivaGateway.class.getName());
 
@@ -63,8 +70,18 @@ public class IdentificacaoPositivaGateway {
 
 	public HttpEntity<String> newRequestEntityDesafioResponder(String token,
 			RespondeDesafioInputDTO respondeDesafioInputDTO) {
+		
+		HashMap<String, Object> respondeDesafioMap = new HashMap<String, Object>();
+		String request = null;
+		try {	
+			respondeDesafioMap.put("listaResposta", respondeDesafioInputDTO.getListaResposta());
+			request = mapper.writeValueAsString(respondeDesafioMap).replaceAll("\\u005C", "").replaceAll("\\n", "");
+			
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
 
-		return new HttpEntity<>(respondeDesafioInputDTO.getRequest(), newHttpHeaders(token));
+		return new HttpEntity<>(request, newHttpHeaders(token));
 	}
 
 	public HttpHeaders newHttpHeaders(String token) {
@@ -133,6 +150,7 @@ public class IdentificacaoPositivaGateway {
 		ResponseEntity<String> response = null;
 		JsonNode jsonNode;
 		String codigo422 = null;
+		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(respondeDesafioInputDTO.getProtocolo()));
 
 		try {
 
@@ -150,6 +168,13 @@ public class IdentificacaoPositivaGateway {
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
 					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
 					.statusCreated(true).dataCreated(formataData(new Date())).build();
+			
+			atendimentoCliente.setSituacaoIdPositiva(1L);
+			atendimentoCliente.setDescricaoIdentificacaoPositiva("SUCESSO");
+			atendimentoCliente.setDataIdentificacaoPositiva(formataDataBanco());
+			atendimentoCliente.setDataValidacaoPositiva(formataDataBanco());
+			atendimentoClienteRepository.save(atendimentoCliente);
+				
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta View "
 					+ mapper.writeValueAsString(respondeDesafioOutputDTO));
 
@@ -170,6 +195,12 @@ public class IdentificacaoPositivaGateway {
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
 					.response(Objects.requireNonNull(e.getResponseBodyAsString())).statusMessage(statusMessage)
 					.statusCreated(false).dataCreated(formataData(new Date())).build();
+			
+			atendimentoCliente.setSituacaoIdPositiva(2L);
+			atendimentoCliente.setDescricaoIdentificacaoPositiva("BLOQUEADO");
+			atendimentoCliente.setDataIdentificacaoPositiva(formataDataBanco());
+			atendimentoCliente.setDataValidacaoPositiva(formataDataBanco());
+			atendimentoClienteRepository.save(atendimentoCliente);
 
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta View "
 					+ mapper.writeValueAsString(respondeDesafioOutputDTO));
@@ -279,6 +310,13 @@ public class IdentificacaoPositivaGateway {
 		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
 		data = String.valueOf(sdfOut.format(dateInput));
 		return data;
+	}
+	
+	private Date formataDataBanco() {
+
+		Calendar time = Calendar.getInstance();
+		time.add(Calendar.HOUR, -3);
+		return time.getTime();
 	}
 
 }

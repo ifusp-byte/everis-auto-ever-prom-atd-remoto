@@ -1,9 +1,13 @@
 package br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonRawValue;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +24,10 @@ import lombok.Setter;
 @XmlRootElement(name = "RespondeDesafioInputDTO")
 public class RespondeDesafioInputDTO {
 	
-	@XmlElement(name = "request")
-	private String request;
+	@XmlElement(name = "listaResposta")
+	private List<?> listaResposta;
+	
+	@XmlElement(name = "protocolo")
+	private String protocolo;
 
 }

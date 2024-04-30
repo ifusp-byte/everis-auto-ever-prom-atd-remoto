@@ -58,9 +58,11 @@ public class NotaNegociacao implements Serializable {
 	@JoinColumn(name = "NU_NOTA_NEGOCIACAO", nullable = true, insertable = false, updatable = false)
 	private SituacaoNotaNegociacao situacaoNotaNegociacao;
 
+	/*
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "NU_MODELO_NOTA_NEGOCIO", nullable = true, insertable = false, updatable = false)
 	private ModeloNotaNegocio modeloNotaNegociacao;
+	*/
 	
 	@Column(name = "DT_ULTIMA_MODIFICACAO_NOTA")
 	private Date dataModificacaoNota;
@@ -73,5 +75,25 @@ public class NotaNegociacao implements Serializable {
 	
 	@Column(name = "IC_ORIGEM_NOTA_NEGOCIACAO")
 	private Long icOrigemNota;
+	
+	@Column(name = "NU_EQUIPE_CRIACAO_NOTA")
+	private Long numeroEquipe;
+	
+	@Column(name = "VR_SOLICITADO_NOTA_NEGOCIACAO")
+	private Double valorSolicitadoNota;
+	
+	@Column(name = "DT_PRAZO_VALIDADE")
+	private Date dataPrazoValidade; 
+	
+	@Column(name = "NU_AGENCIA_CONTA_CORRENTE")
+	private Long nuUnidade;
+	
+	@Column(name = "NU_OPERACAO_CONTA_CORRENTE")
+	private Long nuProduto;
+	
+	@Column(name = "NU_CONTA_CORRENTE_ATENDIMENTO")
+	private Long coIdentificacao;
+	
+	
 
 }
