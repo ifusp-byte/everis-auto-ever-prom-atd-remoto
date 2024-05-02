@@ -40,10 +40,14 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 	SicliGateway sicliGateway;
 
 	private static ObjectMapper mapper = new ObjectMapper();
+	
+	private static final String DOCUMENT_TYPE_CPF = "CPF";
+	private static final String DOCUMENT_TYPE_CNPJ = "CNPJ";
 
 	@Override
 	public GeraProtocoloOutputDTO geraProtocolo(String token, GeraProtocoloInputDTO geraProtocoloInputDTO) throws Exception {
 		
+		String tipoDocumento = null; 
 		Long matriculaAtendente = Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", ""));
 		Long cpfCnpj = Long.parseLong(geraProtocoloInputDTO.getCpfCnpj().trim()); 
 		Long numeroUnidade = Long.parseLong(tokenUtils.getUnidadeFromToken(token));
@@ -60,8 +64,10 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		if (geraProtocoloInputDTO.getCpfCnpj().trim().length() == 11) {
 			atendimentoCliente.setNomeCliente(contaAtendimento.getNomeCliente());
 			atendimentoCliente.setCpfCliente(cpfCnpj);
+			tipoDocumento = DOCUMENT_TYPE_CPF;
 		} else {
 			atendimentoCliente.setCnpjCliente(cpfCnpj);
+			tipoDocumento = DOCUMENT_TYPE_CNPJ;
 		}
 
 		atendimentoCliente.setDataInicialAtendimento(formataDataBanco());
@@ -100,7 +106,7 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 				.nomeMfe("mfe_avl_atendimentoremoto")
 				.numeroUnidadeLotacaoUsuario(50L)
 				.ambienteAplicacao("NACIONAL")
-				.tipoDocumento("CPF")
+				.tipoDocumento(tipoDocumento)
 				.numeroIdentificacaoCliente(cpfCnpj)
 				.build();
 
@@ -121,16 +127,6 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		String data = null;
 		Locale locale = new Locale("pt", "BR");
 		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
-		data = String.valueOf(sdfOut.format(dateInput));
-		return data;
-	}
-
-
-	private String formataDataAnoMes(Date dateInput) {
-
-		String data = null;
-		Locale locale = new Locale("pt", "BR");
-		SimpleDateFormat sdfOut = new SimpleDateFormat("yyyy-MM", locale);
 		data = String.valueOf(sdfOut.format(dateInput));
 		return data;
 	}
