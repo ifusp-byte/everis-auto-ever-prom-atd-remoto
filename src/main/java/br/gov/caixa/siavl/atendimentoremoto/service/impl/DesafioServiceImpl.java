@@ -35,11 +35,9 @@ public class DesafioServiceImpl implements DesafioService {
 
 	private static final String NOME_SERVICO = "81";
 	
-	private static final String PERSON_TYPE = "PF";
+	private static final String PERSON_TYPE_PF = "PF";
+	private static final String PERSON_TYPE_PJ = "PJ";
 	
-	private static final String DEFAULT_USER_IP = "123";
-
-
 	static Logger logger = Logger.getLogger(DesafioServiceImpl.class.getName());
 	
 	private static ObjectMapper mapper = new ObjectMapper();
@@ -60,6 +58,13 @@ public class DesafioServiceImpl implements DesafioService {
 	@Override
 	public RespondeDesafioOutputDTO desafioResponder(String token, String idDesafio, RespondeDesafioInputDTO respostaDesafio) throws Exception {
 		
+		String tipoPessoa = null; 
+		if (respostaDesafio.getCpfSocio().isBlank()) {		
+			tipoPessoa = PERSON_TYPE_PF;		
+		} else {	
+			tipoPessoa = PERSON_TYPE_PJ;	
+		}
+		
 		Long matriculaAtendente = Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", ""));
 		RespondeDesafioOutputDTO respondeDesafio = identificacaoPositivaGateway.desafioResponder(token, idDesafio, respostaDesafio);
 		
@@ -68,7 +73,7 @@ public class DesafioServiceImpl implements DesafioService {
 				.idDesafio(idDesafio)		
 				.matriculaAtendente(tokenUtils.getMatriculaFromToken(token))
 				.statusValidacao(String.valueOf(respondeDesafio.isStatusCreated()))
-				.tipoPessoa(PERSON_TYPE)
+				.tipoPessoa(tipoPessoa)
 				.transacaoSistema("144")
 				.build();
 				

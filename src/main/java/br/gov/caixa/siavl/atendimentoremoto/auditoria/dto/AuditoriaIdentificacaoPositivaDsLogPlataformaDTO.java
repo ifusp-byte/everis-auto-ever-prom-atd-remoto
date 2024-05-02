@@ -16,6 +16,8 @@ import lombok.Setter;
 public class AuditoriaIdentificacaoPositivaDsLogPlataformaDTO {
 
 	private String cpfCnpj;
+	
+	private String cpfSocio;
 
 	private String matriculaAtendente;
 

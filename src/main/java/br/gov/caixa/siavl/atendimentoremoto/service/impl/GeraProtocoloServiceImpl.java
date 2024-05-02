@@ -38,8 +38,6 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 	
 	@Autowired
 	SicliGateway sicliGateway;
-	
-	private static final String DEFAULT_USER_IP = "123";
 
 	private static ObjectMapper mapper = new ObjectMapper();
 
