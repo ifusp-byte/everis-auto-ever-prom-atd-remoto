@@ -4,6 +4,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,4 +33,7 @@ public class AuditoriaIdentificacaoPositivaInputDTO {
 	
 	@XmlElement(name = "numeroProtocolo")
 	private String numeroProtocolo;
+	
+	@XmlElement(name = "cpfSocio")
+	private String cpfSocio;
 }

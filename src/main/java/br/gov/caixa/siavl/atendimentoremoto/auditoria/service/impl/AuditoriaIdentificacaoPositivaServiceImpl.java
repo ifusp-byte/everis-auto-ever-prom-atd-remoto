@@ -9,6 +9,7 @@ import java.util.Locale;
 
 import javax.sql.rowset.serial.SerialClob;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,25 +35,38 @@ public class AuditoriaIdentificacaoPositivaServiceImpl implements AuditoriaIdent
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	private static final Long TRANSACAO_SISTEMA = 144L;
-
-	private static final String PERSON_TYPE = "PF";
+	private static final String PERSON_TYPE_PF = "PF";
+	private static final String PERSON_TYPE_PJ = "PJ";
 	
-	private static final String DEFAULT_USER_IP = "123";
-
 	public Boolean auditar(String token,
 			AuditoriaIdentificacaoPositivaInputDTO auditoriaIdentificacaoPositivaInputDTO) {
-
+		
+		String tipoPessoa = null; 
+		String cpfSocio = null; 
+		
+		if (auditoriaIdentificacaoPositivaInputDTO.getCpfSocio().isBlank()) {		
+			tipoPessoa = PERSON_TYPE_PF;		
+			cpfSocio = StringUtils.EMPTY;
+		} else {	
+			cpfSocio = auditoriaIdentificacaoPositivaInputDTO.getCpfSocio();
+			tipoPessoa = PERSON_TYPE_PJ;	
+		}
+		
 		boolean statusAudtoria = false;
 		LogPlataforma logPlataforma = new LogPlataforma();
 		AuditoriaIdentificacaoPositivaDsLogPlataformaDTO dsLogPlataformaDTO = new AuditoriaIdentificacaoPositivaDsLogPlataformaDTO();
 
-		dsLogPlataformaDTO = AuditoriaIdentificacaoPositivaDsLogPlataformaDTO.builder().cpfCnpj(auditoriaIdentificacaoPositivaInputDTO.getCpfCnpj())
+		dsLogPlataformaDTO = AuditoriaIdentificacaoPositivaDsLogPlataformaDTO.builder()
+				.cpfCnpj(auditoriaIdentificacaoPositivaInputDTO.getCpfCnpj())
+				.cpfSocio(cpfSocio)
 				.matriculaAtendente(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", ""))
 				.statusIdentificacaoPositiva(auditoriaIdentificacaoPositivaInputDTO.getStatusCreated())
 				.dataCriacao(formataData(new Date()))
 				.numeroProtocolo(auditoriaIdentificacaoPositivaInputDTO.getNumeroProtocolo())
 				.versaoSistema(auditoriaIdentificacaoPositivaInputDTO.getVersaoSistemaAgenciaVirtual())
-				.ipUsuario(tokenUtils.getIpFromToken(token)).tipoPessoa(PERSON_TYPE).build();
+				.ipUsuario(tokenUtils.getIpFromToken(token))
+				.tipoPessoa(tipoPessoa)
+				.build();
 
 		String dsLogPlataformaJson = null;
 		Clob dsLogPlataformaClob = null;
@@ -70,9 +84,8 @@ public class AuditoriaIdentificacaoPositivaServiceImpl implements AuditoriaIdent
 				.dataCriacaoLogPlataforma(formataDataBanco())
 				.ipUsuario(tokenUtils.getIpFromToken(token))
 				.versaoSistemaAgenciaVirtual(auditoriaIdentificacaoPositivaInputDTO.getVersaoSistemaAgenciaVirtual())
-				.cpfCnpj(Long.parseLong(
-						auditoriaIdentificacaoPositivaInputDTO.getCpfCnpj().replace(".", "").replace("-", "").trim()))
-				.tipoPessoa(PERSON_TYPE)
+				.cpfCnpj(Long.parseLong(auditoriaIdentificacaoPositivaInputDTO.getCpfCnpj().replace(".", "").replace("-", "").trim()))
+				.tipoPessoa(tipoPessoa)
 				.anoMesReferencia(Long.parseLong(formataDataAnoMes(new Date()).replace("-", "")))
 				.jsonLogPlataforma(dsLogPlataformaClob).build();
 

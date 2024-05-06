@@ -29,6 +29,7 @@ import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaRegistraN
 import br.gov.caixa.siavl.atendimentoremoto.sicli.constants.SicliGatewayMessages;
 import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContaAtendimentoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContasOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.SociosOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
@@ -49,7 +50,7 @@ public class SicliGateway {
 	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
 
 	private static String URL_BASE_1 = "https://api.des.caixa:8443/cadastro/v2/clientes?cpfcnpj=";
-	private static String URL_BASE_2 = "&campos=dadosbasicos,enderecos,contratos,documentos,nicho,carteiragrc,vinculo,dadosatualizacaocadastral,meiocomunicacao,rendas,profissaosiric&classe=1";
+	private static String URL_BASE_2 = "&campos=dadosbasicos,composicaoSocietaria,enderecos,contratos,documentos,nicho,carteiragrc,vinculo,dadosatualizacaocadastral,meiocomunicacao,rendas,profissaosiric&classe=1";
 
 	private static String REPLACE_IDENTIFICACAO = "0000000000000000";
 	private static String REPLACE_CONTA_1 = "0000";
@@ -81,8 +82,10 @@ public class SicliGateway {
 		ResponseEntity<String> response = null;
 		JsonNode body;
 		ArrayNode contratos;
+		ArrayNode composicaoSocietaria;
 		boolean statusCreated = false;
 		List<ContasOutputDTO> contasAtendimento = new ArrayList<>();
+		List<SociosOutputDTO> sociosLista = new ArrayList<>();
 
 		try {
 
@@ -97,11 +100,30 @@ public class SicliGateway {
 
 			body = mapper.readTree(String.valueOf(response.getBody()));
 			contratos = (ArrayNode) body.get("contratos");
+			composicaoSocietaria = (ArrayNode) body.get("composicaoSocietaria");
 
 			String nomeCliente = Objects.requireNonNull(body.path("dadosBasicos").path("nome")).asText();
-			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento"))
-					.asText();
-
+			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento")).asText();
+			
+			
+			for (JsonNode nodeComposicaoSocietaria : composicaoSocietaria) {
+				
+				ArrayNode socios = (ArrayNode) nodeComposicaoSocietaria.path("socios");
+				
+				for (JsonNode nodeocios : socios) {
+					
+					SociosOutputDTO socio = new SociosOutputDTO();
+					
+					String nome = nodeocios.path("noPessoa").asText().trim();
+					String cpf = nodeocios.path("coDocumento").asText().trim();
+					
+					socio.setNome(nome);
+					socio.setCpf(cpf);
+				
+					sociosLista.add(socio);
+				}
+			}
+			
 			for (JsonNode node : contratos) {
 				
 				ContasOutputDTO conta = new ContasOutputDTO();
@@ -111,18 +133,9 @@ public class SicliGateway {
 				String nuUnidade = node.path("nuUnidade").asText().trim();
 				String nuProduto = node.path("nuProduto").asText().trim();
 				String coIdentificacao = node.path("coIdentificacao").asText().trim();
-				
 					
 				String contaInput = formataContaTotal(dtInicio, sgSistema, nuUnidade, nuProduto, coIdentificacao); 
 				
-				
-				
-				
-				/*
-				String contaInput = formataUnidade(node.path("nuUnidade").asText()) + formataProduto(node.path("nuProduto").asText(), sgSistema)
-						+ formataCodigoIdentificacao(node.path("coIdentificacao").asText(), formataUnidade(node.path("nuUnidade").asText()), formataProduto(node.path("nuProduto").asText(), sgSistema), sgSistema);
-				
-				*/
 				conta.setConta(contaInput);
 				contasAtendimento.add(conta);
 			}
@@ -136,7 +149,10 @@ public class SicliGateway {
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
 					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
 					.statusCreated(statusCreated).dataCreated(formataData(new Date())).nomeCliente(nomeCliente)
-					.cpfCnpjCliente(formataCpf(cpfCliente)).contas(contasAtendimento).build();
+					.cpfCnpjCliente(formataCpf(cpfCliente))
+					.contas(contasAtendimento)
+					.socios(sociosLista)
+					.build();
 
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
 					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
@@ -236,8 +252,6 @@ public class SicliGateway {
 			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length())+unidade;	
 			String formataProduto = REPLACE_CONTA_1.substring(produto.length())+produto;
 			contaFormatada = formataUnidade+formataProduto+formatIdentificacao;
-			
-			
 			
 		} else if ("SIIFX".equalsIgnoreCase(sgSistema)) {
 			String dataInicio = String.valueOf(dtInicio).replace(".", "").replace("-", "");	

@@ -1,10 +1,13 @@
 package br.gov.caixa.siavl.atendimentoremoto.dto;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.SociosOutputDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,5 +30,7 @@ public class GeraProtocoloOutputDTO {
 
 	@XmlElement(name = "numeroProtocolo")
 	private String numeroProtocolo;
+	
+	private List<SociosOutputDTO> socios;
 
 }
