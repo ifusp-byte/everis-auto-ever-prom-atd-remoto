@@ -9,6 +9,8 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -95,7 +97,7 @@ public class IdentificacaoPositivaGateway {
 		return headers;
 	}
 
-	public CriaDesafioOutputDTO desafioCriar(String token, HashMap<String, String> criaDesafioMap) throws Exception {
+	public CriaDesafioOutputDTO desafioCriar(@Valid  String token, HashMap<String, String> criaDesafioMap) throws Exception {
 
 		CriaDesafioOutputDTO criaDesafioOutputDTO = new CriaDesafioOutputDTO();
 		ResponseEntity<String> response = null;
