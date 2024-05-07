@@ -3,6 +3,8 @@ package br.gov.caixa.siavl.atendimentoremoto.util;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.net.ssl.SSLContext;
 
@@ -20,6 +22,8 @@ import org.springframework.web.context.annotation.ApplicationScope;
 @ApplicationScope
 @SuppressWarnings({"deprecation", "squid:S1488", "squid:S4507"})
 public class RestTemplateUtils {
+	
+	static Logger logger = Logger.getLogger(RestTemplateUtils.class.getName());
 
 	public RestTemplate newRestTemplate() {
 
@@ -29,7 +33,7 @@ public class RestTemplateUtils {
 		try {
 			sslcontext = SSLContexts.custom().loadTrustMaterial(null, (chain, authType) -> true).build();
 		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getLocalizedMessage());
 		} finally {
 		SSLConnectionSocketFactory sSlConnectionSocketFactory = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1.2" }, null, new NoopHostnameVerifier());
 		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sSlConnectionSocketFactory).build();

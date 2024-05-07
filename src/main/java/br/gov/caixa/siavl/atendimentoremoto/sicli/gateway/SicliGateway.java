@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.text.MaskFormatter;
@@ -154,7 +155,7 @@ public class SicliGateway {
 
 		} catch (RestClientResponseException e) {
 
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getLocalizedMessage());
 
 			body = mapper.readTree(e.getResponseBodyAsString());
 			JsonNode retornoSicli = Objects.requireNonNull(body.path("retorno"));

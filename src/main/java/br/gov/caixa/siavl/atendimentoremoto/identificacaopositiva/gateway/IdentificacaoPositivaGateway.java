@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
@@ -78,7 +79,7 @@ public class IdentificacaoPositivaGateway {
 			request = mapper.writeValueAsString(respondeDesafioMap).replaceAll("\\u005C", "").replaceAll("\\n", "");
 			
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getLocalizedMessage());
 		}
 
 		return new HttpEntity<>(request, newHttpHeaders(token));
@@ -120,7 +121,7 @@ public class IdentificacaoPositivaGateway {
 
 		} catch (RestClientResponseException e) {
 
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getLocalizedMessage());
 
 			jsonNode = mapper.readTree(e.getResponseBodyAsString());
 
@@ -180,7 +181,7 @@ public class IdentificacaoPositivaGateway {
 
 		} catch (RestClientResponseException e) {
 
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getLocalizedMessage());
 
 			jsonNode = mapper.readTree(e.getResponseBodyAsString());
 

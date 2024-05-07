@@ -1,5 +1,8 @@
 package br.gov.caixa.siavl.atendimentoremoto.util;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.ApplicationScope;
@@ -17,6 +20,8 @@ public class TokenUtils {
 	String accessToken;
 
 	JWTParser parser = new JWTParser();
+	
+	static Logger logger = Logger.getLogger(TokenUtils.class.getName());
 
 	public String getMatriculaFromToken(String jwtToken) {
 
@@ -36,7 +41,7 @@ public class TokenUtils {
 				matricula = jsonToken.get("preferred_username").asText();
 			}
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getLocalizedMessage());
 		}
 		return matricula;
 	}
@@ -59,7 +64,7 @@ public class TokenUtils {
 				ipUsuario = jsonToken.get("clientAddress").asText();
 			}
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getLocalizedMessage());
 		}
 		return ipUsuario;
 	}
@@ -82,7 +87,7 @@ public class TokenUtils {
 				unidade = jsonToken.get("co-unidade").asText();
 			}
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getLocalizedMessage());
 		}
 		return unidade;
 	}

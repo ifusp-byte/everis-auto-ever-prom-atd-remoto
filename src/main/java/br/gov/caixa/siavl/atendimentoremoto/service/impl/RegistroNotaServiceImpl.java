@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sql.rowset.serial.SerialClob;
 
@@ -61,6 +63,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	private static final String DOCUMENT_TYPE_CPF = "CPF";
 	private static final String DOCUMENT_TYPE_CNPJ = "CNPJ";
 
+	static Logger LOG = Logger.getLogger(DesafioServiceImpl.class.getName());
+	
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	@Override
@@ -164,7 +168,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				descricaoTransacao = mapper.writeValueAsString(auditoriaPncRegistraNotaInputDTO);
 			} catch (JsonProcessingException e) {
 
-				e.printStackTrace();
+				LOG.log(Level.SEVERE, e.getLocalizedMessage());
 			}
 
 			AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
@@ -238,7 +242,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			descricaoTransacao = mapper.writeValueAsString(auditoriaPncEnviaNotaInputDTO);
 		} catch (JsonProcessingException e) {
 
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getLocalizedMessage());
 		}
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
