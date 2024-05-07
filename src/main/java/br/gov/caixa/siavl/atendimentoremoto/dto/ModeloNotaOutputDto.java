@@ -2,6 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.dto;
 
 import java.util.Date;
 
+import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -20,15 +21,19 @@ import lombok.Setter;
 @XmlRootElement(name = "ModeloNotaOutputDto")
 public class ModeloNotaOutputDto {
 
+	@Valid
 	@XmlElement(name = "numeroModeloNota")
 	private String numeroModeloNota;
 
+	@Valid
 	@XmlElement(name = "numeroAcaoProduto")
 	private String numeroAcaoProduto;
 
+	@Valid
 	@XmlElement(name = "descricaoAcaoProduto")
 	private String descricaoAcaoProduto;
 
+	@Valid
 	@JsonIgnore
 	@XmlElement(name = "dataEscolhaFavorito")
 	private Date dataEscolhaFavorito;

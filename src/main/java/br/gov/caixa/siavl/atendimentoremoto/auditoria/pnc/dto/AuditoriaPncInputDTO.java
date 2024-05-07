@@ -1,5 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto;
 
+import javax.validation.Valid;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,15 +15,34 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AuditoriaPncInputDTO {
 
+	@Valid
 	private String descricaoTransacao;
+	
+	@Valid
 	private String ipTerminalUsuario;
+	
+	@Valid
 	private String nomeMfe;
+	
+	@Valid
 	private Long numeroUnidadeLotacaoUsuario;
+	
+	@Valid
 	private String tipoDocumento;
+	
+	@Valid
 	private Long numeroIdentificacaoCliente;
+	
+	@Valid
 	private String ambienteAplicacao;
+	
+	@Valid
 	private Long numeroUnidadeContaCliente;
+	
+	@Valid
 	private Long numeroOperacaoProduto;
+	
+	@Valid
 	private Long numeroConta;
 
 }

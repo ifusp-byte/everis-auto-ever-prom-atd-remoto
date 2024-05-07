@@ -1,5 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.dto;
 
+import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -21,8 +22,13 @@ import lombok.Setter;
 @XmlRootElement(name = "ModeloNotaDinamicoInputDTO")
 public class ModeloNotaDinamicoInputDTO {
 
+	@Valid
 	private String cpfCnpj;
+	
+	@Valid
 	private String protocolo;
+	
+	@Valid
 	private String numeroAcaoProduto;
 
 }

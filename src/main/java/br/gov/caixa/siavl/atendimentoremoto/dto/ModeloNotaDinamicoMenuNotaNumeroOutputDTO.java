@@ -1,5 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.dto;
 
+import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -22,9 +23,11 @@ import lombok.Setter;
 @XmlRootElement(name = "ModeloNotaDinamicoMenuNotaNumeroOutputDTO")
 public class ModeloNotaDinamicoMenuNotaNumeroOutputDTO {
 	
+	@Valid
 	@XmlElement(name = "numeroNota")
 	private String numeroNota;
 	
+	@Valid
 	@XmlElement(name = "dataModificacao")
 	private String dataModificacao; 
 
