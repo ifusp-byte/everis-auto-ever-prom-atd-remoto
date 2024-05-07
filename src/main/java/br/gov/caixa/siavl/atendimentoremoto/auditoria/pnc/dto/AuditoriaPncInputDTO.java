@@ -17,9 +17,11 @@ public class AuditoriaPncInputDTO {
 	private String ipTerminalUsuario;
 	private String nomeMfe;
 	private Long numeroUnidadeLotacaoUsuario;
-	private Long numeroConta;
 	private String tipoDocumento;
 	private Long numeroIdentificacaoCliente;
 	private String ambienteAplicacao;
+	private Long numeroUnidadeContaCliente;
+	private Long numeroOperacaoProduto;
+	private Long numeroConta;
 
 }

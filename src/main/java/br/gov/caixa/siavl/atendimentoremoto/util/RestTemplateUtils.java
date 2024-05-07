@@ -23,19 +23,18 @@ public class RestTemplateUtils {
 
 	public RestTemplate newRestTemplate() {
 
-		HttpComponentsClientHttpRequestFactory requestFactory = null;
+		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
 		SSLContext sslcontext = null;
-		requestFactory = new HttpComponentsClientHttpRequestFactory();
 
 		try {
 			sslcontext = SSLContexts.custom().loadTrustMaterial(null, (chain, authType) -> true).build();
 		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
 			e.printStackTrace();
-		}
-		SSLConnectionSocketFactory sSlConnectionSocketFactory = new SSLConnectionSocketFactory(sslcontext,
-				new String[] { "TLSv1.2" }, null, new NoopHostnameVerifier());
+		} finally {
+		SSLConnectionSocketFactory sSlConnectionSocketFactory = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1.2" }, null, new NoopHostnameVerifier());
 		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sSlConnectionSocketFactory).build();
 		requestFactory.setHttpClient(httpClient);
+		}
 
 		RestTemplate restTemplate = new RestTemplate(requestFactory);
 

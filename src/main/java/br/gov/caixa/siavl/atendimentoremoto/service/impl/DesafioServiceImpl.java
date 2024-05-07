@@ -65,7 +65,6 @@ public class DesafioServiceImpl implements DesafioService {
 			tipoPessoa = PERSON_TYPE_PJ;	
 		}
 		
-		Long matriculaAtendente = Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", ""));
 		RespondeDesafioOutputDTO respondeDesafio = identificacaoPositivaGateway.desafioResponder(token, idDesafio, respostaDesafio);
 		
 		AuditoriaPncDesafioInputDTO auditoriaPncDesafioInputDTO = new AuditoriaPncDesafioInputDTO(); 	
