@@ -29,6 +29,7 @@ public class RestTemplateUtils {
 
 		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
 		SSLContext sslcontext = null;
+		RestTemplate restTemplate = null;
 
 		try {
 			sslcontext = SSLContexts.custom().loadTrustMaterial(null, (chain, authType) -> true).build();
@@ -38,9 +39,8 @@ public class RestTemplateUtils {
 		SSLConnectionSocketFactory sSlConnectionSocketFactory = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1.2" }, null, new NoopHostnameVerifier());
 		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sSlConnectionSocketFactory).build();
 		requestFactory.setHttpClient(httpClient);
+		restTemplate = new RestTemplate(requestFactory);
 		}
-
-		RestTemplate restTemplate = new RestTemplate(requestFactory);
 
 		return restTemplate;
 
