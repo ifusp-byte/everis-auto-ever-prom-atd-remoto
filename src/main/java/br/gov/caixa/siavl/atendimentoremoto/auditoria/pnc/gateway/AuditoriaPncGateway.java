@@ -3,6 +3,8 @@ package br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.gateway;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -49,7 +51,7 @@ public class AuditoriaPncGateway {
 		return headers;
 	}
 
-	public void auditoriaPncSalvar(String token, AuditoriaPncInputDTO auditoriaPncInputDTO) {
+	public void auditoriaPncSalvar(@Valid String token, @Valid AuditoriaPncInputDTO auditoriaPncInputDTO) {
 
 		ResponseEntity<String> response = null;
 
