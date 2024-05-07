@@ -1,15 +1,14 @@
 package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
+
 import java.util.HashMap;
 import java.util.logging.Logger;
-
+import java.util.logging.Level;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.gateway.AuditoriaPncGateway;
@@ -81,8 +80,7 @@ public class DesafioServiceImpl implements DesafioService {
 		try {
 			descricaoTransacao = mapper.writeValueAsString(auditoriaPncDesafioInputDTO);
 		} catch (JsonProcessingException e) {
-
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getLocalizedMessage());
 		}
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();

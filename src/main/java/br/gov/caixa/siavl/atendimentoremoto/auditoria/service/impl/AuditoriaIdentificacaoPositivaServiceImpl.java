@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sql.rowset.serial.SerialClob;
 
@@ -16,8 +18,8 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaIdentificacaoPositivaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaIdentificacaoPositivaDsLogPlataformaDTO;
+import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaIdentificacaoPositivaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.model.LogPlataforma;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.repository.LogPlataformaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaIdentificacaoPositivaService;
@@ -37,6 +39,8 @@ public class AuditoriaIdentificacaoPositivaServiceImpl implements AuditoriaIdent
 	private static final Long TRANSACAO_SISTEMA = 144L;
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
+	
+	static Logger LOG = Logger.getLogger(AuditoriaIdentificacaoPositivaServiceImpl.class.getName());
 	
 	public Boolean auditar(String token,
 			AuditoriaIdentificacaoPositivaInputDTO auditoriaIdentificacaoPositivaInputDTO) {
@@ -76,7 +80,7 @@ public class AuditoriaIdentificacaoPositivaServiceImpl implements AuditoriaIdent
 			dsLogPlataformaClob = new SerialClob(dsLogPlataformaJson.toCharArray());
 		} catch (JsonProcessingException | SQLException e) {
 
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getLocalizedMessage());
 		}
 
 		logPlataforma = LogPlataforma.builder().transacaoSistema(TRANSACAO_SISTEMA)
