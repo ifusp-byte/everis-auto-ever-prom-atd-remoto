@@ -28,11 +28,19 @@ public class AuditoriaRegistraNotaServiceImpl implements AuditoriaRegistraNotaSe
 	
 	private static ObjectMapper mapper = new ObjectMapper();
 	private static final Long TRANSACAO_SISTEMA_SUCESSO_SICLI = 189L;
-	private static final String PERSON_TYPE = "PF";
-	private static final String DEFAULT_USER_IP = "123";
+	private static final String PERSON_TYPE_PF = "PF";
+	private static final String PERSON_TYPE_PJ = "PJ";
 	
 	public void auditar(String dataRegistroNota, String token, String cpfCnpj, String matriculaAtendente, String statusRetornoSicli, String numeroProtocolo, String numeroContaAtendimento, String numeroNota, String versaoSistema, String produto) {
 
+		String tipoPessoa = null;  
+		
+		if (cpfCnpj.replace(".", "").replace("-", "").replace("/", "").trim().length() == 11) {
+			tipoPessoa = PERSON_TYPE_PF;
+		} else {	
+			tipoPessoa = PERSON_TYPE_PJ;	
+		}
+		
 		LogPlataforma logPlataforma = new LogPlataforma();
 		AuditoriaRegistraNotaDsLogPlataformaDTO dsLogPlataformaDTO = new AuditoriaRegistraNotaDsLogPlataformaDTO();
 		
@@ -46,7 +54,7 @@ public class AuditoriaRegistraNotaServiceImpl implements AuditoriaRegistraNotaSe
 				.dataRegistroNota(dataRegistroNota)
 				.versaoSistema(versaoSistema)
 				.ipUsuario(tokenUtils.getIpFromToken(token))
-				.tipoPessoa(PERSON_TYPE)
+				.tipoPessoa(tipoPessoa)
 				.transacaoSistema(TRANSACAO_SISTEMA_SUCESSO_SICLI)
 				.produto(produto)
 				.build();
@@ -69,7 +77,7 @@ public class AuditoriaRegistraNotaServiceImpl implements AuditoriaRegistraNotaSe
 				.ipUsuario(tokenUtils.getIpFromToken(token))
 				.versaoSistemaAgenciaVirtual(versaoSistema)
 				.cpfCnpj(Long.parseLong(cpfCnpj.replace(".", "").replace("-", "").trim()))
-				.tipoPessoa(PERSON_TYPE)
+				.tipoPessoa(tipoPessoa)
 				.anoMesReferencia(Long.parseLong(formataDataAnoMes(new Date()).replace("-", "")))
 				.jsonLogPlataforma(dsLogPlataformaClob)
 				.numeroNota(Long.parseLong(numeroNota))
@@ -79,15 +87,6 @@ public class AuditoriaRegistraNotaServiceImpl implements AuditoriaRegistraNotaSe
 
 	}
 	
-	private String formataData(Date dateInput) {
-
-		String data = null;
-		Locale locale = new Locale("pt", "BR");
-		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
-		data = String.valueOf(sdfOut.format(dateInput));
-		return data;
-	}
-
 	private Date formataDataBanco() {
 
 		Calendar time = Calendar.getInstance();
