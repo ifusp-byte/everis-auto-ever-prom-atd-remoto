@@ -12,8 +12,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
+import org.springframework.web.client.RestTemplate;
 
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
@@ -48,13 +50,17 @@ public class AuditoriaPncGateway {
 		return headers;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void auditoriaPncSalvar(@Valid String token, @Valid AuditoriaPncInputDTO auditoriaPncInputDTO) {
 
 		ResponseEntity<String> response = null;
+		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+		requestFactory = restTemplateUtils.newrequestFactory(requestFactory); 
+		RestTemplate restTemplate = new RestTemplate(requestFactory);
 
 		try {
 
-			response = restTemplateUtils.newRestTemplate().postForEntity(URL_BASE,
+			response = restTemplate.postForEntity(URL_BASE,
 					newRequestEntityAuditoriaPncSalvar(token, auditoriaPncInputDTO), String.class);
 
 			LOG.log(Level.INFO, "Sucesso Auditoria PNC " + String.valueOf(response));
@@ -63,6 +69,8 @@ public class AuditoriaPncGateway {
 			LOG.log(Level.INFO, "Erro Auditoria PNC " + String.valueOf(e.getResponseBodyAsString()));
 
 		}
+		
+		requestFactory.getHttpClient().getConnectionManager().shutdown();
 
 	}
 

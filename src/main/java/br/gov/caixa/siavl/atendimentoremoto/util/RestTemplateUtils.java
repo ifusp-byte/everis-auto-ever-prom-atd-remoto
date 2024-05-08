@@ -24,6 +24,7 @@ public class RestTemplateUtils {
 
 	private final static Logger LOG = Logger.getLogger(RestTemplateUtils.class.getName());
 
+	/*
 	public RestTemplate newRestTemplate() {
 
 		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
@@ -39,6 +40,26 @@ public class RestTemplateUtils {
 			requestFactory.setHttpClient(httpClient);
 			restTemplate = new RestTemplate(requestFactory);
 			return restTemplate;
+		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	*/
+	
+	
+	public HttpComponentsClientHttpRequestFactory newrequestFactory(HttpComponentsClientHttpRequestFactory requestFactory) {
+
+		SSLContext sslcontext = null;
+		CloseableHttpClient httpClient = null;
+
+		try {
+			sslcontext = SSLContexts.custom().loadTrustMaterial(null, (chain, authType) -> true).build();
+			SSLConnectionSocketFactory sSlConnectionSocketFactory = new SSLConnectionSocketFactory(sslcontext,
+					new String[] { "TLSv1.2" }, null, new NoopHostnameVerifier());
+			httpClient = HttpClients.custom().setSSLSocketFactory(sSlConnectionSocketFactory).build();
+			requestFactory.setHttpClient(httpClient);
+			return requestFactory;
 		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
 			throw new RuntimeException(e);
 		}
