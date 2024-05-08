@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -72,6 +73,7 @@ public class AtendimentoRemotoController {
 			@Valid @RequestHeader(value = "token", required = true) String token,
 			@Valid @RequestBody GeraProtocoloInputDTO geraProtocoloInputDTO) throws Exception {
 		return ResponseEntity.status(HttpStatus.OK)
+				.contentType(MediaType.APPLICATION_JSON)
 				.body(geraProtocoloService.geraProtocolo(token, geraProtocoloInputDTO));
 	}
 
@@ -129,13 +131,16 @@ public class AtendimentoRemotoController {
 			@Valid @PathVariable Long numeroModeloNota, @Valid @RequestBody ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO)
 			throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED)
+				.contentType(MediaType.APPLICATION_JSON)
 				.body(modeloNotaService.modeloNotaDinamico(token, numeroModeloNota, modeloNotaDinamicoInputDTO));
 	}
 
 	@GetMapping("/conta-atendimento/{cpfCnpj}")
 	public ResponseEntity<Object> contaAtendimento(@Valid @RequestHeader(value = "token", required = true) String token,
 			@Valid @PathVariable String cpfCnpj) throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED).body(sicliGateway.contaAtendimento(token, cpfCnpj, true));
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(sicliGateway.contaAtendimento(token, cpfCnpj, true));
 	}
 	
 	@PostMapping("/nota/{numeroNota}")
