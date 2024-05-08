@@ -23,15 +23,8 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 public class AuditoriaPncGateway {
 
 	private final static Logger LOG = Logger.getLogger(AuditoriaPncGateway.class.getName());
-
-	private static String AUTHORIZATION = "Authorization";
-
-	private static String BEARER = "Bearer ";
-
 	private static String API_KEY = "apikey";
-
 	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
-
 	private static String URL_BASE = "https://api.des.caixa:8443/plataforma-unificada/trilha/v1/registros";
 
 	@Autowired
@@ -49,7 +42,6 @@ public class AuditoriaPncGateway {
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		//headers.set(AUTHORIZATION, BEARER + token);
 		headers.setBearerAuth(sanitizedToken);
 		headers.set(API_KEY, API_KEY_VALUE);
 
@@ -68,7 +60,6 @@ public class AuditoriaPncGateway {
 			LOG.log(Level.INFO, "Sucesso Auditoria PNC " + String.valueOf(response));
 
 		} catch (RestClientResponseException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
 			LOG.log(Level.INFO, "Erro Auditoria PNC " + String.valueOf(e.getResponseBodyAsString()));
 
 		}

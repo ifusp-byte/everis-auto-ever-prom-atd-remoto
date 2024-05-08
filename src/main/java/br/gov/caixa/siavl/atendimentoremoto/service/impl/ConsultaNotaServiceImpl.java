@@ -61,7 +61,7 @@ public class ConsultaNotaServiceImpl implements ConsultaNotaService {
 		try {
 			data = String.valueOf(sdfOut.format(sdfIn.parse(String.valueOf(object))));
 		} catch (ParseException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return data;
 	}
@@ -81,7 +81,7 @@ public class ConsultaNotaServiceImpl implements ConsultaNotaService {
 				cpfMask.setValueContainsLiteralCharacters(false);
 				cpf = cpfMask.valueToString(formatCpf);
 			} catch (ParseException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 		return cpf;
@@ -102,7 +102,7 @@ public class ConsultaNotaServiceImpl implements ConsultaNotaService {
 				cnpjMask.setValueContainsLiteralCharacters(false);
 				cnpj = cnpjMask.valueToString(formatCnpj);
 			} catch (ParseException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 		return cnpj;

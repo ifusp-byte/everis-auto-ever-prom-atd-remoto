@@ -74,8 +74,7 @@ public class AuditoriaRegistraNotaServiceImpl implements AuditoriaRegistraNotaSe
 			dsLogPlataformaJson = mapper.writeValueAsString(dsLogPlataformaDTO);
 			dsLogPlataformaClob = new SerialClob(dsLogPlataformaJson.toCharArray());
 		} catch (JsonProcessingException | SQLException e) {
-
-			LOG.log(Level.SEVERE, e.getMessage(), e);
+			throw new RuntimeException(e);
 		}
 
 		logPlataforma = LogPlataforma.builder()
