@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.RestClientResponseException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,8 +49,7 @@ public class SicliGateway {
 	private final static Logger LOG = Logger.getLogger(SicliGateway.class.getName());
 	private static String API_KEY = "apikey";
 	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
-	private static String URL_BASE_1 = "https://api.des.caixa:8443/cadastro/v2/clientes?cpfcnpj=";
-	private static String URL_BASE_2 = "&campos=dadosbasicos,composicaoSocietaria,enderecos,contratos,documentos,nicho,carteiragrc,vinculo,dadosatualizacaocadastral,meiocomunicacao,rendas,profissaosiric&classe=1";
+	private static String URL_BASE_1 = "https://api.des.caixa:8443/cadastro/v2/clientes?campos=dadosbasicos,composicaoSocietaria,enderecos,contratos,documentos,nicho,carteiragrc,vinculo,dadosatualizacaocadastral,meiocomunicacao,rendas,profissaosiric&classe=1&cpfcnpj=";
 	private static String REPLACE_IDENTIFICACAO = "0000000000000000";
 	private static String REPLACE_CONTA_1 = "0000";
 	private static String REPLACE_CONTA_2 = "000";
@@ -88,9 +88,11 @@ public class SicliGateway {
 		List<SociosOutputDTO> sociosLista = new ArrayList<>();
 
 		try {
-
-			response = restTemplateUtils.newRestTemplate().exchange(
-					URL_BASE_1 + cpfCnpj.replace(".", "").replace("-", "").trim() + URL_BASE_2, HttpMethod.GET,
+			
+			String uri = URL_BASE_1 + cpfCnpj.replace(".", "").replace("-", "").trim();
+			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
+			
+			response = restTemplateUtils.newRestTemplate().exchange(finalUri, HttpMethod.GET,
 					newRequestEntityContaAtendimento(token), String.class);
 
 			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
