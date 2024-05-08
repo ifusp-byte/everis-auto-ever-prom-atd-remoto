@@ -19,8 +19,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -91,16 +93,21 @@ public class IdentificacaoPositivaGateway {
 		return headers;
 	}
 
+	@SuppressWarnings("deprecation")
 	public CriaDesafioOutputDTO desafioCriar(@Valid  String token, HashMap<String, String> criaDesafioMap) throws Exception {
         
 		CriaDesafioOutputDTO criaDesafioOutputDTO = new CriaDesafioOutputDTO();
 		ResponseEntity<String> response = null;
 		JsonNode jsonNode;
 		String codigo422 = null;
+		
+		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+		requestFactory = restTemplateUtils.newrequestFactory(requestFactory); 
+		RestTemplate restTemplate = new RestTemplate(requestFactory);
 
 		try {
 
-			response = restTemplateUtils.newRestTemplate().postForEntity(URL_BASE,
+			response = restTemplate.postForEntity(URL_BASE,
 					newRequestEntityDesafioCriar(token, criaDesafioMap), String.class);
 
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC " + mapper.writeValueAsString(response));
@@ -134,6 +141,7 @@ public class IdentificacaoPositivaGateway {
 
 		}
 
+		requestFactory.getHttpClient().getConnectionManager().shutdown();
 		return criaDesafioOutputDTO;
 
 	}

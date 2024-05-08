@@ -22,9 +22,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.RestClientResponseException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -76,6 +78,7 @@ public class SicliGateway {
 		return headers;
 	}
 
+	@SuppressWarnings("deprecation")
 	public ContaAtendimentoOutputDTO contaAtendimento(@Valid String token, @Valid  String cpfCnpj, @Valid boolean auditar) throws Exception {
 
 		ContaAtendimentoOutputDTO contaAtendimentoOutputDTO = new ContaAtendimentoOutputDTO();
@@ -87,12 +90,16 @@ public class SicliGateway {
 		List<ContasOutputDTO> contasAtendimento = new ArrayList<>();
 		List<SociosOutputDTO> sociosLista = new ArrayList<>();
 
+		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+		requestFactory = restTemplateUtils.newrequestFactory(requestFactory); 
+		RestTemplate restTemplate = new RestTemplate(requestFactory);
+		
 		try {
-			
+
 			String uri = URL_BASE_1 + cpfCnpj.replace(".", "").replace("-", "").trim();
 			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
 			
-			response = restTemplateUtils.newRestTemplate().exchange(finalUri, HttpMethod.GET,
+			response = restTemplate.exchange(finalUri, HttpMethod.GET,
 					newRequestEntityContaAtendimento(token), String.class);
 
 			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
@@ -182,7 +189,8 @@ public class SicliGateway {
 				auditoriaRegistraNotaSicliService.auditar(contaAtendimentoOutputDTO, token, cpfCnpj);
 			}
 		}
-
+		
+		requestFactory.getHttpClient().getConnectionManager().shutdown();
 		return contaAtendimentoOutputDTO;
 	}
 
