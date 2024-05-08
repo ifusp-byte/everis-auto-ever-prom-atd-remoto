@@ -1,6 +1,5 @@
 package br.gov.caixa.siavl.atendimentoremoto.util;
 
-import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -42,14 +41,6 @@ public class RestTemplateUtils {
 			return restTemplate;
 		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
 			throw new RuntimeException(e);
-		} finally {
-			try {
-				if (httpClient != null) {
-				httpClient.close();
-				}
-			} catch (IOException e) {
-				LOG.info("Erro ao estabelecer conexão com o socket.");
-			}
 		}
 	}
 }
