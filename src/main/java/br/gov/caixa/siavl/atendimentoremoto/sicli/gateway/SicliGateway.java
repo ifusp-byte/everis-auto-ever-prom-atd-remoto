@@ -46,9 +46,6 @@ public class SicliGateway {
 	AuditoriaRegistraNotaSicliService auditoriaRegistraNotaSicliService;
 
 	private final static Logger LOG = Logger.getLogger(SicliGateway.class.getName());
-
-	private static String AUTHORIZATION = "Authorization";
-	private static String BEARER = "Bearer ";
 	private static String API_KEY = "apikey";
 	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
 	private static String URL_BASE_1 = "https://api.des.caixa:8443/cadastro/v2/clientes?cpfcnpj=";
@@ -73,7 +70,6 @@ public class SicliGateway {
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		//headers.set(AUTHORIZATION, BEARER + token);
 		headers.setBearerAuth(sanitizedToken);
 		headers.set(API_KEY, API_KEY_VALUE);
 
@@ -163,8 +159,6 @@ public class SicliGateway {
 
 		} catch (RestClientResponseException e) {
 
-			LOG.log(Level.SEVERE, e.getMessage(), e);
-
 			body = mapper.readTree(e.getResponseBodyAsString());
 			JsonNode retornoSicli = Objects.requireNonNull(body.path("retorno"));
 
@@ -226,7 +220,7 @@ public class SicliGateway {
 				cpfMask.setValueContainsLiteralCharacters(false);
 				cpf = cpfMask.valueToString(formatCpf);
 			} catch (ParseException e) {
-				LOG.log(Level.SEVERE, e.getMessage(), e);
+				throw new RuntimeException(e);
 			}
 		}
 		return cpf;

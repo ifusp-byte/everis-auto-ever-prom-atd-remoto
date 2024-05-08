@@ -41,7 +41,7 @@ public class TokenUtils {
 				matricula = jsonToken.get("preferred_username").asText();
 			}
 		} catch (JsonProcessingException e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
+			throw new RuntimeException(e);
 		}
 		return matricula;
 	}
@@ -64,7 +64,7 @@ public class TokenUtils {
 				ipUsuario = jsonToken.get("clientAddress").asText();
 			}
 		} catch (JsonProcessingException e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
+			throw new RuntimeException(e);
 		}
 		return ipUsuario;
 	}
@@ -87,7 +87,7 @@ public class TokenUtils {
 				unidade = jsonToken.get("co-unidade").asText();
 			}
 		} catch (JsonProcessingException e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
+			throw new RuntimeException(e);
 		}
 		return unidade;
 	}

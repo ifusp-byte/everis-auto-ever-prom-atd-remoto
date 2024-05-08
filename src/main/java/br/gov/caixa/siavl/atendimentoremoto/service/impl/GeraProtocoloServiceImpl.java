@@ -94,8 +94,7 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		try {
 			descricaoTransacao = mapper.writeValueAsString(auditoriaPncProtocoloInputDTO);
 		} catch (JsonProcessingException e) {
-
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();

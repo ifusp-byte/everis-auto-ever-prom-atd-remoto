@@ -42,19 +42,10 @@ public class IdentificacaoPositivaGateway {
 	AtendimentoClienteRepository atendimentoClienteRepository; 
 
 	private final static Logger LOG = Logger.getLogger(IdentificacaoPositivaGateway.class.getName());
-
-	private static String AUTHORIZATION = "Authorization";
-
-	private static String BEARER = "Bearer ";
-
 	private static String API_KEY = "APIKey";
-
 	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
-
 	private static String URL_BASE = "https://api.des.caixa:8443/id-positiva/v1/desafios";
-
 	private static ObjectMapper mapper = new ObjectMapper();
-
 	private static String CODIGO_422_0 = "0";
 	private static String CODIGO_422_1 = "1";
 	private static String CODIGO_422_2 = "2";
@@ -82,7 +73,7 @@ public class IdentificacaoPositivaGateway {
 			request = mapper.writeValueAsString(respondeDesafioMap).replaceAll("\\u005C", "").replaceAll("\\n", "");
 			
 		} catch (JsonProcessingException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
+			throw new RuntimeException(e);
 		}
 
 		return new HttpEntity<>(request, newHttpHeaders(token));
@@ -94,7 +85,6 @@ public class IdentificacaoPositivaGateway {
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		//headers.set(AUTHORIZATION, BEARER + token);
 		headers.setBearerAuth(sanitizedToken);
 		headers.set(API_KEY, API_KEY_VALUE);
 
@@ -126,9 +116,7 @@ public class IdentificacaoPositivaGateway {
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta View " + mapper.writeValueAsString(criaDesafioOutputDTO));
 
 		} catch (RestClientResponseException e) {
-
-			LOG.log(Level.SEVERE, e.getMessage(), e);
-
+			
 			jsonNode = mapper.readTree(e.getResponseBodyAsString());
 
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC " + mapper.writeValueAsString(jsonNode));
@@ -186,8 +174,6 @@ public class IdentificacaoPositivaGateway {
 					+ mapper.writeValueAsString(respondeDesafioOutputDTO));
 
 		} catch (RestClientResponseException e) {
-
-			LOG.log(Level.SEVERE, e.getMessage(), e);
 
 			jsonNode = mapper.readTree(e.getResponseBodyAsString());
 
