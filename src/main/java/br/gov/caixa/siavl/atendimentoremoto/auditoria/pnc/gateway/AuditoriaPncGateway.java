@@ -2,6 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.gateway;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import javax.validation.Valid;
 
@@ -52,13 +53,16 @@ public class AuditoriaPncGateway {
 	}
 
 	public void auditoriaPncSalvar(@Valid String token, @Valid AuditoriaPncInputDTO auditoriaPncInputDTO) {
+		
+        Pattern p = Pattern.compile("\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\"");
+        String NonCRLFtoken = p.matcher(token).replaceAll(m -> m.group().replaceAll("\\R+", "") );
 
 		ResponseEntity<String> response = null;
 
 		try {
 
 			response = restTemplateUtils.newRestTemplate().postForEntity(URL_BASE,
-					newRequestEntityAuditoriaPncSalvar(token, auditoriaPncInputDTO), String.class);
+					newRequestEntityAuditoriaPncSalvar(NonCRLFtoken, auditoriaPncInputDTO), String.class);
 
 			LOG.log(Level.INFO, "Sucesso Auditoria PNC " + String.valueOf(response));
 
