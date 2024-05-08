@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import javax.swing.text.MaskFormatter;
 import javax.validation.Valid;
@@ -76,6 +77,9 @@ public class SicliGateway {
 	}
 
 	public ContaAtendimentoOutputDTO contaAtendimento(@Valid String token, @Valid  String cpfCnpj, @Valid boolean auditar) throws Exception {
+		
+        Pattern p = Pattern.compile("\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\"");
+        String NonCRLFtoken = p.matcher(token).replaceAll(m -> m.group().replaceAll("\\R+", "") );
 
 		ContaAtendimentoOutputDTO contaAtendimentoOutputDTO = new ContaAtendimentoOutputDTO();
 		ResponseEntity<String> response = null;
@@ -90,7 +94,7 @@ public class SicliGateway {
 
 			response = restTemplateUtils.newRestTemplate().exchange(
 					URL_BASE_1 + cpfCnpj.replace(".", "").replace("-", "").trim() + URL_BASE_2, HttpMethod.GET,
-					newRequestEntityContaAtendimento(token), String.class);
+					newRequestEntityContaAtendimento(NonCRLFtoken), String.class);
 
 			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
 

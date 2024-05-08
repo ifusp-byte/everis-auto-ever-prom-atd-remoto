@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import javax.validation.Valid;
 
@@ -98,7 +99,10 @@ public class IdentificacaoPositivaGateway {
 	}
 
 	public CriaDesafioOutputDTO desafioCriar(@Valid  String token, HashMap<String, String> criaDesafioMap) throws Exception {
-
+		
+        Pattern p = Pattern.compile("\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\"");
+        String NonCRLFtoken = p.matcher(token).replaceAll(m -> m.group().replaceAll("\\R+", "") );
+        
 		CriaDesafioOutputDTO criaDesafioOutputDTO = new CriaDesafioOutputDTO();
 		ResponseEntity<String> response = null;
 		JsonNode jsonNode;
@@ -107,7 +111,7 @@ public class IdentificacaoPositivaGateway {
 		try {
 
 			response = restTemplateUtils.newRestTemplate().postForEntity(URL_BASE,
-					newRequestEntityDesafioCriar(token, criaDesafioMap), String.class);
+					newRequestEntityDesafioCriar(NonCRLFtoken, criaDesafioMap), String.class);
 
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC " + mapper.writeValueAsString(response));
 
