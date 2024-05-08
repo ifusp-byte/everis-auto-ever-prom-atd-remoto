@@ -1,9 +1,9 @@
 package br.gov.caixa.siavl.atendimentoremoto.util;
 
+import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.net.ssl.SSLContext;
@@ -20,9 +20,9 @@ import org.springframework.web.context.annotation.ApplicationScope;
 
 @Component
 @ApplicationScope
-@SuppressWarnings({"deprecation", "squid:S1488", "squid:S4507"})
+@SuppressWarnings({ "deprecation", "squid:S1488", "squid:S4507" })
 public class RestTemplateUtils {
-	
+
 	private final static Logger logger = Logger.getLogger(RestTemplateUtils.class.getName());
 
 	public RestTemplate newRestTemplate() {
@@ -36,10 +36,18 @@ public class RestTemplateUtils {
 		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
 			throw new RuntimeException(e);
 		} finally {
-		SSLConnectionSocketFactory sSlConnectionSocketFactory = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1.2" }, null, new NoopHostnameVerifier());
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sSlConnectionSocketFactory).build();
-		requestFactory.setHttpClient(httpClient);
-		restTemplate = new RestTemplate(requestFactory);
+			SSLConnectionSocketFactory sSlConnectionSocketFactory = new SSLConnectionSocketFactory(sslcontext,
+					new String[] { "TLSv1.2" }, null, new NoopHostnameVerifier());
+			CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sSlConnectionSocketFactory)
+					.build();
+			requestFactory.setHttpClient(httpClient);
+			restTemplate = new RestTemplate(requestFactory);
+
+			try {
+				httpClient.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
 
 		return restTemplate;
