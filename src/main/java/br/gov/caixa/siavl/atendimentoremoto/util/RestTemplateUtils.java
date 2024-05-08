@@ -30,28 +30,26 @@ public class RestTemplateUtils {
 		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
 		SSLContext sslcontext = null;
 		RestTemplate restTemplate = null;
+		CloseableHttpClient httpClient = null;
 
 		try {
 			sslcontext = SSLContexts.custom().loadTrustMaterial(null, (chain, authType) -> true).build();
+			SSLConnectionSocketFactory sSlConnectionSocketFactory = new SSLConnectionSocketFactory(sslcontext,
+					new String[] { "TLSv1.2" }, null, new NoopHostnameVerifier());
+			httpClient = HttpClients.custom().setSSLSocketFactory(sSlConnectionSocketFactory).build();
+			requestFactory.setHttpClient(httpClient);
+			restTemplate = new RestTemplate(requestFactory);
+			return restTemplate;
 		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
 			throw new RuntimeException(e);
 		} finally {
-			SSLConnectionSocketFactory sSlConnectionSocketFactory = new SSLConnectionSocketFactory(sslcontext,
-					new String[] { "TLSv1.2" }, null, new NoopHostnameVerifier());
-			CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sSlConnectionSocketFactory)
-					.build();
-			requestFactory.setHttpClient(httpClient);
-			restTemplate = new RestTemplate(requestFactory);
-
 			try {
+				if (httpClient != null) {
 				httpClient.close();
+				}
 			} catch (IOException e) {
 				LOG.info("Erro ao estabelecer conexão com o socket.");
 			}
 		}
-
-		return restTemplate;
-
 	}
-
 }
