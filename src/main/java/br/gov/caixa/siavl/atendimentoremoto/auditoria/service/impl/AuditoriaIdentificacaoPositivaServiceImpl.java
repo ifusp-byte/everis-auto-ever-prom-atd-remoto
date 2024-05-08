@@ -40,7 +40,7 @@ public class AuditoriaIdentificacaoPositivaServiceImpl implements AuditoriaIdent
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
 	
-	static Logger LOG = Logger.getLogger(AuditoriaIdentificacaoPositivaServiceImpl.class.getName());
+	private final static Logger LOG = Logger.getLogger(AuditoriaIdentificacaoPositivaServiceImpl.class.getName());
 	
 	public Boolean auditar(String token,
 			AuditoriaIdentificacaoPositivaInputDTO auditoriaIdentificacaoPositivaInputDTO) {
@@ -80,7 +80,7 @@ public class AuditoriaIdentificacaoPositivaServiceImpl implements AuditoriaIdent
 			dsLogPlataformaClob = new SerialClob(dsLogPlataformaJson.toCharArray());
 		} catch (JsonProcessingException | SQLException e) {
 
-			LOG.log(Level.SEVERE, e.getLocalizedMessage());
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		logPlataforma = LogPlataforma.builder().transacaoSistema(TRANSACAO_SISTEMA)

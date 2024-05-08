@@ -21,7 +21,7 @@ public class TokenUtils {
 
 	JWTParser parser = new JWTParser();
 	
-	static Logger logger = Logger.getLogger(TokenUtils.class.getName());
+	private final static Logger logger = Logger.getLogger(TokenUtils.class.getName());
 
 	public String getMatriculaFromToken(String jwtToken) {
 
@@ -41,7 +41,7 @@ public class TokenUtils {
 				matricula = jsonToken.get("preferred_username").asText();
 			}
 		} catch (JsonProcessingException e) {
-			logger.log(Level.SEVERE, e.getLocalizedMessage());
+			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 		return matricula;
 	}
@@ -64,7 +64,7 @@ public class TokenUtils {
 				ipUsuario = jsonToken.get("clientAddress").asText();
 			}
 		} catch (JsonProcessingException e) {
-			logger.log(Level.SEVERE, e.getLocalizedMessage());
+			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 		return ipUsuario;
 	}
@@ -87,7 +87,7 @@ public class TokenUtils {
 				unidade = jsonToken.get("co-unidade").asText();
 			}
 		} catch (JsonProcessingException e) {
-			logger.log(Level.SEVERE, e.getLocalizedMessage());
+			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 		return unidade;
 	}

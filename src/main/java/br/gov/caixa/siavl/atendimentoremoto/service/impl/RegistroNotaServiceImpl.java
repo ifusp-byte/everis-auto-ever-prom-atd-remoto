@@ -168,7 +168,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				descricaoTransacao = mapper.writeValueAsString(auditoriaPncRegistraNotaInputDTO);
 			} catch (JsonProcessingException e) {
 
-				LOG.log(Level.SEVERE, e.getLocalizedMessage());
+				LOG.log(Level.SEVERE, e.getMessage(), e);
 			}
 
 			AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
@@ -242,7 +242,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			descricaoTransacao = mapper.writeValueAsString(auditoriaPncEnviaNotaInputDTO);
 		} catch (JsonProcessingException e) {
 
-			LOG.log(Level.SEVERE, e.getLocalizedMessage());
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();

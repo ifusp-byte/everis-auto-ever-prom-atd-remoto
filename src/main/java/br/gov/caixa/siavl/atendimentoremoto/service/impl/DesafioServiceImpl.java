@@ -80,7 +80,7 @@ public class DesafioServiceImpl implements DesafioService {
 		try {
 			descricaoTransacao = mapper.writeValueAsString(auditoriaPncDesafioInputDTO);
 		} catch (JsonProcessingException e) {
-			logger.log(Level.SEVERE, e.getLocalizedMessage());
+			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
