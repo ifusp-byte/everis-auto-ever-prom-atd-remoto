@@ -23,7 +23,7 @@ import org.springframework.web.context.annotation.ApplicationScope;
 @SuppressWarnings({ "deprecation", "squid:S1488", "squid:S4507" })
 public class RestTemplateUtils {
 
-	private final static Logger logger = Logger.getLogger(RestTemplateUtils.class.getName());
+	private final static Logger LOG = Logger.getLogger(RestTemplateUtils.class.getName());
 
 	public RestTemplate newRestTemplate() {
 
@@ -46,7 +46,7 @@ public class RestTemplateUtils {
 			try {
 				httpClient.close();
 			} catch (IOException e) {
-				throw new RuntimeException(e);
+				LOG.info("Erro ao estabelecer conexão com o socket.");
 			}
 		}
 
