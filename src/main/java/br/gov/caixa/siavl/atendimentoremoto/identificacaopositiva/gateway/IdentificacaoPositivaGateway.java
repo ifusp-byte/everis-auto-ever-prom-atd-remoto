@@ -155,9 +155,13 @@ public class IdentificacaoPositivaGateway {
 		String codigo422 = null;
 		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(respondeDesafioInputDTO.getProtocolo()));
 
+		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+		requestFactory = restTemplateUtils.newrequestFactory(requestFactory); 
+		RestTemplate restTemplate = new RestTemplate(requestFactory);
+		
 		try {
 
-			response = restTemplateUtils.newRestTemplate().postForEntity(
+			response = restTemplate.postForEntity(
 					URL_BASE + "/" + Integer.parseInt(idDesafio.trim()) + "/enviar-respostas",
 					newRequestEntityDesafioResponder(token, respondeDesafioInputDTO), String.class);
 
@@ -208,6 +212,7 @@ public class IdentificacaoPositivaGateway {
 
 		}
 
+		requestFactory.getHttpClient().getConnectionManager().shutdown();
 		return respondeDesafioOutputDTO;
 
 	}
