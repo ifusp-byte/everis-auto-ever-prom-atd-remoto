@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import javax.swing.text.MaskFormatter;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -68,18 +69,18 @@ public class SicliGateway {
 
 	public HttpHeaders newHttpHeaders(String token) {
 
+		String sanitizedToken = StringUtils.normalizeSpace(token);
+		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set(AUTHORIZATION, BEARER + token);
+		//headers.set(AUTHORIZATION, BEARER + token);
+		headers.setBearerAuth(sanitizedToken);
 		headers.set(API_KEY, API_KEY_VALUE);
 
 		return headers;
 	}
 
 	public ContaAtendimentoOutputDTO contaAtendimento(@Valid String token, @Valid  String cpfCnpj, @Valid boolean auditar) throws Exception {
-		
-        Pattern p = Pattern.compile("\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\"");
-        String NonCRLFtoken = p.matcher(token).replaceAll(m -> m.group().replaceAll("\\R+", "") );
 
 		ContaAtendimentoOutputDTO contaAtendimentoOutputDTO = new ContaAtendimentoOutputDTO();
 		ResponseEntity<String> response = null;
@@ -94,7 +95,7 @@ public class SicliGateway {
 
 			response = restTemplateUtils.newRestTemplate().exchange(
 					URL_BASE_1 + cpfCnpj.replace(".", "").replace("-", "").trim() + URL_BASE_2, HttpMethod.GET,
-					newRequestEntityContaAtendimento(NonCRLFtoken), String.class);
+					newRequestEntityContaAtendimento(token), String.class);
 
 			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
 
