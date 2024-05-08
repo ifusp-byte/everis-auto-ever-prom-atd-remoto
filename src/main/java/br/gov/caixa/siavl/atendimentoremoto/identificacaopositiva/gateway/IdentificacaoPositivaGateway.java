@@ -90,18 +90,18 @@ public class IdentificacaoPositivaGateway {
 
 	public HttpHeaders newHttpHeaders(String token) {
 
+		String sanitizedToken = StringUtils.normalizeSpace(token);
+		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set(AUTHORIZATION, BEARER + token);
+		//headers.set(AUTHORIZATION, BEARER + token);
+		headers.setBearerAuth(sanitizedToken);
 		headers.set(API_KEY, API_KEY_VALUE);
 
 		return headers;
 	}
 
 	public CriaDesafioOutputDTO desafioCriar(@Valid  String token, HashMap<String, String> criaDesafioMap) throws Exception {
-		
-        Pattern p = Pattern.compile("\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\"");
-        String NonCRLFtoken = p.matcher(token).replaceAll(m -> m.group().replaceAll("\\R+", "") );
         
 		CriaDesafioOutputDTO criaDesafioOutputDTO = new CriaDesafioOutputDTO();
 		ResponseEntity<String> response = null;
@@ -111,7 +111,7 @@ public class IdentificacaoPositivaGateway {
 		try {
 
 			response = restTemplateUtils.newRestTemplate().postForEntity(URL_BASE,
-					newRequestEntityDesafioCriar(NonCRLFtoken, criaDesafioMap), String.class);
+					newRequestEntityDesafioCriar(token, criaDesafioMap), String.class);
 
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC " + mapper.writeValueAsString(response));
 

@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -43,26 +44,26 @@ public class AuditoriaPncGateway {
 	}
 
 	public HttpHeaders newHttpHeaders(String token) {
-
+		
+		String sanitizedToken = StringUtils.normalizeSpace(token);
+		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set(AUTHORIZATION, BEARER + token);
+		//headers.set(AUTHORIZATION, BEARER + token);
+		headers.setBearerAuth(sanitizedToken);
 		headers.set(API_KEY, API_KEY_VALUE);
 
 		return headers;
 	}
 
 	public void auditoriaPncSalvar(@Valid String token, @Valid AuditoriaPncInputDTO auditoriaPncInputDTO) {
-		
-        Pattern p = Pattern.compile("\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\"");
-        String NonCRLFtoken = p.matcher(token).replaceAll(m -> m.group().replaceAll("\\R+", "") );
 
 		ResponseEntity<String> response = null;
 
 		try {
 
 			response = restTemplateUtils.newRestTemplate().postForEntity(URL_BASE,
-					newRequestEntityAuditoriaPncSalvar(NonCRLFtoken, auditoriaPncInputDTO), String.class);
+					newRequestEntityAuditoriaPncSalvar(token, auditoriaPncInputDTO), String.class);
 
 			LOG.log(Level.INFO, "Sucesso Auditoria PNC " + String.valueOf(response));
 
