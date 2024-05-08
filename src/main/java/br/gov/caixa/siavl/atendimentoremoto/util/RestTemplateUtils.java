@@ -23,7 +23,7 @@ import org.springframework.web.context.annotation.ApplicationScope;
 @SuppressWarnings({"deprecation", "squid:S1488", "squid:S4507"})
 public class RestTemplateUtils {
 	
-	static Logger logger = Logger.getLogger(RestTemplateUtils.class.getName());
+	private final static Logger logger = Logger.getLogger(RestTemplateUtils.class.getName());
 
 	public RestTemplate newRestTemplate() {
 
@@ -34,7 +34,7 @@ public class RestTemplateUtils {
 		try {
 			sslcontext = SSLContexts.custom().loadTrustMaterial(null, (chain, authType) -> true).build();
 		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
-			logger.log(Level.SEVERE, e.getLocalizedMessage());
+			logger.log(Level.SEVERE, e.getMessage(), e);
 		} finally {
 		SSLConnectionSocketFactory sSlConnectionSocketFactory = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1.2" }, null, new NoopHostnameVerifier());
 		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sSlConnectionSocketFactory).build();

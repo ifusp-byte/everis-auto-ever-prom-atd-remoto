@@ -45,7 +45,7 @@ public class SicliGateway {
 	@Autowired
 	AuditoriaRegistraNotaSicliService auditoriaRegistraNotaSicliService;
 
-	static Logger LOG = Logger.getLogger(SicliGateway.class.getName());
+	private final static Logger LOG = Logger.getLogger(SicliGateway.class.getName());
 
 	private static String AUTHORIZATION = "Authorization";
 	private static String BEARER = "Bearer ";
@@ -163,7 +163,7 @@ public class SicliGateway {
 
 		} catch (RestClientResponseException e) {
 
-			LOG.log(Level.SEVERE, e.getLocalizedMessage());
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 
 			body = mapper.readTree(e.getResponseBodyAsString());
 			JsonNode retornoSicli = Objects.requireNonNull(body.path("retorno"));
@@ -226,7 +226,7 @@ public class SicliGateway {
 				cpfMask.setValueContainsLiteralCharacters(false);
 				cpf = cpfMask.valueToString(formatCpf);
 			} catch (ParseException e) {
-				e.printStackTrace();
+				LOG.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 		return cpf;

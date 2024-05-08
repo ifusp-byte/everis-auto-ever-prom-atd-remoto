@@ -41,7 +41,7 @@ public class IdentificacaoPositivaGateway {
 	@Autowired
 	AtendimentoClienteRepository atendimentoClienteRepository; 
 
-	static Logger LOG = Logger.getLogger(IdentificacaoPositivaGateway.class.getName());
+	private final static Logger LOG = Logger.getLogger(IdentificacaoPositivaGateway.class.getName());
 
 	private static String AUTHORIZATION = "Authorization";
 
@@ -82,7 +82,7 @@ public class IdentificacaoPositivaGateway {
 			request = mapper.writeValueAsString(respondeDesafioMap).replaceAll("\\u005C", "").replaceAll("\\n", "");
 			
 		} catch (JsonProcessingException e) {
-			LOG.log(Level.SEVERE, e.getLocalizedMessage());
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		return new HttpEntity<>(request, newHttpHeaders(token));
@@ -127,7 +127,7 @@ public class IdentificacaoPositivaGateway {
 
 		} catch (RestClientResponseException e) {
 
-			LOG.log(Level.SEVERE, e.getLocalizedMessage());
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 
 			jsonNode = mapper.readTree(e.getResponseBodyAsString());
 
@@ -187,7 +187,7 @@ public class IdentificacaoPositivaGateway {
 
 		} catch (RestClientResponseException e) {
 
-			LOG.log(Level.SEVERE, e.getLocalizedMessage());
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 
 			jsonNode = mapper.readTree(e.getResponseBodyAsString());
 

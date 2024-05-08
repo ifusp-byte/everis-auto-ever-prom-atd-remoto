@@ -38,7 +38,7 @@ public class AuditoriaRegistraNotaSicliServiceImpl implements AuditoriaRegistraN
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
 	
-	static Logger LOG = Logger.getLogger(AuditoriaRegistraNotaSicliServiceImpl.class.getName());
+	private final static Logger LOG = Logger.getLogger(AuditoriaRegistraNotaSicliServiceImpl.class.getName());
 
 	public void auditar(ContaAtendimentoOutputDTO contaAtendimento, String token, String cpfCnpj) {
 		
@@ -73,7 +73,7 @@ public class AuditoriaRegistraNotaSicliServiceImpl implements AuditoriaRegistraN
 			dsLogPlataformaClob = new SerialClob(dsLogPlataformaJson.toCharArray());
 		} catch (JsonProcessingException | SQLException e) {
 
-			LOG.log(Level.SEVERE, e.getLocalizedMessage());
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		logPlataforma = LogPlataforma.builder()

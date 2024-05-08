@@ -22,7 +22,7 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 @SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S3457" })
 public class AuditoriaPncGateway {
 
-	static Logger LOG = Logger.getLogger(AuditoriaPncGateway.class.getName());
+	private final static Logger LOG = Logger.getLogger(AuditoriaPncGateway.class.getName());
 
 	private static String AUTHORIZATION = "Authorization";
 
@@ -68,7 +68,7 @@ public class AuditoriaPncGateway {
 			LOG.log(Level.INFO, "Sucesso Auditoria PNC " + String.valueOf(response));
 
 		} catch (RestClientResponseException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			LOG.log(Level.INFO, "Erro Auditoria PNC " + String.valueOf(e.getResponseBodyAsString()));
 
 		}

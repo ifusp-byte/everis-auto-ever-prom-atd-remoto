@@ -37,7 +37,7 @@ public class AuditoriaRegistraNotaServiceImpl implements AuditoriaRegistraNotaSe
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
 	
-	static Logger LOG = Logger.getLogger(AuditoriaRegistraNotaServiceImpl.class.getName());
+	private final static Logger LOG = Logger.getLogger(AuditoriaRegistraNotaServiceImpl.class.getName());
 	
 	public void auditar(String dataRegistroNota, String token, String cpfCnpj, String matriculaAtendente, String statusRetornoSicli, String numeroProtocolo, String numeroContaAtendimento, String numeroNota, String versaoSistema, String produto) {
 
@@ -75,7 +75,7 @@ public class AuditoriaRegistraNotaServiceImpl implements AuditoriaRegistraNotaSe
 			dsLogPlataformaClob = new SerialClob(dsLogPlataformaJson.toCharArray());
 		} catch (JsonProcessingException | SQLException e) {
 
-			LOG.log(Level.SEVERE, e.getLocalizedMessage());
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		logPlataforma = LogPlataforma.builder()
