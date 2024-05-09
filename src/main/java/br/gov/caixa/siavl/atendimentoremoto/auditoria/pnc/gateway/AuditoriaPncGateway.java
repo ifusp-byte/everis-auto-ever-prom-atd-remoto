@@ -61,14 +61,15 @@ public class AuditoriaPncGateway {
 		} catch (RestClientResponseException e) {
 			LOG.log(Level.INFO, "Erro Auditoria PNC " + String.valueOf(e.getResponseBodyAsString()));
 
-		}
+		} finally {
 		
-		try {
-			restTemplateDto.getHttpClient().close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+			try {
+				restTemplateDto.getHttpClient().close();
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, "Erro. Não foi possível fechar a conexão com o socket.");
+			}
 		}
-		
+			
 	}
 
 }
