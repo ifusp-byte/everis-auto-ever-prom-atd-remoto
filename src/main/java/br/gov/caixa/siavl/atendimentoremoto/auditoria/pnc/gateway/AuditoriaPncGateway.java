@@ -70,8 +70,6 @@ public class AuditoriaPncGateway {
 
 		}
 		
-		requestFactory.getHttpClient().getConnectionManager().shutdown();
-
 	}
 
 }
