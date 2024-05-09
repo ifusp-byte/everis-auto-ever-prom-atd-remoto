@@ -1,5 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.gateway;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -7,6 +8,7 @@ import java.util.regex.Pattern;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -54,8 +56,9 @@ public class AuditoriaPncGateway {
 	public void auditoriaPncSalvar(@Valid String token, @Valid AuditoriaPncInputDTO auditoriaPncInputDTO) {
 
 		ResponseEntity<String> response = null;
+		CloseableHttpClient httpClient = restTemplateUtils.newHttpClient();
 		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory = restTemplateUtils.newrequestFactory(requestFactory); 
+		requestFactory.setHttpClient(httpClient);
 		RestTemplate restTemplate = new RestTemplate(requestFactory);
 
 		try {
@@ -68,6 +71,12 @@ public class AuditoriaPncGateway {
 		} catch (RestClientResponseException e) {
 			LOG.log(Level.INFO, "Erro Auditoria PNC " + String.valueOf(e.getResponseBodyAsString()));
 
+		}
+		
+		try {
+			httpClient.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 		
 	}

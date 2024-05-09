@@ -40,4 +40,23 @@ public class RestTemplateUtils {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	
+	public CloseableHttpClient newHttpClient() {
+
+		SSLContext sslcontext = null;
+		CloseableHttpClient httpClient = null;
+
+		try {
+			sslcontext = SSLContexts.custom().loadTrustMaterial(null, (chain, authType) -> true).build();
+			SSLConnectionSocketFactory sSlConnectionSocketFactory = new SSLConnectionSocketFactory(sslcontext,
+					new String[] { "TLSv1.2" }, null, new NoopHostnameVerifier());
+			httpClient = HttpClients.custom().setSSLSocketFactory(sSlConnectionSocketFactory).build();
+			return httpClient;
+		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
 }

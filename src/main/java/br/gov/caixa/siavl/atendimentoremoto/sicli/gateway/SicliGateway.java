@@ -15,6 +15,7 @@ import javax.swing.text.MaskFormatter;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -90,8 +91,9 @@ public class SicliGateway {
 		List<ContasOutputDTO> contasAtendimento = new ArrayList<>();
 		List<SociosOutputDTO> sociosLista = new ArrayList<>();
 
+		CloseableHttpClient httpClient = restTemplateUtils.newHttpClient();
 		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory = restTemplateUtils.newrequestFactory(requestFactory); 
+		requestFactory.setHttpClient(httpClient);
 		RestTemplate restTemplate = new RestTemplate(requestFactory);
 		
 		try {
@@ -190,6 +192,7 @@ public class SicliGateway {
 			}
 		}
 		
+		httpClient.close();
 		return contaAtendimentoOutputDTO;
 	}
 
