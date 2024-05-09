@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -101,8 +102,9 @@ public class IdentificacaoPositivaGateway {
 		JsonNode jsonNode;
 		String codigo422 = null;
 		
+		CloseableHttpClient httpClient = restTemplateUtils.newHttpClient();
 		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory = restTemplateUtils.newrequestFactory(requestFactory); 
+		requestFactory.setHttpClient(httpClient);
 		RestTemplate restTemplate = new RestTemplate(requestFactory);
 
 		try {
@@ -141,6 +143,7 @@ public class IdentificacaoPositivaGateway {
 
 		}
 
+		httpClient.close();
 		return criaDesafioOutputDTO;
 
 	}
@@ -154,8 +157,9 @@ public class IdentificacaoPositivaGateway {
 		String codigo422 = null;
 		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(respondeDesafioInputDTO.getProtocolo()));
 
+		CloseableHttpClient httpClient = restTemplateUtils.newHttpClient();
 		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory = restTemplateUtils.newrequestFactory(requestFactory); 
+		requestFactory.setHttpClient(httpClient);
 		RestTemplate restTemplate = new RestTemplate(requestFactory);
 		
 		try {
@@ -211,6 +215,7 @@ public class IdentificacaoPositivaGateway {
 
 		}
 
+		httpClient.close();
 		return respondeDesafioOutputDTO;
 
 	}
