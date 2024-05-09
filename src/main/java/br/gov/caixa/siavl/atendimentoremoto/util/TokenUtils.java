@@ -1,8 +1,5 @@
 package br.gov.caixa.siavl.atendimentoremoto.util;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.ApplicationScope;
@@ -20,8 +17,6 @@ public class TokenUtils {
 	String accessToken;
 
 	JWTParser parser = new JWTParser();
-	
-	private final static Logger logger = Logger.getLogger(TokenUtils.class.getName());
 
 	public String getMatriculaFromToken(String jwtToken) {
 

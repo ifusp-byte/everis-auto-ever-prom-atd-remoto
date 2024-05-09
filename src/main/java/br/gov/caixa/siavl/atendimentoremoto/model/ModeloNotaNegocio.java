@@ -2,13 +2,9 @@ package br.gov.caixa.siavl.atendimentoremoto.model;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -41,15 +37,6 @@ public class ModeloNotaNegocio implements Serializable {
 
 	@Column(name = "IC_MODELO_NOTA_ATIVO")
 	private Long modeloNotaAtivo;
-
-	/*
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "modeloNotaNegociacao")
-	private NotaNegociacao notaNegociacao;
-
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "NU_ACAO_PRODUTO", nullable = true, insertable = false, updatable = false)
-	private AcaoProduto acaoProduto;
-	*/
 	
 	@Column(name = "PZ_VALIDADE_MODELO_NOTA")
 	private int prazoValidade;

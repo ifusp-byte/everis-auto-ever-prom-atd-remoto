@@ -6,17 +6,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.sql.rowset.serial.SerialClob;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaRegistraNotaDsLogPlataformaDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.model.LogPlataforma;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.repository.LogPlataformaRepository;
@@ -36,8 +30,6 @@ public class AuditoriaRegistraNotaServiceImpl implements AuditoriaRegistraNotaSe
 	private static final Long TRANSACAO_SISTEMA_SUCESSO_SICLI = 189L;
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
-	
-	private final static Logger LOG = Logger.getLogger(AuditoriaRegistraNotaServiceImpl.class.getName());
 	
 	public void auditar(String dataRegistroNota, String token, String cpfCnpj, String matriculaAtendente, String statusRetornoSicli, String numeroProtocolo, String numeroContaAtendimento, String numeroNota, String versaoSistema, String produto) {
 

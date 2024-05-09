@@ -6,8 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.sql.rowset.serial.SerialClob;
 
@@ -35,12 +33,9 @@ public class AuditoriaIdentificacaoPositivaServiceImpl implements AuditoriaIdent
 	LogPlataformaRepository logPlataformaRepository;
 
 	private static ObjectMapper mapper = new ObjectMapper();
-
 	private static final Long TRANSACAO_SISTEMA = 144L;
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
-	
-	private final static Logger LOG = Logger.getLogger(AuditoriaIdentificacaoPositivaServiceImpl.class.getName());
 	
 	public Boolean auditar(String token,
 			AuditoriaIdentificacaoPositivaInputDTO auditoriaIdentificacaoPositivaInputDTO) {

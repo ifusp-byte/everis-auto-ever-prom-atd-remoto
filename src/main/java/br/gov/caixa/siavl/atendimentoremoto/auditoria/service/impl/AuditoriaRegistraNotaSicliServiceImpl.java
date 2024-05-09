@@ -6,8 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.sql.rowset.serial.SerialClob;
 
@@ -38,8 +36,6 @@ public class AuditoriaRegistraNotaSicliServiceImpl implements AuditoriaRegistraN
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
 	
-	private final static Logger LOG = Logger.getLogger(AuditoriaRegistraNotaSicliServiceImpl.class.getName());
-
 	public void auditar(ContaAtendimentoOutputDTO contaAtendimento, String token, String cpfCnpj) {
 		
 		String tipoPessoa = null;  
