@@ -141,7 +141,6 @@ public class IdentificacaoPositivaGateway {
 
 		}
 
-		requestFactory.getHttpClient().getConnectionManager().shutdown();
 		return criaDesafioOutputDTO;
 
 	}
@@ -212,7 +211,6 @@ public class IdentificacaoPositivaGateway {
 
 		}
 
-		requestFactory.getHttpClient().getConnectionManager().shutdown();
 		return respondeDesafioOutputDTO;
 
 	}

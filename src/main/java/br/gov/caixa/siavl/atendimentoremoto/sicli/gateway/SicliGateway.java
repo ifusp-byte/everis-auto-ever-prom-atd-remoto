@@ -190,7 +190,6 @@ public class SicliGateway {
 			}
 		}
 		
-		requestFactory.getHttpClient().getConnectionManager().shutdown();
 		return contaAtendimentoOutputDTO;
 	}
 
