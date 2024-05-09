@@ -129,9 +129,11 @@ public class IdentificacaoPositivaGateway {
 
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta View " + mapper.writeValueAsString(criaDesafioOutputDTO));
 
+		} finally {
+			
+			restTemplateDto.getHttpClient().close();
 		}
 
-		restTemplateDto.getHttpClient().close();
 		return criaDesafioOutputDTO;
 
 	}
@@ -198,9 +200,11 @@ public class IdentificacaoPositivaGateway {
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta View "
 					+ mapper.writeValueAsString(respondeDesafioOutputDTO));
 
+		} finally {
+			
+			restTemplateDto.getHttpClient().close();
 		}
 
-		restTemplateDto.getHttpClient().close();
 		return respondeDesafioOutputDTO;
 
 	}

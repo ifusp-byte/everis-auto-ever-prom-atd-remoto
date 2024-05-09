@@ -176,6 +176,9 @@ public class SicliGateway {
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
 					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
 
+		} finally {
+			
+			restTemplateDto.getHttpClient().close();
 		}
 
 		if (!String.valueOf(HttpStatus.CREATED.value()).equals(contaAtendimentoOutputDTO.getStatusCode())) {
@@ -183,8 +186,7 @@ public class SicliGateway {
 				auditoriaRegistraNotaSicliService.auditar(contaAtendimentoOutputDTO, token, cpfCnpj);
 			}
 		}
-		
-		restTemplateDto.getHttpClient().close();
+
 		return contaAtendimentoOutputDTO;
 	}
 
