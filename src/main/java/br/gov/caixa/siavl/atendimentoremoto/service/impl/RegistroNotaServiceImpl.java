@@ -2,10 +2,8 @@ package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import java.sql.Clob;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.sql.rowset.serial.SerialClob;
@@ -24,7 +22,6 @@ import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaRegistraN
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
-import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.model.NotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.model.RelatorioNotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
@@ -63,7 +60,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	private static final String DOCUMENT_TYPE_CPF = "CPF";
 	private static final String DOCUMENT_TYPE_CNPJ = "CNPJ";
 
-	static Logger LOG = Logger.getLogger(DesafioServiceImpl.class.getName());
+	static Logger LOG = Logger.getLogger(RegistroNotaServiceImpl.class.getName());
 	
 	private static ObjectMapper mapper = new ObjectMapper();
 

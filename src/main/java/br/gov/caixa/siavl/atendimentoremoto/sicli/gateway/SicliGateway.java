@@ -7,15 +7,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import javax.swing.text.MaskFormatter;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,11 +20,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.RestClientResponseException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,6 +34,7 @@ import br.gov.caixa.siavl.atendimentoremoto.sicli.constants.SicliGatewayMessages
 import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContaAtendimentoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContasOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.SociosOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
@@ -79,7 +75,6 @@ public class SicliGateway {
 		return headers;
 	}
 
-	@SuppressWarnings("deprecation")
 	public ContaAtendimentoOutputDTO contaAtendimento(@Valid String token, @Valid  String cpfCnpj, @Valid boolean auditar) throws Exception {
 
 		ContaAtendimentoOutputDTO contaAtendimentoOutputDTO = new ContaAtendimentoOutputDTO();
@@ -90,18 +85,15 @@ public class SicliGateway {
 		boolean statusCreated = false;
 		List<ContasOutputDTO> contasAtendimento = new ArrayList<>();
 		List<SociosOutputDTO> sociosLista = new ArrayList<>();
-
-		CloseableHttpClient httpClient = restTemplateUtils.newHttpClient();
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory.setHttpClient(httpClient);
-		RestTemplate restTemplate = new RestTemplate(requestFactory);
 		
+		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
+
 		try {
 
 			String uri = URL_BASE_1 + cpfCnpj.replace(".", "").replace("-", "").trim();
 			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
 			
-			response = restTemplate.exchange(finalUri, HttpMethod.GET,
+			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,
 					newRequestEntityContaAtendimento(token), String.class);
 
 			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
@@ -192,7 +184,7 @@ public class SicliGateway {
 			}
 		}
 		
-		httpClient.close();
+		restTemplateDto.getHttpClient().close();
 		return contaAtendimentoOutputDTO;
 	}
 

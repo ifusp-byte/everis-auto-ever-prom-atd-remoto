@@ -6,35 +6,27 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
-
 import javax.validation.Valid;
-
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
-import org.springframework.web.client.RestTemplate;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.constants.IdentificacaoPositivaGatewayMessages;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
+import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
@@ -94,7 +86,6 @@ public class IdentificacaoPositivaGateway {
 		return headers;
 	}
 
-	@SuppressWarnings("deprecation")
 	public CriaDesafioOutputDTO desafioCriar(@Valid  String token, HashMap<String, String> criaDesafioMap) throws Exception {
         
 		CriaDesafioOutputDTO criaDesafioOutputDTO = new CriaDesafioOutputDTO();
@@ -102,14 +93,11 @@ public class IdentificacaoPositivaGateway {
 		JsonNode jsonNode;
 		String codigo422 = null;
 		
-		CloseableHttpClient httpClient = restTemplateUtils.newHttpClient();
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory.setHttpClient(httpClient);
-		RestTemplate restTemplate = new RestTemplate(requestFactory);
+		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
 
 		try {
 
-			response = restTemplate.postForEntity(URL_BASE,
+			response = restTemplateDto.getRestTemplate().postForEntity(URL_BASE,
 					newRequestEntityDesafioCriar(token, criaDesafioMap), String.class);
 
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC " + mapper.writeValueAsString(response));
@@ -143,7 +131,7 @@ public class IdentificacaoPositivaGateway {
 
 		}
 
-		httpClient.close();
+		restTemplateDto.getHttpClient().close();
 		return criaDesafioOutputDTO;
 
 	}
@@ -157,14 +145,11 @@ public class IdentificacaoPositivaGateway {
 		String codigo422 = null;
 		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(respondeDesafioInputDTO.getProtocolo()));
 
-		CloseableHttpClient httpClient = restTemplateUtils.newHttpClient();
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory.setHttpClient(httpClient);
-		RestTemplate restTemplate = new RestTemplate(requestFactory);
+		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
 		
 		try {
 
-			response = restTemplate.postForEntity(
+			response = restTemplateDto.getRestTemplate().postForEntity(
 					URL_BASE + "/" + Integer.parseInt(idDesafio.trim()) + "/enviar-respostas",
 					newRequestEntityDesafioResponder(token, respondeDesafioInputDTO), String.class);
 
@@ -215,7 +200,7 @@ public class IdentificacaoPositivaGateway {
 
 		}
 
-		httpClient.close();
+		restTemplateDto.getHttpClient().close();
 		return respondeDesafioOutputDTO;
 
 	}

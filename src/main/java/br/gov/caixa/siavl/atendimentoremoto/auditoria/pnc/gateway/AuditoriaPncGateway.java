@@ -3,23 +3,17 @@ package br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.gateway;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
-
 import javax.validation.Valid;
-
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
-import org.springframework.web.client.RestTemplate;
-
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
@@ -52,18 +46,14 @@ public class AuditoriaPncGateway {
 		return headers;
 	}
 
-	@SuppressWarnings("deprecation")
 	public void auditoriaPncSalvar(@Valid String token, @Valid AuditoriaPncInputDTO auditoriaPncInputDTO) {
 
 		ResponseEntity<String> response = null;
-		CloseableHttpClient httpClient = restTemplateUtils.newHttpClient();
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory.setHttpClient(httpClient);
-		RestTemplate restTemplate = new RestTemplate(requestFactory);
+		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
 
 		try {
 
-			response = restTemplate.postForEntity(URL_BASE,
+			response = restTemplateDto.getRestTemplate().postForEntity(URL_BASE,
 					newRequestEntityAuditoriaPncSalvar(token, auditoriaPncInputDTO), String.class);
 
 			LOG.log(Level.INFO, "Sucesso Auditoria PNC " + String.valueOf(response));
@@ -74,7 +64,7 @@ public class AuditoriaPncGateway {
 		}
 		
 		try {
-			httpClient.close();
+			restTemplateDto.getHttpClient().close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
