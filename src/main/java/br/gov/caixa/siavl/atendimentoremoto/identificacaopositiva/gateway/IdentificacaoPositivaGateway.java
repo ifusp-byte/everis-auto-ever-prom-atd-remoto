@@ -200,6 +200,11 @@ public class IdentificacaoPositivaGateway {
 			atendimentoCliente.setDescricaoIdentificacaoPositiva("BLOQUEADO");
 			atendimentoCliente.setDataIdentificacaoPositiva(formataDataBanco());
 			atendimentoCliente.setDataValidacaoPositiva(formataDataBanco());
+			
+			if (!respondeDesafioInputDTO.getCpfSocio().isBlank()) { 
+			atendimentoCliente.setCpfCliente(Long.parseLong(respondeDesafioInputDTO.getCpfSocio().replace(".", "").replace("-", "").trim()));
+			}
+			
 			atendimentoClienteRepository.save(atendimentoCliente);
 
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta View "
