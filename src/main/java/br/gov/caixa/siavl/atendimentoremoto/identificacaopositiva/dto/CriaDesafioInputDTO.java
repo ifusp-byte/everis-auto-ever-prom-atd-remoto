@@ -20,16 +20,10 @@ import lombok.Setter;
 @XmlRootElement(name = "CriaDesafioInputDTO")
 public class CriaDesafioInputDTO {
 	
-	@XmlElement(name = "cpf")
-	private String cpf;
-	
-	@XmlElement(name = "nis")
-	private String nis;
-	
-	@XmlElement(name = "outro-identificador")
-	private String outroIdentificador;
-	
-	@XmlElement(name = "nome-servico")
-	private String nomeServico;
+	@XmlElement(name = "protocolo")
+	private String protocolo;
+
+	@XmlElement(name = "cpfSocio")
+	private String cpfSocio;
 
 }
