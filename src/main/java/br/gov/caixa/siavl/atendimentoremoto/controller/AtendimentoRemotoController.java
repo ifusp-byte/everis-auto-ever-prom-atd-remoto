@@ -24,6 +24,7 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioOutputDTO;
@@ -79,9 +80,9 @@ public class AtendimentoRemotoController {
 
 	@PostMapping("/desafio-criar/{cpf}")
 	public ResponseEntity<CriaDesafioOutputDTO> desafioCriar(
-			@Valid @RequestHeader(value = "token", required = true) String token, @Valid @PathVariable String cpf) throws Exception {
+			@Valid @RequestHeader(value = "token", required = true) String token, @Valid @PathVariable String cpf, @Valid @RequestBody CriaDesafioInputDTO criaDesafioInputDTO) throws Exception {
 
-		return ResponseEntity.status(HttpStatus.OK).body(desafioService.desafioCriar(token, cpf));
+		return ResponseEntity.status(HttpStatus.OK).body(desafioService.desafioCriar(token, cpf, criaDesafioInputDTO));
 	}
 
 	@PostMapping("/desafio-responder/{idDesafio}")

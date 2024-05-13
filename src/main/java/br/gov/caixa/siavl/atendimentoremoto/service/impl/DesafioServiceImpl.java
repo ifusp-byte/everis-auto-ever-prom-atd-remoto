@@ -3,14 +3,18 @@ package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import java.util.HashMap;
 import java.util.logging.Logger;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.gateway.AuditoriaPncGateway;
+import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioOutputDTO;
@@ -41,7 +45,7 @@ public class DesafioServiceImpl implements DesafioService {
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	@Override
-	public CriaDesafioOutputDTO desafioCriar(String token, String cpf) throws Exception {
+	public CriaDesafioOutputDTO desafioCriar(String token, String cpf, CriaDesafioInputDTO criaDesafioInputDTO) throws Exception {
 
 		HashMap<String, String> criaDesafioMap = new HashMap<String, String>();
 
@@ -49,8 +53,11 @@ public class DesafioServiceImpl implements DesafioService {
 		criaDesafioMap.put("nis", StringUtils.EMPTY);
 		criaDesafioMap.put("outro-identificador", StringUtils.EMPTY);
 		criaDesafioMap.put("nome-servico", NOME_SERVICO);
+		
+		Long cpfSocio = Long.parseLong(criaDesafioInputDTO.getCpfSocio().replace(".", "").replace("-", "").trim());
+		Long protocolo = Long.parseLong(criaDesafioInputDTO.getProtocolo().trim());
 
-		return identificacaoPositivaGateway.desafioCriar(token, criaDesafioMap);
+		return identificacaoPositivaGateway.desafioCriar(token, criaDesafioMap, cpfSocio, protocolo);
 	}
 
 	@Override

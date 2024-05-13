@@ -86,12 +86,18 @@ public class IdentificacaoPositivaGateway {
 		return headers;
 	}
 
-	public CriaDesafioOutputDTO desafioCriar(@Valid  String token, HashMap<String, String> criaDesafioMap) throws Exception {
+	public CriaDesafioOutputDTO desafioCriar(@Valid  String token, HashMap<String, String> criaDesafioMap, Long cpfSocio, Long protocolo) throws Exception {
         
 		CriaDesafioOutputDTO criaDesafioOutputDTO = new CriaDesafioOutputDTO();
 		ResponseEntity<String> response = null;
 		JsonNode jsonNode;
 		String codigo422 = null;
+		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(protocolo);
+		
+		if (cpfSocio != null) { 
+		atendimentoCliente.setCpfCliente(cpfSocio);
+		}	
+		atendimentoClienteRepository.save(atendimentoCliente);
 		
 		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
 
@@ -170,11 +176,6 @@ public class IdentificacaoPositivaGateway {
 			atendimentoCliente.setDescricaoIdentificacaoPositiva("SUCESSO");
 			atendimentoCliente.setDataIdentificacaoPositiva(formataDataBanco());
 			atendimentoCliente.setDataValidacaoPositiva(formataDataBanco());
-			
-			if (!respondeDesafioInputDTO.getCpfSocio().isBlank()) { 
-			atendimentoCliente.setCpfCliente(Long.parseLong(respondeDesafioInputDTO.getCpfSocio().replace(".", "").replace("-", "").trim()));
-			}
-			
 			atendimentoClienteRepository.save(atendimentoCliente);
 				
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta View "
@@ -200,11 +201,6 @@ public class IdentificacaoPositivaGateway {
 			atendimentoCliente.setDescricaoIdentificacaoPositiva("BLOQUEADO");
 			atendimentoCliente.setDataIdentificacaoPositiva(formataDataBanco());
 			atendimentoCliente.setDataValidacaoPositiva(formataDataBanco());
-			
-			if (!respondeDesafioInputDTO.getCpfSocio().isBlank()) { 
-			atendimentoCliente.setCpfCliente(Long.parseLong(respondeDesafioInputDTO.getCpfSocio().replace(".", "").replace("-", "").trim()));
-			}
-			
 			atendimentoClienteRepository.save(atendimentoCliente);
 
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta View "
