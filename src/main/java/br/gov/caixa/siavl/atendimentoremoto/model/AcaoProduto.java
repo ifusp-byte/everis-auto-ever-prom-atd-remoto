@@ -2,11 +2,9 @@ package br.gov.caixa.siavl.atendimentoremoto.model;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -33,10 +31,5 @@ public class AcaoProduto implements Serializable {
 
 	@Column(name = "IC_ATIVO")
 	private Long acaoProdutoAtivo;
-
-	/*
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "acaoProduto")
-	private ModeloNotaNegocio modeloNotaNegociacao;
-	*/
 
 }

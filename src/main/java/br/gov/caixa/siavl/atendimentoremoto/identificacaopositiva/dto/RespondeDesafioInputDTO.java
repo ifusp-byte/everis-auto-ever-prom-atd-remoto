@@ -7,8 +7,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.fasterxml.jackson.annotation.JsonRawValue;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,4 +28,6 @@ public class RespondeDesafioInputDTO {
 	@XmlElement(name = "protocolo")
 	private String protocolo;
 
+	@XmlElement(name = "cpfSocio")
+	private String cpfSocio;
 }

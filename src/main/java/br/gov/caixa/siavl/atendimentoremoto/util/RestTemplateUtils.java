@@ -18,29 +18,33 @@ import org.springframework.web.context.annotation.ApplicationScope;
 
 @Component
 @ApplicationScope
-@SuppressWarnings({"deprecation", "squid:S1488", "squid:S4507"})
+@SuppressWarnings({ "deprecation", "squid:S1488", "squid:S4507" })
 public class RestTemplateUtils {
+	
+	public RestTemplateDto newRestTemplate() {
 
-	public RestTemplate newRestTemplate() {
-
-		HttpComponentsClientHttpRequestFactory requestFactory = null;
+		RestTemplateDto restTemplateDto = new RestTemplateDto(); 
+		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
 		SSLContext sslcontext = null;
-		requestFactory = new HttpComponentsClientHttpRequestFactory();
+		RestTemplate restTemplate = null;
+		CloseableHttpClient httpClient = null;
 
 		try {
 			sslcontext = SSLContexts.custom().loadTrustMaterial(null, (chain, authType) -> true).build();
+			SSLConnectionSocketFactory sSlConnectionSocketFactory = new SSLConnectionSocketFactory(sslcontext,
+					new String[] { "TLSv1.2" }, null, new NoopHostnameVerifier());
+			httpClient = HttpClients.custom().setSSLSocketFactory(sSlConnectionSocketFactory).build();
+			requestFactory.setHttpClient(httpClient);
+			restTemplate = new RestTemplate(requestFactory);
+			
+			restTemplateDto = RestTemplateDto.builder()
+					.httpClient(httpClient)
+					.RestTemplate(restTemplate)
+					.build();
+			return restTemplateDto;
 		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		SSLConnectionSocketFactory sSlConnectionSocketFactory = new SSLConnectionSocketFactory(sslcontext,
-				new String[] { "TLSv1.2" }, null, new NoopHostnameVerifier());
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sSlConnectionSocketFactory).build();
-		requestFactory.setHttpClient(httpClient);
-
-		RestTemplate restTemplate = new RestTemplate(requestFactory);
-
-		return restTemplate;
-
 	}
-
+	
 }

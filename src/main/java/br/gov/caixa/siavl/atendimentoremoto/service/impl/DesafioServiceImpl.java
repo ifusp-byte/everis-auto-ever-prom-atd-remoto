@@ -1,15 +1,13 @@
 package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
+
 import java.util.HashMap;
 import java.util.logging.Logger;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.gateway.AuditoriaPncGateway;
@@ -35,11 +33,9 @@ public class DesafioServiceImpl implements DesafioService {
 
 	private static final String NOME_SERVICO = "81";
 	
-	private static final String PERSON_TYPE = "PF";
+	private static final String PERSON_TYPE_PF = "PF";
+	private static final String PERSON_TYPE_PJ = "PJ";
 	
-	private static final String DEFAULT_USER_IP = "123";
-
-
 	static Logger logger = Logger.getLogger(DesafioServiceImpl.class.getName());
 	
 	private static ObjectMapper mapper = new ObjectMapper();
@@ -60,7 +56,13 @@ public class DesafioServiceImpl implements DesafioService {
 	@Override
 	public RespondeDesafioOutputDTO desafioResponder(String token, String idDesafio, RespondeDesafioInputDTO respostaDesafio) throws Exception {
 		
-		Long matriculaAtendente = Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", ""));
+		String tipoPessoa = null; 
+		if (respostaDesafio.getCpfSocio().isBlank()) {		
+			tipoPessoa = PERSON_TYPE_PF;		
+		} else {	
+			tipoPessoa = PERSON_TYPE_PJ;	
+		}
+		
 		RespondeDesafioOutputDTO respondeDesafio = identificacaoPositivaGateway.desafioResponder(token, idDesafio, respostaDesafio);
 		
 		AuditoriaPncDesafioInputDTO auditoriaPncDesafioInputDTO = new AuditoriaPncDesafioInputDTO(); 	
@@ -68,7 +70,7 @@ public class DesafioServiceImpl implements DesafioService {
 				.idDesafio(idDesafio)		
 				.matriculaAtendente(tokenUtils.getMatriculaFromToken(token))
 				.statusValidacao(String.valueOf(respondeDesafio.isStatusCreated()))
-				.tipoPessoa(PERSON_TYPE)
+				.tipoPessoa(tipoPessoa)
 				.transacaoSistema("144")
 				.build();
 				
@@ -77,8 +79,7 @@ public class DesafioServiceImpl implements DesafioService {
 		try {
 			descricaoTransacao = mapper.writeValueAsString(auditoriaPncDesafioInputDTO);
 		} catch (JsonProcessingException e) {
-
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();

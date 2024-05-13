@@ -2,9 +2,9 @@ package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import java.sql.Clob;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import javax.sql.rowset.serial.SerialClob;
 
@@ -22,7 +22,6 @@ import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaRegistraN
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
-import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.model.NotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.model.RelatorioNotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
@@ -55,15 +54,22 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	@Autowired
 	TokenUtils tokenUtils;
+	
+	private static final String PERSON_TYPE_PF = "PF";
+	private static final String PERSON_TYPE_PJ = "PJ";
+	private static final String DOCUMENT_TYPE_CPF = "CPF";
+	private static final String DOCUMENT_TYPE_CNPJ = "CNPJ";
 
-	private static final String DEFAULT_USER_IP = "123";
-
+	static Logger LOG = Logger.getLogger(RegistroNotaServiceImpl.class.getName());
+	
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	@Override
 	public Object registraNota(String token, Long numeroNota, RegistraNotaInputDto registraNotaInputDto)
 			throws Exception {
-
+		
+		String tipoPessoa = null; 
+		String tipoDocumento = null; 
 		Long cpfCnpjPnc = Long.parseLong(registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim());
 		Long numeroUnidade = Long.parseLong(tokenUtils.getUnidadeFromToken(token));
 		Long numeroEquipe = null;
@@ -80,7 +86,6 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		Long nuProduto = Long.parseLong(registraNotaInputDto.getContaAtendimento().substring(4, 8)); 
 		Long coIdentificacao = Long.parseLong(registraNotaInputDto.getContaAtendimento().substring(8, registraNotaInputDto.getContaAtendimento().length()));
 		
-
 		numeroEquipe = equipeAtendimentoRepository.findEquipeByUnidade(numeroUnidade);
 
 		RegistraNotaOutputDto registraNotaOutputDto = new RegistraNotaOutputDto();
@@ -106,15 +111,17 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			notaNegociacao.setNuProduto(nuProduto);		
 			notaNegociacao.setCoIdentificacao(coIdentificacao);			
 			notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);
-			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
-
 			
-			if (registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim().length() == 11) {
-				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim();
+			if (registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim().length() == 11) {
+				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim();
 				relatorioNotaNegociacao.setCpf(Long.parseLong(cpfCnpj));
+				tipoPessoa = PERSON_TYPE_PF;
+				tipoDocumento = DOCUMENT_TYPE_CPF;
 			} else {
-				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim();
-				relatorioNotaNegociacao.setCnpj(Long.parseLong(cpfCnpj));		
+				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim();
+				relatorioNotaNegociacao.setCnpj(Long.parseLong(cpfCnpj));	
+				tipoPessoa = PERSON_TYPE_PJ;	
+				tipoDocumento = DOCUMENT_TYPE_CNPJ;
 			}
 
 			relatorioNotaNegociacao.setNumeroEquipe(numeroEquipe);
@@ -147,7 +154,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 					.dataRegistroNota(String.valueOf(formataData(new Date())))
 					.transacaoSistema("189")
 					.versaoSistema(versaoSistema)
-					.tipoPessoa("PF")
+					.tipoPessoa(tipoPessoa)
 					.ipUsuario(tokenUtils.getIpFromToken(token))
 				    .produto(registraNotaInputDto.getProduto())				
 				    .build();
@@ -157,14 +164,21 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			try {
 				descricaoTransacao = mapper.writeValueAsString(auditoriaPncRegistraNotaInputDTO);
 			} catch (JsonProcessingException e) {
-
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 
 			AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
 			auditoriaPncInputDTO = AuditoriaPncInputDTO.builder().descricaoTransacao(descricaoTransacao)
-					.ipTerminalUsuario(tokenUtils.getIpFromToken(token)).nomeMfe("mfe_avl_atendimentoremoto").numeroUnidadeLotacaoUsuario(50L)
-					.ambienteAplicacao("NACIONAL").tipoDocumento("CPF").numeroIdentificacaoCliente(cpfCnpjPnc).build();
+					.ipTerminalUsuario(tokenUtils.getIpFromToken(token))
+					.nomeMfe("mfe_avl_atendimentoremoto")
+					.numeroUnidadeLotacaoUsuario(50L)
+					.ambienteAplicacao("NACIONAL")
+					.tipoDocumento(tipoDocumento)
+					.numeroIdentificacaoCliente(cpfCnpjPnc)
+					.numeroUnidadeContaCliente(nuUnidade)
+					.numeroOperacaoProduto(nuProduto)		
+					.numeroConta(coIdentificacao)										
+					.build();
 
 			auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
 			auditoriaRegistraNotaService.auditar(String.valueOf(formataData(new Date())), token, cpfCnpj, matriculaAtendente,
@@ -179,12 +193,27 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	@Override
 	public Boolean enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto) {
+		
+		String tipoPessoa = null; 
+		String tipoDocumento = null; 
 		Boolean statusContratacao = null;
-		Long cpfCnpjPnc = Long.parseLong(enviaClienteInputDto.getCpfCnpj().replace(".", "").replace("-", "").trim());
+		Long cpfCnpjPnc = Long.parseLong(enviaClienteInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim());
 		String matriculaAtendente = tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", "");
-
+		
+		Long nuUnidade = Long.parseLong(enviaClienteInputDto.getNumeroConta().substring(0, 4)); 
+		Long nuProduto = Long.parseLong(enviaClienteInputDto.getNumeroConta().substring(4, 8)); 
+		Long coIdentificacao = Long.parseLong(enviaClienteInputDto.getNumeroConta().substring(8, enviaClienteInputDto.getNumeroConta().length()));
+		
 		notaNegociacaoRepository.enviaNotaCliente(numeroNota);
 		statusContratacao = true;
+		
+		if (enviaClienteInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim().length() == 11) {
+			tipoPessoa = PERSON_TYPE_PF;
+			tipoDocumento = DOCUMENT_TYPE_CPF;
+		} else {
+			tipoPessoa = PERSON_TYPE_PJ;	
+			tipoDocumento = DOCUMENT_TYPE_CNPJ;
+		}
 		
 		AuditoriaPncEnviaNotaInputDTO auditoriaPncEnviaNotaInputDTO = new AuditoriaPncEnviaNotaInputDTO();
 		auditoriaPncEnviaNotaInputDTO = AuditoriaPncEnviaNotaInputDTO.builder()
@@ -199,7 +228,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				.numeroNota(String.valueOf(numeroNota))
 				.versaoSistema(enviaClienteInputDto.getVersaoSistema())
 				.ipUsuario(tokenUtils.getIpFromToken(token))
-				.tipoPessoa("PF")
+				.tipoPessoa(tipoPessoa)
 				.produto(enviaClienteInputDto.getProduto())	
 			    .build();
 
@@ -208,8 +237,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		try {
 			descricaoTransacao = mapper.writeValueAsString(auditoriaPncEnviaNotaInputDTO);
 		} catch (JsonProcessingException e) {
-
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
@@ -218,8 +246,11 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				.nomeMfe("mfe_avl_atendimentoremoto")
 				.numeroUnidadeLotacaoUsuario(50L)
 				.ambienteAplicacao("NACIONAL")
-				.tipoDocumento("CPF")
+				.tipoDocumento(tipoDocumento)
 				.numeroIdentificacaoCliente(cpfCnpjPnc)
+				.numeroUnidadeContaCliente(nuUnidade)
+				.numeroOperacaoProduto(nuProduto)		
+				.numeroConta(coIdentificacao)	
 				.build();
 
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
@@ -227,13 +258,6 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		return statusContratacao;
 	}
 
-	private Date formataDataBanco() {
-
-		Calendar time = Calendar.getInstance();
-		time.add(Calendar.HOUR, -3);
-		return time.getTime();
-	}
-	
 	private String formataData(Date dateInput) {
 
 		String data = null;

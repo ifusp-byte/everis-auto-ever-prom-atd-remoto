@@ -1,8 +1,10 @@
 package br.gov.caixa.siavl.atendimentoremoto.dto;
 
+import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,10 +22,19 @@ import lombok.Setter;
 @XmlRootElement(name = "EnviaClienteInputDto")
 public class EnviaClienteInputDto {
 	
+	@Valid
 	private String versaoSistema;
+	
+	@Valid
 	private String cpfCnpj;
+	
+	@Valid
 	private String numeroProtocolo;
+	
+	@Valid
 	private String numeroConta; 
+	
+	@Valid
 	private String produto;
 
 }

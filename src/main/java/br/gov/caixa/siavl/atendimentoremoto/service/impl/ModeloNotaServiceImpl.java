@@ -8,13 +8,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinamicoCamposOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinamicoNotaProdutoOutputDTO;
@@ -110,33 +106,43 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 		List<ModeloNotaOutputDto> modelosNotaFavorita = new ArrayList<>();
 		List<ModeloNotaOutputDto> modelosNotaFavorita2 = new ArrayList<>();
+		List<ModeloNotaOutputDto> modelosNotaFavoritaRetorno = new ArrayList<>();
+		
+		
+		if (!modeloNotaFavoritoRepository.findModeloNotaFavorita(matriculaAtendente).isEmpty()) {		
+			modeloNotaFavoritoRepository.findModeloNotaFavorita(matriculaAtendente).stream().forEach(modeloNotaFavorita ->
 
-		modeloNotaFavoritoRepository.findModeloNotaFavorita(matriculaAtendente).stream().forEach(modeloNotaFavorita ->
+			{
+				ModeloNotaOutputDto modeloNotaOutputDto = null;
 
-		{
-			ModeloNotaOutputDto modeloNotaOutputDto = null;
+				modeloNotaOutputDto = ModeloNotaOutputDto.builder().numeroModeloNota(String.valueOf(modeloNotaFavorita[0]))
+						.numeroAcaoProduto(String.valueOf(modeloNotaFavorita[1]))
+						.descricaoAcaoProduto(String.valueOf(modeloNotaFavorita[2]))
+						.dataEscolhaFavorito(formataData(modeloNotaFavorita[3])).build();
 
-			modeloNotaOutputDto = ModeloNotaOutputDto.builder().numeroModeloNota(String.valueOf(modeloNotaFavorita[0]))
-					.numeroAcaoProduto(String.valueOf(modeloNotaFavorita[1]))
-					.descricaoAcaoProduto(String.valueOf(modeloNotaFavorita[2]))
-					.dataEscolhaFavorito(formataData(modeloNotaFavorita[3])).build();
+				modelosNotaFavorita.add(modeloNotaOutputDto);
+			});
 
-			modelosNotaFavorita.add(modeloNotaOutputDto);
-		});
+			modelosNotaFavorita2.addAll(modelosNotaFavorita);
 
-		modelosNotaFavorita2.addAll(modelosNotaFavorita);
-
-		for (ModeloNotaOutputDto favorita : modelosNotaFavorita) {
-			for (int i = 0; i < modelosNotaFavorita.size(); i++) {
-				if (modelosNotaFavorita.get(i).getNumeroModeloNota().equals(favorita.getNumeroModeloNota())
-						&& modelosNotaFavorita.get(i).getNumeroAcaoProduto().equals(favorita.getNumeroAcaoProduto())
-						&& modelosNotaFavorita.get(i).getDataEscolhaFavorito()
-								.after(favorita.getDataEscolhaFavorito())) {
-					modelosNotaFavorita2.remove(favorita);
+			for (ModeloNotaOutputDto favorita : modelosNotaFavorita) {
+				for (int i = 0; i < modelosNotaFavorita.size(); i++) {
+					if (modelosNotaFavorita.get(i).getNumeroModeloNota().equals(favorita.getNumeroModeloNota())
+							&& modelosNotaFavorita.get(i).getNumeroAcaoProduto().equals(favorita.getNumeroAcaoProduto())
+							&& modelosNotaFavorita.get(i).getDataEscolhaFavorito()
+									.after(favorita.getDataEscolhaFavorito())) {
+						modelosNotaFavorita2.remove(favorita);
+					}
 				}
 			}
+				
+			if (modelosNotaFavorita2.size() >= 5) {			
+				modelosNotaFavoritaRetorno = modelosNotaFavorita2.subList(0, 5);
+			} else {		
+				modelosNotaFavoritaRetorno = modelosNotaFavorita2;
+			}
 		}
-		return modelosNotaFavorita2.subList(0, 5);
+		return modelosNotaFavoritaRetorno;
 	}
 
 	@Override

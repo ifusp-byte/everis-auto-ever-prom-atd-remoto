@@ -10,7 +10,9 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.swing.text.MaskFormatter;
+import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +21,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.RestClientResponseException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,28 +33,22 @@ import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaRegistraN
 import br.gov.caixa.siavl.atendimentoremoto.sicli.constants.SicliGatewayMessages;
 import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContaAtendimentoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContasOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.SociosOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
+@Validated
 @SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S4507" })
 public class SicliGateway {
 
 	@Autowired
 	AuditoriaRegistraNotaSicliService auditoriaRegistraNotaSicliService;
 
-	static Logger LOG = Logger.getLogger(SicliGateway.class.getName());
-
-	private static String AUTHORIZATION = "Authorization";
-
-	private static String BEARER = "Bearer ";
-
+	private final static Logger LOG = Logger.getLogger(SicliGateway.class.getName());
 	private static String API_KEY = "apikey";
-
 	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
-
-	private static String URL_BASE_1 = "https://api.des.caixa:8443/cadastro/v2/clientes?cpfcnpj=";
-	private static String URL_BASE_2 = "&campos=dadosbasicos,enderecos,contratos,documentos,nicho,carteiragrc,vinculo,dadosatualizacaocadastral,meiocomunicacao,rendas,profissaosiric&classe=1";
-
+	private static String URL_BASE_1 = "https://api.des.caixa:8443/cadastro/v2/clientes?campos=dadosbasicos,composicaoSocietaria,enderecos,contratos,documentos,nicho,carteiragrc,vinculo,dadosatualizacaocadastral,meiocomunicacao,rendas,profissaosiric&classe=1&cpfcnpj=";
 	private static String REPLACE_IDENTIFICACAO = "0000000000000000";
 	private static String REPLACE_CONTA_1 = "0000";
 	private static String REPLACE_CONTA_2 = "000";
@@ -67,27 +65,35 @@ public class SicliGateway {
 
 	public HttpHeaders newHttpHeaders(String token) {
 
+		String sanitizedToken = StringUtils.normalizeSpace(token);
+		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set(AUTHORIZATION, BEARER + token);
+		headers.setBearerAuth(sanitizedToken);
 		headers.set(API_KEY, API_KEY_VALUE);
 
 		return headers;
 	}
 
-	public ContaAtendimentoOutputDTO contaAtendimento(String token, String cpfCnpj, boolean auditar) throws Exception {
+	public ContaAtendimentoOutputDTO contaAtendimento(@Valid String token, @Valid  String cpfCnpj, @Valid boolean auditar) throws Exception {
 
 		ContaAtendimentoOutputDTO contaAtendimentoOutputDTO = new ContaAtendimentoOutputDTO();
 		ResponseEntity<String> response = null;
 		JsonNode body;
 		ArrayNode contratos;
+		ArrayNode composicaoSocietaria;
 		boolean statusCreated = false;
 		List<ContasOutputDTO> contasAtendimento = new ArrayList<>();
+		List<SociosOutputDTO> sociosLista = new ArrayList<>();
+		
+		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
 
 		try {
 
-			response = restTemplateUtils.newRestTemplate().exchange(
-					URL_BASE_1 + cpfCnpj.replace(".", "").replace("-", "").trim() + URL_BASE_2, HttpMethod.GET,
+			String uri = URL_BASE_1 + cpfCnpj.replace(".", "").replace("-", "").trim();
+			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
+			
+			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,
 					newRequestEntityContaAtendimento(token), String.class);
 
 			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
@@ -97,11 +103,30 @@ public class SicliGateway {
 
 			body = mapper.readTree(String.valueOf(response.getBody()));
 			contratos = (ArrayNode) body.get("contratos");
+			composicaoSocietaria = (ArrayNode) body.get("composicaoSocietaria");
 
 			String nomeCliente = Objects.requireNonNull(body.path("dadosBasicos").path("nome")).asText();
-			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento"))
-					.asText();
-
+			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento")).asText();
+			
+			
+			for (JsonNode nodeComposicaoSocietaria : composicaoSocietaria) {
+				
+				ArrayNode socios = (ArrayNode) nodeComposicaoSocietaria.path("socios");
+				
+				for (JsonNode nodeocios : socios) {
+					
+					SociosOutputDTO socio = new SociosOutputDTO();
+					
+					String nome = nodeocios.path("noPessoa").asText().trim();
+					String cpf = nodeocios.path("coDocumento").asText().trim();
+					
+					socio.setNome(nome);
+					socio.setCpf(cpf);
+				
+					sociosLista.add(socio);
+				}
+			}
+			
 			for (JsonNode node : contratos) {
 				
 				ContasOutputDTO conta = new ContasOutputDTO();
@@ -111,18 +136,9 @@ public class SicliGateway {
 				String nuUnidade = node.path("nuUnidade").asText().trim();
 				String nuProduto = node.path("nuProduto").asText().trim();
 				String coIdentificacao = node.path("coIdentificacao").asText().trim();
-				
 					
 				String contaInput = formataContaTotal(dtInicio, sgSistema, nuUnidade, nuProduto, coIdentificacao); 
 				
-				
-				
-				
-				/*
-				String contaInput = formataUnidade(node.path("nuUnidade").asText()) + formataProduto(node.path("nuProduto").asText(), sgSistema)
-						+ formataCodigoIdentificacao(node.path("coIdentificacao").asText(), formataUnidade(node.path("nuUnidade").asText()), formataProduto(node.path("nuProduto").asText(), sgSistema), sgSistema);
-				
-				*/
 				conta.setConta(contaInput);
 				contasAtendimento.add(conta);
 			}
@@ -136,14 +152,15 @@ public class SicliGateway {
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
 					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
 					.statusCreated(statusCreated).dataCreated(formataData(new Date())).nomeCliente(nomeCliente)
-					.cpfCnpjCliente(formataCpf(cpfCliente)).contas(contasAtendimento).build();
+					.cpfCnpjCliente(formataCpf(cpfCliente))
+					.contas(contasAtendimento)
+					.socios(sociosLista)
+					.build();
 
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
 					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
 
 		} catch (RestClientResponseException e) {
-
-			e.printStackTrace();
 
 			body = mapper.readTree(e.getResponseBodyAsString());
 			JsonNode retornoSicli = Objects.requireNonNull(body.path("retorno"));
@@ -159,6 +176,9 @@ public class SicliGateway {
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
 					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
 
+		} finally {
+			
+			restTemplateDto.getHttpClient().close();
 		}
 
 		if (!String.valueOf(HttpStatus.CREATED.value()).equals(contaAtendimentoOutputDTO.getStatusCode())) {
@@ -206,7 +226,7 @@ public class SicliGateway {
 				cpfMask.setValueContainsLiteralCharacters(false);
 				cpf = cpfMask.valueToString(formatCpf);
 			} catch (ParseException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 		return cpf;
@@ -236,8 +256,6 @@ public class SicliGateway {
 			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length())+unidade;	
 			String formataProduto = REPLACE_CONTA_1.substring(produto.length())+produto;
 			contaFormatada = formataUnidade+formataProduto+formatIdentificacao;
-			
-			
 			
 		} else if ("SIIFX".equalsIgnoreCase(sgSistema)) {
 			String dataInicio = String.valueOf(dtInicio).replace(".", "").replace("-", "");	
