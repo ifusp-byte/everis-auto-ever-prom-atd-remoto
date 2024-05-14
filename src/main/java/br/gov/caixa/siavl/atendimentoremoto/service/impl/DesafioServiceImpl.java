@@ -2,6 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
@@ -54,7 +55,7 @@ public class DesafioServiceImpl implements DesafioService {
 		criaDesafioMap.put("outro-identificador", StringUtils.EMPTY);
 		criaDesafioMap.put("nome-servico", NOME_SERVICO);
 		
-		Long cpfSocio = Long.parseLong(criaDesafioInputDTO.getCpfSocio().replace(".", "").replace("-", "").trim());
+		Long cpfSocio = Long.parseLong(Objects.requireNonNull(criaDesafioInputDTO.getCpfSocio()).replace(".", "").replace("-", "").trim());
 		Long protocolo = Long.parseLong(criaDesafioInputDTO.getProtocolo().trim());
 
 		return identificacaoPositivaGateway.desafioCriar(token, criaDesafioMap, cpfSocio, protocolo);
