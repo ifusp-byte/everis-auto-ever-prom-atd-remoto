@@ -50,14 +50,17 @@ public class DesafioServiceImpl implements DesafioService {
 
 		HashMap<String, String> criaDesafioMap = new HashMap<String, String>();
 
-		criaDesafioMap.put("cpf", cpf.trim());
+		criaDesafioMap.put("cpf", cpf.replace(".", "").replace("-", "").trim());
 		criaDesafioMap.put("nis", StringUtils.EMPTY);
 		criaDesafioMap.put("outro-identificador", StringUtils.EMPTY);
 		criaDesafioMap.put("nome-servico", NOME_SERVICO);
 		
-		Long cpfSocio = Long.parseLong(Objects.requireNonNull(criaDesafioInputDTO.getCpfSocio()).replace(".", "").replace("-", "").trim());
-		Long protocolo = Long.parseLong(criaDesafioInputDTO.getProtocolo().trim());
+		Long cpfSocio = null; 
+		if (!criaDesafioInputDTO.getCpfSocio().isBlank()) {
+		cpfSocio = Long.parseLong(Objects.requireNonNull(criaDesafioInputDTO.getCpfSocio()).replace(".", "").replace("-", "").trim());
+		}
 
+		Long protocolo = Long.parseLong(criaDesafioInputDTO.getProtocolo().trim());
 		return identificacaoPositivaGateway.desafioCriar(token, criaDesafioMap, cpfSocio, protocolo);
 	}
 
