@@ -23,10 +23,12 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.model.NotaNegociacao;
+import br.gov.caixa.siavl.atendimentoremoto.model.PendenciaAtendimentoNota;
 import br.gov.caixa.siavl.atendimentoremoto.model.RelatorioNotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.EquipeAtendimentoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.PendenciaAtendimentoNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RelatorioNotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.RegistroNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
@@ -51,6 +53,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	@Autowired
 	AtendimentoClienteRepository atendimentoClienteRepository;
+	
+	@Autowired
+	PendenciaAtendimentoNotaRepository pendenciaAtendimentoNotaRepository;
 
 	@Autowired
 	TokenUtils tokenUtils;
@@ -203,10 +208,20 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		Long nuUnidade = Long.parseLong(enviaClienteInputDto.getNumeroConta().substring(0, 4)); 
 		Long nuProduto = Long.parseLong(enviaClienteInputDto.getNumeroConta().substring(4, 8)); 
 		Long coIdentificacao = Long.parseLong(enviaClienteInputDto.getNumeroConta().substring(8, enviaClienteInputDto.getNumeroConta().length()));
-		
+
 		notaNegociacaoRepository.enviaNotaCliente(numeroNota);
 		statusContratacao = true;
-		
+			
+		if (Boolean.TRUE.equals(statusContratacao)) {		
+			PendenciaAtendimentoNota pendenciaAtendimentoNota = new PendenciaAtendimentoNota();
+			pendenciaAtendimentoNota.setNumeroNota(numeroNota);
+			pendenciaAtendimentoNota.setMatriculaAtendente(Long.parseLong(matriculaAtendente));
+			pendenciaAtendimentoNota.setTipoPendencia(9L);
+			pendenciaAtendimentoNota.setDtInicioAtendimentoNota(new Date());
+			pendenciaAtendimentoNota.setDtInclusaoPendencia(new Date());			
+			pendenciaAtendimentoNotaRepository.save(pendenciaAtendimentoNota);		
+		}
+
 		if (enviaClienteInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim().length() == 11) {
 			tipoPessoa = PERSON_TYPE_PF;
 			tipoDocumento = DOCUMENT_TYPE_CPF;
