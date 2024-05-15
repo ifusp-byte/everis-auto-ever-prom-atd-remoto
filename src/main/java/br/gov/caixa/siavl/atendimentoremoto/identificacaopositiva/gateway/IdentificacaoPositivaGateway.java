@@ -96,9 +96,9 @@ public class IdentificacaoPositivaGateway {
 		
 		if (cpfSocio != null) { 
 		atendimentoCliente.setCpfCliente(cpfSocio);
-		}	
 		atendimentoClienteRepository.save(atendimentoCliente);
-		
+		}	
+
 		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
 
 		try {
