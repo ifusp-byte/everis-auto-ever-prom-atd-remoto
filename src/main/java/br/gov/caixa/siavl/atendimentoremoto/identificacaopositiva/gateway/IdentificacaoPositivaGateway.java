@@ -92,9 +92,9 @@ public class IdentificacaoPositivaGateway {
 		ResponseEntity<String> response = null;
 		JsonNode jsonNode;
 		String codigo422 = null;
-		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(protocolo);
 		
 		if (cpfSocio != null) { 
+		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(protocolo);
 		atendimentoCliente.setCpfCliente(cpfSocio);
 		atendimentoClienteRepository.save(atendimentoCliente);
 		}	
