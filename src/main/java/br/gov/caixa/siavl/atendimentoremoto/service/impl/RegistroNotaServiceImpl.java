@@ -2,18 +2,15 @@ package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import java.sql.Clob;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Logger;
-
 import javax.sql.rowset.serial.SerialClob;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncEnviaNotaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncRegistraNotaInputDTO;
@@ -22,11 +19,17 @@ import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaRegistraN
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
+import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNegocio;
+import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocio;
+import br.gov.caixa.siavl.atendimentoremoto.model.NegocioAgenciaVirtual;
 import br.gov.caixa.siavl.atendimentoremoto.model.NotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.model.PendenciaAtendimentoNota;
 import br.gov.caixa.siavl.atendimentoremoto.model.RelatorioNotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoNegocioRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.EquipeAtendimentoRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.PendenciaAtendimentoNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RelatorioNotaNegociacaoRepository;
@@ -56,6 +59,15 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	
 	@Autowired
 	PendenciaAtendimentoNotaRepository pendenciaAtendimentoNotaRepository;
+	
+	@Autowired
+	AtendimentoNegocioRepository atendimentoNegocioRepository;
+	
+	@Autowired
+	NegocioAgenciaVirtualRepository negocioAgenciaVirtualRepository;
+	
+	@Autowired
+	ModeloNotaRepository modeloNotaRepository;
 
 	@Autowired
 	TokenUtils tokenUtils;
@@ -70,7 +82,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	@Override
-	public Object registraNota(String token, Long numeroNota, RegistraNotaInputDto registraNotaInputDto)
+	public Object registraNota(String token, RegistraNotaInputDto registraNotaInputDto, Long numeroModeloNota)
 			throws Exception {
 		
 		String tipoPessoa = null; 
@@ -106,8 +118,27 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			Clob relatorioNota = new SerialClob(dsRelatorioNota.toCharArray());
 			
 			RelatorioNotaNegociacao relatorioNotaNegociacao = new RelatorioNotaNegociacao();
+
+			ModeloNotaNegocio modeloNotaNegocio = modeloNotaRepository.prazoValidade(numeroModeloNota);	
+			Date dataValidade = formataDataValidade(modeloNotaNegocio.getPrazoValidade(), modeloNotaNegocio.getHoraValidade()); 
+				
+			NegocioAgenciaVirtual negocioAgenciaVirtual = new NegocioAgenciaVirtual();
+			negocioAgenciaVirtual.setDataCriacaoNegocio(new Date());
+			negocioAgenciaVirtual.setSituacaoNegocio("E".charAt(0));
+			negocioAgenciaVirtual = negocioAgenciaVirtualRepository.save(negocioAgenciaVirtual);
 			
-			NotaNegociacao notaNegociacao = notaNegociacaoRepository.getReferenceById(numeroNota);			
+			NotaNegociacao notaNegociacao = new NotaNegociacao();
+			notaNegociacao.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
+			notaNegociacao.setNumeroModeloNota(numeroModeloNota);
+			notaNegociacao.setDataCriacaoNota(formataDataBanco());
+			notaNegociacao.setDataModificacaoNota(formataDataBanco());
+			notaNegociacao.setNumeroMatriculaCriacaoNota(matriculaCriacaoNota(token));
+			notaNegociacao.setNumeroMatriculaModificacaoNota(matriculaCriacaoNota(token));
+			notaNegociacao.setNumeroSituacaoNota(16L); // VERIFICAR
+			notaNegociacao.setQtdItemNegociacao(1L);
+			notaNegociacao.setIcOrigemNota(1L);
+			notaNegociacao.setDataPrazoValidade(dataValidade);
+			notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);		
 			notaNegociacao.setIcOrigemNota(1L);	
 			notaNegociacao.setNumeroEquipe(numeroEquipe);		
 			notaNegociacao.setQtdItemNegociacao(Long.parseLong(registraNotaInputDto.getQuantidadeMeta().replace(".", "").replace(",", "").trim()));
@@ -116,6 +147,12 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			notaNegociacao.setNuProduto(nuProduto);		
 			notaNegociacao.setCoIdentificacao(coIdentificacao);			
 			notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);
+			
+			AtendimentoNegocio atendimentoNegocio = new AtendimentoNegocio();
+			atendimentoNegocio.setNumeroProtocolo(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
+			atendimentoNegocio.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
+		    atendimentoNegocio = atendimentoNegocioRepository.save(atendimentoNegocio);
+		    
 			
 			if (registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim().length() == 11) {
 				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim();
@@ -131,7 +168,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 			relatorioNotaNegociacao.setNumeroEquipe(numeroEquipe);
 			relatorioNotaNegociacao.setRelatorioNota(relatorioNota);
-			relatorioNotaNegociacao.setNumeroNota(numeroNota);
+			relatorioNotaNegociacao.setNumeroNota(notaNegociacao.getNumeroNota());
 			relatorioNotaNegociacao.setNumeroProtocolo(Long.parseLong(numeroProtocolo));
 			relatorioNotaNegociacao.setNomeCliente(registraNotaInputDto.getNomeCliente());
 			relatorioNotaNegociacao.setMatriculaAtendente(Long.parseLong(matriculaAtendente));
@@ -144,10 +181,12 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			relatorioNotaNegociacao.setAcaoProduto(registraNotaInputDto.getAcaoProduto());
 								
 			relatorioNotaNegociacaoRepository.save(relatorioNotaNegociacao);
-			registraNotaOutputDto = RegistraNotaOutputDto.builder().statusNotaRegistrada(true)
-					.mensagem("Nota registrada com sucesso!").build();
-			
-			
+			registraNotaOutputDto = RegistraNotaOutputDto.builder()
+					.statusNotaRegistrada(true)
+					.mensagem("Nota registrada com sucesso!")
+					.numeroNota(String.valueOf(notaNegociacao.getNumeroNota()))				
+					.build();
+					
 			AuditoriaPncRegistraNotaInputDTO auditoriaPncRegistraNotaInputDTO = new AuditoriaPncRegistraNotaInputDTO();
 			auditoriaPncRegistraNotaInputDTO = AuditoriaPncRegistraNotaInputDTO.builder()
 
@@ -155,7 +194,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 					.statusRetornoSicli(String.valueOf(statusRetornoSicli))
 					.numeroProtocolo(numeroProtocolo)
 					.numeroContaAtendimento(numeroContaAtendimento)
-					.numeroNota(String.valueOf(numeroNota))
+					.numeroNota(String.valueOf(notaNegociacao.getNumeroNota()))
 					.dataRegistroNota(String.valueOf(formataData(new Date())))
 					.transacaoSistema("189")
 					.versaoSistema(versaoSistema)
@@ -187,7 +226,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 			auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
 			auditoriaRegistraNotaService.auditar(String.valueOf(formataData(new Date())), token, cpfCnpj, matriculaAtendente,
-					String.valueOf(statusRetornoSicli), numeroProtocolo, numeroContaAtendimento, String.valueOf(numeroNota),
+					String.valueOf(statusRetornoSicli), numeroProtocolo, numeroContaAtendimento, String.valueOf(notaNegociacao.getNumeroNota()),
 					versaoSistema, registraNotaInputDto.getProduto());
 		
 		}
@@ -280,6 +319,29 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
 		data = String.valueOf(sdfOut.format(dateInput));
 		return data;
+	}
+
+	private Date formataDataBanco() {
+
+		Calendar time = Calendar.getInstance();
+		time.add(Calendar.HOUR, -3);
+		return time.getTime();
+	}
+	
+	
+	private Date formataDataValidade(int prazoValidade, String horaValidade) {
+
+		Calendar time = Calendar.getInstance();
+		time.add(Calendar.HOUR, -3);
+		time.add(Calendar.DATE, prazoValidade);
+		time.add(Calendar.HOUR, Integer.parseInt(horaValidade.substring(0, 1)));
+		time.add(Calendar.MINUTE, Integer.parseInt(horaValidade.substring(3, 4)));
+		
+		return time.getTime();
+	}
+	
+	public Long matriculaCriacaoNota(String token) {
+		return Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", ""));
 	}
 
 
