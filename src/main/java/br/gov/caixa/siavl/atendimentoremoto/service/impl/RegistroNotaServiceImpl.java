@@ -76,6 +76,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	private static final String PERSON_TYPE_PJ = "PJ";
 	private static final String DOCUMENT_TYPE_CPF = "CPF";
 	private static final String DOCUMENT_TYPE_CNPJ = "CNPJ";
+	private static final String PATTERN_MATRICULA = "[a-zA-Z]";
 
 	static Logger LOG = Logger.getLogger(RegistroNotaServiceImpl.class.getName());
 	
@@ -91,7 +92,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		Long numeroUnidade = Long.parseLong(tokenUtils.getUnidadeFromToken(token));
 		Long numeroEquipe = null;
 		String cpfCnpj = null;
-		String matriculaAtendente = tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", "");
+		String matriculaAtendente = tokenUtils.getMatriculaFromToken(token).replaceAll(PATTERN_MATRICULA, "");
 		boolean statusRetornoSicli = true;
 		String numeroProtocolo = registraNotaInputDto.getNumeroProtocolo();
 		String numeroContaAtendimento = registraNotaInputDto.getContaAtendimento();
@@ -242,7 +243,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		String tipoDocumento = null; 
 		Boolean statusContratacao = null;
 		Long cpfCnpjPnc = Long.parseLong(enviaClienteInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim());
-		String matriculaAtendente = tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", "");
+		String matriculaAtendente = tokenUtils.getMatriculaFromToken(token).replaceAll(PATTERN_MATRICULA, "");
 		
 		Long nuUnidade = Long.parseLong(enviaClienteInputDto.getNumeroConta().substring(0, 4)); 
 		Long nuProduto = Long.parseLong(enviaClienteInputDto.getNumeroConta().substring(4, 8)); 
@@ -341,7 +342,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	}
 	
 	public Long matriculaCriacaoNota(String token) {
-		return Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", ""));
+		return Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll(PATTERN_MATRICULA, ""));
 	}
 
 
