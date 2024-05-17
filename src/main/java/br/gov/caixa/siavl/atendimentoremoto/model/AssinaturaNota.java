@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "AtendimentoCliente")
+@Entity(name = "AssinaturaNota")
 @Table(name = "AVLTB054_ASSINATURA_NOTA_NGCCO", schema = "AVL")
 public class AssinaturaNota implements Serializable {
 	
