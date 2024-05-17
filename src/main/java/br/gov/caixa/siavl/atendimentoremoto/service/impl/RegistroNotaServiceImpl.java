@@ -262,6 +262,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		notaNegociacaoRepository.enviaNotaCliente(numeroNota);
 		statusContratacao = true;
 			
+		/* aguardando definicao atualizacao pendencia
 		if (Boolean.TRUE.equals(statusContratacao)) {		
 			PendenciaAtendimentoNota pendenciaAtendimentoNota = new PendenciaAtendimentoNota();
 			pendenciaAtendimentoNota.setNumeroNota(numeroNota);
@@ -270,7 +271,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			pendenciaAtendimentoNota.setDtInicioAtendimentoNota(new Date());
 			pendenciaAtendimentoNota.setDtInclusaoPendencia(new Date());			
 			pendenciaAtendimentoNotaRepository.save(pendenciaAtendimentoNota);		
-		}
+		}	
+		*/
 
 		if (enviaClienteInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim().length() == 11) {
 			tipoPessoa = PERSON_TYPE_PF;
