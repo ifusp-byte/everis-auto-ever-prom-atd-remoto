@@ -128,7 +128,18 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			negocioAgenciaVirtual.setSituacaoNegocio("E".charAt(0));
 			negocioAgenciaVirtual = negocioAgenciaVirtualRepository.save(negocioAgenciaVirtual);
 			
-			NotaNegociacao notaNegociacao = new NotaNegociacao();
+			
+			NotaNegociacao notaNegociacao = null;		
+			
+			if (registraNotaInputDto.getNumeroNota() == null) {	
+				
+            notaNegociacao = new NotaNegociacao();	
+            
+			} else {
+				
+				notaNegociacao = notaNegociacaoRepository.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroNota()));				
+			}
+			
 			notaNegociacao.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
 			notaNegociacao.setNumeroModeloNota(numeroModeloNota);
 			notaNegociacao.setDataCriacaoNota(formataDataBanco());
@@ -138,8 +149,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			notaNegociacao.setNumeroSituacaoNota(16L); // VERIFICAR
 			notaNegociacao.setQtdItemNegociacao(1L);
 			notaNegociacao.setIcOrigemNota(1L);
-			notaNegociacao.setDataPrazoValidade(dataValidade);
-			notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);		
+			notaNegociacao.setDataPrazoValidade(dataValidade);	
 			notaNegociacao.setIcOrigemNota(1L);	
 			notaNegociacao.setNumeroEquipe(numeroEquipe);		
 			notaNegociacao.setQtdItemNegociacao(Long.parseLong(registraNotaInputDto.getQuantidadeMeta().replace(".", "").replace(",", "").trim()));
