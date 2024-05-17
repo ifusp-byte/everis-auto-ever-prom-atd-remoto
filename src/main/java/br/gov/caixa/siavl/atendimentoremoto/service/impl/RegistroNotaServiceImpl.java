@@ -6,11 +6,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Logger;
+
 import javax.sql.rowset.serial.SerialClob;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncEnviaNotaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncRegistraNotaInputDTO;
@@ -19,12 +23,13 @@ import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaRegistraN
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
+import br.gov.caixa.siavl.atendimentoremoto.model.AssinaturaNota;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNegocio;
 import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocio;
 import br.gov.caixa.siavl.atendimentoremoto.model.NegocioAgenciaVirtual;
 import br.gov.caixa.siavl.atendimentoremoto.model.NotaNegociacao;
-import br.gov.caixa.siavl.atendimentoremoto.model.PendenciaAtendimentoNota;
 import br.gov.caixa.siavl.atendimentoremoto.model.RelatorioNotaNegociacao;
+import br.gov.caixa.siavl.atendimentoremoto.repository.AssinaturaNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoNegocioRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.EquipeAtendimentoRepository;
@@ -68,6 +73,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	
 	@Autowired
 	ModeloNotaRepository modeloNotaRepository;
+	
+	@Autowired
+	AssinaturaNotaRepository assinaturaNotaRepository;
 
 	@Autowired
 	TokenUtils tokenUtils;
@@ -262,17 +270,28 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		notaNegociacaoRepository.enviaNotaCliente(numeroNota);
 		statusContratacao = true;
 			
-		/* aguardando definicao atualizacao pendencia
-		if (Boolean.TRUE.equals(statusContratacao)) {		
+
+		if (Boolean.TRUE.equals(statusContratacao)) {	
+		
+			AssinaturaNota assinaturaNota = new AssinaturaNota();
+			assinaturaNota.setNumeroNota(numeroNota);
+			assinaturaNota.setCpfClienteAssinante(cpfCnpjPnc);	
+			assinaturaNota.setTipoAssinatura((char) 1);
+			assinaturaNota.setOrigemAssinatura((char) 1);	
+			assinaturaNota.setDtAssinatura(formataDataBanco());					
+			assinaturaNotaRepository.save(assinaturaNota); 	
+			
+			/*
 			PendenciaAtendimentoNota pendenciaAtendimentoNota = new PendenciaAtendimentoNota();
 			pendenciaAtendimentoNota.setNumeroNota(numeroNota);
 			pendenciaAtendimentoNota.setMatriculaAtendente(Long.parseLong(matriculaAtendente));
 			pendenciaAtendimentoNota.setTipoPendencia(9L);
 			pendenciaAtendimentoNota.setDtInicioAtendimentoNota(new Date());
 			pendenciaAtendimentoNota.setDtInclusaoPendencia(new Date());			
-			pendenciaAtendimentoNotaRepository.save(pendenciaAtendimentoNota);		
+			pendenciaAtendimentoNotaRepository.save(pendenciaAtendimentoNota);	
+			*/	
 		}	
-		*/
+		
 
 		if (enviaClienteInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim().length() == 11) {
 			tipoPessoa = PERSON_TYPE_PF;
