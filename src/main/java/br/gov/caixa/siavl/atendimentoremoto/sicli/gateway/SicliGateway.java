@@ -107,8 +107,8 @@ public class SicliGateway {
 
 			String nomeCliente = Objects.requireNonNull(body.path("dadosBasicos").path("nome")).asText();
 			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento")).asText();
-			
-			
+			String razaoSocial = Objects.requireNonNull(body.path("dadosBasicos").path("razaoSocial")).asText();
+				
 			for (JsonNode nodeComposicaoSocietaria : composicaoSocietaria) {
 				
 				ArrayNode socios = (ArrayNode) nodeComposicaoSocietaria.path("socios");
@@ -150,11 +150,14 @@ public class SicliGateway {
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
-					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
-					.statusCreated(statusCreated).dataCreated(formataData(new Date())).nomeCliente(nomeCliente)
+					//.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
+					.statusCreated(statusCreated)
+					.dataCreated(formataData(new Date()))
+					.nomeCliente(nomeCliente)
 					.cpfCnpjCliente(formataCpf(cpfCliente))
 					.contas(contasAtendimento)
 					.socios(sociosLista)
+					.razaoSocial(razaoSocial)
 					.build();
 
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
