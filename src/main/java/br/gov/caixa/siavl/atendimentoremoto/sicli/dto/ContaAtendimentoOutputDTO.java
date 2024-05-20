@@ -57,5 +57,9 @@ public class ContaAtendimentoOutputDTO {
 	private List<ContasOutputDTO> contas;
 	
 	private List<SociosOutputDTO> socios;
+	
+	@Valid
+	@XmlElement(name = "razaoSocial")
+	private String razaoSocial; 
 
 }

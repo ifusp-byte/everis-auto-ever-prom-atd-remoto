@@ -78,6 +78,7 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		geraProtocoloOutputDTO.setStatus(true);
 		geraProtocoloOutputDTO.setNumeroProtocolo(String.valueOf(atendimentoCliente.getNumeroProtocolo()));
 		geraProtocoloOutputDTO.setSocios(contaAtendimento.getSocios());		
+		geraProtocoloOutputDTO.setRazaoSocial(contaAtendimento.getRazaoSocial());
 		
 		AuditoriaPncProtocoloInputDTO auditoriaPncProtocoloInputDTO = new AuditoriaPncProtocoloInputDTO(); 
 		auditoriaPncProtocoloInputDTO = AuditoriaPncProtocoloInputDTO.builder()

@@ -35,5 +35,9 @@ public class GeraProtocoloOutputDTO {
 	private String numeroProtocolo;
 	
 	private List<SociosOutputDTO> socios;
+	
+	@Valid
+	@XmlElement(name = "razaoSocial")
+	private String razaoSocial; 
 
 }
