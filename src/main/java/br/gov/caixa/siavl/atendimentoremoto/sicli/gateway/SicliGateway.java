@@ -108,6 +108,11 @@ public class SicliGateway {
 			String nomeCliente = Objects.requireNonNull(body.path("dadosBasicos").path("nome")).asText();
 			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento")).asText();
 			String razaoSocial = Objects.requireNonNull(body.path("dadosBasicos").path("razaoSocial")).asText();
+			String cnpj = null; 
+			
+			if (cpfCnpj.trim().length() == 14) {
+				cnpj = cpfCnpj;	
+			}
 				
 			for (JsonNode nodeComposicaoSocietaria : composicaoSocietaria) {
 				
@@ -154,10 +159,11 @@ public class SicliGateway {
 					.statusCreated(statusCreated)
 					.dataCreated(formataData(new Date()))
 					.nomeCliente(nomeCliente)
-					.cpfCnpjCliente(formataCpf(cpfCliente))
+					.cpfCliente(formataCpf(cpfCliente))
 					.contas(contasAtendimento)
 					.socios(sociosLista)
 					.razaoSocial(razaoSocial)
+					.cnpj(cnpj)
 					.build();
 
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
@@ -233,6 +239,27 @@ public class SicliGateway {
 			}
 		}
 		return cpf;
+	}
+	
+	private String formataCnpj(Object object) {
+
+		String cnpjInput = null;
+		String formatCnpj = null;
+		String cnpj = null;
+		MaskFormatter cnpjMask = null;
+		
+		if (object != null) {
+			cnpjInput = String.valueOf(object).replace(".", "").replace("/", "").replace("/", "").replace("-", "");
+			formatCnpj = "00000000000000".substring(cnpjInput.length()) + cnpjInput;
+			try {
+				cnpjMask = new MaskFormatter("##.###.###/####-##");
+				cnpjMask.setValueContainsLiteralCharacters(false);
+				cnpj = cnpjMask.valueToString(formatCnpj);
+			} catch (ParseException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return cnpj;
 	}
 
 	private String formataContaTotal (String dtInicio, String sgSistema, Object nuUnidade, Object nuProduto, Object coIdentificacao) {
