@@ -25,13 +25,16 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.model.AssinaturaNota;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNegocio;
+import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNota;
 import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocio;
 import br.gov.caixa.siavl.atendimentoremoto.model.NegocioAgenciaVirtual;
 import br.gov.caixa.siavl.atendimentoremoto.model.NotaNegociacao;
+import br.gov.caixa.siavl.atendimentoremoto.model.PendenciaAtendimentoNota;
 import br.gov.caixa.siavl.atendimentoremoto.model.RelatorioNotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AssinaturaNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoNegocioRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.EquipeAtendimentoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepository;
@@ -76,6 +79,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	
 	@Autowired
 	AssinaturaNotaRepository assinaturaNotaRepository;
+	
+	@Autowired
+	AtendimentoNotaRepository atendimentoNotaRepository;
 
 	@Autowired
 	TokenUtils tokenUtils;
@@ -171,6 +177,16 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			atendimentoNegocio.setNumeroProtocolo(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
 			atendimentoNegocio.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
 		    atendimentoNegocio = atendimentoNegocioRepository.save(atendimentoNegocio);
+		    
+		    AtendimentoNota atendimentoNota = new AtendimentoNota();
+		    atendimentoNota.setNumeroNota(notaNegociacao.getNumeroNota());
+		    atendimentoNota.setMatriculaAtendente(Long.parseLong(matriculaAtendente));
+		    atendimentoNota.setMatriculaAtendenteConclusao(Long.parseLong(matriculaAtendente));
+		    atendimentoNota.setDtInicioAtendimentoNota(notaNegociacao.getDataCriacaoNota());
+		    atendimentoNota.setDtConclusaoAtendimentoNota(formataDataBanco());
+		    atendimentoNota.setNumeroEquipe(numeroEquipe);
+		    atendimentoNota.setUnidadeDesignada('A');
+		    atendimentoNotaRepository.save(atendimentoNota);
 		    
 			
 			if (registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim().length() == 11) {
@@ -280,8 +296,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			assinaturaNota.setOrigemAssinatura((char) '1');	
 			assinaturaNota.setDtAssinatura(formataDataBanco());					
 			assinaturaNotaRepository.save(assinaturaNota); 	
-			
-			/*
+					
 			PendenciaAtendimentoNota pendenciaAtendimentoNota = new PendenciaAtendimentoNota();
 			pendenciaAtendimentoNota.setNumeroNota(numeroNota);
 			pendenciaAtendimentoNota.setMatriculaAtendente(Long.parseLong(matriculaAtendente));
@@ -289,7 +304,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			pendenciaAtendimentoNota.setDtInicioAtendimentoNota(new Date());
 			pendenciaAtendimentoNota.setDtInclusaoPendencia(new Date());			
 			pendenciaAtendimentoNotaRepository.save(pendenciaAtendimentoNota);	
-			*/	
+				
 		}	
 		
 
