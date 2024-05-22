@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "PendenciaAtendimentoNota")
+@Entity(name = "AtendimentoNota")
 @Table(name = "AVLTB023_ATENDIMENTO_NOTA", schema = "AVL")
 public class AtendimentoNota {
 
