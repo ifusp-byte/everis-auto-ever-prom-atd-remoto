@@ -159,11 +159,11 @@ public class SicliGateway {
 					.statusCreated(statusCreated)
 					.dataCreated(formataData(new Date()))
 					.nomeCliente(nomeCliente)
-					.cpfCliente(formataCpf(cpfCliente))
+					.cpfCliente(cpfCliente.equals(StringUtils.EMPTY) ? StringUtils.EMPTY : formataCpf(cpfCliente))
 					.contas(contasAtendimento)
 					.socios(sociosLista)
 					.razaoSocial(razaoSocial)
-					.cnpj(cnpj)
+					.cnpj(cnpj == null ? StringUtils.EMPTY : formataCnpj(cnpj))
 					.build();
 
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
