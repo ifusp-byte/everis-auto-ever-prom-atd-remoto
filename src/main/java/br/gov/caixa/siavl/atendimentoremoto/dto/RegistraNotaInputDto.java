@@ -56,5 +56,17 @@ public class RegistraNotaInputDto {
 	
 	@Valid
 	private String numeroNota; 
+	
+	@Valid
+	private String razaoSocial;
+	
+	@Valid
+	private String cnpj;
+	
+	@Valid
+	private String nomeSocio;
+	
+	@Valid
+	private String cpfSocio; 
 
 }
