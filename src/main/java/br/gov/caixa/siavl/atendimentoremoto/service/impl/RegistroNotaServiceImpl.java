@@ -299,12 +299,14 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			assinaturaNota.setOrigemAssinatura((char) '1');	
 			assinaturaNota.setDtAssinatura(formataDataBanco());					
 			assinaturaNotaRepository.save(assinaturaNota); 	
+			
+			NotaNegociacao notaNegociacao = notaNegociacaoRepository.getReferenceById(numeroNota);
 					
 			PendenciaAtendimentoNota pendenciaAtendimentoNota = new PendenciaAtendimentoNota();
 			pendenciaAtendimentoNota.setNumeroNota(numeroNota);
 			pendenciaAtendimentoNota.setMatriculaAtendente(Long.parseLong(matriculaAtendente));
 			pendenciaAtendimentoNota.setTipoPendencia(9L);
-			pendenciaAtendimentoNota.setDtInicioAtendimentoNota(new Date());
+			pendenciaAtendimentoNota.setDtInicioAtendimentoNota(notaNegociacao.getDataCriacaoNota());
 			pendenciaAtendimentoNota.setDtInclusaoPendencia(new Date());			
 			pendenciaAtendimentoNotaRepository.save(pendenciaAtendimentoNota);	
 				
