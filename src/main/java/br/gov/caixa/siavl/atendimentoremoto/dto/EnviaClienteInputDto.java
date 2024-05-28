@@ -36,5 +36,17 @@ public class EnviaClienteInputDto {
 	
 	@Valid
 	private String produto;
+	
+	@Valid
+	private String razaoSocial;
+	
+	@Valid
+	private String cnpj;
+	
+	@Valid
+	private String nomeSocio;
+	
+	@Valid
+	private String cpfSocio; 
 
 }
