@@ -133,7 +133,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			String dsRelatorioNota = mapper.writeValueAsString(registraNotaInputDto);
 			Clob relatorioNota = new SerialClob(dsRelatorioNota.toCharArray());
 			
-			RelatorioNotaNegociacao relatorioNotaNegociacao = new RelatorioNotaNegociacao();
+
 
 			ModeloNotaNegocio modeloNotaNegocio = modeloNotaRepository.prazoValidade(numeroModeloNota);	
 			Date dataValidade = formataDataValidade(modeloNotaNegocio.getPrazoValidade(), modeloNotaNegocio.getHoraValidade()); 
@@ -144,15 +144,18 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			negocioAgenciaVirtual = negocioAgenciaVirtualRepository.save(negocioAgenciaVirtual);
 			
 			
-			NotaNegociacao notaNegociacao = null;		
+			NotaNegociacao notaNegociacao = null;	
+			RelatorioNotaNegociacao relatorioNotaNegociacao = null;
 			
 			if (registraNotaInputDto.getNumeroNota() == null) {	
 				
             notaNegociacao = new NotaNegociacao();	
+            relatorioNotaNegociacao = new RelatorioNotaNegociacao();
             
 			} else {
 				
-				notaNegociacao = notaNegociacaoRepository.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroNota()));				
+				notaNegociacao = notaNegociacaoRepository.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroNota()));	
+				relatorioNotaNegociacao = relatorioNotaNegociacaoRepository.findByNumeroNota(Long.parseLong(registraNotaInputDto.getNumeroNota()));
 			}
 			
 			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
