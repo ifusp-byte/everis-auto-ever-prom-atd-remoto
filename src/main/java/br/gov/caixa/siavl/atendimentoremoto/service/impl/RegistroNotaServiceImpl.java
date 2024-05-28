@@ -24,6 +24,7 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.model.AssinaturaNota;
+import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNegocio;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNota;
 import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocio;
@@ -154,6 +155,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				notaNegociacao = notaNegociacaoRepository.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroNota()));				
 			}
 			
+			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
+			
 			notaNegociacao.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
 			notaNegociacao.setNumeroModeloNota(numeroModeloNota);
 			notaNegociacao.setDataCriacaoNota(formataDataBanco());
@@ -262,7 +265,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
 			auditoriaRegistraNotaService.auditar(String.valueOf(formataData(new Date())), token, cpfCnpj, matriculaAtendente,
 					String.valueOf(statusRetornoSicli), numeroProtocolo, numeroContaAtendimento, String.valueOf(notaNegociacao.getNumeroNota()),
-					versaoSistema, registraNotaInputDto.getProduto());
+					versaoSistema, registraNotaInputDto.getProduto(), String.valueOf(atendimentoCliente.getCpfCliente()));
 		
 		}
 
