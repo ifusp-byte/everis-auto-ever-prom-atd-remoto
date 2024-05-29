@@ -21,22 +21,7 @@ import lombok.Setter;
 public class AuditoriaPncEnviaNotaInputDTO {
 	
 	@Valid
-	private String cpfCnpj;
-	
-	@Valid
-	private String matriculaAtendente;
-	
-	@Valid
-	private String statusRetornoSicli;
-	
-	@Valid
-	private String statusRetornoIdPositiva;
-	
-	@Valid
 	private String situacaoNota;
-	
-	@Valid
-	private String dataEnvioNota;
 	
 	@Valid
 	private String numeroProtocolo;
@@ -49,15 +34,6 @@ public class AuditoriaPncEnviaNotaInputDTO {
 	
 	@Valid
 	private String versaoSistema;
-	
-	@Valid
-	private String ipUsuario;
-	
-	@Valid
-	private String tipoPessoa;
-	
-	@Valid
-	private String produto;
 	
 	@Valid
 	private String dataHoraTransacao; 

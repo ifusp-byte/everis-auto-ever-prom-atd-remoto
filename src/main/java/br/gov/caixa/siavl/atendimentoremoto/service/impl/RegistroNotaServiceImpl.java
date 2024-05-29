@@ -344,8 +344,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				.numeroNota(String.valueOf(numeroNota))
 				.versaoSistema(enviaClienteInputDto.getVersaoSistema())
 				//.ipUsuario(tokenUtils.getIpFromToken(token))
-				.tipoPessoa(tipoPessoa)
-				.produto(enviaClienteInputDto.getProduto())	
+				//.tipoPessoa(tipoPessoa)
+				//.produto(enviaClienteInputDto.getProduto())	
 				.dataHoraTransacao(formataData(new Date()))
 			    .build();
 
