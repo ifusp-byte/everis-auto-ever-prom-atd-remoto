@@ -58,5 +58,8 @@ public class AuditoriaPncEnviaNotaInputDTO {
 	
 	@Valid
 	private String produto;
+	
+	@Valid
+	private String dataHoraTransacao; 
 
 }

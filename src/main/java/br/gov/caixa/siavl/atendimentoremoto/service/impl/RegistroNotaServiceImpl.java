@@ -333,19 +333,20 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		AuditoriaPncEnviaNotaInputDTO auditoriaPncEnviaNotaInputDTO = new AuditoriaPncEnviaNotaInputDTO();
 		auditoriaPncEnviaNotaInputDTO = AuditoriaPncEnviaNotaInputDTO.builder()
 				
-				.cpfCnpj(enviaClienteInputDto.getCpfCnpj().trim())
-				.matriculaAtendente(matriculaAtendente)
+				//.cpfCnpj(enviaClienteInputDto.getCpfCnpj().trim())
+				//.matriculaAtendente(matriculaAtendente)
 				.situacaoNota(SITUACAO_NOTA)
-				.statusRetornoSicli(String.valueOf(true))
-				.statusRetornoIdPositiva(String.valueOf(true))
-				.dataEnvioNota(String.valueOf(formataData(new Date())))
+				//.statusRetornoSicli(String.valueOf(true))
+				//.statusRetornoIdPositiva(String.valueOf(true))
+				//.dataEnvioNota(String.valueOf(formataData(new Date())))
 				.numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo())				
 				.numeroContaAtendimento(enviaClienteInputDto.getNumeroConta())
 				.numeroNota(String.valueOf(numeroNota))
 				.versaoSistema(enviaClienteInputDto.getVersaoSistema())
-				.ipUsuario(tokenUtils.getIpFromToken(token))
+				//.ipUsuario(tokenUtils.getIpFromToken(token))
 				.tipoPessoa(tipoPessoa)
 				.produto(enviaClienteInputDto.getProduto())	
+				.dataHoraTransacao(formataData(new Date()))
 			    .build();
 
 		String descricaoEnvioTransacao = null;
