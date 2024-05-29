@@ -294,17 +294,18 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			
 
 		if (Boolean.TRUE.equals(statusContratacao)) {	
-		
+			
+			NotaNegociacao notaNegociacao = notaNegociacaoRepository.getReferenceById(numeroNota);
+			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(enviaClienteInputDto.getNumeroProtocolo()));
+					
 			AssinaturaNota assinaturaNota = new AssinaturaNota();
 			assinaturaNota.setNumeroNota(numeroNota);
-			assinaturaNota.setCpfClienteAssinante(cpfCnpjPnc);	
+			assinaturaNota.setCpfClienteAssinante(atendimentoCliente.getCpfCliente());
 			assinaturaNota.setTipoAssinatura((char) '1');
 			assinaturaNota.setOrigemAssinatura((char) '1');	
 			assinaturaNota.setDtAssinatura(formataDataBanco());					
 			assinaturaNotaRepository.save(assinaturaNota); 	
 			
-			NotaNegociacao notaNegociacao = notaNegociacaoRepository.getReferenceById(numeroNota);
-					
 			PendenciaAtendimentoNota pendenciaAtendimentoNota = new PendenciaAtendimentoNota();
 			pendenciaAtendimentoNota.setNumeroNota(numeroNota);
 			pendenciaAtendimentoNota.setMatriculaAtendente(Long.parseLong(matriculaAtendente));
