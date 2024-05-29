@@ -2,6 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import java.sql.Clob;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -92,6 +93,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	private static final String DOCUMENT_TYPE_CPF = "CPF";
 	private static final String DOCUMENT_TYPE_CNPJ = "CNPJ";
 	private static final String PATTERN_MATRICULA = "[a-zA-Z]";
+	private static final String STEP4_COMPROVANTE_ASSINAR_PELO_APP = "step4_comprovante_assinar_pelo_app";
+	private static final String SITUACAO_NOTA = "Aguardando assinatura do cliente";
 
 	static Logger LOG = Logger.getLogger(RegistroNotaServiceImpl.class.getName());
 	
@@ -332,6 +335,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				
 				.cpfCnpj(enviaClienteInputDto.getCpfCnpj().trim())
 				.matriculaAtendente(matriculaAtendente)
+				.situacaoNota(SITUACAO_NOTA)
 				.statusRetornoSicli(String.valueOf(true))
 				.statusRetornoIdPositiva(String.valueOf(true))
 				.dataEnvioNota(String.valueOf(formataData(new Date())))
@@ -344,16 +348,20 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				.produto(enviaClienteInputDto.getProduto())	
 			    .build();
 
+		String descricaoEnvioTransacao = null;
 		String descricaoTransacao = null;
 
 		try {
-			descricaoTransacao = mapper.writeValueAsString(auditoriaPncEnviaNotaInputDTO);
+			descricaoTransacao = mapper.writeValueAsString(STEP4_COMPROVANTE_ASSINAR_PELO_APP);
+			descricaoEnvioTransacao = Base64.getEncoder().encodeToString(mapper.writeValueAsString(auditoriaPncEnviaNotaInputDTO).getBytes());
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
-		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder().descricaoTransacao(descricaoTransacao)
+		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder()
+				.descricaoEnvioTransacao(descricaoEnvioTransacao)
+				.descricaoTransacao(descricaoTransacao)
 				.ipTerminalUsuario(tokenUtils.getIpFromToken(token))
 				.nomeMfe("mfe_avl_atendimentoremoto")
 				.numeroUnidadeLotacaoUsuario(50L)

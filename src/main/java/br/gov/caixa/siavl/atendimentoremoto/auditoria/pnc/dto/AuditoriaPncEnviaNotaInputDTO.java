@@ -33,6 +33,9 @@ public class AuditoriaPncEnviaNotaInputDTO {
 	private String statusRetornoIdPositiva;
 	
 	@Valid
+	private String situacaoNota;
+	
+	@Valid
 	private String dataEnvioNota;
 	
 	@Valid
