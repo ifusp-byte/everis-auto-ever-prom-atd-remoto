@@ -31,7 +31,6 @@ import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNota;
 import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocio;
 import br.gov.caixa.siavl.atendimentoremoto.model.NegocioAgenciaVirtual;
 import br.gov.caixa.siavl.atendimentoremoto.model.NotaNegociacao;
-import br.gov.caixa.siavl.atendimentoremoto.model.PendenciaAtendimentoNota;
 import br.gov.caixa.siavl.atendimentoremoto.model.RelatorioNotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AssinaturaNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
@@ -307,18 +306,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			assinaturaNota.setTipoAssinatura((char) '1');
 			assinaturaNota.setOrigemAssinatura((char) '1');	
 			assinaturaNota.setDtAssinatura(formataDataBanco());					
-			assinaturaNotaRepository.save(assinaturaNota); 	
-			
-			/*
-			PendenciaAtendimentoNota pendenciaAtendimentoNota = new PendenciaAtendimentoNota();
-			pendenciaAtendimentoNota.setNumeroNota(numeroNota);
-			pendenciaAtendimentoNota.setMatriculaAtendente(Long.parseLong(matriculaAtendente));
-			pendenciaAtendimentoNota.setTipoPendencia(9L);
-			pendenciaAtendimentoNota.setDtInicioAtendimentoNota(notaNegociacao.getDataCriacaoNota());
-			pendenciaAtendimentoNota.setDtInclusaoPendencia(new Date());			
-			pendenciaAtendimentoNotaRepository.save(pendenciaAtendimentoNota);	
-			*/
-			
+			assinaturaNotaRepository.save(assinaturaNota); 			
 			pendenciaAtendimentoNotaRepository.inserePendenciaAtendimento(numeroNota);	
 				
 		}	
@@ -335,19 +323,11 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		AuditoriaPncEnviaNotaInputDTO auditoriaPncEnviaNotaInputDTO = new AuditoriaPncEnviaNotaInputDTO();
 		auditoriaPncEnviaNotaInputDTO = AuditoriaPncEnviaNotaInputDTO.builder()
 				
-				//.cpfCnpj(enviaClienteInputDto.getCpfCnpj().trim())
-				//.matriculaAtendente(matriculaAtendente)
 				.situacaoNota(SITUACAO_NOTA)
-				//.statusRetornoSicli(String.valueOf(true))
-				//.statusRetornoIdPositiva(String.valueOf(true))
-				//.dataEnvioNota(String.valueOf(formataData(new Date())))
 				.numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo())				
 				.numeroContaAtendimento(enviaClienteInputDto.getNumeroConta())
 				.numeroNota(String.valueOf(numeroNota))
-				.versaoSistema(enviaClienteInputDto.getVersaoSistema())
-				//.ipUsuario(tokenUtils.getIpFromToken(token))
-				//.tipoPessoa(tipoPessoa)
-				//.produto(enviaClienteInputDto.getProduto())	
+				.versaoSistema(enviaClienteInputDto.getVersaoSistema())	
 				.dataHoraTransacao(formataData(new Date()))
 			    .build();
 
