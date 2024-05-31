@@ -318,6 +318,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			pendenciaAtendimentoNota.setDtInclusaoPendencia(new Date());			
 			pendenciaAtendimentoNotaRepository.save(pendenciaAtendimentoNota);	
 			*/
+			
+			pendenciaAtendimentoNotaRepository.inserePendenciaAtendimento(numeroNota);	
 				
 		}	
 		
