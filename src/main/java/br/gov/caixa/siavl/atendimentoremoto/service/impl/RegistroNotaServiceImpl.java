@@ -6,6 +6,7 @@ import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.sql.rowset.serial.SerialClob;
@@ -209,6 +210,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				tipoDocumento = DOCUMENT_TYPE_CNPJ;
 			}
 
+			relatorioNotaNegociacao.setCpf(Long.parseLong(Objects.requireNonNull(registraNotaInputDto.getCpfSocio()).replace(".", "").replace("-", "").replace("/", "").trim()));			
 			relatorioNotaNegociacao.setNumeroEquipe(numeroEquipe);
 			relatorioNotaNegociacao.setRelatorioNota(relatorioNota);
 			relatorioNotaNegociacao.setNumeroNota(notaNegociacao.getNumeroNota());
