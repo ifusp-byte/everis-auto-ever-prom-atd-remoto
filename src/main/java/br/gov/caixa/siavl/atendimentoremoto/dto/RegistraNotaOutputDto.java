@@ -27,5 +27,8 @@ public class RegistraNotaOutputDto {
 	
 	@Valid
 	private String mensagem;
+	
+	@Valid
+	private String numeroNota;
 
 }

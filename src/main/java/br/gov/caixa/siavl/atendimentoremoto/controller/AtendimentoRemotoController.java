@@ -144,12 +144,12 @@ public class AtendimentoRemotoController {
 				.body(sicliGateway.contaAtendimento(token, cpfCnpj, true));
 	}
 	
-	@PostMapping("/nota/{numeroNota}")
+	@PostMapping("/nota/{numeroModeloNota}")
 	public ResponseEntity<Object> registraNota(@Valid @RequestHeader(value = "token", required = true) String token,
-			@Valid @PathVariable Long numeroNota, @Valid @RequestBody RegistraNotaInputDto registraNotaInputDto)
+			@Valid @RequestBody RegistraNotaInputDto registraNotaInputDto, @Valid @PathVariable Long numeroModeloNota)
 			throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(registroNotaService.registraNota(token, numeroNota, registraNotaInputDto));
+				.body(registroNotaService.registraNota(token, registraNotaInputDto, numeroModeloNota));
 	}
 	
 	@PutMapping("/nota/{numeroNota}")

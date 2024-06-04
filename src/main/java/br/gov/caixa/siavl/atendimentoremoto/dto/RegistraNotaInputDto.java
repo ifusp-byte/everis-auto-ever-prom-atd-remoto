@@ -53,5 +53,8 @@ public class RegistraNotaInputDto {
 	
 	@Valid
 	private JsonNode relatorioNota; 
+	
+	@Valid
+	private String numeroNota; 
 
 }

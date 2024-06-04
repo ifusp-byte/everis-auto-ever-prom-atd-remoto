@@ -51,11 +51,19 @@ public class ContaAtendimentoOutputDTO {
 	private String nomeCliente;
 
 	@Valid
-	@XmlElement(name = "cpfCnpjCliente")
-	private String cpfCnpjCliente;
+	@XmlElement(name = "cpfCliente")
+	private String cpfCliente;
 
 	private List<ContasOutputDTO> contas;
 	
 	private List<SociosOutputDTO> socios;
+	
+	@Valid
+	@XmlElement(name = "razaoSocial")
+	private String razaoSocial; 
+	
+	@Valid
+	@XmlElement(name = "cnpj")
+	private String cnpj; 
 
 }
