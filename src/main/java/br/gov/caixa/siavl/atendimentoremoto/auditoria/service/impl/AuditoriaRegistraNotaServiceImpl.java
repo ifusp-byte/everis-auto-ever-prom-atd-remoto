@@ -31,7 +31,7 @@ public class AuditoriaRegistraNotaServiceImpl implements AuditoriaRegistraNotaSe
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
 	
-	public void auditar(String dataRegistroNota, String token, String cpfCnpj, String matriculaAtendente, String statusRetornoSicli, String numeroProtocolo, String numeroContaAtendimento, String numeroNota, String versaoSistema, String produto) {
+	public void auditar(String dataRegistroNota, String token, String cpfCnpj, String matriculaAtendente, String statusRetornoSicli, String numeroProtocolo, String numeroContaAtendimento, String numeroNota, String versaoSistema, String produto, String cpfSocio) {
 
 		String tipoPessoa = null;  
 		
@@ -46,6 +46,7 @@ public class AuditoriaRegistraNotaServiceImpl implements AuditoriaRegistraNotaSe
 		
 		dsLogPlataformaDTO = AuditoriaRegistraNotaDsLogPlataformaDTO.builder()
 				.cpfCnpj(cpfCnpj)
+				.cpfSocio(cpfSocio)
 				.matriculaAtendente(matriculaAtendente)
 				.statusRetornoSicli(statusRetornoSicli)
 				.numeroProtocolo(numeroProtocolo)

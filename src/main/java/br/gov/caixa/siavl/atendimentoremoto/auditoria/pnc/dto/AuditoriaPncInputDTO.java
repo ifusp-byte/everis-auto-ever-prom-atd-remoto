@@ -14,6 +14,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuditoriaPncInputDTO {
+	
+	@Valid
+	private String descricaoEnvioTransacao;
 
 	@Valid
 	private String descricaoTransacao;

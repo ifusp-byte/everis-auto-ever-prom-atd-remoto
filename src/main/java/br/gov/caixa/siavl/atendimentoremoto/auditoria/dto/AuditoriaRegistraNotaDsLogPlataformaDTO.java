@@ -21,6 +21,9 @@ public class AuditoriaRegistraNotaDsLogPlataformaDTO {
 	private String cpfCnpj;
 	
 	@Valid
+	private String cpfSocio;
+	
+	@Valid
 	private String matriculaAtendente;
 	
 	@Valid

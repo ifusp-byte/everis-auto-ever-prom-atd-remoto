@@ -2,9 +2,11 @@ package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import java.sql.Clob;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.sql.rowset.serial.SerialClob;
@@ -24,12 +26,12 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.model.AssinaturaNota;
+import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNegocio;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNota;
 import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocio;
 import br.gov.caixa.siavl.atendimentoremoto.model.NegocioAgenciaVirtual;
 import br.gov.caixa.siavl.atendimentoremoto.model.NotaNegociacao;
-import br.gov.caixa.siavl.atendimentoremoto.model.PendenciaAtendimentoNota;
 import br.gov.caixa.siavl.atendimentoremoto.model.RelatorioNotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AssinaturaNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
@@ -91,6 +93,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	private static final String DOCUMENT_TYPE_CPF = "CPF";
 	private static final String DOCUMENT_TYPE_CNPJ = "CNPJ";
 	private static final String PATTERN_MATRICULA = "[a-zA-Z]";
+	private static final String STEP4_COMPROVANTE_ASSINAR_PELO_APP = "step4_comprovante_assinar_pelo_app";
+	private static final String SITUACAO_NOTA = "Aguardando assinatura do cliente";
 
 	static Logger LOG = Logger.getLogger(RegistroNotaServiceImpl.class.getName());
 	
@@ -132,7 +136,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			String dsRelatorioNota = mapper.writeValueAsString(registraNotaInputDto);
 			Clob relatorioNota = new SerialClob(dsRelatorioNota.toCharArray());
 			
-			RelatorioNotaNegociacao relatorioNotaNegociacao = new RelatorioNotaNegociacao();
+
 
 			ModeloNotaNegocio modeloNotaNegocio = modeloNotaRepository.prazoValidade(numeroModeloNota);	
 			Date dataValidade = formataDataValidade(modeloNotaNegocio.getPrazoValidade(), modeloNotaNegocio.getHoraValidade()); 
@@ -143,16 +147,21 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			negocioAgenciaVirtual = negocioAgenciaVirtualRepository.save(negocioAgenciaVirtual);
 			
 			
-			NotaNegociacao notaNegociacao = null;		
+			NotaNegociacao notaNegociacao = null;	
+			RelatorioNotaNegociacao relatorioNotaNegociacao = null;
 			
 			if (registraNotaInputDto.getNumeroNota() == null) {	
 				
             notaNegociacao = new NotaNegociacao();	
+            relatorioNotaNegociacao = new RelatorioNotaNegociacao();
             
 			} else {
 				
-				notaNegociacao = notaNegociacaoRepository.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroNota()));				
+				notaNegociacao = notaNegociacaoRepository.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroNota()));	
+				relatorioNotaNegociacao = relatorioNotaNegociacaoRepository.findByNumeroNota(Long.parseLong(registraNotaInputDto.getNumeroNota()));
 			}
+			
+			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
 			
 			notaNegociacao.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
 			notaNegociacao.setNumeroModeloNota(numeroModeloNota);
@@ -201,6 +210,10 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				tipoDocumento = DOCUMENT_TYPE_CNPJ;
 			}
 
+			if (registraNotaInputDto.getCpfSocio() != null && !registraNotaInputDto.getCpfSocio().isBlank()){
+			relatorioNotaNegociacao.setCpf(Long.parseLong(registraNotaInputDto.getCpfSocio().replace(".", "").replace("-", "").replace("/", "").trim()));			
+			}
+	
 			relatorioNotaNegociacao.setNumeroEquipe(numeroEquipe);
 			relatorioNotaNegociacao.setRelatorioNota(relatorioNota);
 			relatorioNotaNegociacao.setNumeroNota(notaNegociacao.getNumeroNota());
@@ -262,7 +275,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
 			auditoriaRegistraNotaService.auditar(String.valueOf(formataData(new Date())), token, cpfCnpj, matriculaAtendente,
 					String.valueOf(statusRetornoSicli), numeroProtocolo, numeroContaAtendimento, String.valueOf(notaNegociacao.getNumeroNota()),
-					versaoSistema, registraNotaInputDto.getProduto());
+					versaoSistema, registraNotaInputDto.getProduto(), String.valueOf(atendimentoCliente.getCpfCliente()));
 		
 		}
 
@@ -288,22 +301,18 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			
 
 		if (Boolean.TRUE.equals(statusContratacao)) {	
-		
+			
+			NotaNegociacao notaNegociacao = notaNegociacaoRepository.getReferenceById(numeroNota);
+			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(enviaClienteInputDto.getNumeroProtocolo()));
+					
 			AssinaturaNota assinaturaNota = new AssinaturaNota();
 			assinaturaNota.setNumeroNota(numeroNota);
-			assinaturaNota.setCpfClienteAssinante(cpfCnpjPnc);	
+			assinaturaNota.setCpfClienteAssinante(atendimentoCliente.getCpfCliente());
 			assinaturaNota.setTipoAssinatura((char) '1');
 			assinaturaNota.setOrigemAssinatura((char) '1');	
 			assinaturaNota.setDtAssinatura(formataDataBanco());					
-			assinaturaNotaRepository.save(assinaturaNota); 	
-					
-			PendenciaAtendimentoNota pendenciaAtendimentoNota = new PendenciaAtendimentoNota();
-			pendenciaAtendimentoNota.setNumeroNota(numeroNota);
-			pendenciaAtendimentoNota.setMatriculaAtendente(Long.parseLong(matriculaAtendente));
-			pendenciaAtendimentoNota.setTipoPendencia(9L);
-			pendenciaAtendimentoNota.setDtInicioAtendimentoNota(new Date());
-			pendenciaAtendimentoNota.setDtInclusaoPendencia(new Date());			
-			pendenciaAtendimentoNotaRepository.save(pendenciaAtendimentoNota);	
+			assinaturaNotaRepository.save(assinaturaNota); 			
+			pendenciaAtendimentoNotaRepository.inserePendenciaAtendimento(numeroNota);	
 				
 		}	
 		
@@ -319,30 +328,28 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		AuditoriaPncEnviaNotaInputDTO auditoriaPncEnviaNotaInputDTO = new AuditoriaPncEnviaNotaInputDTO();
 		auditoriaPncEnviaNotaInputDTO = AuditoriaPncEnviaNotaInputDTO.builder()
 				
-				.cpfCnpj(enviaClienteInputDto.getCpfCnpj().trim())
-				.matriculaAtendente(matriculaAtendente)
-				.statusRetornoSicli(String.valueOf(true))
-				.statusRetornoIdPositiva(String.valueOf(true))
-				.dataEnvioNota(String.valueOf(formataData(new Date())))
+				.situacaoNota(SITUACAO_NOTA)
 				.numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo())				
 				.numeroContaAtendimento(enviaClienteInputDto.getNumeroConta())
 				.numeroNota(String.valueOf(numeroNota))
-				.versaoSistema(enviaClienteInputDto.getVersaoSistema())
-				.ipUsuario(tokenUtils.getIpFromToken(token))
-				.tipoPessoa(tipoPessoa)
-				.produto(enviaClienteInputDto.getProduto())	
+				.versaoSistema(enviaClienteInputDto.getVersaoSistema())	
+				.dataHoraTransacao(formataData(new Date()))
 			    .build();
 
+		String descricaoEnvioTransacao = null;
 		String descricaoTransacao = null;
 
 		try {
-			descricaoTransacao = mapper.writeValueAsString(auditoriaPncEnviaNotaInputDTO);
+			descricaoTransacao = mapper.writeValueAsString(STEP4_COMPROVANTE_ASSINAR_PELO_APP);
+			descricaoEnvioTransacao = Base64.getEncoder().encodeToString(mapper.writeValueAsString(auditoriaPncEnviaNotaInputDTO).getBytes());
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
-		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder().descricaoTransacao(descricaoTransacao)
+		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder()
+				.descricaoEnvioTransacao(descricaoEnvioTransacao)
+				.descricaoTransacao(descricaoTransacao)
 				.ipTerminalUsuario(tokenUtils.getIpFromToken(token))
 				.nomeMfe("mfe_avl_atendimentoremoto")
 				.numeroUnidadeLotacaoUsuario(50L)
