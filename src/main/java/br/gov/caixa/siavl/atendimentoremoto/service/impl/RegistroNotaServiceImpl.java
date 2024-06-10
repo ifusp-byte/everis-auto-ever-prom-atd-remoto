@@ -330,7 +330,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				
 				.situacaoNota(SITUACAO_NOTA)
 				.numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo())				
-				.numeroContaAtendimento(enviaClienteInputDto.getNumeroConta())
+				//.numeroContaAtendimento(enviaClienteInputDto.getNumeroConta())
 				.numeroNota(String.valueOf(numeroNota))
 				.versaoSistema(enviaClienteInputDto.getVersaoSistema())	
 				.dataHoraTransacao(formataData(new Date()))
