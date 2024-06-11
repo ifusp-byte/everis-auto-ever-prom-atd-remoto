@@ -5,12 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import javax.swing.text.MaskFormatter;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import br.gov.caixa.siavl.atendimentoremoto.dto.AtendimentoClienteOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.ConsultaNotaService;

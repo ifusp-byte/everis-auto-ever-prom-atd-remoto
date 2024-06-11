@@ -31,6 +31,7 @@ import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDe
 import br.gov.caixa.siavl.atendimentoremoto.service.ConsultaNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ContrataNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
+import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoService;
 import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.RegistroNotaService;
@@ -59,12 +60,15 @@ public class AtendimentoRemotoController {
 
 	@Autowired
 	DesafioService desafioService;
-	
+
 	@Autowired
 	RegistroNotaService registroNotaService;
 
 	@Autowired
 	AuditoriaIdentificacaoPositivaService auditoriaIdentificacaoPositivaService;
+
+	@Autowired
+	AnexoDocumentoService anexoDocumentoService;
 
 	@Autowired
 	SicliGateway sicliGateway;
@@ -73,14 +77,14 @@ public class AtendimentoRemotoController {
 	public ResponseEntity<GeraProtocoloOutputDTO> geraProtocolo(
 			@Valid @RequestHeader(value = "token", required = true) String token,
 			@Valid @RequestBody GeraProtocoloInputDTO geraProtocoloInputDTO) throws Exception {
-		return ResponseEntity.status(HttpStatus.OK)
-				.contentType(MediaType.APPLICATION_JSON)
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
 				.body(geraProtocoloService.geraProtocolo(token, geraProtocoloInputDTO));
 	}
 
 	@PostMapping("/desafio-criar/{cpf}")
 	public ResponseEntity<CriaDesafioOutputDTO> desafioCriar(
-			@Valid @RequestHeader(value = "token", required = true) String token, @Valid @PathVariable String cpf, @Valid @RequestBody CriaDesafioInputDTO criaDesafioInputDTO) throws Exception {
+			@Valid @RequestHeader(value = "token", required = true) String token, @Valid @PathVariable String cpf,
+			@Valid @RequestBody CriaDesafioInputDTO criaDesafioInputDTO) throws Exception {
 
 		return ResponseEntity.status(HttpStatus.OK).body(desafioService.desafioCriar(token, cpf, criaDesafioInputDTO));
 	}
@@ -117,7 +121,8 @@ public class AtendimentoRemotoController {
 
 	@PostMapping("/modelo-nota-favorita/{numeroModeloNota}")
 	public ResponseEntity<Object> adicionaModeloNotaFavorita(
-			@Valid @RequestHeader(value = "token", required = true) String token, @Valid @PathVariable Long numeroModeloNota) {
+			@Valid @RequestHeader(value = "token", required = true) String token,
+			@Valid @PathVariable Long numeroModeloNota) {
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(modeloNotaService.adicionaModeloNotaFavorita(token, numeroModeloNota));
 	}
@@ -128,22 +133,21 @@ public class AtendimentoRemotoController {
 	}
 
 	@PostMapping("/modelo-nota-dinamico/{numeroModeloNota}")
-	public ResponseEntity<Object> modeloNotaDinamico(@Valid @RequestHeader(value = "token", required = true) String token,
-			@Valid @PathVariable Long numeroModeloNota, @Valid @RequestBody ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO)
-			throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.contentType(MediaType.APPLICATION_JSON)
+	public ResponseEntity<Object> modeloNotaDinamico(
+			@Valid @RequestHeader(value = "token", required = true) String token,
+			@Valid @PathVariable Long numeroModeloNota,
+			@Valid @RequestBody ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO) throws Exception {
+		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
 				.body(modeloNotaService.modeloNotaDinamico(token, numeroModeloNota, modeloNotaDinamicoInputDTO));
 	}
 
 	@GetMapping("/conta-atendimento/{cpfCnpj}")
 	public ResponseEntity<Object> contaAtendimento(@Valid @RequestHeader(value = "token", required = true) String token,
 			@Valid @PathVariable String cpfCnpj) throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.contentType(MediaType.APPLICATION_JSON)
+		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
 				.body(sicliGateway.contaAtendimento(token, cpfCnpj, true));
 	}
-	
+
 	@PostMapping("/nota/{numeroModeloNota}")
 	public ResponseEntity<Object> registraNota(@Valid @RequestHeader(value = "token", required = true) String token,
 			@Valid @RequestBody RegistraNotaInputDto registraNotaInputDto, @Valid @PathVariable Long numeroModeloNota)
@@ -151,10 +155,27 @@ public class AtendimentoRemotoController {
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(registroNotaService.registraNota(token, registraNotaInputDto, numeroModeloNota));
 	}
-	
+
 	@PutMapping("/nota/{numeroNota}")
-	public ResponseEntity<Object> contrataNota(@Valid @RequestHeader(value = "token", required = true) String token, @Valid @PathVariable Long numeroNota, @Valid @RequestBody EnviaClienteInputDto enviaClienteInputDto) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(registroNotaService.enviaCliente(token, numeroNota, enviaClienteInputDto));
+	public ResponseEntity<Object> contrataNota(@Valid @RequestHeader(value = "token", required = true) String token,
+			@Valid @PathVariable Long numeroNota, @Valid @RequestBody EnviaClienteInputDto enviaClienteInputDto) {
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(registroNotaService.enviaCliente(token, numeroNota, enviaClienteInputDto));
+	}
+
+	@PostMapping("/documento/{cpfCnpj}")
+	public ResponseEntity<Object> enviaDocumento(@Valid @RequestHeader(value = "token", required = true) String token,
+			@Valid @PathVariable String cpfCnpj) throws Exception {
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(anexoDocumentoService.enviaDocumento(token, cpfCnpj));
+	}
+	
+		
+	@GetMapping("/documento/tipo")
+	public ResponseEntity<Object> tipoDocumento() throws Exception {
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(anexoDocumentoService.tipoDocumento());
 	}
 
 }

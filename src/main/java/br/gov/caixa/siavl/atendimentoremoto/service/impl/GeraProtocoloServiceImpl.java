@@ -61,25 +61,26 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 
 		ContaAtendimentoOutputDTO contaAtendimento = sicliGateway.contaAtendimento(token, geraProtocoloInputDTO.getCpfCnpj().trim(), false);
 		
-		if (geraProtocoloInputDTO.getCpfCnpj().trim().length() == 11) {
-			atendimentoCliente.setNomeCliente(contaAtendimento.getNomeCliente());
-			atendimentoCliente.setCpfCliente(cpfCnpj);
-			tipoDocumento = DOCUMENT_TYPE_CPF;
-		} else {
-			atendimentoCliente.setCnpjCliente(cpfCnpj);
-			tipoDocumento = DOCUMENT_TYPE_CNPJ;
-		}
-
-		atendimentoCliente.setDataInicialAtendimento(formataDataBanco());
-		atendimentoCliente.setDataContatoCliente(formataDataBanco());
-		atendimentoCliente = geraProtocoloRespository.save(atendimentoCliente);
-
 		GeraProtocoloOutputDTO geraProtocoloOutputDTO = new GeraProtocoloOutputDTO();
 		geraProtocoloOutputDTO.setStatus(true);
 		geraProtocoloOutputDTO.setNumeroProtocolo(String.valueOf(atendimentoCliente.getNumeroProtocolo()));
 		geraProtocoloOutputDTO.setSocios(contaAtendimento.getSocios());		
 		geraProtocoloOutputDTO.setRazaoSocial(contaAtendimento.getRazaoSocial());
 		
+		if (geraProtocoloInputDTO.getCpfCnpj().trim().length() == 11) {
+			atendimentoCliente.setNomeCliente(contaAtendimento.getNomeCliente());
+			atendimentoCliente.setCpfCliente(cpfCnpj);
+			tipoDocumento = DOCUMENT_TYPE_CPF;
+		} else {
+			atendimentoCliente.setNomeCliente(contaAtendimento.getRazaoSocial());
+			atendimentoCliente.setCnpjCliente(cpfCnpj);
+			tipoDocumento = DOCUMENT_TYPE_CNPJ;
+		}
+		
+		atendimentoCliente.setDataInicialAtendimento(formataDataBanco());
+		atendimentoCliente.setDataContatoCliente(formataDataBanco());
+		atendimentoCliente = geraProtocoloRespository.save(atendimentoCliente);
+
 		AuditoriaPncProtocoloInputDTO auditoriaPncProtocoloInputDTO = new AuditoriaPncProtocoloInputDTO(); 
 		auditoriaPncProtocoloInputDTO = AuditoriaPncProtocoloInputDTO.builder()
 				.cpfCnpj(String.valueOf(cpfCnpj))
