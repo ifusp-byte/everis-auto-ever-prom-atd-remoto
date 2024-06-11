@@ -19,7 +19,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 	TipoDocumentoRepository tipoDocumentoRepository;
 
 	@Override
-	public Boolean enviaDocumento(String token, String cpfCnpj) throws Exception {
+	public Object enviaDocumento(String token, String cpfCnpj) throws Exception {
 
 		siecmGateway.dossieCriar(token, cpfCnpj);
 
