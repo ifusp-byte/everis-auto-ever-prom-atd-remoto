@@ -310,7 +310,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			assinaturaNota.setCpfClienteAssinante(atendimentoCliente.getCpfCliente());
 			assinaturaNota.setTipoAssinatura((char) '1');
 			assinaturaNota.setOrigemAssinatura((char) '1');	
-			assinaturaNota.setDtAssinatura(formataDataBanco());					
+			//assinaturaNota.setDtAssinatura(formataDataBanco());					
 			assinaturaNotaRepository.save(assinaturaNota); 			
 			pendenciaAtendimentoNotaRepository.inserePendenciaAtendimento(numeroNota);	
 				
