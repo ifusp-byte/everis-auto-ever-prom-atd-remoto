@@ -6,7 +6,7 @@ import br.gov.caixa.siavl.atendimentoremoto.siecm.constants.SiecmConstants;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseCertificadoMicroempreendedorDossiePJ {
-	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CNPJ", SiecmConstants.STRING, true, 59, "", true, TipoMascara.CNPJ, null);
+	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", SiecmConstants.CNPJ, SiecmConstants.STRING, true, 59, "", true, TipoMascara.CNPJ, null);
 
 	private String classeDocumento;
 	private String nomeCampo;

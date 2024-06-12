@@ -7,7 +7,7 @@ import br.gov.caixa.siavl.atendimentoremoto.siecm.constants.SiecmConstants;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseContratoPronampe implements Serializable {
-	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", SiecmConstants.STRING, true, 59, "", true, TipoMascara.CPFCNPJ, null),
+	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", SiecmConstants.CPF_CNPJ, SiecmConstants.STRING, true, 59, "", true, TipoMascara.CPFCNPJ, null),
 	NUMERO_CONTRATO("NUMERO_CONTRATO", "Número do contrato", SiecmConstants.STRING, true, 22, "", true, TipoMascara.NUMERO_CONTRATO,
 			null);
 

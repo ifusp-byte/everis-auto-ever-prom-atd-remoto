@@ -9,7 +9,7 @@ import br.gov.caixa.siavl.atendimentoremoto.siecm.constants.SiecmConstants;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseContratacaoCartaoVaVr implements Serializable {
 	NOME_TITULAR("NOME_TITULAR", "Nome do Titular", SiecmConstants.STRING, true, 256, "", true, TipoMascara.TEXTO, null),
-	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", SiecmConstants.STRING, true, 14, "", true, TipoMascara.CNPJ, null);
+	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", SiecmConstants.CPF_CNPJ, SiecmConstants.STRING, true, 14, "", true, TipoMascara.CNPJ, null);
 
 	private String classeDocumento;
 	private String nomeCampo;

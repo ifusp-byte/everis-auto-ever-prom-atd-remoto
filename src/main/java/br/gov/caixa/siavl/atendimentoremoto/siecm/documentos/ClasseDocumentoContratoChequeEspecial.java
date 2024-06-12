@@ -4,10 +4,14 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import br.gov.caixa.siavl.atendimentoremoto.siecm.constants.SiecmConstants;
+
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoContratoChequeEspecial implements Serializable {
-	NUMERO_CONTRATO("NUMERO_CONTRATO", "Número da Conta", "STRING", true, 24, "", true, TipoMascara.NUMERO_CONTA, null),
-	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF cliente", "STRING", true, 14, "", true, TipoMascara.CPF, null);
+	NUMERO_CONTRATO("NUMERO_CONTRATO", "Número da Conta", SiecmConstants.STRING, true, 24, "", true,
+			TipoMascara.NUMERO_CONTA, null),
+	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF cliente", SiecmConstants.STRING, true, 14, "", true,
+			TipoMascara.CPF, null);
 
 	private String classeDocumento;
 	private String nomeCampo;
