@@ -4,15 +4,17 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import br.gov.caixa.siavl.atendimentoremoto.siecm.constants.SiecmConstants;
+
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoIR implements Serializable {
 
-	ANO_CALENDARIO("ANO_CALENDARIO", "Ano-calendário", "STRING", true, 4, "", true, TipoMascara.NUMERICO, null),
-	ANO_EXERCICIO("ANO_EXERCICIO", "Ano de Exercício", "STRING", true, 4, "", true, TipoMascara.NUMERICO, null),
-	EMISSOR("EMISSOR", "Emissor", "STRING", true, 100, "", true, null, null),
-	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", "STRING", true, 59, "", true, TipoMascara.CPFCNPJ, null),
-	NUMERO_RECIBO("NUMERO_RECIBO", "Número do Recibo", "STRING", true, 12, "", true, null, null),
-	TIPO("TIPO", "Tipo", "STRING", true, 1, "", true, null, SelectValues.IMPOSTO_RENDA);
+	ANO_CALENDARIO("ANO_CALENDARIO", "Ano-calendário", SiecmConstants.STRING, true, 4, "", true, TipoMascara.NUMERICO, null),
+	ANO_EXERCICIO("ANO_EXERCICIO", "Ano de Exercício", SiecmConstants.STRING, true, 4, "", true, TipoMascara.NUMERICO, null),
+	EMISSOR("EMISSOR", "Emissor", SiecmConstants.STRING, true, 100, "", true, null, null),
+	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", SiecmConstants.STRING, true, 59, "", true, TipoMascara.CPFCNPJ, null),
+	NUMERO_RECIBO("NUMERO_RECIBO", "Número do Recibo", SiecmConstants.STRING, true, 12, "", true, null, null),
+	TIPO("TIPO", "Tipo", SiecmConstants.STRING, true, 1, "", true, null, SelectValues.IMPOSTO_RENDA);
 
 	private String classeDocumento;
 	private String nomeCampo;

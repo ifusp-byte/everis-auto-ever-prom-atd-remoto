@@ -4,11 +4,13 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import br.gov.caixa.siavl.atendimentoremoto.siecm.constants.SiecmConstants;
+
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoPedidoOfertaPublica implements Serializable {
-	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", "STRING", true, 59, "", true, TipoMascara.CPFCNPJ, null),
-	CODIGO_ISIN("CODIGO_ISIN", "Código ISIN", "STRING", true, 14, "", true, TipoMascara.NUMERICO, null),
-	CODIGO_NEGOCIACAO_B3("CODIGO_NEGOCIACAO_B3", "Código de Negociação B3", "STRING", false, 14, "", true,
+	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", SiecmConstants.STRING, true, 59, "", true, TipoMascara.CPFCNPJ, null),
+	CODIGO_ISIN("CODIGO_ISIN", "Código ISIN", SiecmConstants.STRING, true, 14, "", true, TipoMascara.NUMERICO, null),
+	CODIGO_NEGOCIACAO_B3("CODIGO_NEGOCIACAO_B3", "Código de Negociação B3", SiecmConstants.STRING, false, 14, "", true,
 			TipoMascara.NUMERICO, null);
 
 	private String classeDocumento;

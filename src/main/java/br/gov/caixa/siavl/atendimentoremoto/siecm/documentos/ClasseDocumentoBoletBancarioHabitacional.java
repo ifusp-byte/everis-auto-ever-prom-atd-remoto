@@ -4,15 +4,17 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import br.gov.caixa.siavl.atendimentoremoto.siecm.constants.SiecmConstants;
+
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoBoletBancarioHabitacional implements Serializable {
-	NOME_SACADO("NOME_SACADO", "Nome do Sacado", "STRING", true, 60, "", true, TipoMascara.TEXTO, null),
-	ENDERECO_SACADO("ENDERECO_SACADO", "Endereço", "STRING", true, 60, "", true, null, null),
-	CEP("CEP", "CEP", "STRING", true, 10, "", true, TipoMascara.CEP, null),
-	BAIRRO("BAIRRO", "Bairro", "STRING", true, 64, "", true, null, null),
-	CIDADE("CIDADE", "Cidade", "STRING", true, 40, "", true, null, null),
+	NOME_SACADO("NOME_SACADO", "Nome do Sacado", SiecmConstants.STRING, true, 60, "", true, TipoMascara.TEXTO, null),
+	ENDERECO_SACADO("ENDERECO_SACADO", "Endereço", SiecmConstants.STRING, true, 60, "", true, null, null),
+	CEP("CEP", "CEP", SiecmConstants.STRING, true, 10, "", true, TipoMascara.CEP, null),
+	BAIRRO("BAIRRO", "Bairro", SiecmConstants.STRING, true, 64, "", true, null, null),
+	CIDADE("CIDADE", "Cidade", SiecmConstants.STRING, true, 40, "", true, null, null),
 	UF("UF", "UF", "STRING", true, 20, "", true, TipoMascara.UF, SelectValues.ESTADOS),
-	NOME_CEDENTE("NOME_CEDENTE", "Nome do Cedente", "STRING", true, 60, "", true, TipoMascara.TEXTO, null);
+	NOME_CEDENTE("NOME_CEDENTE", "Nome do Cedente", SiecmConstants.STRING, true, 60, "", true, TipoMascara.TEXTO, null);
 
 	private String classeDocumento;
 	private String nomeCampo;

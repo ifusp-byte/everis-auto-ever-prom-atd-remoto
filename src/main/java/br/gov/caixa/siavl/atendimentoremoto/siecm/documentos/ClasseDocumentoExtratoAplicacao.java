@@ -4,13 +4,15 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import br.gov.caixa.siavl.atendimentoremoto.siecm.constants.SiecmConstants;
+
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoExtratoAplicacao implements Serializable {
 
-	AGENCIA("AGENCIA", "Agência", "STRING", true, 4, "", true, null, null),
-	CONTA("CONTA", "Conta", "STRING", true, 9, "", true, null, null),
-	NOME_APLICACAO("NOME_APLICACAO", "Nome da Aplicação", "STRING", true, 60, "", true, null, null),
-	PERIODO("PERIODO", "Período", "STRING", true, 20, "", true, null, null);
+	AGENCIA("AGENCIA", "Agência", SiecmConstants.STRING, true, 4, "", true, null, null),
+	CONTA("CONTA", "Conta", SiecmConstants.STRING, true, 9, "", true, null, null),
+	NOME_APLICACAO("NOME_APLICACAO", "Nome da Aplicação", SiecmConstants.STRING, true, 60, "", true, null, null),
+	PERIODO("PERIODO", "Período", SiecmConstants.STRING, true, 20, "", true, null, null);
 
 	private String classeDocumento;
 	private String nomeCampo;
