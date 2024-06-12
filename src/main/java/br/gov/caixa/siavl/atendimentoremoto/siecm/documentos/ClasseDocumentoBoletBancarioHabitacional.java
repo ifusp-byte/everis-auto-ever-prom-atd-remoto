@@ -13,7 +13,7 @@ public enum ClasseDocumentoBoletBancarioHabitacional implements Serializable {
 	CEP("CEP", "CEP", SiecmConstants.STRING, true, 10, "", true, TipoMascara.CEP, null),
 	BAIRRO("BAIRRO", "Bairro", SiecmConstants.STRING, true, 64, "", true, null, null),
 	CIDADE("CIDADE", "Cidade", SiecmConstants.STRING, true, 40, "", true, null, null),
-	UF("UF", "UF", "STRING", true, 20, "", true, TipoMascara.UF, SelectValues.ESTADOS),
+	UF("UF", "UF", "STRING", true, 20, "", true, TipoMascara.UF, SiecmConstants.ESTADOS),
 	NOME_CEDENTE("NOME_CEDENTE", "Nome do Cedente", SiecmConstants.STRING, true, 60, "", true, TipoMascara.TEXTO, null);
 
 	private String classeDocumento;

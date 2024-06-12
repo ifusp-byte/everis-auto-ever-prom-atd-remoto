@@ -14,7 +14,7 @@ public enum ClasseDocumentoIR implements Serializable {
 	EMISSOR("EMISSOR", "Emissor", SiecmConstants.STRING, true, 100, "", true, null, null),
 	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", SiecmConstants.STRING, true, 59, "", true, TipoMascara.CPFCNPJ, null),
 	NUMERO_RECIBO("NUMERO_RECIBO", "Número do Recibo", SiecmConstants.STRING, true, 12, "", true, null, null),
-	TIPO("TIPO", "Tipo", SiecmConstants.STRING, true, 1, "", true, null, SelectValues.IMPOSTO_RENDA);
+	TIPO("TIPO", "Tipo", SiecmConstants.STRING, true, 1, "", true, null, SiecmConstants.IMPOSTO_RENDA);
 
 	private String classeDocumento;
 	private String nomeCampo;

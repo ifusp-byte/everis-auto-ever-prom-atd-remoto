@@ -2,9 +2,11 @@ package br.gov.caixa.siavl.atendimentoremoto.siecm.documentos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import br.gov.caixa.siavl.atendimentoremoto.siecm.constants.SiecmConstants;
+
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseContratoSocial {
-	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CNPJ", "STRING", true, 59, "", true, TipoMascara.CNPJ, null);
+	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CNPJ", SiecmConstants.STRING, true, 59, "", true, TipoMascara.CNPJ, null);
 
 	private String classeDocumento;
 	private String nomeCampo;

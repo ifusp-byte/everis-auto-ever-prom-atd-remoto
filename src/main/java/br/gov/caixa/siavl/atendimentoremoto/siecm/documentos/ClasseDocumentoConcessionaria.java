@@ -4,12 +4,14 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import br.gov.caixa.siavl.atendimentoremoto.siecm.constants.SiecmConstants;
+
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoConcessionaria implements Serializable {
 
 	DATA_REFERENCIA("DATA_REFERENCIA", "Data de Referência", "DATE", true, 12, "", TipoMascara.DATE, true, null),
-	ENDERECO("ENDERECO", "Endereço", "STRING", true, 200, "", null, true, null),
-	CEP("CEP", "CEP", "STRING", true, 10, "", TipoMascara.CEP, true, null);
+	ENDERECO("ENDERECO", "Endereço", SiecmConstants.STRING, true, 200, "", null, true, null),
+	CEP("CEP", "CEP", SiecmConstants.STRING, true, 10, "", TipoMascara.CEP, true, null);
 
 	private String classeDocumento;
 	private String nomeCampo;

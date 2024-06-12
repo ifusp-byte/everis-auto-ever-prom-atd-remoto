@@ -10,7 +10,7 @@ import br.gov.caixa.siavl.atendimentoremoto.siecm.constants.SiecmConstants;
 public enum ClasseDocumentoCarteiraFuncional implements Serializable {
 	ORGAO_EMISSOR("ORGAO_EMISSOR", "Orgão Emissor", SiecmConstants.STRING, true, 100, "", true, null, null),
 	NUMERO_REGISTRO("NUMERO_REGISTRO", "Número de Registro", SiecmConstants.STRING, true, 100, "", true, TipoMascara.NUMERICO, null),
-	UF_EXPEDICAO("UF_EXPEDICAO", "UF de Expedição", SiecmConstants.STRING, true, 2, "", true, TipoMascara.UF, SelectValues.ESTADOS),
+	UF_EXPEDICAO("UF_EXPEDICAO", "UF de Expedição", SiecmConstants.STRING, true, 2, "", true, TipoMascara.UF, SiecmConstants.ESTADOS),
 	DATA_EXPEDICAO("DATA_EXPEDICAO", "Data de Expedição", "DATE", true, 12, "", true, TipoMascara.DATE, null),
 	DATA_VALIDADE("DATA_VALIDADE", "Data de Validade", "DATE", true, 12, "", true, TipoMascara.DATE, null);
 

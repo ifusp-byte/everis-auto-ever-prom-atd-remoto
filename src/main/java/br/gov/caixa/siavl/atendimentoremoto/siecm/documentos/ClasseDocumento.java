@@ -2,23 +2,26 @@ package br.gov.caixa.siavl.atendimentoremoto.siecm.documentos;
 
 import java.io.Serializable;
 import java.util.Arrays;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumento implements Serializable {
 
-	CNH(ClasseDocumentoCNH.values()), CARTEIRA_IDENTIDADE(ClasseDocumentoRG.values()),
+	CNH(ClasseDocumentoCNH.values()), 
+	CARTEIRA_IDENTIDADE(ClasseDocumentoRG.values()),
 	DEMONSTRATIVO_PAGAMENTO(ClasseDocumentoDemonstrativoPagamento.values()),
 	DOCUMENTO_CONCESSIONARIA(ClasseDocumentoConcessionaria.values()),
-	EXTRATO_CONTA(ClasseDocumentoExtratoBancario.values()), CTPS(ClasseDocumentoCTPS.values()),
-	DECLARACAO_IRPF(ClasseDocumentoIR.values()), EXTRATO_FGTS(ClasseDocumentoFGTS.values()),
+	EXTRATO_CONTA(ClasseDocumentoExtratoBancario.values()), 
+	CTPS(ClasseDocumentoCTPS.values()),
+	DECLARACAO_IRPF(ClasseDocumentoIR.values()), 
+	EXTRATO_FGTS(ClasseDocumentoFGTS.values()),
 	EXTRATO_APLICACAO(ClasseDocumentoExtratoAplicacao.values()),
 	FATURA_CARTAO_CREDITO(ClasseDocumentoFaturaCartaoCredito.values()),
 	BOLETO_BANCARIO_HABITACIONAL(ClasseDocumentoBoletBancarioHabitacional.values()),
 	CARTEIRA_FUNCIONAL(ClasseDocumentoCarteiraFuncional.values()),
 	CARTEIRA_IDENTIDADE_MILITAR(ClasseDocumentoCarteiraIdentidadeMilitar.values()),
-	PASSAPORTE(ClasseDocumentoPassaporte.values()), CONTRATO_CDC(ClasseDocumentoContratoCDC.values()),
+	PASSAPORTE(ClasseDocumentoPassaporte.values()), 
+	CONTRATO_CDC(ClasseDocumentoContratoCDC.values()),
 	CONTRATO_CONSIGNADO(ClasseDocumentoContratoConsignado.values()),
 	CONTRATO_CREDITO_PESSOAL(ClasseDocumentoContratoCreditoPessoal.values()),
 	CONTRATO_FINANCIAMENTO_VEICULO(ClasseDocumentoContratoFinanciamentoVeiculo.values()),
@@ -33,11 +36,14 @@ public enum ClasseDocumento implements Serializable {
 	ANALISE_PERFIL_INVESTIDOR(ClasseAnalisePerfilInvestidor.values()),
 	CONTRATACAO_CARTAO_VA_VR(ClasseContratacaoCartaoVaVr.values()),
 	CONTRATACAO_GIRO_CAIXA(ClasseContratacaoGiroCaixa.values()),
-	CONTRATO_CHEQUE_EMPRESA(ClasseContratoChequeEmpresa.values()), CONTRATO_FAMPE(ClasseContratoFampe.values()),
+	CONTRATO_CHEQUE_EMPRESA(ClasseContratoChequeEmpresa.values()), 
+	CONTRATO_FAMPE(ClasseContratoFampe.values()),
 	CONTRATO_DESCONTO_CHEQ_PRE_DAT(ClasseContratoDescontoChequePreDatado.values()),
 	CONTRATO_GIRO_CAIXA_INST_MULTIP(ClasseGiroCaixaInstantaneoMultiplo.values()),
-	CONTRATO_RENEGOCIACAO_PJ(ClasseContratoRenegociacaoPj.values()), CONTRATO_PRONAMPE(ClasseContratoPronampe.values()),
-	DOCUMENTO_CONSTITUICAO_PJ(ClasseDocumentoContituicaoPJ.values()), CONTRATO_SOCIAL(ClasseContratoSocial.values()),
+	CONTRATO_RENEGOCIACAO_PJ(ClasseContratoRenegociacaoPj.values()), 
+	CONTRATO_PRONAMPE(ClasseContratoPronampe.values()),
+	DOCUMENTO_CONSTITUICAO_PJ(ClasseDocumentoContituicaoPJ.values()), 
+	CONTRATO_SOCIAL(ClasseContratoSocial.values()),
 	DOCUMENTO_FATURAMENTO_DOSSIEPJ(ClasseDocumentoFaturamentoDossiePJ.values()),
 	CERTIFICADO_MICROEMPREENDEDOR_DOSSIEPJ(ClasseCertificadoMicroempreendedorDossiePJ.values()),
 	REQUERIMENTO_EMPRESARIO_DOSSIEPJ(ClasseRequerimentoEmpresarioDossiePJ.values());
