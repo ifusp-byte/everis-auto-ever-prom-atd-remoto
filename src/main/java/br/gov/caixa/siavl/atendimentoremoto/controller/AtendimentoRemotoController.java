@@ -174,5 +174,10 @@ public class AtendimentoRemotoController {
 	public ResponseEntity<Object> tipoDocumento(@Valid @PathVariable String cpfCnpj) throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(anexoDocumentoService.tipoDocumento(cpfCnpj));
 	}
+	
+	@GetMapping("/documento/tipo/campos/{codGED}")
+	public ResponseEntity<Object> tipoDocumentoCampos(@Valid @PathVariable String codGED) throws Exception {
+		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(anexoDocumentoService.tipoDocumentoCampos(codGED));
+	}
 
 }

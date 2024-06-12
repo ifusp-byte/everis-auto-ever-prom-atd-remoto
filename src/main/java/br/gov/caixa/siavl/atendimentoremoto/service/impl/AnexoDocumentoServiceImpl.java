@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import br.gov.caixa.siavl.atendimentoremoto.model.TipoDocumentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.repository.TipoDocumentoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoService;
+import br.gov.caixa.siavl.atendimentoremoto.siecm.documentos.ClasseDocumento;
 import br.gov.caixa.siavl.atendimentoremoto.siecm.dto.SiecmOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.siecm.gateway.SiecmGateway;
 
@@ -25,12 +26,9 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 	public SiecmOutputDto enviaDocumento(String token, String cpfCnpj) throws Exception {
 		SiecmOutputDto siecmOutputDto = null;
 		siecmOutputDto = siecmGateway.dossieCriar(token, cpfCnpj);
-		
-		
-		
-		//siecmOutputDto = siecmGateway.dossieListar(token, cpfCnpj);
-		
-		
+
+		// siecmOutputDto = siecmGateway.dossieListar(token, cpfCnpj);
+
 		return siecmOutputDto;
 	}
 
@@ -45,4 +43,8 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		return tpoDocumentoClienteLista;
 	}
 
+	@Override
+	public Object tipoDocumentoCampos(String codGED) throws Exception {
+		return ClasseDocumento.valueOf(codGED);
+	}
 }
