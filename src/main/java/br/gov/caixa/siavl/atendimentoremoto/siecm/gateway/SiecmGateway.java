@@ -1,5 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.siecm.gateway;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
@@ -8,6 +9,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.RestClientResponseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,6 +21,9 @@ import br.gov.caixa.siavl.atendimentoremoto.siecm.dto.SiecmOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
+@Service
+@Validated
+@SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S4507" })
 public class SiecmGateway {
 
 	private final static Logger LOG = Logger.getLogger(SiecmGateway.class.getName());
@@ -47,7 +53,7 @@ public class SiecmGateway {
 		return headers;
 	}
 
-	public HttpEntity<String> newRequestEntityDossieCriar(String token, DossieInputDto dossieInputDto) {
+	public HttpEntity<String> newRequestEntityDossie(String token, DossieInputDto dossieInputDto) {
 		String request = null;
 		try {
 			request = mapper.writeValueAsString(dossieInputDto).replaceAll("\\u005C", "").replaceAll("\\n", "");
@@ -76,9 +82,19 @@ public class SiecmGateway {
 
 		try {
 			response = restTemplateDto.getRestTemplate().postForEntity(SIECM_URL_BASE + SIECM_URL_BASE_DOSSIE,
-					newRequestEntityDossieCriar(token, dossieInputDto), String.class);
+					newRequestEntityDossie(token, dossieInputDto), String.class);
+			
+			siecmOutputDto = SiecmOutputDto.builder()	
+					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
+					.response(String.valueOf(Objects.requireNonNull(response.getBody())))
+					.build();
 		} catch (RestClientResponseException e) {
 			jsonNode = mapper.readTree(e.getResponseBodyAsString());
+			
+			siecmOutputDto = SiecmOutputDto.builder()	
+					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
+					.response(String.valueOf(Objects.requireNonNull(e.getResponseBodyAsString())))
+					.build();
 		} finally {
 			restTemplateDto.getHttpClient().close();
 		}
@@ -106,9 +122,19 @@ public class SiecmGateway {
 
 		try {
 			response = restTemplateDto.getRestTemplate().postForEntity(SIECM_URL_BASE + SIECM_URL_BASE_LISTAR_DOCUMENTOS,
-					newRequestEntityDossieCriar(token, dossieInputDto), String.class);
+					newRequestEntityDossie(token, dossieInputDto), String.class);
+			
+			siecmOutputDto = SiecmOutputDto.builder()	
+					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
+					.response(String.valueOf(Objects.requireNonNull(response.getBody())))
+					.build();
 		} catch (RestClientResponseException e) {
 			jsonNode = mapper.readTree(e.getResponseBodyAsString());
+			
+			siecmOutputDto = SiecmOutputDto.builder()	
+					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
+					.response(String.valueOf(Objects.requireNonNull(e.getResponseBodyAsString())))
+					.build();
 		} finally {
 			restTemplateDto.getHttpClient().close();
 		}

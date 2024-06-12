@@ -166,16 +166,13 @@ public class AtendimentoRemotoController {
 	@PostMapping("/documento/{cpfCnpj}")
 	public ResponseEntity<Object> enviaDocumento(@Valid @RequestHeader(value = "token", required = true) String token,
 			@Valid @PathVariable String cpfCnpj) throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(anexoDocumentoService.enviaDocumento(token, cpfCnpj));
+		return ResponseEntity.status(HttpStatus.CREATED).body(anexoDocumentoService.enviaDocumento(token, cpfCnpj));
 	}
 	
 		
-	@GetMapping("/documento/tipo")
-	public ResponseEntity<Object> tipoDocumento() throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.contentType(MediaType.APPLICATION_JSON)
-				.body(anexoDocumentoService.tipoDocumento());
+	@GetMapping("/documento/tipo/{cpfCnpj}")
+	public ResponseEntity<Object> tipoDocumento(@Valid @PathVariable String cpfCnpj) throws Exception {
+		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(anexoDocumentoService.tipoDocumento(cpfCnpj));
 	}
 
 }

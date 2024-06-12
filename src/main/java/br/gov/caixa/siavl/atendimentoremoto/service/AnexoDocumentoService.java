@@ -4,6 +4,6 @@ public interface AnexoDocumentoService {
 
 	Object enviaDocumento(String token, String cpfCnpj) throws Exception;
 	
-	Object tipoDocumento() throws Exception;
+	Object tipoDocumento(String cpfCnpj) throws Exception;
 
 }
