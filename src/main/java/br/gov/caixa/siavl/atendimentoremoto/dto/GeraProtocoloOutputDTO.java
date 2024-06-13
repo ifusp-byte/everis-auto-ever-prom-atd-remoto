@@ -39,5 +39,13 @@ public class GeraProtocoloOutputDTO {
 	@Valid
 	@XmlElement(name = "razaoSocial")
 	private String razaoSocial; 
+	
+	@Valid
+	@XmlElement(name = "statusSicli")
+	private String statusSicli; 
+	
+	@Valid
+	@XmlElement(name = "mensagemSicli")
+	private String mensagemSicli; 
 
 }

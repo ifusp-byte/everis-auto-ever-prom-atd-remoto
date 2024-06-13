@@ -90,7 +90,7 @@ public class SicliGateway {
 
 		try {
 
-			String uri = URL_BASE_1 + cpfCnpj.replace(".", "").replace("-", "").trim();
+			String uri = URL_BASE_1 + cpfCnpj;
 			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
 			
 			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,
@@ -157,6 +157,7 @@ public class SicliGateway {
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
 					//.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
 					.statusCreated(statusCreated)
+					.statusMessage(statusMessage)
 					.dataCreated(formataData(new Date()))
 					.nomeCliente(nomeCliente)
 					.cpfCliente(cpfCliente.equals(StringUtils.EMPTY) ? StringUtils.EMPTY : formataCpf(cpfCliente))
