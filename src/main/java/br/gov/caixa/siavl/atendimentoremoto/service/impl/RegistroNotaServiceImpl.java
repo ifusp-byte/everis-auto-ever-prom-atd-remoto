@@ -156,9 +156,17 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				relatorioNotaNegociacao = relatorioNotaNegociacaoRepository
 						.findByNumeroNota(Long.parseLong(registraNotaInputDto.getNumeroNota()));
 			}
+			
 
 			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository
 					.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
+			
+			if (registraNotaInputDto.getCpfSocio() != null && !registraNotaInputDto.getCpfSocio().isBlank()) {
+				Long cpfSocio = Long.parseLong(registraNotaInputDto.getCpfSocio().replace(".", "").replace("-", "").replace("/", "").trim());	
+				relatorioNotaNegociacao.setCpf(cpfSocio);
+				atendimentoCliente.setCpfCliente(cpfSocio);
+				atendimentoCliente = atendimentoClienteRepository.save(atendimentoCliente);
+			}
 
 			notaNegociacao.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
 			notaNegociacao.setNumeroModeloNota(numeroModeloNota);
@@ -179,6 +187,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			notaNegociacao.setNuProduto(nuProduto);
 			notaNegociacao.setCoIdentificacao(coIdentificacao);
 			notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);
+			
 
 			AtendimentoNegocio atendimentoNegocio = new AtendimentoNegocio();
 			atendimentoNegocio.setNumeroProtocolo(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
@@ -208,10 +217,6 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				tipoDocumento = DOCUMENT_TYPE_CNPJ;
 			}
 
-			if (registraNotaInputDto.getCpfSocio() != null && !registraNotaInputDto.getCpfSocio().isBlank()) {
-				relatorioNotaNegociacao.setCpf(Long.parseLong(
-						registraNotaInputDto.getCpfSocio().replace(".", "").replace("-", "").replace("/", "").trim()));
-			}
 
 			relatorioNotaNegociacao.setNumeroEquipe(numeroEquipe);
 			relatorioNotaNegociacao.setRelatorioNota(relatorioNota);
