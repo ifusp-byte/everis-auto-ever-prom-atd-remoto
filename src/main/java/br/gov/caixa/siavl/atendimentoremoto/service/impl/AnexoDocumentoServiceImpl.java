@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,7 +44,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	@Override
-	public SiecmOutputDto enviaDocumento(String token, String cpfCnpj, MultipartFile arquivoContrato,
+	public SiecmOutputDto enviaDocumento(String token, String cpfCnpj,
 			EnviaDocumentoInputDto enviaDocumentoInputDto) throws Exception {
 
 		String cpfCnpjSiecm = cpfCnpj.replace(".", "").replace("-", "").replace("/", "").trim();
@@ -69,7 +68,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 		SiecmDocumentosIncluirDocumentoInputDto siecmDocumentosIncluirDocumento = new SiecmDocumentosIncluirDocumentoInputDto();
 		siecmDocumentosIncluirDocumento.setAtributos(siecmDocumentosIncluirDocumentoAtributos);
-		siecmDocumentosIncluirDocumento.setBinario(Base64.getEncoder().encodeToString(arquivoContrato.getBytes()));
+		siecmDocumentosIncluirDocumento.setBinario(Base64.getEncoder().encodeToString(enviaDocumentoInputDto.getArquivoContrato().getBytes()));
 
 		SiecmDocumentosIncluirInputDto siecmDocumentosIncluir = new SiecmDocumentosIncluirInputDto();
 		siecmDocumentosIncluir.setDadosRequisicao(siecmDocumentosIncluirDadosRequisicao);

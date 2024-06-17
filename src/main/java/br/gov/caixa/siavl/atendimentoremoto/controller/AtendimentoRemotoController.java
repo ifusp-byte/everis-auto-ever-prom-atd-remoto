@@ -168,10 +168,9 @@ public class AtendimentoRemotoController {
 
 	@PostMapping("/documento/{cpfCnpj}")
 	public ResponseEntity<Object> enviaDocumento(@Valid @RequestHeader(value = "token", required = true) String token,
-			@Valid @PathVariable String cpfCnpj, @Valid @RequestParam("arquivoContrato") MultipartFile arquivoContrato,
-			EnviaDocumentoInputDto enviaDocumentoInputDto) throws Exception {
+			@Valid @PathVariable String cpfCnpj, @Valid @RequestBody EnviaDocumentoInputDto enviaDocumentoInputDto) throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(anexoDocumentoService.enviaDocumento(token, cpfCnpj, arquivoContrato, enviaDocumentoInputDto));
+				.body(anexoDocumentoService.enviaDocumento(token, cpfCnpj, enviaDocumentoInputDto));
 	}
 
 	@GetMapping("/documento/tipo/{cpfCnpj}")
