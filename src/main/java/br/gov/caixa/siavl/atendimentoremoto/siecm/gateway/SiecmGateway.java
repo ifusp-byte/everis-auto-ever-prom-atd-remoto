@@ -62,23 +62,26 @@ public class SiecmGateway {
 		}
 		return new HttpEntity<>(request, newHttpHeaders(token));
 	}
+	
+	public HttpEntity<String> newRequestEntityDocumentoIncluir(String token, String requestAnexarDocumento) {
+		return new HttpEntity<>(requestAnexarDocumento, newHttpHeaders(token));
+	}
 
 	public SiecmOutputDto dossieCriar(@Valid String token, String cpfCnpj) throws Exception {
-
-		String cpfCnpjDossie = cpfCnpj.replace(".", "").replace("-", "").replace("/", "").trim();
 
 		DossieDadosRequisicaoInputDto dossieDadosRequisicaoInputDto = new DossieDadosRequisicaoInputDto();
 		dossieDadosRequisicaoInputDto.setIpUsuarioFinal(DEFAULT_IP);
 		dossieDadosRequisicaoInputDto.setLocalArmazenamento(DEFAULT_LOCAL_ARMAZENAMENTO);
 
 		DossieInputDto dossieInputDto = new DossieInputDto();
-		dossieInputDto.setIdDossie(cpfCnpjDossie);
+		dossieInputDto.setIdDossie(cpfCnpj);
 		dossieInputDto.setDadosRequisicao(dossieDadosRequisicaoInputDto);
 
 		SiecmOutputDto siecmOutputDto = new SiecmOutputDto();
 		ResponseEntity<String> response = null;
-		JsonNode jsonNode;
 		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
+		
+		JsonNode body;
 
 		try {
 			response = restTemplateDto.getRestTemplate().postForEntity(SIECM_URL_BASE + SIECM_URL_BASE_DOSSIE,
@@ -89,7 +92,7 @@ public class SiecmGateway {
 					.response(String.valueOf(Objects.requireNonNull(response.getBody())))
 					.build();
 		} catch (RestClientResponseException e) {
-			jsonNode = mapper.readTree(e.getResponseBodyAsString());
+			body = mapper.readTree(e.getResponseBodyAsString());
 			
 			siecmOutputDto = SiecmOutputDto.builder()	
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
@@ -102,34 +105,28 @@ public class SiecmGateway {
 	}
 	
 	
-	/*
-	public SiecmOutputDto dossieListar(@Valid String token, String cpfCnpj) throws Exception {
-
-		String cpfCnpjDossie = cpfCnpj.replace(".", "").replace("-", "").replace("/", "").trim();
-
-		DossieDadosRequisicaoInputDto dossieDadosRequisicaoInputDto = new DossieDadosRequisicaoInputDto();
-		dossieDadosRequisicaoInputDto.setIpUsuarioFinal(DEFAULT_IP);
-		dossieDadosRequisicaoInputDto.setLocalArmazenamento(DEFAULT_LOCAL_ARMAZENAMENTO);
-
-		DossieInputDto dossieInputDto = new DossieInputDto();
-		dossieInputDto.setIdDossie(cpfCnpjDossie);
-		dossieInputDto.setDadosRequisicao(dossieDadosRequisicaoInputDto);
+	
+	public SiecmOutputDto documentoIncluir(@Valid String token, String cpfCnpj, String requestAnexarDocumento) throws Exception {
 
 		SiecmOutputDto siecmOutputDto = new SiecmOutputDto();
 		ResponseEntity<String> response = null;
-		JsonNode jsonNode;
+		JsonNode body;
 		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
 
 		try {
-			response = restTemplateDto.getRestTemplate().postForEntity(SIECM_URL_BASE + SIECM_URL_BASE_LISTAR_DOCUMENTOS,
-					newRequestEntityDossie(token, dossieInputDto), String.class);
+			response = restTemplateDto.getRestTemplate().postForEntity(SIECM_URL_BASE + SIECM_URL_BASE_DOCUMENTOS_INCLUIR,
+					newRequestEntityDocumentoIncluir(token, requestAnexarDocumento), String.class);
+			
+			body = mapper.readTree(String.valueOf(response.getBody()));
+			String linkThumbnail = Objects.requireNonNull(body.path("documento").path("atributos").path("link")).asText();
 			
 			siecmOutputDto = SiecmOutputDto.builder()	
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
 					.response(String.valueOf(Objects.requireNonNull(response.getBody())))
+					.linkThumbnail(linkThumbnail)
 					.build();
 		} catch (RestClientResponseException e) {
-			jsonNode = mapper.readTree(e.getResponseBodyAsString());
+			body = mapper.readTree(e.getResponseBodyAsString());
 			
 			siecmOutputDto = SiecmOutputDto.builder()	
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
@@ -141,6 +138,5 @@ public class SiecmGateway {
 		return siecmOutputDto;
 	}
 	
-	*/
 
 }
