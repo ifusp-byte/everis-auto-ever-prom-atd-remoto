@@ -1,10 +1,10 @@
 package br.gov.caixa.siavl.atendimentoremoto.dto;
 
+import java.io.File;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,5 +27,5 @@ public class EnviaDocumentoInputDto {
 
 	private String listaCamposDinamico;
 
-	MultipartFile arquivoContrato;
+	File arquivoContrato;
 }

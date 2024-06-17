@@ -1,11 +1,15 @@
 package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +38,8 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 	private static String DEFAULT_IP = "127.0.0.1";
 	private static String DEFAULT_LOCAL_ARMAZENAMENTO = "OS_CAIXA";
 	private static String DEFAULT_LOCAL_GRAVACAO = "DOSSIE";
+	private static String DEFAULT_DOCUMENTO_TIPO = "pdf";
+	private static String DEFAULT_MIME_TYPE = "application/pdf";
 
 	@Autowired
 	SiecmGateway siecmGateway;
@@ -62,13 +68,16 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		SiecmDocumentosIncluirDocumentoAtributosCamposInputDto siecmDocumentosIncluirDocumentoAtributosCampos = new SiecmDocumentosIncluirDocumentoAtributosCamposInputDto();
 		siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(enviaDocumentoInputDto.getCodGED());
 		siecmDocumentosIncluirDocumentoAtributosCampos.setCampo(enviaDocumentoInputDto.getListaCamposDinamico());
-
+		siecmDocumentosIncluirDocumentoAtributosCampos.setTipo(DEFAULT_DOCUMENTO_TIPO);
+		siecmDocumentosIncluirDocumentoAtributosCampos.setMimeType(DEFAULT_MIME_TYPE);
+		siecmDocumentosIncluirDocumentoAtributosCampos.setNome(formataData(new Date()) + enviaDocumentoInputDto.getCodGED());
+		
 		SiecmDocumentosIncluirDocumentoAtributosInputDto siecmDocumentosIncluirDocumentoAtributos = new SiecmDocumentosIncluirDocumentoAtributosInputDto();
 		siecmDocumentosIncluirDocumentoAtributos.setAtributos(siecmDocumentosIncluirDocumentoAtributosCampos);
 
 		SiecmDocumentosIncluirDocumentoInputDto siecmDocumentosIncluirDocumento = new SiecmDocumentosIncluirDocumentoInputDto();
 		siecmDocumentosIncluirDocumento.setAtributos(siecmDocumentosIncluirDocumentoAtributos);
-		siecmDocumentosIncluirDocumento.setBinario(Base64.getEncoder().encodeToString(enviaDocumentoInputDto.getArquivoContrato().getBytes()));
+		siecmDocumentosIncluirDocumento.setBinario(Base64.getEncoder().encodeToString(FileUtils.readFileToByteArray(enviaDocumentoInputDto.getArquivoContrato())));
 
 		SiecmDocumentosIncluirInputDto siecmDocumentosIncluir = new SiecmDocumentosIncluirInputDto();
 		siecmDocumentosIncluir.setDadosRequisicao(siecmDocumentosIncluirDadosRequisicao);
@@ -106,5 +115,14 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 	@Override
 	public Object tipoDocumentoCampos(String codGED) throws Exception {
 		return ClasseDocumento.valueOf(codGED);
+	}
+	
+	private String formataData(Date dateInput) {
+
+		String data = null;
+		Locale locale = new Locale("pt", "BR");
+		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
+		data = String.valueOf(sdfOut.format(dateInput));
+		return data;
 	}
 }
