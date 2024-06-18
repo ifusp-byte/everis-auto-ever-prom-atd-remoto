@@ -1,7 +1,5 @@
 package br.gov.caixa.siavl.atendimentoremoto.dto;
 
-import java.io.File;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -27,5 +25,5 @@ public class EnviaDocumentoInputDto {
 
 	private String listaCamposDinamico;
 
-	File arquivoContrato;
+	String arquivoContrato;
 }

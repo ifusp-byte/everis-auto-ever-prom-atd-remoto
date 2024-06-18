@@ -2,14 +2,12 @@ package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -77,7 +75,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 		SiecmDocumentosIncluirDocumentoInputDto siecmDocumentosIncluirDocumento = new SiecmDocumentosIncluirDocumentoInputDto();
 		siecmDocumentosIncluirDocumento.setAtributos(siecmDocumentosIncluirDocumentoAtributos);
-		siecmDocumentosIncluirDocumento.setBinario(Base64.getEncoder().encodeToString(FileUtils.readFileToByteArray(enviaDocumentoInputDto.getArquivoContrato())));
+		siecmDocumentosIncluirDocumento.setBinario(enviaDocumentoInputDto.getArquivoContrato());
 
 		SiecmDocumentosIncluirInputDto siecmDocumentosIncluir = new SiecmDocumentosIncluirInputDto();
 		siecmDocumentosIncluir.setDadosRequisicao(siecmDocumentosIncluirDadosRequisicao);
