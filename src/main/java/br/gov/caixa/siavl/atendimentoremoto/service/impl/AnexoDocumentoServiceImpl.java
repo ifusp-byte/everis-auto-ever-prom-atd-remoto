@@ -2,6 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -75,7 +76,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 		SiecmDocumentosIncluirDocumentoInputDto siecmDocumentosIncluirDocumento = new SiecmDocumentosIncluirDocumentoInputDto();
 		siecmDocumentosIncluirDocumento.setAtributos(siecmDocumentosIncluirDocumentoAtributos);
-		siecmDocumentosIncluirDocumento.setBinario(enviaDocumentoInputDto.getArquivoContrato());
+		siecmDocumentosIncluirDocumento.setBinario(Base64.getEncoder().encodeToString(enviaDocumentoInputDto.getArquivoContrato().getBytes()));
 
 		SiecmDocumentosIncluirInputDto siecmDocumentosIncluir = new SiecmDocumentosIncluirInputDto();
 		siecmDocumentosIncluir.setDadosRequisicao(siecmDocumentosIncluirDadosRequisicao);

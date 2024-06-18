@@ -2,6 +2,8 @@ package br.gov.caixa.siavl.atendimentoremoto.dto;
 
 import java.io.Serializable;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,5 +25,5 @@ public class EnviaDocumentoInputDto implements Serializable {
 
 	private String listaCamposDinamico;
 
-	String arquivoContrato;
+	private MultipartFile arquivoContrato;
 }
