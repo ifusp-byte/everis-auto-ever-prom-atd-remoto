@@ -69,6 +69,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		siecmDocumentosIncluirDocumentoAtributosCampos.setCampo(enviaDocumentoInputDto.getListaCamposDinamico());
 		siecmDocumentosIncluirDocumentoAtributosCampos.setTipo(DEFAULT_DOCUMENTO_TIPO);
 		siecmDocumentosIncluirDocumentoAtributosCampos.setMimeType(DEFAULT_MIME_TYPE);
+		siecmDocumentosIncluirDocumentoAtributosCampos.setGerarThumbnail(true);
 		siecmDocumentosIncluirDocumentoAtributosCampos.setNome(formataData(new Date()) + enviaDocumentoInputDto.getCodGED());
 		
 		SiecmDocumentosIncluirDocumentoAtributosInputDto siecmDocumentosIncluirDocumentoAtributos = new SiecmDocumentosIncluirDocumentoAtributosInputDto();
@@ -76,7 +77,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 		SiecmDocumentosIncluirDocumentoInputDto siecmDocumentosIncluirDocumento = new SiecmDocumentosIncluirDocumentoInputDto();
 		siecmDocumentosIncluirDocumento.setAtributos(siecmDocumentosIncluirDocumentoAtributos);
-		siecmDocumentosIncluirDocumento.setBinario(Base64.getEncoder().encodeToString(enviaDocumentoInputDto.getArquivoContrato().getBytes()));
+		siecmDocumentosIncluirDocumento.setBinario(enviaDocumentoInputDto.getArquivoContrato().getContentType());
 
 		SiecmDocumentosIncluirInputDto siecmDocumentosIncluir = new SiecmDocumentosIncluirInputDto();
 		siecmDocumentosIncluir.setDadosRequisicao(siecmDocumentosIncluirDadosRequisicao);

@@ -20,7 +20,7 @@ import lombok.Setter;
 public class SiecmDocumentosIncluirDocumentoAtributosCamposInputDto {
 
 	private String classe;
-	private String gerarThumbnail;
+	private boolean gerarThumbnail;
 	private String tipo;
 	private String mimeType;
 	private String nome;
