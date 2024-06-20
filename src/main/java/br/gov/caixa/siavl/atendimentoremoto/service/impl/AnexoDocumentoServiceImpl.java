@@ -65,19 +65,20 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		siecmDocumentosIncluirDestinoDocumento.setLocalGravacao(DEFAULT_LOCAL_GRAVACAO);
 
 		SiecmDocumentosIncluirDocumentoAtributosCamposInputDto siecmDocumentosIncluirDocumentoAtributosCampos = new SiecmDocumentosIncluirDocumentoAtributosCamposInputDto();
-		siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(enviaDocumentoInputDto.getCodGED());
+		siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(enviaDocumentoInputDto.getCodGED().trim());
 		siecmDocumentosIncluirDocumentoAtributosCampos.setCampo(enviaDocumentoInputDto.getListaCamposDinamico());
 		siecmDocumentosIncluirDocumentoAtributosCampos.setTipo(DEFAULT_DOCUMENTO_TIPO);
 		siecmDocumentosIncluirDocumentoAtributosCampos.setMimeType(DEFAULT_MIME_TYPE);
 		siecmDocumentosIncluirDocumentoAtributosCampos.setGerarThumbnail(true);
-		siecmDocumentosIncluirDocumentoAtributosCampos.setNome(formataData(new Date()) + enviaDocumentoInputDto.getCodGED());
+		siecmDocumentosIncluirDocumentoAtributosCampos.setNome(formataData(new Date()) + enviaDocumentoInputDto.getCodGED().trim());
 		
 		SiecmDocumentosIncluirDocumentoAtributosInputDto siecmDocumentosIncluirDocumentoAtributos = new SiecmDocumentosIncluirDocumentoAtributosInputDto();
+		siecmDocumentosIncluirDocumentoAtributos.setBinario(enviaDocumentoInputDto.getArquivoContrato());
 		siecmDocumentosIncluirDocumentoAtributos.setAtributos(siecmDocumentosIncluirDocumentoAtributosCampos);
 
 		SiecmDocumentosIncluirDocumentoInputDto siecmDocumentosIncluirDocumento = new SiecmDocumentosIncluirDocumentoInputDto();
 		siecmDocumentosIncluirDocumento.setAtributos(siecmDocumentosIncluirDocumentoAtributos);
-		siecmDocumentosIncluirDocumento.setBinario(enviaDocumentoInputDto.getArquivoContrato().getContentType());
+		siecmDocumentosIncluirDocumento.setBinario(enviaDocumentoInputDto.getArquivoContrato());
 
 		SiecmDocumentosIncluirInputDto siecmDocumentosIncluir = new SiecmDocumentosIncluirInputDto();
 		siecmDocumentosIncluir.setDadosRequisicao(siecmDocumentosIncluirDadosRequisicao);

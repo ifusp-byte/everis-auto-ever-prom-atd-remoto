@@ -1,10 +1,10 @@
 package br.gov.caixa.siavl.atendimentoremoto.dto;
 
-import java.io.Serializable;
+import java.util.List;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import com.fasterxml.jackson.annotation.JsonRawValue;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,14 +19,13 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class EnviaDocumentoInputDto implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "EnviaDocumentoInputDto")
+public class EnviaDocumentoInputDto {
 
 	private String codGED;
 
-	@JsonRawValue
-	private String listaCamposDinamico;
+	private List<?> listaCamposDinamico;
 
-	private MultipartFile arquivoContrato;
+	private String arquivoContrato;
 }

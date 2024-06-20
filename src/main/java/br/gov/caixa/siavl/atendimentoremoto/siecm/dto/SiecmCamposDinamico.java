@@ -16,10 +16,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "SiecmDocumentosIncluirDocumentoAtributosInputDto")
-public class SiecmDocumentosIncluirDocumentoAtributosInputDto {
+@XmlRootElement(name = "SiecmCamposDinamico")
+public class SiecmCamposDinamico {
 
-	private SiecmDocumentosIncluirDocumentoAtributosCamposInputDto atributos;
-	private String binario;
+	private String nome;
+	private String valor;
+	private String tipo;
 
 }

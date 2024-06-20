@@ -1,5 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.siecm.dto;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -24,6 +26,6 @@ public class SiecmDocumentosIncluirDocumentoAtributosCamposInputDto {
 	private String tipo;
 	private String mimeType;
 	private String nome;
-	private String campo;
+	private List<?> campo;
 
 }
