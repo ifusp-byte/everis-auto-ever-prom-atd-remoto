@@ -122,7 +122,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 		String data = null;
 		Locale locale = new Locale("pt", "BR");
-		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
+		SimpleDateFormat sdfOut = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss", locale);
 		data = String.valueOf(sdfOut.format(dateInput));
 		return data;
 	}
