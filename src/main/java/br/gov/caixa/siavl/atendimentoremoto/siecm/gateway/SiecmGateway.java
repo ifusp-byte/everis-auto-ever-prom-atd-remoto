@@ -31,7 +31,7 @@ public class SiecmGateway {
 	private static String API_KEY = "apikey";
 	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
 
-	private static String SIECM_URL_BASE = "https://siecm.des.caixa:80/siecm-web/ECM/v1/";
+	private static String SIECM_URL_BASE = "https://siecm.des.caixa/siecm-web/ECM/v1/";
 	private static String SIECM_URL_BASE_DOSSIE = "dossie";
 	private static String SIECM_URL_BASE_LISTAR_DOCUMENTOS = "listar-documentos";
 	private static String SIECM_URL_BASE_DOCUMENTOS_INCLUIR = "documentos/incluir";
