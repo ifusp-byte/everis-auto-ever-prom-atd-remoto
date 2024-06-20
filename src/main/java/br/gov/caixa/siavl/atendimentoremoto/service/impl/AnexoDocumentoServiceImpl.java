@@ -70,7 +70,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		siecmDocumentosIncluirDocumentoAtributosCampos.setTipo(DEFAULT_DOCUMENTO_TIPO);
 		siecmDocumentosIncluirDocumentoAtributosCampos.setMimeType(DEFAULT_MIME_TYPE);
 		siecmDocumentosIncluirDocumentoAtributosCampos.setGerarThumbnail(true);
-		siecmDocumentosIncluirDocumentoAtributosCampos.setNome(formataData(new Date()) + enviaDocumentoInputDto.getCodGED().trim());
+		siecmDocumentosIncluirDocumentoAtributosCampos.setNome(formataData(new Date()) +"_"+ enviaDocumentoInputDto.getCodGED().trim());
 		
 		SiecmDocumentosIncluirDocumentoAtributosInputDto siecmDocumentosIncluirDocumentoAtributos = new SiecmDocumentosIncluirDocumentoAtributosInputDto();
 		siecmDocumentosIncluirDocumentoAtributos.setBinario(enviaDocumentoInputDto.getArquivoContrato());
