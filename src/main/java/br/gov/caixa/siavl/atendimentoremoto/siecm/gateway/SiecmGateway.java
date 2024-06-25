@@ -33,11 +33,14 @@ public class SiecmGateway {
 
 	private static String SIECM_URL_BASE = "https://siecm.des.caixa/siecm-web/ECM/v1/";
 	private static String SIECM_URL_BASE_DOSSIE = "dossie";
+	private static String SIECM_URL_BASE_TRANSACAO = "transacao";
 	private static String SIECM_URL_BASE_LISTAR_DOCUMENTOS = "listar-documentos";
 	private static String SIECM_URL_BASE_DOCUMENTOS_INCLUIR = "documentos/incluir";
 
 	private static String DEFAULT_IP = "127.0.0.1";
 	private static String DEFAULT_LOCAL_ARMAZENAMENTO = "OS_CAIXA";
+	private static String DEFAULT_LOCAL_GRAVACAO_TRANSACOES = "TRANSACOES";
+	private static String DEFAULT_LOCAL_GRAVACAO_SUBPASTA = "NOTA_NEGOCIACAO";
 
 	@Autowired
 	RestTemplateUtils restTemplateUtils;
@@ -103,6 +106,47 @@ public class SiecmGateway {
 		}
 		return siecmOutputDto;
 	}
+	
+	
+	
+	
+	public SiecmOutputDto transacaoCriar(@Valid String token, String cpfCnpj) throws Exception {
+
+		DossieDadosRequisicaoInputDto dossieDadosRequisicaoInputDto = new DossieDadosRequisicaoInputDto();
+		dossieDadosRequisicaoInputDto.setIpUsuarioFinal(DEFAULT_IP);
+		dossieDadosRequisicaoInputDto.setLocalArmazenamento(DEFAULT_LOCAL_ARMAZENAMENTO);
+
+		DossieInputDto dossieInputDto = new DossieInputDto();
+		dossieInputDto.setIdDossie(cpfCnpj);
+		dossieInputDto.setDadosRequisicao(dossieDadosRequisicaoInputDto);
+
+		SiecmOutputDto siecmOutputDto = new SiecmOutputDto();
+		ResponseEntity<String> response = null;
+		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
+		
+		JsonNode body;
+
+		try {
+			response = restTemplateDto.getRestTemplate().postForEntity(SIECM_URL_BASE + SIECM_URL_BASE_TRANSACAO,
+					newRequestEntityDossie(token, dossieInputDto), String.class);
+			
+			siecmOutputDto = SiecmOutputDto.builder()	
+					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
+					.response(String.valueOf(Objects.requireNonNull(response.getBody())))
+					.build();
+		} catch (RestClientResponseException e) {
+			body = mapper.readTree(e.getResponseBodyAsString());
+			
+			siecmOutputDto = SiecmOutputDto.builder()	
+					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
+					.response(String.valueOf(Objects.requireNonNull(e.getResponseBodyAsString())))
+					.build();
+		} finally {
+			restTemplateDto.getHttpClient().close();
+		}
+		return siecmOutputDto;
+	}
+	
 	
 	
 	

@@ -48,7 +48,7 @@ public class SicliGateway {
 	private final static Logger LOG = Logger.getLogger(SicliGateway.class.getName());
 	private static String API_KEY = "apikey";
 	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
-	private static String URL_BASE_1 = "https://api.des.caixa:8443/cadastro/v2/clientes?campos=dadosbasicos,composicaoSocietaria,enderecos,contratos,documentos,nicho,carteiragrc,vinculo," /*dadosatualizacaocadastral,*/ +"meiocomunicacao,rendas,profissaosiric&classe=1&cpfcnpj=";
+	private static String URL_BASE_1 = "https://api.des.caixa:8443/cadastro/v2/clientes?campos=dadosbasicos,composicaoSocietaria,contratos,documentos&cpfcnpj=";
 	private static String REPLACE_IDENTIFICACAO = "0000000000000000";
 	private static String REPLACE_CONTA_1 = "0000";
 	private static String REPLACE_CONTA_2 = "000";
@@ -155,7 +155,6 @@ public class SicliGateway {
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
-					//.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
 					.statusCreated(statusCreated)
 					.statusMessage(statusMessage)
 					.dataCreated(formataData(new Date()))
@@ -199,6 +198,7 @@ public class SicliGateway {
 
 		return contaAtendimentoOutputDTO;
 	}
+	
 
 	public String validateGatewayStatusAtendimentoConta(int statusCode) {
 
