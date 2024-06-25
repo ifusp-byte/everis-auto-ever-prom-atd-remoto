@@ -21,5 +21,6 @@ public class SiecmDocumentosIncluirDestinoDocumentoInputDto {
 
 	private String localGravacao;
 	private String idDestino;
+	private String subPasta;
 
 }
