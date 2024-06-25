@@ -176,35 +176,9 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 			notaProdutoLista.add(notaProdutoItem);
 		});
 		
-		/*
-		ModeloNotaNegocio modeloNotaNegocio = modeloNotaRepository.prazoValidade(numeroModeloNota);	
-		Date dataValidade = formataDataValidade(modeloNotaNegocio.getPrazoValidade(), modeloNotaNegocio.getHoraValidade()); 
-			
-		NegocioAgenciaVirtual negocioAgenciaVirtual = new NegocioAgenciaVirtual();
-		negocioAgenciaVirtual.setDataCriacaoNegocio(new Date());
-		negocioAgenciaVirtual.setSituacaoNegocio("E".charAt(0));
-		negocioAgenciaVirtual = negocioAgenciaVirtualRepository.save(negocioAgenciaVirtual);
-		*/
-
-		/*
-		NotaNegociacao notaNegociacao = new NotaNegociacao();
-		notaNegociacao.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
-		notaNegociacao.setNumeroModeloNota(numeroModeloNota);
-		notaNegociacao.setDataCriacaoNota(formataDataBanco());
-		notaNegociacao.setDataModificacaoNota(formataDataBanco());
-		notaNegociacao.setNumeroMatriculaCriacaoNota(matriculaCriacaoNota(token));
-		notaNegociacao.setNumeroMatriculaModificacaoNota(matriculaCriacaoNota(token));
-		notaNegociacao.setNumeroSituacaoNota(16L); // VERIFICAR
-		notaNegociacao.setQtdItemNegociacao(1L);
-		notaNegociacao.setIcOrigemNota(1L);
-		notaNegociacao.setDataPrazoValidade(dataValidade);
-		notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);
-		*/
-
 		ModeloNotaDinamicoMenuNotaNumeroOutputDTO modeloNotaDinamicoMenuNotaNumeroOutputDTO = new ModeloNotaDinamicoMenuNotaNumeroOutputDTO();
 		modeloNotaDinamicoMenuNotaNumeroOutputDTO.setDataModificacao(formataData(new Date()));
-		//modeloNotaDinamicoMenuNotaNumeroOutputDTO.setNumeroNota(String.valueOf(notaNegociacao.getNumeroNota()));
-
+		
 		List<ModeloNotaDinamicoMenuNotaDinamicoOutputDTO> dinamicos = new ArrayList<>();
 		modeloNotaFavoritoRepository.modeloNotaDinamico(numeroModeloNota).stream().forEach(dinamico -> {
 
@@ -245,13 +219,6 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		int tamanho = Integer.parseInt(String.valueOf(roteiro.length()));
 
 		modeloNotaDinamicoOutputDTO.setRoteiroFechamento(String.valueOf(roteiro.getSubString(1, tamanho)));
-
-		/*
-		AtendimentoNegocio atendimentoNegocio = new AtendimentoNegocio();
-		atendimentoNegocio.setNumeroProtocolo(Long.parseLong(modeloNotaDinamicoInputDTO.getProtocolo()));
-		atendimentoNegocio.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
-	    atendimentoNegocio = atendimentoNegocioRepository.save(atendimentoNegocio);
-	    */
 
 		return modeloNotaDinamicoOutputDTO;
 	}
