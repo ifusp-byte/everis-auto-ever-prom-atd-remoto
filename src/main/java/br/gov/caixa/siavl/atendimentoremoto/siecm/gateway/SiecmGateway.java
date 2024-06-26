@@ -1,8 +1,13 @@
 package br.gov.caixa.siavl.atendimentoremoto.siecm.gateway;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Logger;
+
 import javax.validation.Valid;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -12,9 +17,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.RestClientResponseException;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import br.gov.caixa.siavl.atendimentoremoto.siecm.dto.DossieDadosRequisicaoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.siecm.dto.DossieInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.siecm.dto.SiecmOutputDto;
@@ -33,14 +40,10 @@ public class SiecmGateway {
 
 	private static String SIECM_URL_BASE = "https://siecm.des.caixa/siecm-web/ECM/v1/";
 	private static String SIECM_URL_BASE_DOSSIE = "dossie";
-	private static String SIECM_URL_BASE_TRANSACAO = "transacao";
-	private static String SIECM_URL_BASE_LISTAR_DOCUMENTOS = "listar-documentos";
 	private static String SIECM_URL_BASE_DOCUMENTOS_INCLUIR = "documentos/incluir";
 
 	private static String DEFAULT_IP = "127.0.0.1";
 	private static String DEFAULT_LOCAL_ARMAZENAMENTO = "OS_CAIXA";
-	private static String DEFAULT_LOCAL_GRAVACAO_TRANSACOES = "TRANSACOES";
-	private static String DEFAULT_LOCAL_GRAVACAO_SUBPASTA = "NOTA_NEGOCIACAO";
 
 	@Autowired
 	RestTemplateUtils restTemplateUtils;
@@ -65,7 +68,7 @@ public class SiecmGateway {
 		}
 		return new HttpEntity<>(request, newHttpHeaders(token));
 	}
-	
+
 	public HttpEntity<String> newRequestEntityDocumentoIncluir(String token, String requestAnexarDocumento) {
 		return new HttpEntity<>(requestAnexarDocumento, newHttpHeaders(token));
 	}
@@ -83,74 +86,30 @@ public class SiecmGateway {
 		SiecmOutputDto siecmOutputDto = new SiecmOutputDto();
 		ResponseEntity<String> response = null;
 		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
-		
+
 		JsonNode body;
 
 		try {
 			response = restTemplateDto.getRestTemplate().postForEntity(SIECM_URL_BASE + SIECM_URL_BASE_DOSSIE,
 					newRequestEntityDossie(token, dossieInputDto), String.class);
-			
-			siecmOutputDto = SiecmOutputDto.builder()	
+
+			siecmOutputDto = SiecmOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
-					.response(String.valueOf(Objects.requireNonNull(response.getBody())))
-					.build();
+					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).build();
 		} catch (RestClientResponseException e) {
 			body = mapper.readTree(e.getResponseBodyAsString());
-			
-			siecmOutputDto = SiecmOutputDto.builder()	
+
+			siecmOutputDto = SiecmOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.response(String.valueOf(Objects.requireNonNull(e.getResponseBodyAsString())))
-					.build();
+					.response(String.valueOf(Objects.requireNonNull(e.getResponseBodyAsString()))).build();
 		} finally {
 			restTemplateDto.getHttpClient().close();
 		}
 		return siecmOutputDto;
 	}
-	
-	
-	
-	
-	public SiecmOutputDto transacaoCriar(@Valid String token, String cpfCnpj) throws Exception {
 
-		DossieDadosRequisicaoInputDto dossieDadosRequisicaoInputDto = new DossieDadosRequisicaoInputDto();
-		dossieDadosRequisicaoInputDto.setIpUsuarioFinal(DEFAULT_IP);
-		dossieDadosRequisicaoInputDto.setLocalArmazenamento(DEFAULT_LOCAL_ARMAZENAMENTO);
-
-		DossieInputDto dossieInputDto = new DossieInputDto();
-		dossieInputDto.setIdDossie(cpfCnpj);
-		dossieInputDto.setDadosRequisicao(dossieDadosRequisicaoInputDto);
-
-		SiecmOutputDto siecmOutputDto = new SiecmOutputDto();
-		ResponseEntity<String> response = null;
-		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
-		
-		JsonNode body;
-
-		try {
-			response = restTemplateDto.getRestTemplate().postForEntity(SIECM_URL_BASE + SIECM_URL_BASE_TRANSACAO,
-					newRequestEntityDossie(token, dossieInputDto), String.class);
-			
-			siecmOutputDto = SiecmOutputDto.builder()	
-					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
-					.response(String.valueOf(Objects.requireNonNull(response.getBody())))
-					.build();
-		} catch (RestClientResponseException e) {
-			body = mapper.readTree(e.getResponseBodyAsString());
-			
-			siecmOutputDto = SiecmOutputDto.builder()	
-					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.response(String.valueOf(Objects.requireNonNull(e.getResponseBodyAsString())))
-					.build();
-		} finally {
-			restTemplateDto.getHttpClient().close();
-		}
-		return siecmOutputDto;
-	}
-	
-	
-	
-	
-	public SiecmOutputDto documentoIncluir(@Valid String token, String cpfCnpj, String requestAnexarDocumento) throws Exception {
+	public SiecmOutputDto documentoIncluir(@Valid String token, String cpfCnpj, String requestAnexarDocumento)
+			throws Exception {
 
 		SiecmOutputDto siecmOutputDto = new SiecmOutputDto();
 		ResponseEntity<String> response = null;
@@ -158,23 +117,30 @@ public class SiecmGateway {
 		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
 
 		try {
-			response = restTemplateDto.getRestTemplate().postForEntity(SIECM_URL_BASE + SIECM_URL_BASE_DOCUMENTOS_INCLUIR,
+			response = restTemplateDto.getRestTemplate().postForEntity(
+					SIECM_URL_BASE + SIECM_URL_BASE_DOCUMENTOS_INCLUIR,
 					newRequestEntityDocumentoIncluir(token, requestAnexarDocumento), String.class);
-			
+
 			body = mapper.readTree(String.valueOf(response.getBody()));
 			String linkThumbnail = Objects.requireNonNull(body.path("documento").path("atributos").path("link")).asText();
-			
-			siecmOutputDto = SiecmOutputDto.builder()	
+			String id = Objects.requireNonNull(body.path("documento").path("atributos").path("id")).asText();
+
+			siecmOutputDto = SiecmOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
-					.response(String.valueOf(Objects.requireNonNull(response.getBody())))
+					//.response(String.valueOf(Objects.requireNonNull(response.getBody())))
 					.linkThumbnail(linkThumbnail)
+					.statusCreated(true)
+					.statusMessage("Documento gravado com sucesso")
+					.dataCreated(formataDataSiecm(new Date()))
+					.id(id)
 					.build();
+					
 		} catch (RestClientResponseException e) {
 			body = mapper.readTree(e.getResponseBodyAsString());
-			
-			siecmOutputDto = SiecmOutputDto.builder()	
+
+			siecmOutputDto = SiecmOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.response(String.valueOf(Objects.requireNonNull(e.getResponseBodyAsString())))
+					//.response(String.valueOf(Objects.requireNonNull(e.getResponseBodyAsString())))
 					.build();
 		} finally {
 			restTemplateDto.getHttpClient().close();
@@ -182,5 +148,14 @@ public class SiecmGateway {
 		return siecmOutputDto;
 	}
 	
+	
+	private String formataDataSiecm(Date dateInput) {
+
+		String data = null;
+		Locale locale = new Locale("pt", "BR");
+		SimpleDateFormat sdfOut = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", locale);
+		data = String.valueOf(sdfOut.format(dateInput));
+		return data;
+	}
 
 }

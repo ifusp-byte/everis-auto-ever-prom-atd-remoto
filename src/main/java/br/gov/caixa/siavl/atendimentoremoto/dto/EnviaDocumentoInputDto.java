@@ -25,7 +25,7 @@ public class EnviaDocumentoInputDto {
 
 	private String codGED;
 
-	private List<?> listaCamposDinamico;
+	private List<Object> listaCamposDinamico;
 
 	private String arquivoContrato;
 }
