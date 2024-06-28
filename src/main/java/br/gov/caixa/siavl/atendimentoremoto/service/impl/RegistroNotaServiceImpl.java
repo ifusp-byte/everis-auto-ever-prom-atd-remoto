@@ -135,7 +135,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 		} else {
 			
+			registraNotaOutputDto = vinculaDocumento(registraNotaOutputDto, numeroModeloNota);
 			
+			/*
 			Optional<ModeloNotaNegocio> modeloNotaNegocioDocumento = modeloNotaRepository.vinculaDocumento(numeroModeloNota);
 			
 			if (modeloNotaNegocioDocumento.isPresent()) {
@@ -143,8 +145,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			} else {
 				registraNotaOutputDto.setVinculaDocumento(false);
 			}
+			*/
 			
-
 			String dsRelatorioNota = mapper.writeValueAsString(registraNotaInputDto);
 			Clob relatorioNota = new SerialClob(dsRelatorioNota.toCharArray());
 
@@ -401,6 +403,20 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	public Long matriculaCriacaoNota(String token) {
 		return Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll(PATTERN_MATRICULA, ""));
+	}
+	
+	public RegistraNotaOutputDto vinculaDocumento(RegistraNotaOutputDto registraNotaOutputDto, Long numeroModeloNota) {
+		
+		Optional<ModeloNotaNegocio> modeloNotaNegocioDocumento = modeloNotaRepository.vinculaDocumento(numeroModeloNota);
+		
+		if (modeloNotaNegocioDocumento.isPresent()) {
+			registraNotaOutputDto.setVinculaDocumento(true);
+		} else {
+			registraNotaOutputDto.setVinculaDocumento(false);
+		}
+		
+		return registraNotaOutputDto;
+		
 	}
 
 }
