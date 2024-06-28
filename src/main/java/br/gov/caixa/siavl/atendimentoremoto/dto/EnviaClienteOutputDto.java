@@ -1,7 +1,5 @@
 package br.gov.caixa.siavl.atendimentoremoto.dto;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -20,13 +18,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "EnviaDocumentoInputDto")
-public class EnviaDocumentoInputDto {
+@XmlRootElement(name = "EnviaClienteOutputDto")
+public class EnviaClienteOutputDto {
 
-	private String codGED;
+	private boolean statusContratacao;
+	private boolean vinculaDocumento;
 
-	private List<Object> listaCamposDinamico;
-
-	private String arquivoContrato;
-	
 }

@@ -6,18 +6,24 @@ import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.logging.Logger;
+
 import javax.sql.rowset.serial.SerialClob;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncEnviaNotaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncRegistraNotaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.gateway.AuditoriaPncGateway;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaRegistraNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.model.AssinaturaNota;
@@ -276,8 +282,10 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	}
 
 	@Override
-	public Boolean enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto) {
+	public EnviaClienteOutputDto enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto) {
 
+		EnviaClienteOutputDto enviaClienteOutput = new EnviaClienteOutputDto();
+		
 		String tipoDocumento = null;
 		Boolean statusContratacao = null;
 		Long cpfCnpjPnc = Long
@@ -286,6 +294,14 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		Long nuProduto = Long.parseLong(enviaClienteInputDto.getNumeroConta().substring(4, 8));
 		Long coIdentificacao = Long.parseLong(
 				enviaClienteInputDto.getNumeroConta().substring(8, enviaClienteInputDto.getNumeroConta().length()));
+		
+		Optional<ModeloNotaNegocio> modeloNotaNegocio = modeloNotaRepository.vinculaDocumento(Long.parseLong(enviaClienteInputDto.getNumeroModeloNota()));
+		
+		if (modeloNotaNegocio.isPresent()) {
+			enviaClienteOutput.setVinculaDocumento(true);)
+		} else {
+			enviaClienteOutput.setVinculaDocumento(false);
+		}
 
 		notaNegociacaoRepository.enviaNotaCliente(numeroNota);
 		statusContratacao = true;
@@ -339,8 +355,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				.build();
 
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
-
-		return statusContratacao;
+		enviaClienteOutput.setStatusContratacao(statusContratacao);
+		
+		return enviaClienteOutput;
 	}
 
 	private String formataData(Date dateInput) {
