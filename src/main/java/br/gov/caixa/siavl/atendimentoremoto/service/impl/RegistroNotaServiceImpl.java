@@ -124,7 +124,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		Long coIdentificacao = Long.parseLong(registraNotaInputDto.getContaAtendimento().substring(8,
 				registraNotaInputDto.getContaAtendimento().length()));
 
-		numeroEquipe = equipeAtendimentoRepository.findEquipeByUnidade(numeroUnidade);
+		numeroEquipe = equipeAtendimentoRepository.findEquipeByUnidadeSR(numeroUnidade);
 
 		RegistraNotaOutputDto registraNotaOutputDto = new RegistraNotaOutputDto();
 
