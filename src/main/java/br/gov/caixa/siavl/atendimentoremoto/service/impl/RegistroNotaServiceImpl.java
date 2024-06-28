@@ -134,6 +134,16 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 					.mensagem("A unidade não possui equipe vinculada.").build();
 
 		} else {
+			
+			
+			Optional<ModeloNotaNegocio> modeloNotaNegocio = modeloNotaRepository.vinculaDocumento(numeroModeloNota);
+			
+			if (modeloNotaNegocio.isPresent()) {
+				registraNotaOutputDto.setVinculaDocumento(true);
+			} else {
+				registraNotaOutputDto.setVinculaDocumento(false);
+			}
+			
 
 			String dsRelatorioNota = mapper.writeValueAsString(registraNotaInputDto);
 			Clob relatorioNota = new SerialClob(dsRelatorioNota.toCharArray());
@@ -282,9 +292,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	}
 
 	@Override
-	public EnviaClienteOutputDto enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto) {
+	public Boolean enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto) {
 
-		EnviaClienteOutputDto enviaClienteOutput = new EnviaClienteOutputDto();
+		//EnviaClienteOutputDto enviaClienteOutput = new EnviaClienteOutputDto();
 		
 		String tipoDocumento = null;
 		Boolean statusContratacao = null;
@@ -295,6 +305,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		Long coIdentificacao = Long.parseLong(
 				enviaClienteInputDto.getNumeroConta().substring(8, enviaClienteInputDto.getNumeroConta().length()));
 		
+		/*
 		Optional<ModeloNotaNegocio> modeloNotaNegocio = modeloNotaRepository.vinculaDocumento(Long.parseLong(enviaClienteInputDto.getNumeroModeloNota()));
 		
 		if (modeloNotaNegocio.isPresent()) {
@@ -302,6 +313,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		} else {
 			enviaClienteOutput.setVinculaDocumento(false);
 		}
+		*/
 
 		notaNegociacaoRepository.enviaNotaCliente(numeroNota);
 		statusContratacao = true;
@@ -355,9 +367,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				.build();
 
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
-		enviaClienteOutput.setStatusContratacao(statusContratacao);
+		//enviaClienteOutput.setStatusContratacao(statusContratacao);
 		
-		return enviaClienteOutput;
+		return statusContratacao;
 	}
 
 	private String formataData(Date dateInput) {
