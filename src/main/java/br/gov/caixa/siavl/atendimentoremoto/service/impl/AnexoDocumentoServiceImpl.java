@@ -127,7 +127,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 		siecmOutputDto = siecmGateway.documentoIncluir(token, cpfCnpj, requestAnexarDocumento);
 
-		return siecmOutputDto; }
+		return siecmOutputDto; 
 		
 	}
 
