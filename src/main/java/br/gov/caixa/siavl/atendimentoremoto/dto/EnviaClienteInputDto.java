@@ -48,7 +48,5 @@ public class EnviaClienteInputDto {
 	
 	@Valid
 	private String cpfSocio; 
-	
-	private String numeroModeloNota;
 
 }
