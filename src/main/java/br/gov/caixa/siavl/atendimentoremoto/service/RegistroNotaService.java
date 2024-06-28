@@ -7,6 +7,6 @@ public interface RegistroNotaService {
 	
 	Object registraNota (String token, RegistraNotaInputDto registraNotaInputDto, Long numeroModeloNota) throws Exception;
 	
-	Boolean enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto);
+	Object enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto);
 
 }
