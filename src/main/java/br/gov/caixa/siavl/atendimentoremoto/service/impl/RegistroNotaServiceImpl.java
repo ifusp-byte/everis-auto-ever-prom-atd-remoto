@@ -136,9 +136,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		} else {
 			
 			
-			Optional<ModeloNotaNegocio> modeloNotaNegocio = modeloNotaRepository.vinculaDocumento(numeroModeloNota);
+			Optional<ModeloNotaNegocio> modeloNotaNegocioDocumento = modeloNotaRepository.vinculaDocumento(numeroModeloNota);
 			
-			if (modeloNotaNegocio.isPresent()) {
+			if (modeloNotaNegocioDocumento.isPresent()) {
 				registraNotaOutputDto.setVinculaDocumento(true);
 			} else {
 				registraNotaOutputDto.setVinculaDocumento(false);
