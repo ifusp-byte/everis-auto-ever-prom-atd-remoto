@@ -298,7 +298,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		Optional<ModeloNotaNegocio> modeloNotaNegocio = modeloNotaRepository.vinculaDocumento(Long.parseLong(enviaClienteInputDto.getNumeroModeloNota()));
 		
 		if (modeloNotaNegocio.isPresent()) {
-			enviaClienteOutput.setVinculaDocumento(true);)
+			enviaClienteOutput.setVinculaDocumento(true);
 		} else {
 			enviaClienteOutput.setVinculaDocumento(false);
 		}
