@@ -157,12 +157,18 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 					}
 				}
 			}
-				
-			if (modelosNotaFavorita2.size() >= 5) {			
-				modelosNotaFavoritaRetorno = modelosNotaFavorita2.subList(0, 5);
-			} else {		
-				modelosNotaFavoritaRetorno = modelosNotaFavorita2;
-			}
+			
+			modelosNotaFavoritaRetorno = retornoListaFavorito(modelosNotaFavorita2, modelosNotaFavoritaRetorno);
+		}
+		return modelosNotaFavoritaRetorno;
+	}
+	
+	public List<ModeloNotaOutputDto> retornoListaFavorito (List<ModeloNotaOutputDto> modelosNotaFavorita2, List<ModeloNotaOutputDto> modelosNotaFavoritaRetorno){
+		
+		if (modelosNotaFavorita2.size() >= 5) {			
+			modelosNotaFavoritaRetorno = modelosNotaFavorita2.subList(0, 5);
+		} else {		
+			modelosNotaFavoritaRetorno = modelosNotaFavorita2;
 		}
 		return modelosNotaFavoritaRetorno;
 	}
