@@ -14,7 +14,6 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -50,8 +49,7 @@ public class SicliGateway {
 	private static String API_KEY = "apikey";
 	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
 	
-	@Value("${url.base1.sicli}")
-	private static String URL_BASE_1_SICLI = "URL_BASE_1_SICLI";// = "https://api.des.caixa:8443/cadastro/v2/clientes?campos=dadosbasicos,composicaoSocietaria,contratos,documentos&cpfcnpj=";
+	private static final String URL_BASE_1_SICLI = "URL_BASE_1_SICLI";// = "https://api.des.caixa:8443/cadastro/v2/clientes?campos=dadosbasicos,composicaoSocietaria,contratos,documentos&cpfcnpj=";
 	
 	private static String REPLACE_IDENTIFICACAO = "0000000000000000";
 	private static String REPLACE_CONTA_1 = "0000";
