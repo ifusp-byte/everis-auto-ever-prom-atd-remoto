@@ -8,9 +8,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinamicoCamposOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinamicoNotaProdutoOutputDTO;
@@ -18,13 +22,11 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinami
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaNumeroOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaOutputDto;
-import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNegocio;
-import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocio;
+import br.gov.caixa.siavl.atendimentoremoto.model.FluxoAtendimento;
 import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocioFavorito;
-import br.gov.caixa.siavl.atendimentoremoto.model.NegocioAgenciaVirtual;
-import br.gov.caixa.siavl.atendimentoremoto.model.NotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoNegocioRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.CampoModeloNotaRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.FluxoAtendimentoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaFavoritoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepository;
@@ -64,6 +66,9 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 	@Autowired
 	RoteiroFechamentoNotaRepository roteiroFechamentoNotaRepository;
 
+	@Autowired
+	FluxoAtendimentoRepository fluxoAtendimentoRepository;
+
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	public List<ModeloNotaOutputDto> consultaModeloNota() {
@@ -77,7 +82,13 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 			modeloNotaOutputDto = ModeloNotaOutputDto.builder().numeroModeloNota(String.valueOf(modeloNota[0]))
 					.numeroAcaoProduto(String.valueOf(modeloNota[1]))
 					.descricaoAcaoProduto(String.valueOf(modeloNota[2])).build();
-			modelosNota.add(modeloNotaOutputDto);
+			
+			Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
+			
+			if (!fluxoAtendimento.isPresent()) {
+				modelosNota.add(modeloNotaOutputDto);	
+			}
+
 		});
 		return modelosNota;
 	}
@@ -93,7 +104,13 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 			modeloNotaOutputDto = ModeloNotaOutputDto.builder().numeroModeloNota(String.valueOf(modeloNota[1]))
 					.numeroAcaoProduto(String.valueOf(modeloNota[2]))
 					.descricaoAcaoProduto(String.valueOf(modeloNota[3])).build();
-			modelosNota.add(modeloNotaOutputDto);
+			
+			Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
+			
+			if (!fluxoAtendimento.isPresent()) {
+				modelosNota.add(modeloNotaOutputDto);	
+			}
+			
 		});
 		return modelosNota.subList(0, 5);
 	}
@@ -119,8 +136,13 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 						.numeroAcaoProduto(String.valueOf(modeloNotaFavorita[1]))
 						.descricaoAcaoProduto(String.valueOf(modeloNotaFavorita[2]))
 						.dataEscolhaFavorito(formataData(modeloNotaFavorita[3])).build();
-
-				modelosNotaFavorita.add(modeloNotaOutputDto);
+				
+				Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
+				
+				if (!fluxoAtendimento.isPresent()) {
+					modelosNotaFavorita.add(modeloNotaOutputDto);	
+				}
+				
 			});
 
 			modelosNotaFavorita2.addAll(modelosNotaFavorita);
