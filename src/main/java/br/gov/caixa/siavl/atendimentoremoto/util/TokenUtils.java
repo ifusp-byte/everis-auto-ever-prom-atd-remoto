@@ -63,7 +63,7 @@ public class TokenUtils {
 		}
 		return ipUsuario;
 	}
-	
+
 	public String getUnidadeFromToken(String jwtToken) {
 
 		String unidade = null;
@@ -85,5 +85,25 @@ public class TokenUtils {
 			throw new RuntimeException(e);
 		}
 		return unidade;
+	}
+
+	public boolean isTwoFactorCertified(String jwtToken) {
+		String[] split_string = jwtToken.split("\\.");
+		String base64EncodedBody = split_string[1];
+
+		Base64 base64Url = new Base64(true);
+		String body = new String(base64Url.decode(base64EncodedBody));
+
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode jsonToken;
+		try {
+			jsonToken = mapper.readTree(body);
+			if (jsonToken.has("2f_cert")) {
+				return jsonToken.get("2f_cert").asBoolean();
+			}
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }
