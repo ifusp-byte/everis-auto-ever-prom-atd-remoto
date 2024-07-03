@@ -3,6 +3,7 @@ package br.gov.caixa.siavl.atendimentoremoto.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -75,6 +76,24 @@ public class AtendimentoRemotoController {
 	SicliGateway sicliGateway;
 
 	private static final String BEARER = "Bearer";
+
+	@Value("${apimanager.url}")
+	private String apiManagerUrl;
+
+	@Value("${url.sicli}")
+	private String urlSICLI;
+
+	@GetMapping("/teste-apimanagerUrl")
+	public ResponseEntity<String> getVariavel() {
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.TEXT_PLAIN)
+				.body(apiManagerUrl);
+	}
+
+	@GetMapping("/teste-urlSICLI")
+	public ResponseEntity<String> geturlSICLI() {
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.TEXT_PLAIN)
+				.body(urlSICLI);
+	}
 
 	@PostMapping("/protocolo")
 	public ResponseEntity<GeraProtocoloOutputDTO> geraProtocolo(
