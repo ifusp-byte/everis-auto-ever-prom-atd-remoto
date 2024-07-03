@@ -1,0 +1,7 @@
+{"properties": [
+  {
+    "name": "env.certificadodigital.validar",
+    "type": "java.lang.String",
+    "description": "Valida o flag 2f_cert no token'"
+  }
+]}
