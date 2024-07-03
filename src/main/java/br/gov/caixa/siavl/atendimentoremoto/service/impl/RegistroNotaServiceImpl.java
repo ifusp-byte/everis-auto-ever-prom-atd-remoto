@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import javax.sql.rowset.serial.SerialClob;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -136,19 +137,6 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		} else {
 			
 			registraNotaOutputDto = vinculaDocumento(registraNotaOutputDto, numeroModeloNota);
-			
-			/*
-			Optional<ModeloNotaNegocio> modeloNotaNegocioDocumento = modeloNotaRepository.vinculaDocumento(numeroModeloNota);
-			
-			if (modeloNotaNegocioDocumento.isPresent()) {
-				registraNotaOutputDto.setVinculaDocumento(true);
-			} else {
-				registraNotaOutputDto.setVinculaDocumento(false);
-			}
-			*/
-			
-			String dsRelatorioNota = mapper.writeValueAsString(registraNotaInputDto);
-			Clob relatorioNota = new SerialClob(dsRelatorioNota.toCharArray());
 
 			ModeloNotaNegocio modeloNotaNegocio = modeloNotaRepository.prazoValidade(numeroModeloNota);
 			Date dataValidade = formataDataValidade(modeloNotaNegocio.getPrazoValidade(),
@@ -228,13 +216,18 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				relatorioNotaNegociacao.setCpf(Long.parseLong(cpfCnpj));
 				tipoPessoa = PERSON_TYPE_PF;
 				tipoDocumento = DOCUMENT_TYPE_CPF;
+				registraNotaInputDto.setNomeSocio(StringUtils.EMPTY);
+				registraNotaInputDto.setCpfSocio(StringUtils.EMPTY);		
 			} else {
 				cpfCnpj = registraNotaInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim();
 				relatorioNotaNegociacao.setCnpj(Long.parseLong(cpfCnpj));
 				tipoPessoa = PERSON_TYPE_PJ;
 				tipoDocumento = DOCUMENT_TYPE_CNPJ;
 			}
-
+			
+			registraNotaInputDto.setNumeroNota(String.valueOf(notaNegociacao.getNumeroNota()));
+			String dsRelatorioNota = mapper.writeValueAsString(registraNotaInputDto);
+			Clob relatorioNota = new SerialClob(dsRelatorioNota.toCharArray());
 
 			relatorioNotaNegociacao.setNumeroEquipe(numeroEquipe);
 			relatorioNotaNegociacao.setRelatorioNota(relatorioNota);
@@ -296,8 +289,6 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	@Override
 	public Boolean enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto) {
 
-		//EnviaClienteOutputDto enviaClienteOutput = new EnviaClienteOutputDto();
-		
 		String tipoDocumento = null;
 		Boolean statusContratacao = null;
 		Long cpfCnpjPnc = Long
@@ -306,17 +297,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		Long nuProduto = Long.parseLong(enviaClienteInputDto.getNumeroConta().substring(4, 8));
 		Long coIdentificacao = Long.parseLong(
 				enviaClienteInputDto.getNumeroConta().substring(8, enviaClienteInputDto.getNumeroConta().length()));
-		
-		/*
-		Optional<ModeloNotaNegocio> modeloNotaNegocio = modeloNotaRepository.vinculaDocumento(Long.parseLong(enviaClienteInputDto.getNumeroModeloNota()));
-		
-		if (modeloNotaNegocio.isPresent()) {
-			enviaClienteOutput.setVinculaDocumento(true);
-		} else {
-			enviaClienteOutput.setVinculaDocumento(false);
-		}
-		*/
-
+	
 		notaNegociacaoRepository.enviaNotaCliente(numeroNota);
 		statusContratacao = true;
 
@@ -369,7 +350,6 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				.build();
 
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
-		//enviaClienteOutput.setStatusContratacao(statusContratacao);
 		
 		return statusContratacao;
 	}
