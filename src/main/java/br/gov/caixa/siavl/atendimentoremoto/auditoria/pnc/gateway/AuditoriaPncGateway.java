@@ -25,13 +25,13 @@ public class AuditoriaPncGateway {
 	private static String API_KEY = "apikey";
 
 	@Value("${env.apimanager.key}")
-	private static String API_KEY_VALUE;// "l7xx2b6f4c64f3774870b0b9b399a77586f5";
+	private String API_KEY_VALUE;// "l7xx2b6f4c64f3774870b0b9b399a77586f5";
 
 	@Value("${env.apimanager.url}")
-	private static String URL_BASE;// "https://api.des.caixa:8443/plataforma-unificada/trilha/v1/registros";
+	private String URL_BASE;// "https://api.des.caixa:8443/plataforma-unificada/trilha/v1/registros";
 
 	@Value("${env.url.sipnc.log}")
-	private static String URL_SIPNC_LOG;// plataforma-unificada/trilha/v1/registros
+	private String URL_SIPNC_LOG;// plataforma-unificada/trilha/v1/registros
 
 	@Autowired
 	RestTemplateUtils restTemplateUtils;
