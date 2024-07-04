@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,14 +33,22 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 @Service
 @SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813" })
 public class IdentificacaoPositivaGateway {
-	
+
 	@Autowired
-	AtendimentoClienteRepository atendimentoClienteRepository; 
+	AtendimentoClienteRepository atendimentoClienteRepository;
 
 	private final static Logger LOG = Logger.getLogger(IdentificacaoPositivaGateway.class.getName());
 	private static String API_KEY = "APIKey";
-	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
-	private static String URL_BASE = "https://api.des.caixa:8443/id-positiva/v1/desafios";
+
+	@Value("${api.apimanager.key}")
+	private static String API_KEY_VALUE;// "l7xx2b6f4c64f3774870b0b9b399a77586f5";
+
+	@Value("${apimanager.url}")
+	private static String URL_BASE;// "https://api.des.caixa:8443/id-positiva/v1/desafios";
+
+	@Value("${url.positivo.desafio}")
+	private static String URL_POSITIVO_DESAFIO;// "id-positiva/v1/desafios";
+
 	private static ObjectMapper mapper = new ObjectMapper();
 	private static String CODIGO_422_0 = "0";
 	private static String CODIGO_422_1 = "1";
@@ -60,13 +69,13 @@ public class IdentificacaoPositivaGateway {
 
 	public HttpEntity<String> newRequestEntityDesafioResponder(String token,
 			RespondeDesafioInputDTO respondeDesafioInputDTO) {
-		
+
 		HashMap<String, Object> respondeDesafioMap = new HashMap<String, Object>();
 		String request = null;
-		try {	
+		try {
 			respondeDesafioMap.put("listaResposta", respondeDesafioInputDTO.getListaResposta());
 			request = mapper.writeValueAsString(respondeDesafioMap).replaceAll("\\u005C", "").replaceAll("\\n", "");
-			
+
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
@@ -77,7 +86,7 @@ public class IdentificacaoPositivaGateway {
 	public HttpHeaders newHttpHeaders(String token) {
 
 		String sanitizedToken = StringUtils.normalizeSpace(token);
-		
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setBearerAuth(sanitizedToken);
@@ -86,24 +95,25 @@ public class IdentificacaoPositivaGateway {
 		return headers;
 	}
 
-	public CriaDesafioOutputDTO desafioCriar(@Valid  String token, HashMap<String, String> criaDesafioMap, Long cpfSocio, Long protocolo) throws Exception {
-        
+	public CriaDesafioOutputDTO desafioCriar(@Valid String token, HashMap<String, String> criaDesafioMap, Long cpfSocio,
+			Long protocolo) throws Exception {
+
 		CriaDesafioOutputDTO criaDesafioOutputDTO = new CriaDesafioOutputDTO();
 		ResponseEntity<String> response = null;
 		JsonNode jsonNode;
 		String codigo422 = null;
-		
-		if (cpfSocio != null) { 
-		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(protocolo);
-		atendimentoCliente.setCpfCliente(cpfSocio);
-		atendimentoClienteRepository.save(atendimentoCliente);
-		}	
+
+		if (cpfSocio != null) {
+			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(protocolo);
+			atendimentoCliente.setCpfCliente(cpfSocio);
+			atendimentoClienteRepository.save(atendimentoCliente);
+		}
 
 		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
 
 		try {
 
-			response = restTemplateDto.getRestTemplate().postForEntity(URL_BASE,
+			response = restTemplateDto.getRestTemplate().postForEntity(URL_BASE + "/" + URL_POSITIVO_DESAFIO,
 					newRequestEntityDesafioCriar(token, criaDesafioMap), String.class);
 
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC " + mapper.writeValueAsString(response));
@@ -116,10 +126,11 @@ public class IdentificacaoPositivaGateway {
 					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
 					.statusCreated(true).dataCreated(formataData(new Date())).build();
 
-			LOG.info("Identificação Positiva - Desafio Criar - Resposta View " + mapper.writeValueAsString(criaDesafioOutputDTO));
+			LOG.info(
+					"Identificação Positiva - Desafio Criar - Resposta View " + mapper.writeValueAsString(criaDesafioOutputDTO));
 
 		} catch (RestClientResponseException e) {
-			
+
 			jsonNode = mapper.readTree(e.getResponseBodyAsString());
 
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC " + mapper.writeValueAsString(jsonNode));
@@ -133,10 +144,11 @@ public class IdentificacaoPositivaGateway {
 					.response(Objects.requireNonNull(e.getResponseBodyAsString())).statusMessage(statusMessage)
 					.statusCreated(false).dataCreated(formataData(new Date())).build();
 
-			LOG.info("Identificação Positiva - Desafio Criar - Resposta View " + mapper.writeValueAsString(criaDesafioOutputDTO));
+			LOG.info(
+					"Identificação Positiva - Desafio Criar - Resposta View " + mapper.writeValueAsString(criaDesafioOutputDTO));
 
 		} finally {
-			
+
 			restTemplateDto.getHttpClient().close();
 		}
 
@@ -151,14 +163,15 @@ public class IdentificacaoPositivaGateway {
 		ResponseEntity<String> response = null;
 		JsonNode jsonNode;
 		String codigo422 = null;
-		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(respondeDesafioInputDTO.getProtocolo()));
+		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository
+				.getReferenceById(Long.parseLong(respondeDesafioInputDTO.getProtocolo()));
 
 		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
-		
+
 		try {
 
 			response = restTemplateDto.getRestTemplate().postForEntity(
-					URL_BASE + "/" + Integer.parseInt(idDesafio.trim()) + "/enviar-respostas",
+					URL_BASE + "/" + URL_POSITIVO_DESAFIO + "/" + Integer.parseInt(idDesafio.trim()) + "/enviar-respostas",
 					newRequestEntityDesafioResponder(token, respondeDesafioInputDTO), String.class);
 
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta SIIPC "
@@ -171,13 +184,13 @@ public class IdentificacaoPositivaGateway {
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
 					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
 					.statusCreated(true).dataCreated(formataData(new Date())).build();
-			
+
 			atendimentoCliente.setSituacaoIdPositiva(1L);
 			atendimentoCliente.setDescricaoIdentificacaoPositiva("SUCESSO");
 			atendimentoCliente.setDataIdentificacaoPositiva(formataDataBanco());
 			atendimentoCliente.setDataValidacaoPositiva(formataDataBanco());
 			atendimentoClienteRepository.save(atendimentoCliente);
-				
+
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta View "
 					+ mapper.writeValueAsString(respondeDesafioOutputDTO));
 
@@ -196,7 +209,7 @@ public class IdentificacaoPositivaGateway {
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
 					.response(Objects.requireNonNull(e.getResponseBodyAsString())).statusMessage(statusMessage)
 					.statusCreated(false).dataCreated(formataData(new Date())).build();
-			
+
 			atendimentoCliente.setSituacaoIdPositiva(2L);
 			atendimentoCliente.setDescricaoIdentificacaoPositiva("BLOQUEADO");
 			atendimentoCliente.setDataIdentificacaoPositiva(formataDataBanco());
@@ -207,7 +220,7 @@ public class IdentificacaoPositivaGateway {
 					+ mapper.writeValueAsString(respondeDesafioOutputDTO));
 
 		} finally {
-			
+
 			restTemplateDto.getHttpClient().close();
 		}
 
@@ -315,7 +328,7 @@ public class IdentificacaoPositivaGateway {
 		data = String.valueOf(sdfOut.format(dateInput));
 		return data;
 	}
-	
+
 	private Date formataDataBanco() {
 
 		Calendar time = Calendar.getInstance();

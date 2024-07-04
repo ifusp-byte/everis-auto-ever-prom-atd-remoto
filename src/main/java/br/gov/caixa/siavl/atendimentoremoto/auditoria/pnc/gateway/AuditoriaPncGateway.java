@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -22,8 +23,15 @@ public class AuditoriaPncGateway {
 
 	private final static Logger LOG = Logger.getLogger(AuditoriaPncGateway.class.getName());
 	private static String API_KEY = "apikey";
-	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
-	private static String URL_BASE = "https://api.des.caixa:8443/plataforma-unificada/trilha/v1/registros";
+
+	@Value("${api.apimanager.key}")
+	private static String API_KEY_VALUE;// "l7xx2b6f4c64f3774870b0b9b399a77586f5";
+
+	@Value("${apimanager.url}")
+	private static String URL_BASE;// "https://api.des.caixa:8443/plataforma-unificada/trilha/v1/registros";
+
+	@Value("${url.sipnc.log}")
+	private static String URL_SIPNC_LOG;// plataforma-unificada/trilha/v1/registros
 
 	@Autowired
 	RestTemplateUtils restTemplateUtils;
@@ -35,9 +43,9 @@ public class AuditoriaPncGateway {
 	}
 
 	public HttpHeaders newHttpHeaders(String token) {
-		
+
 		String sanitizedToken = StringUtils.normalizeSpace(token);
-		
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setBearerAuth(sanitizedToken);
@@ -53,7 +61,7 @@ public class AuditoriaPncGateway {
 
 		try {
 
-			response = restTemplateDto.getRestTemplate().postForEntity(URL_BASE,
+			response = restTemplateDto.getRestTemplate().postForEntity(URL_BASE + "/" + URL_SIPNC_LOG,
 					newRequestEntityAuditoriaPncSalvar(token, auditoriaPncInputDTO), String.class);
 
 			LOG.log(Level.INFO, "Sucesso Auditoria PNC " + String.valueOf(response));
@@ -62,14 +70,14 @@ public class AuditoriaPncGateway {
 			LOG.log(Level.INFO, "Erro Auditoria PNC " + String.valueOf(e.getResponseBodyAsString()));
 
 		} finally {
-		
+
 			try {
 				restTemplateDto.getHttpClient().close();
 			} catch (IOException e) {
 				LOG.log(Level.SEVERE, "Erro. Não foi possível fechar a conexão com o socket.");
 			}
 		}
-			
+
 	}
 
 }
