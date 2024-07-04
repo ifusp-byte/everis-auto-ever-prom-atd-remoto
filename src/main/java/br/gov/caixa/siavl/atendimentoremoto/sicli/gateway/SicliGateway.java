@@ -49,13 +49,13 @@ public class SicliGateway {
 	private final static Logger LOG = Logger.getLogger(SicliGateway.class.getName());
 	private static String API_KEY = "apikey";
 
-	@Value("${api.apimanager.key}")
+	@Value("${env.apimanager.key}")
 	private static String API_KEY_VALUE;// "l7xx2b6f4c64f3774870b0b9b399a77586f5";
 
-	@Value("${apimanager.url}")
+	@Value("${env.apimanager.url}")
 	private static String URL_BASE;// "https://api.des.caixa:8443";
 
-	@Value("${url.sicli.conta}")
+	@Value("${env.url.sicli.conta}")
 	private static String URL_SICLI_CONTA; // "cadastro/v2/clientes?campos=dadosbasicos,composicaoSocietaria,enderecos,contratos,documentos,nicho,carteiragrc,vinculo,dadosatualizacaocadastral,meiocomunicacao,rendas,profissaosiric&classe=1&cpfcnpj=";
 
 	private static String REPLACE_IDENTIFICACAO = "0000000000000000";

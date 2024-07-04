@@ -40,13 +40,13 @@ public class IdentificacaoPositivaGateway {
 	private final static Logger LOG = Logger.getLogger(IdentificacaoPositivaGateway.class.getName());
 	private static String API_KEY = "APIKey";
 
-	@Value("${api.apimanager.key}")
+	@Value("${env.apimanager.key}")
 	private static String API_KEY_VALUE;// "l7xx2b6f4c64f3774870b0b9b399a77586f5";
 
-	@Value("${apimanager.url}")
+	@Value("${env.apimanager.url}")
 	private static String URL_BASE;// "https://api.des.caixa:8443/id-positiva/v1/desafios";
 
-	@Value("${url.positivo.desafio}")
+	@Value("${env.url.positivo.desafio}")
 	private static String URL_POSITIVO_DESAFIO;// "id-positiva/v1/desafios";
 
 	private static ObjectMapper mapper = new ObjectMapper();
