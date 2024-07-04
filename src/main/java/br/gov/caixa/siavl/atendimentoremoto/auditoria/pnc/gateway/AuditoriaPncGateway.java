@@ -24,14 +24,14 @@ public class AuditoriaPncGateway {
 	private final static Logger LOG = Logger.getLogger(AuditoriaPncGateway.class.getName());
 	private static String API_KEY = "apikey";
 
-	// @Value("${api.apimanager.key}")
-	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
+	@Value("${api.apimanager.key}")
+	private static String API_KEY_VALUE;// "l7xx2b6f4c64f3774870b0b9b399a77586f5";
 
-	// @Value("${apimanager.url}")
-	private static String URL_BASE = "https://api.des.caixa:8443/plataforma-unificada/trilha/v1/registros";
+	@Value("${apimanager.url}")
+	private static String URL_BASE;// "https://api.des.caixa:8443/plataforma-unificada/trilha/v1/registros";
 
-	// @Value("${url.sipnc.log}")
-	private static String URL_SIPNC_LOG = "plataforma-unificada/trilha/v1/registros";
+	@Value("${url.sipnc.log}")
+	private static String URL_SIPNC_LOG;// plataforma-unificada/trilha/v1/registros
 
 	@Autowired
 	RestTemplateUtils restTemplateUtils;
