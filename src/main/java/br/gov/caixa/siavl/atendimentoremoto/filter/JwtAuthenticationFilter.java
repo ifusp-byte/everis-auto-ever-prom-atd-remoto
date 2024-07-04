@@ -42,14 +42,14 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
         String token = header.replace("Bearer ", "");
 
-		System.out.println("Válido: " + tokenUtils.certificadoValido(token));
+		//System.out.println("Válido: " + tokenUtils.certificadoValido(token));
 
         if (!tokenUtils.certificadoValido(token)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(
-                    "{ \"error\": \"Acesso negado: Para acessar a Plataforma utilize o certificado digital.\" }");
+                    "{ \"error\": \"Acesso negado: Para acessar a Plataforma.CAIXA utilize o Certificado Digital.\" }");
             return;
         }
 

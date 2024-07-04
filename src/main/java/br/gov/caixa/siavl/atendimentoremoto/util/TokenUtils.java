@@ -99,7 +99,7 @@ public class TokenUtils {
 		Base64 base64Url = new Base64(true);
 		String body = new String(base64Url.decode(base64EncodedBody));
 
-		System.out.print("Validar: " + certificadoDigitalValidar + " / ");
+		//System.out.print("Validar: " + certificadoDigitalValidar + " / ");
 
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode jsonToken;
@@ -108,6 +108,8 @@ public class TokenUtils {
 				jsonToken = mapper.readTree(body);
 				if (jsonToken.has("2f_cert")) {
 					return jsonToken.get("2f_cert").asBoolean();
+				} else {
+					return false;
 				}
 			}
 		} catch (JsonProcessingException e) {
