@@ -79,6 +79,7 @@ public class AtendimentoRemotoController {
 	public ResponseEntity<GeraProtocoloOutputDTO> geraProtocolo(
 			@Valid @RequestHeader(value = "Authorization", required = true) String token,
 			@Valid @RequestBody GeraProtocoloInputDTO geraProtocoloInputDTO) throws Exception {
+
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
 				.body(geraProtocoloService.geraProtocolo(token.trim().replace(token, ""), geraProtocoloInputDTO));
 	}
