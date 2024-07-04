@@ -1,0 +1,37 @@
+{"properties": [
+  {
+    "name": "env.certificadodigital.validar",
+    "type": "java.lang.String",
+    "description": "Valida o flag 2f_cert no token'"
+  },
+  {
+    "name": "apimanager.url",
+    "type": "java.lang.String",
+    "description": "A description for 'apimanager.url'"
+  },
+  {
+    "name": "api.apimanager.key",
+    "type": "java.lang.String",
+    "description": "A description for 'api.apimanager.key'"
+  },
+  {
+      "name": "url.sicli.conta",
+      "type": "java.lang.String",
+      "description": "A description for 'url.sicli.conta'"
+  },
+  {
+      "name": "url.positivo.desafio",
+      "type": "java.lang.String",
+      "description": "A description for 'url.positivo.desafio'"
+  },
+  {
+      "name": "url.sipnc.log",
+      "type": "java.lang.String",
+      "description": "A description for 'url.sipnc.log'"
+  },
+  {
+      "name": "url.sicli",
+      "type": "java.lang.String",
+      "description": "A description for 'url.sicli'"
+  }
+]}

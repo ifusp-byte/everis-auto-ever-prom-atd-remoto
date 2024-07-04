@@ -1,6 +1,8 @@
 package br.gov.caixa.siavl.atendimentoremoto.util;
 
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.ApplicationScope;
 import com.auth0.jwt.impl.JWTParser;
@@ -14,6 +16,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TokenUtils {
 
 	String accessToken;
+
+	@Value("${env.certificadodigital.validar}")
+	private String certificadoDigitalValidar;
 
 	JWTParser parser = new JWTParser();
 
@@ -62,7 +67,7 @@ public class TokenUtils {
 		}
 		return ipUsuario;
 	}
-	
+
 	public String getUnidadeFromToken(String jwtToken) {
 
 		String unidade = null;
@@ -84,5 +89,32 @@ public class TokenUtils {
 			throw new RuntimeException(e);
 		}
 		return unidade;
+	}
+
+	public boolean certificadoValido(String jwtToken) {
+		String[] split_string = jwtToken.split("\\.");
+		String base64EncodedBody = split_string[1];
+
+		Base64 base64Url = new Base64(true);
+		String body = new String(base64Url.decode(base64EncodedBody));
+
+		//System.out.print("Validar: " + certificadoDigitalValidar + " / ");
+
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode jsonToken;
+		try {
+			if(certificadoDigitalValidar.equalsIgnoreCase("true")) {
+				jsonToken = mapper.readTree(body);
+				if (jsonToken.has("2f_cert")) {
+					return jsonToken.get("2f_cert").asBoolean();
+				} else {
+					return false;
+				}
+			}
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
+		return true;
 	}
 }
