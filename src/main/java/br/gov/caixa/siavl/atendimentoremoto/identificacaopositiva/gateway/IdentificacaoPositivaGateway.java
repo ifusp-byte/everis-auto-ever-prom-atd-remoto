@@ -44,7 +44,7 @@ public class IdentificacaoPositivaGateway {
 	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
 
 	// @Value("${apimanager.url}")
-	private static String URL_BASE = "https://api.des.caixa:8443/id-positiva/v1/desafios";
+	private static String URL_BASE = "https://api.des.caixa:8443";
 
 	// @Value("${url.positivo.desafio}")
 	private static String URL_POSITIVO_DESAFIO = "id-positiva/v1/desafios";
