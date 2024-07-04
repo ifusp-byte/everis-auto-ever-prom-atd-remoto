@@ -72,7 +72,7 @@ public class ConsultaNotaServiceImpl implements ConsultaNotaService {
 		String formatCpf = null;
 		String cpf = null;
 		MaskFormatter cpfMask = null;
-		
+
 		if (object != null) {
 			cpfInput = String.valueOf(object).replace(".", "").replace("/", "").replace("/", "").replace("-", "");
 			formatCpf = "00000000000".substring(cpfInput.length()) + cpfInput;
@@ -93,7 +93,7 @@ public class ConsultaNotaServiceImpl implements ConsultaNotaService {
 		String formatCnpj = null;
 		String cnpj = null;
 		MaskFormatter cnpjMask = null;
-		
+
 		if (object != null) {
 			cnpjInput = String.valueOf(object).replace(".", "").replace("/", "").replace("/", "").replace("-", "");
 			formatCnpj = "00000000000000".substring(cnpjInput.length()) + cnpjInput;

@@ -30,5 +30,8 @@ public class RegistraNotaOutputDto {
 	
 	@Valid
 	private String numeroNota;
+	
+	@Valid
+	private boolean vinculaDocumento;
 
 }

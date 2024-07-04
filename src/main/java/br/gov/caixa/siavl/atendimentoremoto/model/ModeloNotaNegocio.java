@@ -43,5 +43,8 @@ public class ModeloNotaNegocio implements Serializable {
 	
 	@Column(name = "HH_VALIDADE_MODELO_NOTA")
 	private String horaValidade;
+	
+	@Column(name = "IC_MODELO_VINCULA_DOCUMENTO")
+	private int vinculaDocumento;
 
 }

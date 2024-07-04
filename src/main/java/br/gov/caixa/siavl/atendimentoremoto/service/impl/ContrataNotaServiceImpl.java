@@ -2,7 +2,6 @@ package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import br.gov.caixa.siavl.atendimentoremoto.constants.ContrataNotaServiceConstants;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.ContrataNotaService;

@@ -8,9 +8,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinamicoCamposOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinamicoNotaProdutoOutputDTO;
@@ -18,13 +22,11 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinami
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaNumeroOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaOutputDto;
-import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNegocio;
-import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocio;
+import br.gov.caixa.siavl.atendimentoremoto.model.FluxoAtendimento;
 import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocioFavorito;
-import br.gov.caixa.siavl.atendimentoremoto.model.NegocioAgenciaVirtual;
-import br.gov.caixa.siavl.atendimentoremoto.model.NotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoNegocioRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.CampoModeloNotaRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.FluxoAtendimentoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaFavoritoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepository;
@@ -64,6 +66,9 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 	@Autowired
 	RoteiroFechamentoNotaRepository roteiroFechamentoNotaRepository;
 
+	@Autowired
+	FluxoAtendimentoRepository fluxoAtendimentoRepository;
+
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	public List<ModeloNotaOutputDto> consultaModeloNota() {
@@ -77,7 +82,13 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 			modeloNotaOutputDto = ModeloNotaOutputDto.builder().numeroModeloNota(String.valueOf(modeloNota[0]))
 					.numeroAcaoProduto(String.valueOf(modeloNota[1]))
 					.descricaoAcaoProduto(String.valueOf(modeloNota[2])).build();
-			modelosNota.add(modeloNotaOutputDto);
+			
+			Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
+			
+			if (!fluxoAtendimento.isPresent()) {
+				modelosNota.add(modeloNotaOutputDto);	
+			}
+
 		});
 		return modelosNota;
 	}
@@ -93,7 +104,13 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 			modeloNotaOutputDto = ModeloNotaOutputDto.builder().numeroModeloNota(String.valueOf(modeloNota[1]))
 					.numeroAcaoProduto(String.valueOf(modeloNota[2]))
 					.descricaoAcaoProduto(String.valueOf(modeloNota[3])).build();
-			modelosNota.add(modeloNotaOutputDto);
+			
+			Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
+			
+			if (!fluxoAtendimento.isPresent()) {
+				modelosNota.add(modeloNotaOutputDto);	
+			}
+			
 		});
 		return modelosNota.subList(0, 5);
 	}
@@ -119,8 +136,13 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 						.numeroAcaoProduto(String.valueOf(modeloNotaFavorita[1]))
 						.descricaoAcaoProduto(String.valueOf(modeloNotaFavorita[2]))
 						.dataEscolhaFavorito(formataData(modeloNotaFavorita[3])).build();
-
-				modelosNotaFavorita.add(modeloNotaOutputDto);
+				
+				Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
+				
+				if (!fluxoAtendimento.isPresent()) {
+					modelosNotaFavorita.add(modeloNotaOutputDto);	
+				}
+				
 			});
 
 			modelosNotaFavorita2.addAll(modelosNotaFavorita);
@@ -135,12 +157,18 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 					}
 				}
 			}
-				
-			if (modelosNotaFavorita2.size() >= 5) {			
-				modelosNotaFavoritaRetorno = modelosNotaFavorita2.subList(0, 5);
-			} else {		
-				modelosNotaFavoritaRetorno = modelosNotaFavorita2;
-			}
+			
+			modelosNotaFavoritaRetorno = retornoListaFavorito(modelosNotaFavorita2, modelosNotaFavoritaRetorno);
+		}
+		return modelosNotaFavoritaRetorno;
+	}
+	
+	public List<ModeloNotaOutputDto> retornoListaFavorito (List<ModeloNotaOutputDto> modelosNotaFavorita2, List<ModeloNotaOutputDto> modelosNotaFavoritaRetorno){
+		
+		if (modelosNotaFavorita2.size() >= 5) {			
+			modelosNotaFavoritaRetorno = modelosNotaFavorita2.subList(0, 5);
+		} else {		
+			modelosNotaFavoritaRetorno = modelosNotaFavorita2;
 		}
 		return modelosNotaFavoritaRetorno;
 	}
@@ -176,35 +204,9 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 			notaProdutoLista.add(notaProdutoItem);
 		});
 		
-		/*
-		ModeloNotaNegocio modeloNotaNegocio = modeloNotaRepository.prazoValidade(numeroModeloNota);	
-		Date dataValidade = formataDataValidade(modeloNotaNegocio.getPrazoValidade(), modeloNotaNegocio.getHoraValidade()); 
-			
-		NegocioAgenciaVirtual negocioAgenciaVirtual = new NegocioAgenciaVirtual();
-		negocioAgenciaVirtual.setDataCriacaoNegocio(new Date());
-		negocioAgenciaVirtual.setSituacaoNegocio("E".charAt(0));
-		negocioAgenciaVirtual = negocioAgenciaVirtualRepository.save(negocioAgenciaVirtual);
-		*/
-
-		/*
-		NotaNegociacao notaNegociacao = new NotaNegociacao();
-		notaNegociacao.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
-		notaNegociacao.setNumeroModeloNota(numeroModeloNota);
-		notaNegociacao.setDataCriacaoNota(formataDataBanco());
-		notaNegociacao.setDataModificacaoNota(formataDataBanco());
-		notaNegociacao.setNumeroMatriculaCriacaoNota(matriculaCriacaoNota(token));
-		notaNegociacao.setNumeroMatriculaModificacaoNota(matriculaCriacaoNota(token));
-		notaNegociacao.setNumeroSituacaoNota(16L); // VERIFICAR
-		notaNegociacao.setQtdItemNegociacao(1L);
-		notaNegociacao.setIcOrigemNota(1L);
-		notaNegociacao.setDataPrazoValidade(dataValidade);
-		notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);
-		*/
-
 		ModeloNotaDinamicoMenuNotaNumeroOutputDTO modeloNotaDinamicoMenuNotaNumeroOutputDTO = new ModeloNotaDinamicoMenuNotaNumeroOutputDTO();
 		modeloNotaDinamicoMenuNotaNumeroOutputDTO.setDataModificacao(formataData(new Date()));
-		//modeloNotaDinamicoMenuNotaNumeroOutputDTO.setNumeroNota(String.valueOf(notaNegociacao.getNumeroNota()));
-
+		
 		List<ModeloNotaDinamicoMenuNotaDinamicoOutputDTO> dinamicos = new ArrayList<>();
 		modeloNotaFavoritoRepository.modeloNotaDinamico(numeroModeloNota).stream().forEach(dinamico -> {
 
@@ -245,13 +247,6 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		int tamanho = Integer.parseInt(String.valueOf(roteiro.length()));
 
 		modeloNotaDinamicoOutputDTO.setRoteiroFechamento(String.valueOf(roteiro.getSubString(1, tamanho)));
-
-		/*
-		AtendimentoNegocio atendimentoNegocio = new AtendimentoNegocio();
-		atendimentoNegocio.setNumeroProtocolo(Long.parseLong(modeloNotaDinamicoInputDTO.getProtocolo()));
-		atendimentoNegocio.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
-	    atendimentoNegocio = atendimentoNegocioRepository.save(atendimentoNegocio);
-	    */
 
 		return modeloNotaDinamicoOutputDTO;
 	}
