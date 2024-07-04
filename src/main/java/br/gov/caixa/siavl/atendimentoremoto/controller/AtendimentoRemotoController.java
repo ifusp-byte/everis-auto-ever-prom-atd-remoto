@@ -77,51 +77,6 @@ public class AtendimentoRemotoController {
 
 	private static final String BEARER = "Bearer";
 
-	/* todo: Apagar depois dos testes */
-	@Value("${apimanager.url}")
-	private String apiManagerUrl;
-
-	@Value("${url.sicli}")
-	private String urlSICLI;
-
-	@Value("${env.certificadodigital.validar}")
-	private String certificado;
-
-	@Value("${spring.datasource.url}")
-	private String datasource;
-
-	@Value("${spring.datasource.username}")
-	private String username;
-
-	@Value("${spring.datasource.password}")
-	private String password;
-
-	@Value("${url.sipnc.log}")
-	private String logSIPNC;
-
-	@Value("${url.positivo.desafio}")
-	private String urlPositivoDesafio;
-
-	@Value("${url.sicli.conta}")
-	private String urlSICLIConta;
-
-	@Value("${api.apimanager.key}")
-	private String apiMNKey;
-
-	/* todo: Apagar depois dos testes */
-	@GetMapping("/imprimir-variaveis-ambiente")
-	public ResponseEntity<String> getVariavel() {
-		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.TEXT_PLAIN)
-				.body("APIMANAGER_URL=" + apiManagerUrl + "\r\n" + "URL_SICLI=" + urlSICLI + "\r\n" + "CERT_REQUIRED="
-						+ certificado + "\r\n" + "SPRING_DATASOURCE_URL=" + datasource + "\r\n" + "SPRING_DATASOURCE_USERNAME="
-						+ username + "\r\n" + "SPRING_DATASOURCE_PASSWORD="
-						+ password + "\r\n" + "URL_SIPNC_LOG="
-						+ logSIPNC + "\r\n" + "URL_POSITIVO_DESAFIO="
-						+ urlPositivoDesafio + "\r\n" + "URL_SICLI_CONTA="
-						+ urlSICLIConta + "\r\n" + "APIMANAGER_KEY="
-						+ apiMNKey);
-	}
-
 	@PostMapping("/protocolo")
 	public ResponseEntity<GeraProtocoloOutputDTO> geraProtocolo(
 			@Valid @RequestHeader(value = "Authorization", required = true) String token,
