@@ -34,7 +34,7 @@ import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 @SuppressWarnings({"squid:S3008", "squid:S6813", "squid:S112", "squid:S5361"})
 public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
-	private final static Logger LOG = Logger.getLogger(AnexoDocumentoServiceImpl.class.getName());
+	private static final Logger LOG = Logger.getLogger(AnexoDocumentoServiceImpl.class.getName());
 
 	private static String DEFAULT_IP = "127.0.0.1";
 	private static String DEFAULT_LOCAL_ARMAZENAMENTO = "OS_CAIXA";
