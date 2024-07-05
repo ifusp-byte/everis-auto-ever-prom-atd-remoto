@@ -244,10 +244,10 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			relatorioNotaNegociacao.setAcaoProduto(registraNotaInputDto.getAcaoProduto());
 
 			relatorioNotaNegociacaoRepository.save(relatorioNotaNegociacao);
-			registraNotaOutputDto = RegistraNotaOutputDto.builder().statusNotaRegistrada(true)
-					.mensagem("Nota registrada com sucesso!").numeroNota(String.valueOf(notaNegociacao.getNumeroNota()))
-					.build();
-
+			registraNotaOutputDto.setStatusNotaRegistrada(true);
+			registraNotaOutputDto.setMensagem("Nota registrada com sucesso!");
+			registraNotaOutputDto.setNumeroNota(String.valueOf(notaNegociacao.getNumeroNota()));
+			
 			AuditoriaPncRegistraNotaInputDTO auditoriaPncRegistraNotaInputDTO = new AuditoriaPncRegistraNotaInputDTO();
 			auditoriaPncRegistraNotaInputDTO = AuditoriaPncRegistraNotaInputDTO.builder()
 
