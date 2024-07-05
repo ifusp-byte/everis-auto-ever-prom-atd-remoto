@@ -82,13 +82,15 @@ public class AtendimentoRemotoController {
 	public ResponseEntity<GeraProtocoloOutputDTO> geraProtocolo(
 			@Valid @RequestHeader(value = "Authorization", required = true) String token,
 			@Valid @RequestBody GeraProtocoloInputDTO geraProtocoloInputDTO) throws Exception {
+
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
 				.body(geraProtocoloService.geraProtocolo(token.trim().replace(BEARER, StringUtils.EMPTY), geraProtocoloInputDTO));
 	}
 
 	@PostMapping("/desafio-criar/{cpf}")
 	public ResponseEntity<CriaDesafioOutputDTO> desafioCriar(
-			@Valid @RequestHeader(value = "token", required = true) String token, @Valid @PathVariable String cpf, @Valid @RequestBody CriaDesafioInputDTO criaDesafioInputDTO) throws Exception {
+			@Valid @RequestHeader(value = "token", required = true) String token, @Valid @PathVariable String cpf,
+			@Valid @RequestBody CriaDesafioInputDTO criaDesafioInputDTO) throws Exception {
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(desafioService.desafioCriar(token.trim().replace(BEARER, StringUtils.EMPTY), cpf, criaDesafioInputDTO));
@@ -102,7 +104,6 @@ public class AtendimentoRemotoController {
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(desafioService.desafioResponder(token.trim().replace(BEARER, StringUtils.EMPTY), idDesafio, respostaDesafio));
-
 	}
 
 	@PostMapping("/auditoria-identificacao-positiva")
@@ -111,7 +112,6 @@ public class AtendimentoRemotoController {
 
 		return ResponseEntity.status(HttpStatus.OK).body(auditoriaIdentificacaoPositivaService
 				.auditar(token.trim().replace(BEARER, StringUtils.EMPTY), auditoriaIdentificacaoPositivaInputDTO));
-
 	}
 
 	@GetMapping("/modelo-nota")
@@ -128,7 +128,8 @@ public class AtendimentoRemotoController {
 
 	@PostMapping("/modelo-nota-favorita/{numeroModeloNota}")
 	public ResponseEntity<Object> adicionaModeloNotaFavorita(
-			@Valid @RequestHeader(value = "token", required = true) String token, @Valid @PathVariable Long numeroModeloNota) {
+			@Valid @RequestHeader(value = "token", required = true) String token,
+			@Valid @PathVariable Long numeroModeloNota) {
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(modeloNotaService.adicionaModeloNotaFavorita(token.trim().replace(BEARER, StringUtils.EMPTY), numeroModeloNota));
 	}
@@ -140,7 +141,8 @@ public class AtendimentoRemotoController {
 
 	@PostMapping("/modelo-nota-dinamico/{numeroModeloNota}")
 	public ResponseEntity<Object> modeloNotaDinamico(@Valid @RequestHeader(value = "token", required = true) String token,
-			@Valid @PathVariable Long numeroModeloNota, @Valid @RequestBody ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO)
+			@Valid @PathVariable Long numeroModeloNota,
+			@Valid @RequestBody ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO)
 			throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -184,15 +186,15 @@ public class AtendimentoRemotoController {
 	@GetMapping("/documento/tipo/{cpfCnpj}")
 	public ResponseEntity<Object> tipoDocumento(@Valid @PathVariable String cpfCnpj) throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED)
-			.contentType(MediaType.APPLICATION_JSON)
-			.body(anexoDocumentoService.tipoDocumento(cpfCnpj));
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(anexoDocumentoService.tipoDocumento(cpfCnpj));
 	}
 
 	@GetMapping("/documento/tipo/campos/{codGED}")
 	public ResponseEntity<Object> tipoDocumentoCampos(@Valid @PathVariable String codGED) throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED)
-			.contentType(MediaType.APPLICATION_JSON)
-			.body(anexoDocumentoService.tipoDocumentoCampos(codGED));
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(anexoDocumentoService.tipoDocumentoCampos(codGED));
 	}
 
 }
