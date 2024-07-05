@@ -1,5 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.siecm.constants;
 
+@SuppressWarnings({ "squid:S2386"})
 public class SiecmConstants {
 
 	private SiecmConstants() {
