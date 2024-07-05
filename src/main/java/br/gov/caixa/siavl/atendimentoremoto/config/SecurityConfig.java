@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/webjars/**",
                 "/swagger-ui/**",
                 "/swagger-config/**",
+                "/atendimentoremoto-contract/**",
                 "/public/**",
                 "/atendimentoremoto-contract.html",
                 "/atendimentoremoto-contract"
