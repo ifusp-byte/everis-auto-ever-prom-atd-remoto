@@ -23,13 +23,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeRequests()
-                .anyRequest().authenticated()
-                .and()
-                .addFilterBefore(new JwtAuthenticationFilter(authenticationManagerBean(), tokenUtils),
-                        UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http
+            .csrf().disable()
+            .cors().and()
+            .authorizeRequests()
+            .antMatchers(
+                "/v2/api-docs",
+                "/configuration/ui/",
+                "/swagger-resources/**",
+                "/configuration/security/",
+                "/webjars/**",
+                "/swagger-ui/**",
+                "/swagger-config/**",
+                "/public/**",
+                "/atendimentoremoto-contract.html",
+                "/atendimentoremoto-contract"
+            ).permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .addFilterBefore(new JwtAuthenticationFilter(authenticationManagerBean(), tokenUtils),
+                    UsernamePasswordAuthenticationFilter.class)
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Bean
