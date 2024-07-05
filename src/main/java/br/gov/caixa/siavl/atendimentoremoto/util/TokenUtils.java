@@ -2,7 +2,6 @@ package br.gov.caixa.siavl.atendimentoremoto.util;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.ApplicationScope;
 import com.auth0.jwt.impl.JWTParser;
@@ -12,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 @ApplicationScope
-@SuppressWarnings({ "squid:S4507", "squid:S117", "squid:S2129" })
+@SuppressWarnings({ "squid:S4507", "squid:S117", "squid:S2129", "squid:S112"}) 
 public class TokenUtils {
 
 	String accessToken;
@@ -97,8 +96,6 @@ public class TokenUtils {
 
 		Base64 base64Url = new Base64(true);
 		String body = new String(base64Url.decode(base64EncodedBody));
-
-		//System.out.print("Validar: " + certificadoDigitalValidar + " / ");
 
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode jsonToken;

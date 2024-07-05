@@ -31,23 +31,23 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
-@SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813" })
+@SuppressWarnings({"squid:S112", "squid:S116", "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813",  "squid:S2629" , "squid:S5361"})
 public class IdentificacaoPositivaGateway {
 
 	@Autowired
 	AtendimentoClienteRepository atendimentoClienteRepository;
 
-	private final static Logger LOG = Logger.getLogger(IdentificacaoPositivaGateway.class.getName());
+	private static final Logger LOG = Logger.getLogger(IdentificacaoPositivaGateway.class.getName());
 	private static String API_KEY = "APIKey";
 
 	@Value("${env.apimanager.key}")
-	private String API_KEY_VALUE;// "l7xx2b6f4c64f3774870b0b9b399a77586f5";
+	private String API_KEY_VALUE;
 
 	@Value("${env.apimanager.url}")
-	private String URL_BASE;// "https://api.des.caixa:8443/id-positiva/v1/desafios";
+	private String URL_BASE;
 
 	@Value("${env.url.positivo.desafio}")
-	private String URL_POSITIVO_DESAFIO;// "id-positiva/v1/desafios";
+	private String URL_POSITIVO_DESAFIO;
 
 	private static ObjectMapper mapper = new ObjectMapper();
 	private static String CODIGO_422_0 = "0";

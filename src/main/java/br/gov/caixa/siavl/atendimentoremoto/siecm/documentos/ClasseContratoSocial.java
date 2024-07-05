@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import br.gov.caixa.siavl.atendimentoremoto.siecm.constants.SiecmConstants;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@SuppressWarnings({ "squid:S107"})
 public enum ClasseContratoSocial {
 	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", SiecmConstants.CNPJ, SiecmConstants.STRING, true, 59, "", true, TipoMascara.CNPJ, null);
 

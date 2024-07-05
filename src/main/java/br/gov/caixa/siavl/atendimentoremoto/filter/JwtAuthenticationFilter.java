@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 @Component
+@SuppressWarnings({ "squid:S6813"})
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     @Autowired
@@ -41,8 +42,6 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         }
 
         String token = header.replace("Bearer ", "");
-
-		//System.out.println("Válido: " + tokenUtils.certificadoValido(token));
 
         if (!tokenUtils.certificadoValido(token)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);

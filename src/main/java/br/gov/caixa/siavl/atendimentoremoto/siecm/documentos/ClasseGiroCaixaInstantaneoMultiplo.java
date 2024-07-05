@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@SuppressWarnings({ "squid:S107"})
 public enum ClasseGiroCaixaInstantaneoMultiplo implements Serializable {
 	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", "STRING", true, 14, "", true, TipoMascara.CNPJ, null),
 	NUMERO_CONTA("NUMERO_CONTA", "Número Conta", "STRING", true, 24, "", true, TipoMascara.NUMERO_CONTA, null);

@@ -15,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RestTemplateDto {
 	
-	RestTemplate RestTemplate;
+	RestTemplate restTemplate;
 	
 	CloseableHttpClient httpClient;
 	

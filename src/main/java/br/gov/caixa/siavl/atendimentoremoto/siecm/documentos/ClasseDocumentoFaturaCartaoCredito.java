@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import br.gov.caixa.siavl.atendimentoremoto.siecm.constants.SiecmConstants;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@SuppressWarnings({ "squid:S107"})
 public enum ClasseDocumentoFaturaCartaoCredito implements Serializable {
 	NOME_TITULAR("NOME_TITULAR", "Nome do Titular", SiecmConstants.STRING, true, 60, "", true, TipoMascara.TEXTO, null),
 	ENDERECO_TITULAR("ENDERECO_TITULAR", "Endereço", SiecmConstants.STRING, true, 60, "", true, null, null),

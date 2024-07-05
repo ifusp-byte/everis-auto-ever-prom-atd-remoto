@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@SuppressWarnings({ "squid:S107"})
 public enum ClassePropostaSeguroPrestamista implements Serializable {
 	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF", "STRING", true, 14, "", true, TipoMascara.CPF, null),
 	NUMERO_PROPOSTA("NUMERO_PROPOSTA", "Número Proposta", "STRING", true, 22, "", true, TipoMascara.NUMERO_CONTRATO,

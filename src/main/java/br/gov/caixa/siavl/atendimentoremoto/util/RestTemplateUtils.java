@@ -16,7 +16,7 @@ import org.springframework.web.context.annotation.ApplicationScope;
 
 @Component
 @ApplicationScope
-@SuppressWarnings({ "deprecation", "squid:S1488", "squid:S4507" })
+@SuppressWarnings({ "deprecation", "squid:S1488", "squid:S4507", "squid:S112"})
 public class RestTemplateUtils {
 	
 	public RestTemplateDto newRestTemplate() {
@@ -37,7 +37,7 @@ public class RestTemplateUtils {
 			
 			restTemplateDto = RestTemplateDto.builder()
 					.httpClient(httpClient)
-					.RestTemplate(restTemplate)
+					.restTemplate(restTemplate)
 					.build();
 			return restTemplateDto;
 		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {

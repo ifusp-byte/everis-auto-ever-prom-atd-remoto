@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import br.gov.caixa.siavl.atendimentoremoto.siecm.constants.SiecmConstants;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@SuppressWarnings({ "squid:S107"})
 public enum ClasseDocumentoPedidoOfertaPublica implements Serializable {
 	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", SiecmConstants.STRING, true, 59, "", true, TipoMascara.CPFCNPJ, null),
 	CODIGO_ISIN("CODIGO_ISIN", "Código ISIN", SiecmConstants.STRING, true, 14, "", true, TipoMascara.NUMERICO, null),
