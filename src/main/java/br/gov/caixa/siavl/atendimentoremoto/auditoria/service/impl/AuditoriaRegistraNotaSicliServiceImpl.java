@@ -23,6 +23,7 @@ import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContaAtendimentoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
+@SuppressWarnings({ "squid:S6813", "squid:S112"})
 public class AuditoriaRegistraNotaSicliServiceImpl implements AuditoriaRegistraNotaSicliService {
 	
 	@Autowired

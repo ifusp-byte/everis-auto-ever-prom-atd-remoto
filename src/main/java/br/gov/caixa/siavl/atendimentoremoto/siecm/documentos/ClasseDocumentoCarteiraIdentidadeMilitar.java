@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import br.gov.caixa.siavl.atendimentoremoto.siecm.constants.SiecmConstants;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@SuppressWarnings({ "squid:S107"})
 public enum ClasseDocumentoCarteiraIdentidadeMilitar implements Serializable {
 	ORGAO_EMISSOR("ORGAO_EMISSOR", "Orgão Emissor", SiecmConstants.STRING, true, 100, "", true, null, null),
 	NUMERO_REGISTRO("NUMERO_REGISTRO", "Número de Registro", SiecmConstants.STRING, true, 100, "", true, null, null),

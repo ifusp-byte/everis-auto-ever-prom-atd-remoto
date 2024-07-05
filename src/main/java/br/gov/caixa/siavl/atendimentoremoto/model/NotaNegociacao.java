@@ -57,12 +57,6 @@ public class NotaNegociacao implements Serializable {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "NU_NOTA_NEGOCIACAO", nullable = true, insertable = false, updatable = false)
 	private SituacaoNotaNegociacao situacaoNotaNegociacao;
-
-	/*
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "NU_MODELO_NOTA_NEGOCIO", nullable = true, insertable = false, updatable = false)
-	private ModeloNotaNegocio modeloNotaNegociacao;
-	*/
 	
 	@Column(name = "DT_ULTIMA_MODIFICACAO_NOTA")
 	private Date dataModificacaoNota;

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@SuppressWarnings({ "squid:S107"})
 public enum ClasseDocumentoCNH implements Serializable {
 
 	DATA_VALIDADE("DATA_VALIDADE", "Data de Validade", "DATE", true, 12, "", TipoMascara.DATE, true, null);
