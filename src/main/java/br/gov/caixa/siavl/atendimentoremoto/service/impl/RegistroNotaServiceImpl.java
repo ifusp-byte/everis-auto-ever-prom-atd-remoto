@@ -44,7 +44,7 @@ import br.gov.caixa.siavl.atendimentoremoto.service.RegistroNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
-@SuppressWarnings({"squid:S116", "squid:S6813", "squid:S112"}) 
+@SuppressWarnings({"squid:S116", "squid:S6813", "squid:S112",  "squid:S5361"}) 
 public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	@Autowired

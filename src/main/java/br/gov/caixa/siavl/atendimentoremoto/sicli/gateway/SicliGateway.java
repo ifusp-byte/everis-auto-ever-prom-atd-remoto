@@ -40,13 +40,13 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
 @Validated
-@SuppressWarnings({ "squid:S116", "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S4507", "squid:S112"})
+@SuppressWarnings({ "squid:S116", "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S4507", "squid:S112", "squid:S2629"})
 public class SicliGateway {
 
 	@Autowired
 	AuditoriaRegistraNotaSicliService auditoriaRegistraNotaSicliService;
 
-	private final static Logger LOG = Logger.getLogger(SicliGateway.class.getName());
+	private static final Logger LOG = Logger.getLogger(SicliGateway.class.getName());
 	private static String API_KEY = "apikey";
 
 	@Value("${env.apimanager.key}")

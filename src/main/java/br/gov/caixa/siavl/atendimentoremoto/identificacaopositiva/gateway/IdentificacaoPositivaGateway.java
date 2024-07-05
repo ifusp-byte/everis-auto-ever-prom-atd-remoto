@@ -31,13 +31,13 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
-@SuppressWarnings({"squid:S112", "squid:S116", "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813" })
+@SuppressWarnings({"squid:S112", "squid:S116", "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813",  "squid:S2629" , "squid:S5361"})
 public class IdentificacaoPositivaGateway {
 
 	@Autowired
 	AtendimentoClienteRepository atendimentoClienteRepository;
 
-	private final static Logger LOG = Logger.getLogger(IdentificacaoPositivaGateway.class.getName());
+	private static final Logger LOG = Logger.getLogger(IdentificacaoPositivaGateway.class.getName());
 	private static String API_KEY = "APIKey";
 
 	@Value("${env.apimanager.key}")

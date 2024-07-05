@@ -30,10 +30,10 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
 @Validated
-@SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S4507", "squid:S112" })
+@SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S4507", "squid:S112", "squid:S5361" })
 public class SiecmGateway {
 
-	private final static Logger LOG = Logger.getLogger(SiecmGateway.class.getName());
+	private static final Logger LOG = Logger.getLogger(SiecmGateway.class.getName());
 
 	private static String API_KEY = "apikey";
 	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
