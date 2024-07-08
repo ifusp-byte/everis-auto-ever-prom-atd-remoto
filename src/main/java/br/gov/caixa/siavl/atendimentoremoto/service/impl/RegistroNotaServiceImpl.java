@@ -233,7 +233,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			relatorioNotaNegociacao.setMatriculaAtendente(Long.parseLong(matriculaAtendente));
 			relatorioNotaNegociacao.setMatriculaAlteracao(Long.parseLong(matriculaAtendente));
 			relatorioNotaNegociacao.setProduto(registraNotaInputDto.getProduto());
-			relatorioNotaNegociacao.setSituacaoNota(22L);
+			relatorioNotaNegociacao.setSituacaoNota(16L);
 			relatorioNotaNegociacao.setDataCriacaoNota(notaNegociacao.getDataCriacaoNota());
 			relatorioNotaNegociacao.setInicioAtendimentoNota(notaNegociacao.getDataCriacaoNota());
 			relatorioNotaNegociacao.setDataValidade(notaNegociacao.getDataPrazoValidade());
@@ -295,6 +295,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				enviaClienteInputDto.getNumeroConta().substring(8, enviaClienteInputDto.getNumeroConta().length()));
 	
 		notaNegociacaoRepository.enviaNotaCliente(numeroNota);
+		relatorioNotaNegociacaoRepository.enviaNotaCliente(numeroNota);
 		statusContratacao = true;
 
 		if (Boolean.TRUE.equals(statusContratacao)) {
