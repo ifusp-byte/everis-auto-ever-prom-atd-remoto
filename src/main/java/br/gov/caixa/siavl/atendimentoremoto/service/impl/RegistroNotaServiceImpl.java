@@ -322,10 +322,13 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 		AuditoriaPncEnviaNotaInputDTO auditoriaPncEnviaNotaInputDTO = new AuditoriaPncEnviaNotaInputDTO();
 		auditoriaPncEnviaNotaInputDTO = AuditoriaPncEnviaNotaInputDTO.builder()
-
-				.situacaoNota(SITUACAO_NOTA).numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo())
-				.numeroNota(String.valueOf(numeroNota)).versaoSistema(enviaClienteInputDto.getVersaoSistema())
-				.dataHoraTransacao(formataData(new Date())).build();
+				.situacaoNota(SITUACAO_NOTA)
+				.numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo())
+				.numeroNota(String.valueOf(numeroNota))
+				.versaoSistema(enviaClienteInputDto.getVersaoSistema())
+				.dataHoraTransacao(formataData(new Date()))			
+				.build();
+		
 
 		String descricaoEnvioTransacao = null;
 		String descricaoTransacao = null;

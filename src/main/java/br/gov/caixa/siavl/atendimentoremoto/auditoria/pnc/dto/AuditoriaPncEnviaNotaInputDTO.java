@@ -34,5 +34,14 @@ public class AuditoriaPncEnviaNotaInputDTO {
 	
 	@Valid
 	private String dataHoraTransacao; 
+	
+	@Valid
+	private String possuiAnexo;
+	
+	@Valid 
+	private String nomeAnexo;
+	
+	@Valid
+	private String categoriaAnexo; 
 
 }
