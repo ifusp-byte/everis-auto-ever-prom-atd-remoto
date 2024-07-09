@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "DocumentoCliente")
+@Entity(name = "DocumentoNotaNegociacao")
 @Table(name = "AVLTB034_DCMNTO_NOTA_NGCCO", schema = "AVL")
 public class DocumentoNotaNegociacao {
 
