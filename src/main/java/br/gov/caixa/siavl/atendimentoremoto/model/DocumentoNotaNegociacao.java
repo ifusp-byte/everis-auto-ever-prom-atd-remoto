@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class DocumentoNotaNegociacao {
 	@Column(name = "IC_TIPO_PESSOA", columnDefinition = "CHAR(2)")
 	private String tipoPessoa;
 
+	@Id
 	@Column(name = "NU_NOTA_NEGOCIACAO")
 	private Long numeroNota;
 

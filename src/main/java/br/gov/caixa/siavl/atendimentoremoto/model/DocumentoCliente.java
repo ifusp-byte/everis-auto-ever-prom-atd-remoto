@@ -2,9 +2,12 @@ package br.gov.caixa.siavl.atendimentoremoto.model;
 
 import java.sql.Blob;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +27,7 @@ public class DocumentoCliente {
 	@Column(name = "IC_TIPO_PESSOA", columnDefinition = "CHAR(2)")
 	private String tipoPessoa;
 
+	@Id
 	@Column(name = "NU_CPF_CNPJ_CLIENTE")
 	private Long cpfCnpjCliente;
 
