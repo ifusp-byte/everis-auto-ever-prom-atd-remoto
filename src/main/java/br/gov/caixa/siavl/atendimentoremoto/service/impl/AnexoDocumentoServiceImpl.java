@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.model.DocumentoCliente;
+import br.gov.caixa.siavl.atendimentoremoto.model.DocumentoNotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.model.TipoDocumentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoClienteRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoNotaNegociacaoRepository;
@@ -162,7 +163,17 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		documentoCliente.setStcoDocumentoCliente(1L);
 		documentoCliente.setSituacaoDocumentoCliente(1L);
 		documentoCliente.setInclusaoDocumento(formataDataBanco());
-		documentoClienteRepository.save(documentoCliente);		
+		//documentoClienteRepository.save(documentoCliente);		
+		
+		
+		
+		DocumentoNotaNegociacao documentoNotaNegociacao = new DocumentoNotaNegociacao();
+		documentoNotaNegociacao.setTipoPessoa(tipoPessoa);
+		documentoNotaNegociacao.setNumeroNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()));
+		documentoNotaNegociacao.setCpfCnpjCliente(Long.parseLong(cpfCnpjSiecm));
+		documentoNotaNegociacao.setTipoDocumentoCliente(numeroTipoDoc);
+		documentoNotaNegociacao.setInclusaoDocumento(formataDataBanco());
+		documentoNotaNegociacaoRepository.save(documentoNotaNegociacao);
 		//documentoNotaNegociacaoRepository.insereDocumentoNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()));
 		
 		return siecmOutputDto;
