@@ -150,6 +150,17 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		siecmOutputDto = siecmGateway.documentoIncluir(token, cpfCnpj, requestAnexarDocumento);
 				
 		Long numeroTipoDoc = tipoDocumentoRepository.numeroTipoDocumentoCliente(enviaDocumentoInputDto.getCodGED().trim()); 
+		
+		DocumentoNotaNegociacao documentoNotaNegociacao = new DocumentoNotaNegociacao();
+		documentoNotaNegociacao.setTipoPessoa(tipoPessoa);
+		documentoNotaNegociacao.setNumeroNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()));
+		documentoNotaNegociacao.setCpfCnpjCliente(Long.parseLong(cpfCnpjSiecm));
+		documentoNotaNegociacao.setTipoDocumentoCliente(numeroTipoDoc);
+		documentoNotaNegociacao.setInclusaoDocumento(formataDataBanco());
+		//documentoNotaNegociacaoRepository.save(documentoNotaNegociacao);
+		//documentoNotaNegociacaoRepository.insereDocumentoNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()));
+		
+		
 		DocumentoCliente documentoCliente = new DocumentoCliente();
 		documentoCliente.setTipoDocumentoCliente(numeroTipoDoc);
 		documentoCliente.setCpfCnpjCliente(Long.parseLong(cpfCnpjSiecm));
@@ -163,18 +174,11 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		documentoCliente.setStcoDocumentoCliente(1L);
 		documentoCliente.setSituacaoDocumentoCliente(1L);
 		documentoCliente.setInclusaoDocumento(formataDataBanco());
-		//documentoClienteRepository.save(documentoCliente);		
+		documentoCliente.setDocumentoNotaNegociacao(documentoNotaNegociacao);
+		documentoClienteRepository.save(documentoCliente);		
 		
 		
-		
-		DocumentoNotaNegociacao documentoNotaNegociacao = new DocumentoNotaNegociacao();
-		documentoNotaNegociacao.setTipoPessoa(tipoPessoa);
-		documentoNotaNegociacao.setNumeroNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()));
-		documentoNotaNegociacao.setCpfCnpjCliente(Long.parseLong(cpfCnpjSiecm));
-		documentoNotaNegociacao.setTipoDocumentoCliente(numeroTipoDoc);
-		documentoNotaNegociacao.setInclusaoDocumento(formataDataBanco());
-		documentoNotaNegociacaoRepository.save(documentoNotaNegociacao);
-		//documentoNotaNegociacaoRepository.insereDocumentoNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()));
+	
 		
 		return siecmOutputDto;
 
