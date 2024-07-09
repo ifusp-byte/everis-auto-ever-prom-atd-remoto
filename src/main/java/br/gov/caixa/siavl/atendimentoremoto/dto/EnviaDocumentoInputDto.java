@@ -29,4 +29,6 @@ public class EnviaDocumentoInputDto {
 
 	private String arquivoContrato;
 	
+	private String numeroNota;
+	
 }
