@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TokenUtils {
 
 	String accessToken;
-
+	public static final String CERTIFICADO = "2f_cert";
 	@Value("${env.certificadodigital.validar}")
 	private String certificadoDigitalValidar;
 
@@ -100,10 +100,10 @@ public class TokenUtils {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode jsonToken;
 		try {
-			if(certificadoDigitalValidar.equalsIgnoreCase("true")) {
+			if (certificadoDigitalValidar.equalsIgnoreCase("true")) {
 				jsonToken = mapper.readTree(body);
-				if (jsonToken.has("2f_cert")) {
-					return jsonToken.get("2f_cert").asBoolean();
+				if (jsonToken.has(CERTIFICADO)) {
+					return jsonToken.get(CERTIFICADO).asBoolean();
 				} else {
 					return false;
 				}
