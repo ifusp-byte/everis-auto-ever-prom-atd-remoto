@@ -36,13 +36,11 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
         if (header == null || !header.startsWith("Bearer ")) {
             chain.doFilter(request, response);
-            
+
             return;
         }
 
         String token = header.replace("Bearer ", "");
-
-		//System.out.println("Válido: " + tokenUtils.certificadoValido(token));
 
         if (!tokenUtils.certificadoValido(token)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -54,7 +52,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         }
 
         String username = tokenUtils.getMatriculaFromToken(token);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(username, null,
+                Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         chain.doFilter(request, response);

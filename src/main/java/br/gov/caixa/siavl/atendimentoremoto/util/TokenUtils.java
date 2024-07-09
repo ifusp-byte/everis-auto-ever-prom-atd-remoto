@@ -2,7 +2,6 @@ package br.gov.caixa.siavl.atendimentoremoto.util;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.ApplicationScope;
 import com.auth0.jwt.impl.JWTParser;
@@ -16,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TokenUtils {
 
 	String accessToken;
-
+	public static final String CERTIFICADO = "2f_cert";
 	@Value("${env.certificadodigital.validar}")
 	private String certificadoDigitalValidar;
 
@@ -98,15 +97,13 @@ public class TokenUtils {
 		Base64 base64Url = new Base64(true);
 		String body = new String(base64Url.decode(base64EncodedBody));
 
-		//System.out.print("Validar: " + certificadoDigitalValidar + " / ");
-
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode jsonToken;
 		try {
-			if(certificadoDigitalValidar.equalsIgnoreCase("true")) {
+			if (certificadoDigitalValidar.equalsIgnoreCase("true")) {
 				jsonToken = mapper.readTree(body);
-				if (jsonToken.has("2f_cert")) {
-					return jsonToken.get("2f_cert").asBoolean();
+				if (jsonToken.has(CERTIFICADO)) {
+					return jsonToken.get(CERTIFICADO).asBoolean();
 				} else {
 					return false;
 				}
