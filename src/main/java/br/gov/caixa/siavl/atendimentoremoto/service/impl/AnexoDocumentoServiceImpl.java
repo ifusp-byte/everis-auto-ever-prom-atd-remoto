@@ -1,6 +1,5 @@
 package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
-import java.sql.Blob;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,6 +20,7 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.model.DocumentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.model.TipoDocumentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoClienteRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoNotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.TipoDocumentoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoService;
@@ -60,6 +60,9 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 	
 	@Autowired
 	DocumentoClienteRepository documentoClienteRepository;
+	
+	@Autowired
+	DocumentoNotaNegociacaoRepository documentoNotaNegociacaoRepository;
 
 	@Autowired
 	ModeloNotaRepository modeloNotaRepository;
@@ -159,6 +162,8 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		documentoCliente.setStcoDocumentoCliente(1L);
 		documentoCliente.setSituacaoDocumentoCliente(1L);
 		documentoCliente.setInclusaoDocumento(formataDataBanco());
+		
+		//documentoNotaNegociacaoRepository.insereDocumentoNota(Long.parseLong(cpfCnpjSiecm));
 		
 		return siecmOutputDto;
 
