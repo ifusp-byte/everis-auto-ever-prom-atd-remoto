@@ -162,8 +162,8 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		documentoCliente.setStcoDocumentoCliente(1L);
 		documentoCliente.setSituacaoDocumentoCliente(1L);
 		documentoCliente.setInclusaoDocumento(formataDataBanco());
-		
-		documentoNotaNegociacaoRepository.insereDocumentoNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()));
+		documentoClienteRepository.save(documentoCliente);		
+		//documentoNotaNegociacaoRepository.insereDocumentoNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()));
 		
 		return siecmOutputDto;
 
