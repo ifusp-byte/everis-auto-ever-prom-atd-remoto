@@ -49,9 +49,6 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 	private static final Long TRANSACAO_SISTEMA_CONTRATA_NOTA_ASSINATURA_ELETRONICA = 299L;
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
-	private String cateogoriaTipoDoc = null; 
-	private String nomeTipoDoc = null; 
-	private String anexoDoc = null;
 
 	public void auditar(String dataRegistroNota, String token, String cpfCnpj, String matriculaAtendente,
 			String statusRetornoSicli, String numeroProtocolo, String numeroContaAtendimento, String numeroNota,
@@ -69,15 +66,14 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 		AuditoriaEnvioNotaDsLogPlataformaDTO dsLogPlataformaDTO = new AuditoriaEnvioNotaDsLogPlataformaDTO();		
 		Optional<List<Object[]>> numeroNomeDocumento = documentoClienteRepository.numeroNomeDocumento(Long.parseLong(numeroNota));
 		
-		//String cateogoriaTipoDoc = null; 
-		//String nomeTipoDoc = null; 
+		String cateogoriaTipoDoc = null; 
+		String nomeTipoDoc = null; 
+		String anexoDoc = null;
 		
 		if (numeroNomeDocumento.isPresent()) {
-			numeroNomeDocumento.get().stream().forEach(documento -> {				
-				cateogoriaTipoDoc = tipoDocumentoRepository.categoriaDocumentoCliente(Long.parseLong(String.valueOf(documento[0])));		
-				nomeTipoDoc = String.valueOf(documento[1]);		
-				anexoDoc = "true";
-			});		
+			cateogoriaTipoDoc = String.valueOf(numeroNomeDocumento.get().get(0)[0]);
+			nomeTipoDoc = String.valueOf(numeroNomeDocumento.get().get(0)[1]);
+			anexoDoc = "true";
 		} else {
 			cateogoriaTipoDoc = "";
 			nomeTipoDoc = "";
@@ -86,6 +82,7 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 
 		dsLogPlataformaDTO.setCategoriaAnexo(cateogoriaTipoDoc);
 		dsLogPlataformaDTO.setNomeAnexo(nomeTipoDoc);		
+		
 		dsLogPlataformaDTO = AuditoriaEnvioNotaDsLogPlataformaDTO.builder().cpfCnpj(cpfCnpj).cpfSocio(cpfSocio)
 				.matriculaAtendente(matriculaAtendente).statusRetornoSicli(statusRetornoSicli)
 				.numeroProtocolo(numeroProtocolo).numeroContaAtendimento(numeroContaAtendimento).numeroNota(numeroNota)
