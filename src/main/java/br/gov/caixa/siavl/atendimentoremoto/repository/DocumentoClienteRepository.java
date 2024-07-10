@@ -19,7 +19,7 @@ public interface DocumentoClienteRepository extends JpaRepository<DocumentoClien
 	
 	@Modifying
 	@Transactional
-	@Query(value="INSERT INTO AVL.AVLTB034_DCMNTO_NOTA_NGCCO (NU_NOTA_NEGOCIACAO, NU_CPF_CNPJ_CLIENTE, IC_TIPO_PESSOA, TS_INCLUSAO_DOCUMENTO, NU_TIPO_DOCUMENTO_CLIENTE) SELECT :numeroNota, NU_CPF_CNPJ_CLIENTE, IC_TIPO_PESSOA, TS_INCLUSAO_DOCUMENTO, NU_TIPO_DOCUMENTO_CLIENTE FROM AVL.AVLTB033_DOCUMENTO_CLIENTE WHERE NU_CPF_CNPJ_CLIENTE = :cpfCnpj AND IC_TIPO_PESSOA = :tipoPessoa AND TS_INCLUSAO_DOCUMENTO = :inclusaoDocumento AND NU_TIPO_DOCUMENTO_CLIENTE = :tipoDocumento", nativeQuery=true)
+	@Query(value="INSERT INTO AVL.AVLTB034_DCMNTO_NOTA_NGCCO (NU_NOTA_NEGOCIACAO, NU_CPF_CNPJ_CLIENTE, IC_TIPO_PESSOA, TS_INCLUSAO_DOCUMENTO, NU_TIPO_DOCUMENTO_CLIENTE) SELECT NU_NOTA_NEGOCIACAO = :numeroNota, NU_CPF_CNPJ_CLIENTE, IC_TIPO_PESSOA, TS_INCLUSAO_DOCUMENTO, NU_TIPO_DOCUMENTO_CLIENTE FROM AVL.AVLTB033_DOCUMENTO_CLIENTE WHERE NU_CPF_CNPJ_CLIENTE = :cpfCnpj AND IC_TIPO_PESSOA = :tipoPessoa AND TS_INCLUSAO_DOCUMENTO = :inclusaoDocumento AND NU_TIPO_DOCUMENTO_CLIENTE = :tipoDocumento", nativeQuery=true)
 	void insereDocumentoNota(@Param("numeroNota") Long numeroNota, @Param("cpfCnpj") Long cpfCnpj, @Param("tipoPessoa") String tipoPessoa, @Param("inclusaoDocumento") Date inclusaoDocumento, @Param("tipoDocumento") Long tipoDocumento); 
 
 	
