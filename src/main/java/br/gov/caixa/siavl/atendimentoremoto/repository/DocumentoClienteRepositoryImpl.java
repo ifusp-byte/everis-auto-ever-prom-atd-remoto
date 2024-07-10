@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import br.gov.caixa.siavl.atendimentoremoto.model.DocumentoCliente;
 
 @Component
+@SuppressWarnings({ "squid:S1186"})
 public class DocumentoClienteRepositoryImpl implements DocumentoClienteRepository {
 
 	@PersistenceContext
