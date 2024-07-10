@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -17,13 +18,16 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@IdClass(DocumentoClienteId.class)
 @Entity(name = "DocumentoCliente")
 @Table(name = "AVLTB033_DOCUMENTO_CLIENTE", schema = "AVL")
 public class DocumentoCliente {
+	
+	@Id
+	@Column(name = "TS_INCLUSAO_DOCUMENTO")
+	private Date inclusaoDocumento;
 
-	@Column(name = "VR_ARQUIVO_RECEBIDO")
-	private Blob arquivoRecebido;
-
+	@Id
 	@Column(name = "IC_TIPO_PESSOA", columnDefinition = "CHAR(2)")
 	private String tipoPessoa;
 
@@ -31,6 +35,7 @@ public class DocumentoCliente {
 	@Column(name = "NU_CPF_CNPJ_CLIENTE")
 	private Long cpfCnpjCliente;
 
+	@Id
 	@Column(name = "NU_TIPO_DOCUMENTO_CLIENTE")
 	private Long tipoDocumentoCliente;
 
@@ -42,9 +47,6 @@ public class DocumentoCliente {
 
 	@Column(name = "IC_STCO_DOCUMENTO_CLIENTE")
 	private Long stcoDocumentoCliente;
-
-	@Column(name = "TS_INCLUSAO_DOCUMENTO")
-	private Date inclusaoDocumento;
 
 	@Column(name = "TS_VALIDACAO_DOCUMENTO")
 	private Date validacaoDocumento;
@@ -60,5 +62,8 @@ public class DocumentoCliente {
 
 	@Column(name = "CO_EXTENSAO_ANEXO")
 	private String extensaoAnexo;
+	
+	@Column(name = "VR_ARQUIVO_RECEBIDO")
+	private Blob arquivoRecebido;
 
 }

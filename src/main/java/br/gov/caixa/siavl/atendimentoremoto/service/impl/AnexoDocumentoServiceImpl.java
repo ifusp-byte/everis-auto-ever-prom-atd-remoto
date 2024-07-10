@@ -17,9 +17,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.model.DocumentoCliente;
+import br.gov.caixa.siavl.atendimentoremoto.model.DocumentoNotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.model.TipoDocumentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoClienteRepository;
-import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoClienteRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoNotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.TipoDocumentoRepository;
@@ -63,9 +64,6 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 	
 	@Autowired
 	DocumentoNotaNegociacaoRepository documentoNotaNegociacaoRepository;
-
-	@Autowired
-	DocumentoClienteRepositoryImpl documentoClienteRepositoryImpl;
 	
 	@Autowired
 	ModeloNotaRepository modeloNotaRepository;
@@ -123,7 +121,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		siecmDocumentosIncluirDocumentoAtributosCampos.setMimeType(DEFAULT_MIME_TYPE);
 		siecmDocumentosIncluirDocumentoAtributosCampos.setGerarThumbnail(true);
 		siecmDocumentosIncluirDocumentoAtributosCampos
-				.setNome(formataData(new Date()) + "_" + enviaDocumentoInputDto.getCodGED().trim());
+				.setNome(formataData(new Date()) + "_" + enviaDocumentoInputDto.getCodGED().trim() + "."+DEFAULT_DOCUMENTO_TIPO);
 
 		SiecmDocumentosIncluirDocumentoAtributosInputDto siecmDocumentosIncluirDocumentoAtributos = new SiecmDocumentosIncluirDocumentoAtributosInputDto();
 		siecmDocumentosIncluirDocumentoAtributos.setBinario(enviaDocumentoInputDto.getArquivoContrato());
@@ -153,16 +151,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 				
 		Long numeroTipoDoc = tipoDocumentoRepository.numeroTipoDocumentoCliente(enviaDocumentoInputDto.getCodGED().trim()); 
 		
-		/*
-		DocumentoNotaNegociacao documentoNotaNegociacao = new DocumentoNotaNegociacao();
-		documentoNotaNegociacao.setTipoPessoa(tipoPessoa);
-		documentoNotaNegociacao.setNumeroNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()));
-		documentoNotaNegociacao.setCpfCnpjCliente(Long.parseLong(cpfCnpjSiecm));
-		documentoNotaNegociacao.setTipoDocumentoCliente(numeroTipoDoc);
-		documentoNotaNegociacao.setInclusaoDocumento(formataDataBanco());
-		//documentoNotaNegociacaoRepository.save(documentoNotaNegociacao);
-		//documentoNotaNegociacaoRepository.insereDocumentoNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()));
-		
+		Date dtInclusaoDocumento = formataDataBanco();
 		
 		DocumentoCliente documentoCliente = new DocumentoCliente();
 		documentoCliente.setTipoDocumentoCliente(numeroTipoDoc);
@@ -173,18 +162,18 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		documentoCliente.setExtensaoAnexo(DEFAULT_DOCUMENTO_TIPO);
 		documentoCliente.setNomeAnexo(siecmDocumentosIncluirDocumentoAtributosCampos.getNome());
 		documentoCliente.setCodGED(siecmOutputDto.getId());
-		//documentoCliente.setArquivoRecebido(null);
 		documentoCliente.setStcoDocumentoCliente(1L);
 		documentoCliente.setSituacaoDocumentoCliente(1L);
-		documentoCliente.setInclusaoDocumento(formataDataBanco());
-		documentoCliente.setDocumentoNotaNegociacao(documentoNotaNegociacao);
+		documentoCliente.setInclusaoDocumento(dtInclusaoDocumento);
 		documentoClienteRepository.save(documentoCliente);		
-		*/
 		
-		//documentoClienteRepository.insereDocumentoNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()), Long.parseLong(cpfCnpjSiecm), tipoPessoa, formataDataBanco(), numeroTipoDoc);
-		
-		documentoClienteRepositoryImpl.insereDocumentoNotaNative(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()), Long.parseLong(cpfCnpjSiecm), tipoPessoa, formataDataBanco(), numeroTipoDoc);
-	
+		DocumentoNotaNegociacao documentoNotaNegociacao = new DocumentoNotaNegociacao();
+		documentoNotaNegociacao.setTipoPessoa(tipoPessoa);
+		documentoNotaNegociacao.setNumeroNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()));
+		documentoNotaNegociacao.setCpfCnpjCliente(Long.parseLong(cpfCnpjSiecm));
+		documentoNotaNegociacao.setTipoDocumentoCliente(numeroTipoDoc);
+		documentoNotaNegociacao.setInclusaoDocumento(dtInclusaoDocumento);
+		documentoNotaNegociacaoRepository.save(documentoNotaNegociacao);
 		
 		return siecmOutputDto;
 

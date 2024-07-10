@@ -71,7 +71,7 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 		String anexoDoc = null;
 		
 		if (numeroNomeDocumento.isPresent()) {
-			if (numeroNomeDocumento.get().size() > 0) {
+			if (!numeroNomeDocumento.get().isEmpty()) {
 			cateogoriaTipoDoc = String.valueOf(numeroNomeDocumento.get().get(0)[0]);
 			nomeTipoDoc = String.valueOf(numeroNomeDocumento.get().get(0)[1]);
 			anexoDoc = "true";
