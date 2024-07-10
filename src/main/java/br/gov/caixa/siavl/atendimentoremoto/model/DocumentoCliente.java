@@ -3,13 +3,9 @@ package br.gov.caixa.siavl.atendimentoremoto.model;
 import java.sql.Blob;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -64,15 +60,5 @@ public class DocumentoCliente {
 
 	@Column(name = "CO_EXTENSAO_ANEXO")
 	private String extensaoAnexo;
-
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private DocumentoNotaNegociacao documentoNotaNegociacao;
-
-	@PrePersist
-	public void prePersist() {
-		if (inclusaoDocumento == null) {
-			inclusaoDocumento = new Date();
-		}
-	}
 
 }
