@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -36,12 +35,5 @@ public class DocumentoNotaNegociacao {
 
 	@Column(name = "TS_INCLUSAO_DOCUMENTO")
 	private Date inclusaoDocumento;
-
-	@PrePersist
-	public void prePersist() {
-		if (inclusaoDocumento == null) {
-			inclusaoDocumento = new Date();
-		}
-	}
 
 }
