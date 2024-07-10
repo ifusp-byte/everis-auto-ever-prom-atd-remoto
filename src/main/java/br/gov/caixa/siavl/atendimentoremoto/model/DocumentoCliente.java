@@ -8,7 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -67,7 +66,6 @@ public class DocumentoCliente {
 	private String extensaoAnexo;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "AVL.FK_AVLTB034_AVLTB033")
 	private DocumentoNotaNegociacao documentoNotaNegociacao;
 
 	@PrePersist
