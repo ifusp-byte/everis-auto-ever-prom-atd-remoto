@@ -3,11 +3,11 @@ package br.gov.caixa.siavl.atendimentoremoto.auditoria.service.impl;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialClob;
 
@@ -63,28 +63,27 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 		}
 
 		LogPlataforma logPlataforma = new LogPlataforma();
-		AuditoriaEnvioNotaDsLogPlataformaDTO dsLogPlataformaDTO = new AuditoriaEnvioNotaDsLogPlataformaDTO();		
-		Optional<List<Object[]>> numeroNomeDocumento = documentoClienteRepository.numeroNomeDocumento(Long.parseLong(numeroNota));
+		List<AuditoriaEnvioNotaDsLogPlataformaDTO> dsLogPlataformaLista = new ArrayList<>();
+		List<Object[]> numeroNomeDocumento = documentoClienteRepository.numeroNomeDocumento(Long.parseLong(numeroNota));
 		
-		String cateogoriaTipoDoc = null; 
-		String nomeTipoDoc = null; 
-		String anexoDoc = null;
-		
-		if (numeroNomeDocumento.isPresent()) {
-			if (!numeroNomeDocumento.get().isEmpty()) {
-			cateogoriaTipoDoc = String.valueOf(numeroNomeDocumento.get().get(0)[0]);
-			nomeTipoDoc = String.valueOf(numeroNomeDocumento.get().get(0)[1]);
-			anexoDoc = "true";
-			}
+		if (!numeroNomeDocumento.isEmpty()) {
+			numeroNomeDocumento.stream().forEach(documento -> {
+				AuditoriaEnvioNotaDsLogPlataformaDTO dsLogPlataforma = new AuditoriaEnvioNotaDsLogPlataformaDTO();
+				dsLogPlataforma.setPossuiAnexo("sim");
+				dsLogPlataforma.setCategoriaAnexo(String.valueOf(documento[0]));
+				dsLogPlataforma.setNomeAnexo(String.valueOf(documento[1]));
+				dsLogPlataformaLista.add(dsLogPlataforma);
+			});	
 		} else {
-			cateogoriaTipoDoc = "";
-			nomeTipoDoc = "";
-			anexoDoc = "false";
+			AuditoriaEnvioNotaDsLogPlataformaDTO dsLogPlataforma = new AuditoriaEnvioNotaDsLogPlataformaDTO();
+			dsLogPlataforma.setPossuiAnexo("não");
+			dsLogPlataforma.setCategoriaAnexo("");
+			dsLogPlataforma.setNomeAnexo("");
+			dsLogPlataformaLista.add(dsLogPlataforma);
 		}
 
-		dsLogPlataformaDTO.setPossuiAnexo(anexoDoc);
-		dsLogPlataformaDTO.setCategoriaAnexo(cateogoriaTipoDoc);
-		dsLogPlataformaDTO.setNomeAnexo(nomeTipoDoc);		
+		AuditoriaEnvioNotaDsLogPlataformaDTO dsLogPlataformaDTO = new AuditoriaEnvioNotaDsLogPlataformaDTO();
+		dsLogPlataformaDTO = dsLogPlataformaLista.get(0);	
 		
 		dsLogPlataformaDTO = AuditoriaEnvioNotaDsLogPlataformaDTO.builder().cpfCnpj(cpfCnpj).cpfSocio(cpfSocio)
 				.matriculaAtendente(matriculaAtendente).statusRetornoSicli(statusRetornoSicli)
