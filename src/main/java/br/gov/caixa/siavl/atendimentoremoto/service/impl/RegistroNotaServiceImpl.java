@@ -368,7 +368,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
 		auditoriaEnviaNotaService.auditar(String.valueOf(formataData(new Date())), token, enviaClienteInputDto.getCpfCnpj(),
 				matriculaAtendente, String.valueOf(statusRetornoSicli), numeroProtocolo, numeroContaAtendimento,
-				String.valueOf(numeroNota), "0", enviaClienteInputDto.getProduto(),
+				String.valueOf(numeroNota), "0", enviaClienteInputDto.getProduto().trim(),
 				String.valueOf(enviaClienteInputDto.getCpfSocio()));
 		
 		return statusContratacao;

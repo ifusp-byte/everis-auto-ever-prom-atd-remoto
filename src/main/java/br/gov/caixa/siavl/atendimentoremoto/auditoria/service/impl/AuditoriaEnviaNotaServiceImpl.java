@@ -5,7 +5,9 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialClob;
 
@@ -19,6 +21,9 @@ import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaEnvioNotaDsLo
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.model.LogPlataforma;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.repository.LogPlataformaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaEnviaNotaService;
+import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoClienteRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoNotaNegociacaoRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.TipoDocumentoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
@@ -31,10 +36,22 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 	@Autowired
 	LogPlataformaRepository logPlataformaRepository;
 
+	@Autowired
+	TipoDocumentoRepository tipoDocumentoRepository;
+
+	@Autowired
+	DocumentoClienteRepository documentoClienteRepository;
+
+	@Autowired
+	DocumentoNotaNegociacaoRepository documentoNotaNegociacaoRepository;
+
 	private static ObjectMapper mapper = new ObjectMapper();
 	private static final Long TRANSACAO_SISTEMA_CONTRATA_NOTA_ASSINATURA_ELETRONICA = 299L;
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
+	private String cateogoriaTipoDoc = null; 
+	private String nomeTipoDoc = null; 
+	private String anexoDoc = null;
 
 	public void auditar(String dataRegistroNota, String token, String cpfCnpj, String matriculaAtendente,
 			String statusRetornoSicli, String numeroProtocolo, String numeroContaAtendimento, String numeroNota,
@@ -49,22 +66,32 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 		}
 
 		LogPlataforma logPlataforma = new LogPlataforma();
-		AuditoriaEnvioNotaDsLogPlataformaDTO dsLogPlataformaDTO = new AuditoriaEnvioNotaDsLogPlataformaDTO();
+		AuditoriaEnvioNotaDsLogPlataformaDTO dsLogPlataformaDTO = new AuditoriaEnvioNotaDsLogPlataformaDTO();		
+		Optional<List<Object[]>> numeroNomeDocumento = documentoClienteRepository.numeroNomeDocumento(Long.parseLong(numeroNota));
+		
+		//String cateogoriaTipoDoc = null; 
+		//String nomeTipoDoc = null; 
+		
+		if (numeroNomeDocumento.isPresent()) {
+			numeroNomeDocumento.get().stream().forEach(documento -> {				
+				cateogoriaTipoDoc = tipoDocumentoRepository.categoriaDocumentoCliente(Long.parseLong(String.valueOf(documento[0])));		
+				nomeTipoDoc = String.valueOf(documento[1]);		
+				anexoDoc = "true";
+			});		
+		} else {
+			cateogoriaTipoDoc = "";
+			nomeTipoDoc = "";
+			anexoDoc = "false";
+		}
 
-		dsLogPlataformaDTO = AuditoriaEnvioNotaDsLogPlataformaDTO.builder()
-				.cpfCnpj(cpfCnpj)
-				.cpfSocio(cpfSocio)
-				.matriculaAtendente(matriculaAtendente)
-				.statusRetornoSicli(statusRetornoSicli)
-				.numeroProtocolo(numeroProtocolo)
-				.numeroContaAtendimento(numeroContaAtendimento)
-				.numeroNota(numeroNota)
-				.dataRegistroNota(dataRegistroNota)
-				.versaoSistema(versaoSistema)
-				.ipUsuario(tokenUtils.getIpFromToken(token))
-				.tipoPessoa(tipoPessoa)
-				.transacaoSistema(TRANSACAO_SISTEMA_CONTRATA_NOTA_ASSINATURA_ELETRONICA)
-				.produto(produto).build();
+		dsLogPlataformaDTO.setCategoriaAnexo(cateogoriaTipoDoc);
+		dsLogPlataformaDTO.setNomeAnexo(nomeTipoDoc);		
+		dsLogPlataformaDTO = AuditoriaEnvioNotaDsLogPlataformaDTO.builder().cpfCnpj(cpfCnpj).cpfSocio(cpfSocio)
+				.matriculaAtendente(matriculaAtendente).statusRetornoSicli(statusRetornoSicli)
+				.numeroProtocolo(numeroProtocolo).numeroContaAtendimento(numeroContaAtendimento).numeroNota(numeroNota)
+				.dataRegistroNota(dataRegistroNota).versaoSistema(versaoSistema)
+				.ipUsuario(tokenUtils.getIpFromToken(token)).tipoPessoa(tipoPessoa)
+				.transacaoSistema(TRANSACAO_SISTEMA_CONTRATA_NOTA_ASSINATURA_ELETRONICA).produto(produto).build();
 
 		String dsLogPlataformaJson = null;
 		Clob dsLogPlataformaClob = null;
@@ -80,12 +107,9 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 				.matriculaAtendente(Long.parseLong(matriculaAtendente.replaceAll("[a-zA-Z]", "")))
 				.dataCriacaoLogPlataforma(formataDataBanco()).ipUsuario(tokenUtils.getIpFromToken(token))
 				.versaoSistemaAgenciaVirtual(versaoSistema)
-				.cpfCnpj(Long.parseLong(cpfCnpj.replace(".", "").replace("-", "").trim()))
-				.tipoPessoa(tipoPessoa)
+				.cpfCnpj(Long.parseLong(cpfCnpj.replace(".", "").replace("-", "").trim())).tipoPessoa(tipoPessoa)
 				.anoMesReferencia(Long.parseLong(formataDataAnoMes(new Date()).replace("-", "")))
-				.jsonLogPlataforma(dsLogPlataformaClob)
-				.numeroNota(Long.parseLong(numeroNota))
-				.build();
+				.jsonLogPlataforma(dsLogPlataformaClob).numeroNota(Long.parseLong(numeroNota)).build();
 
 		logPlataformaRepository.save(logPlataforma);
 
