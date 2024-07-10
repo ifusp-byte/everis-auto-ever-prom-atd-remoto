@@ -4,17 +4,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
+import javax.transaction.Transactional;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
 import org.springframework.stereotype.Component;
-
 import br.gov.caixa.siavl.atendimentoremoto.model.DocumentoCliente;
 
 @Component
@@ -24,10 +23,13 @@ public class DocumentoClienteRepositoryImpl implements DocumentoClienteRepositor
 	@PersistenceContext
 	private EntityManager em;
 
+	@Modifying
+	@Transactional
 	public void insereDocumentoNotaNative(Long numeroNota, Long cpfCnpj, String tipoPessoa, Date inclusaoDocumento,
 			Long tipoDocumento) {
 
 		String query = "INSERT INTO AVL.AVLTB034_DCMNTO_NOTA_NGCCO (NU_NOTA_NEGOCIACAO, NU_CPF_CNPJ_CLIENTE, IC_TIPO_PESSOA, TS_INCLUSAO_DOCUMENTO, NU_TIPO_DOCUMENTO_CLIENTE) SELECT :numeroNota, NU_CPF_CNPJ_CLIENTE, IC_TIPO_PESSOA, TS_INCLUSAO_DOCUMENTO, NU_TIPO_DOCUMENTO_CLIENTE FROM AVL.AVLTB033_DOCUMENTO_CLIENTE WHERE NU_CPF_CNPJ_CLIENTE = :cpfCnpj AND IC_TIPO_PESSOA = :tipoPessoa AND TS_INCLUSAO_DOCUMENTO = :inclusaoDocumento AND NU_TIPO_DOCUMENTO_CLIENTE = :tipoDocumento";
+		em.joinTransaction();
 		em.createNativeQuery(query).setParameter("numeroNota", numeroNota).setParameter("cpfCnpj", cpfCnpj)
 				.setParameter("tipoPessoa", tipoPessoa).setParameter("inclusaoDocumento", inclusaoDocumento)
 				.setParameter("tipoDocumento", tipoDocumento).executeUpdate();
