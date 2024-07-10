@@ -17,10 +17,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
-import br.gov.caixa.siavl.atendimentoremoto.model.DocumentoCliente;
-import br.gov.caixa.siavl.atendimentoremoto.model.DocumentoNotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.model.TipoDocumentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoClienteRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoClienteRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoNotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.TipoDocumentoRepository;
@@ -65,6 +64,9 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 	@Autowired
 	DocumentoNotaNegociacaoRepository documentoNotaNegociacaoRepository;
 
+	@Autowired
+	DocumentoClienteRepositoryImpl documentoClienteRepositoryImpl;
+	
 	@Autowired
 	ModeloNotaRepository modeloNotaRepository;
 
@@ -179,9 +181,9 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		documentoClienteRepository.save(documentoCliente);		
 		*/
 		
-		documentoClienteRepository.insereDocumentoNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()), Long.parseLong(cpfCnpjSiecm), tipoPessoa, formataDataBanco(), numeroTipoDoc);
+		//documentoClienteRepository.insereDocumentoNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()), Long.parseLong(cpfCnpjSiecm), tipoPessoa, formataDataBanco(), numeroTipoDoc);
 		
-		
+		documentoClienteRepositoryImpl.insereDocumentoNotaNative(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()), Long.parseLong(cpfCnpjSiecm), tipoPessoa, formataDataBanco(), numeroTipoDoc);
 	
 		
 		return siecmOutputDto;
