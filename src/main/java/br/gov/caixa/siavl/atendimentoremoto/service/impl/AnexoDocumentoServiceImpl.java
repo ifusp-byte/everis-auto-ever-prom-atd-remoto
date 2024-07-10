@@ -151,6 +151,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 				
 		Long numeroTipoDoc = tipoDocumentoRepository.numeroTipoDocumentoCliente(enviaDocumentoInputDto.getCodGED().trim()); 
 		
+		/*
 		DocumentoNotaNegociacao documentoNotaNegociacao = new DocumentoNotaNegociacao();
 		documentoNotaNegociacao.setTipoPessoa(tipoPessoa);
 		documentoNotaNegociacao.setNumeroNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()));
@@ -176,6 +177,9 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		documentoCliente.setInclusaoDocumento(formataDataBanco());
 		documentoCliente.setDocumentoNotaNegociacao(documentoNotaNegociacao);
 		documentoClienteRepository.save(documentoCliente);		
+		*/
+		
+		documentoClienteRepository.insereDocumentoNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()), Long.parseLong(cpfCnpjSiecm), tipoPessoa, formataDataBanco(), numeroTipoDoc);
 		
 		
 	
