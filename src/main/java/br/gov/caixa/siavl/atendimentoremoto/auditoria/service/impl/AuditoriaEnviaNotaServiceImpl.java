@@ -80,6 +80,7 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 			anexoDoc = "false";
 		}
 
+		dsLogPlataformaDTO.setPossuiAnexo(anexoDoc);
 		dsLogPlataformaDTO.setCategoriaAnexo(cateogoriaTipoDoc);
 		dsLogPlataformaDTO.setNomeAnexo(nomeTipoDoc);		
 		
