@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
@@ -37,9 +36,6 @@ public class DocumentoNotaNegociacao {
 
 	@Column(name = "TS_INCLUSAO_DOCUMENTO")
 	private Date inclusaoDocumento;
-
-	@JoinColumn(name = "AVL.FK_AVLTB034_AVLTB033")
-	private DocumentoCliente documentoCliente;
 
 	@PrePersist
 	public void prePersist() {
