@@ -145,7 +145,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 			throw new RuntimeException(e);
 		}
 
-		LOG.log(Level.INFO, "Requisicao - Incluir Documento: " + requestAnexarDocumento);
+		LOG.log(Level.INFO, "Nota: " +enviaDocumentoInputDto.getNumeroNota()+ " Requisicao - Incluir Documento: " + requestAnexarDocumento);
 
 		siecmOutputDto = siecmGateway.documentoIncluir(token, cpfCnpj, requestAnexarDocumento);
 				
