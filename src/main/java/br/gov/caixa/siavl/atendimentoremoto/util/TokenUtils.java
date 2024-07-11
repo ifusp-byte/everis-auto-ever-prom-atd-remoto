@@ -1,6 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.util;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.ApplicationScope;
@@ -20,6 +21,8 @@ public class TokenUtils {
 	private String certificadoDigitalValidar;
 
 	JWTParser parser = new JWTParser();
+	
+	private static String DEFAULT_IP_CAIXA = "127.0.0.1";
 
 	public String getMatriculaFromToken(String jwtToken) {
 
@@ -47,6 +50,7 @@ public class TokenUtils {
 	public String getIpFromToken(String jwtToken) {
 
 		String ipUsuario = null;
+		String ipRetorno = null;
 
 		String[] split_string = jwtToken.split("\\.");
 		String base64EncodedBody = split_string[1];
@@ -63,6 +67,10 @@ public class TokenUtils {
 			}
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
+		}
+		
+		if (ipUsuario == null || ipUsuario.equalsIgnoreCase(StringUtils.EMPTY)) {		
+			ipUsuario = DEFAULT_IP_CAIXA;
 		}
 		return ipUsuario;
 	}
