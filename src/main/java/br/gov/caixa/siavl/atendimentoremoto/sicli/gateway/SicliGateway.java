@@ -55,8 +55,8 @@ public class SicliGateway {
 	@Value("${env.apimanager.url}")
 	private String URL_BASE;
 
-	@Value("${env.url.sicli.conta}")
-	private String URL_SICLI_CONTA;
+	@Value("${env.url.sicli}")
+	private String URL_SICLI;
 
 	private static String REPLACE_IDENTIFICACAO = "0000000000000000";
 	private static String REPLACE_CONTA_1 = "0000";
@@ -100,7 +100,7 @@ public class SicliGateway {
 
 		try {
 
-			String uri = URL_BASE + "/" + URL_SICLI_CONTA + cpfCnpj.replace(".", "").replace("-", "").trim();
+			String uri = URL_BASE + "/" + URL_SICLI + cpfCnpj.replace(".", "").replace("-", "").trim();
 			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
 
 			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,
