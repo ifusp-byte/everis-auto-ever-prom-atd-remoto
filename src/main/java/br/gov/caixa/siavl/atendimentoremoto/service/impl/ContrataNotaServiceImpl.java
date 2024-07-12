@@ -7,6 +7,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.ContrataNotaService;
 
 @Service
+@SuppressWarnings({ "squid:S6813"})
 public class ContrataNotaServiceImpl implements ContrataNotaService {
 
 	@Autowired

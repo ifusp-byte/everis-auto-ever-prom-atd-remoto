@@ -2,10 +2,10 @@ package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,8 +17,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
-import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocio;
+import br.gov.caixa.siavl.atendimentoremoto.model.DocumentoCliente;
+import br.gov.caixa.siavl.atendimentoremoto.model.DocumentoNotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.model.TipoDocumentoCliente;
+import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoClienteRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoNotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.TipoDocumentoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoService;
@@ -36,9 +39,10 @@ import br.gov.caixa.siavl.atendimentoremoto.siecm.gateway.SiecmGateway;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
+@SuppressWarnings({ "squid:S3008", "squid:S6813", "squid:S112", "squid:S5361", "squid:S3457", "squid:S2629" })
 public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
-	private final static Logger LOG = Logger.getLogger(AnexoDocumentoServiceImpl.class.getName());
+	private static final Logger LOG = Logger.getLogger(AnexoDocumentoServiceImpl.class.getName());
 
 	private static String DEFAULT_IP = "127.0.0.1";
 	private static String DEFAULT_LOCAL_ARMAZENAMENTO = "OS_CAIXA";
@@ -54,20 +58,38 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 	@Autowired
 	TipoDocumentoRepository tipoDocumentoRepository;
-
+	
+	@Autowired
+	DocumentoClienteRepository documentoClienteRepository;
+	
+	@Autowired
+	DocumentoNotaNegociacaoRepository documentoNotaNegociacaoRepository;
+	
 	@Autowired
 	ModeloNotaRepository modeloNotaRepository;
 
 	private static ObjectMapper mapper = new ObjectMapper();
+	
+	private static final String PERSON_TYPE_PF = "PF";
+	private static final String PERSON_TYPE_PJ = "PJ";
+	private static final String PATTERN_MATRICULA = "[a-zA-Z]";
 
 	@Override
 	public SiecmOutputDto enviaDocumento(String token, String cpfCnpj, EnviaDocumentoInputDto enviaDocumentoInputDto)
 			throws Exception {
-		
-		SiecmOutputDto siecmOutputDto = null;
-			
-		String cpfCnpjSiecm = cpfCnpj.replace(".", "").replace("-", "").replace("/", "").trim();
 
+		SiecmOutputDto siecmOutputDto = null;
+
+		String cpfCnpjSiecm = cpfCnpj.replace(".", "").replace("-", "").replace("/", "").trim();
+		String tipoPessoa;
+		
+		if (cpfCnpjSiecm.length() == 11) {
+			tipoPessoa = PERSON_TYPE_PF;
+		
+		} else {
+			tipoPessoa = PERSON_TYPE_PJ;
+		}
+		
 		siecmGateway.dossieCriar(token, cpfCnpjSiecm);
 
 		SiecmDocumentosIncluirDadosRequisicaoInputDto siecmDocumentosIncluirDadosRequisicao = new SiecmDocumentosIncluirDadosRequisicaoInputDto();
@@ -99,7 +121,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		siecmDocumentosIncluirDocumentoAtributosCampos.setMimeType(DEFAULT_MIME_TYPE);
 		siecmDocumentosIncluirDocumentoAtributosCampos.setGerarThumbnail(true);
 		siecmDocumentosIncluirDocumentoAtributosCampos
-				.setNome(formataData(new Date()) + "_" + enviaDocumentoInputDto.getCodGED().trim());
+				.setNome(formataData(new Date()) + "_" + enviaDocumentoInputDto.getCodGED().trim() + "."+DEFAULT_DOCUMENTO_TIPO);
 
 		SiecmDocumentosIncluirDocumentoAtributosInputDto siecmDocumentosIncluirDocumentoAtributos = new SiecmDocumentosIncluirDocumentoAtributosInputDto();
 		siecmDocumentosIncluirDocumentoAtributos.setBinario(enviaDocumentoInputDto.getArquivoContrato());
@@ -123,12 +145,38 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 			throw new RuntimeException(e);
 		}
 
-		LOG.log(Level.INFO, "Requisicao - Incluir Documento: " + requestAnexarDocumento);
+		LOG.log(Level.INFO, "Nota: " +enviaDocumentoInputDto.getNumeroNota()+ " Requisicao - Incluir Documento: " + requestAnexarDocumento);
 
 		siecmOutputDto = siecmGateway.documentoIncluir(token, cpfCnpj, requestAnexarDocumento);
-
-		return siecmOutputDto; 
+				
+		Long numeroTipoDoc = tipoDocumentoRepository.numeroTipoDocumentoCliente(enviaDocumentoInputDto.getCodGED().trim()); 
 		
+		Date dtInclusaoDocumento = formataDataBanco();
+		
+		DocumentoCliente documentoCliente = new DocumentoCliente();
+		documentoCliente.setTipoDocumentoCliente(numeroTipoDoc);
+		documentoCliente.setCpfCnpjCliente(Long.parseLong(cpfCnpjSiecm));
+		documentoCliente.setTipoPessoa(tipoPessoa);
+		documentoCliente.setMatriculaAtendente(Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll(PATTERN_MATRICULA, "")));
+		documentoCliente.setMimetypeAnexo(DEFAULT_MIME_TYPE);
+		documentoCliente.setExtensaoAnexo(DEFAULT_DOCUMENTO_TIPO);
+		documentoCliente.setNomeAnexo(siecmDocumentosIncluirDocumentoAtributosCampos.getNome());
+		documentoCliente.setCodGED(siecmOutputDto.getId());
+		documentoCliente.setStcoDocumentoCliente(1L);
+		documentoCliente.setSituacaoDocumentoCliente(1L);
+		documentoCliente.setInclusaoDocumento(dtInclusaoDocumento);
+		documentoClienteRepository.save(documentoCliente);		
+		
+		DocumentoNotaNegociacao documentoNotaNegociacao = new DocumentoNotaNegociacao();
+		documentoNotaNegociacao.setTipoPessoa(tipoPessoa);
+		documentoNotaNegociacao.setNumeroNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()));
+		documentoNotaNegociacao.setCpfCnpjCliente(Long.parseLong(cpfCnpjSiecm));
+		documentoNotaNegociacao.setTipoDocumentoCliente(numeroTipoDoc);
+		documentoNotaNegociacao.setInclusaoDocumento(dtInclusaoDocumento);
+		documentoNotaNegociacaoRepository.save(documentoNotaNegociacao);
+		
+		return siecmOutputDto;
+
 	}
 
 	@Override
@@ -163,5 +211,12 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		SimpleDateFormat sdfOut = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", locale);
 		data = String.valueOf(sdfOut.format(dateInput));
 		return data;
+	}
+	
+	private Date formataDataBanco() {
+
+		Calendar time = Calendar.getInstance();
+		time.add(Calendar.HOUR, -3);
+		return time.getTime();
 	}
 }

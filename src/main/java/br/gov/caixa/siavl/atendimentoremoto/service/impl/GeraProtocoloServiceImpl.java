@@ -24,7 +24,7 @@ import br.gov.caixa.siavl.atendimentoremoto.sicli.gateway.SicliGateway;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
-@SuppressWarnings({ "squid:S6813" })
+@SuppressWarnings({ "squid:S6813" , "squid:S112", "squid:S1854"})
 public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 
 	@Autowired

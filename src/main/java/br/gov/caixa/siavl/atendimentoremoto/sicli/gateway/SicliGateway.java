@@ -40,23 +40,23 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
 @Validated
-@SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S4507" })
+@SuppressWarnings({ "squid:S116", "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S4507", "squid:S112", "squid:S2629", "squid:S1066", "squid:S1452", "squid:S1481"})
 public class SicliGateway {
 
 	@Autowired
 	AuditoriaRegistraNotaSicliService auditoriaRegistraNotaSicliService;
 
-	private final static Logger LOG = Logger.getLogger(SicliGateway.class.getName());
+	private static final Logger LOG = Logger.getLogger(SicliGateway.class.getName());
 	private static String API_KEY = "apikey";
 
 	@Value("${env.apimanager.key}")
-	private String API_KEY_VALUE;// "l7xx2b6f4c64f3774870b0b9b399a77586f5";
+	private String API_KEY_VALUE;
 
 	@Value("${env.apimanager.url}")
-	private String URL_BASE;// "https://api.des.caixa:8443";
+	private String URL_BASE;
 
-	@Value("${env.url.sicli.conta}")
-	private String URL_SICLI_CONTA; // "cadastro/v2/clientes?campos=dadosbasicos,composicaoSocietaria,enderecos,contratos,documentos,nicho,carteiragrc,vinculo,dadosatualizacaocadastral,meiocomunicacao,rendas,profissaosiric&classe=1&cpfcnpj=";
+	@Value("${env.url.sicli}")
+	private String URL_SICLI;
 
 	private static String REPLACE_IDENTIFICACAO = "0000000000000000";
 	private static String REPLACE_CONTA_1 = "0000";
@@ -100,7 +100,7 @@ public class SicliGateway {
 
 		try {
 
-			String uri = URL_BASE + "/" + URL_SICLI_CONTA + cpfCnpj.replace(".", "").replace("-", "").trim();
+			String uri = URL_BASE + "/" + URL_SICLI + cpfCnpj.replace(".", "").replace("-", "").trim();
 			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
 
 			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,

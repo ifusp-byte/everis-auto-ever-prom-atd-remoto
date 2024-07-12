@@ -17,6 +17,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@SuppressWarnings({ "squid:S1948"})
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor

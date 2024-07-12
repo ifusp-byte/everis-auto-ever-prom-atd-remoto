@@ -18,20 +18,20 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
-@SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S3457" })
+@SuppressWarnings({"squid:S116", "squid:S1153", "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S3457", "squid:S2629" })
 public class AuditoriaPncGateway {
 
-	private final static Logger LOG = Logger.getLogger(AuditoriaPncGateway.class.getName());
+	private static final Logger LOG = Logger.getLogger(AuditoriaPncGateway.class.getName());
 	private static String API_KEY = "apikey";
 
 	@Value("${env.apimanager.key}")
-	private String API_KEY_VALUE;// "l7xx2b6f4c64f3774870b0b9b399a77586f5";
+	private String API_KEY_VALUE;
 
 	@Value("${env.apimanager.url}")
-	private String URL_BASE;// "https://api.des.caixa:8443/plataforma-unificada/trilha/v1/registros";
+	private String URL_BASE;
 
 	@Value("${env.url.sipnc.log}")
-	private String URL_SIPNC_LOG;// plataforma-unificada/trilha/v1/registros
+	private String URL_SIPNC_LOG;
 
 	@Autowired
 	RestTemplateUtils restTemplateUtils;

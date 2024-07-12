@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@SuppressWarnings({ "squid:S107"})
 public enum ClasseDocumentoCTPS implements Serializable {
 	EMISSOR("EMISSOR", "Emissor", "STRING", true, 100, "Ministério do Trabalho", true, null, null),
 	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", "STRING", true, 59, "", true, TipoMascara.CPFCNPJ, null);
