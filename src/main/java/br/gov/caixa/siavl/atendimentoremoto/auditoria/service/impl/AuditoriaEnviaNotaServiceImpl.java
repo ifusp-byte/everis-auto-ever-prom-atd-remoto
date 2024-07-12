@@ -55,6 +55,7 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 			String versaoSistema, String produto, String cpfSocio) {
 
 		String tipoPessoa = null;
+		String cpfConsulta = cpfCnpj.replace(".", "").replace("-", "").replace("/", "").trim();
 
 		if (cpfCnpj.replace(".", "").replace("-", "").replace("/", "").trim().length() == 11) {
 			tipoPessoa = PERSON_TYPE_PF;
@@ -64,7 +65,7 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 
 		LogPlataforma logPlataforma = new LogPlataforma();
 		List<AuditoriaEnvioNotaDsLogPlataformaDTO> dsLogPlataformaLista = new ArrayList<>();
-		List<Object[]> numeroNomeDocumento = documentoClienteRepository.numeroNomeDocumento(Long.parseLong(numeroNota));
+		List<Object[]> numeroNomeDocumento = documentoClienteRepository.numeroNomeDocumento(Long.parseLong(numeroNota), Long.parseLong(cpfConsulta));
 		
 		if (!numeroNomeDocumento.isEmpty()) {
 			numeroNomeDocumento.stream().forEach(documento -> {
