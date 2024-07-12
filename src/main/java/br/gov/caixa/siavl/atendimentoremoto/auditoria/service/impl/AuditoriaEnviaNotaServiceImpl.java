@@ -82,15 +82,21 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 			dsLogPlataformaLista.add(dsLogPlataforma);
 		}
 
-		AuditoriaEnvioNotaDsLogPlataformaDTO dsLogPlataformaDTO = new AuditoriaEnvioNotaDsLogPlataformaDTO();
-		dsLogPlataformaDTO = dsLogPlataformaLista.get(0);	
+		AuditoriaEnvioNotaDsLogPlataformaDTO dsLogPlataformaDTO = dsLogPlataformaLista.get(0);	
 		
-		dsLogPlataformaDTO = AuditoriaEnvioNotaDsLogPlataformaDTO.builder().cpfCnpj(cpfCnpj).cpfSocio(cpfSocio)
-				.matriculaAtendente(matriculaAtendente).statusRetornoSicli(statusRetornoSicli)
-				.numeroProtocolo(numeroProtocolo).numeroContaAtendimento(numeroContaAtendimento).numeroNota(numeroNota)
-				.dataRegistroNota(dataRegistroNota).versaoSistema(versaoSistema)
-				.ipUsuario(tokenUtils.getIpFromToken(token)).tipoPessoa(tipoPessoa)
-				.transacaoSistema(TRANSACAO_SISTEMA_CONTRATA_NOTA_ASSINATURA_ELETRONICA).produto(produto).build();
+		dsLogPlataformaDTO.setCpfCnpj(cpfCnpj);
+		dsLogPlataformaDTO.setCpfSocio(cpfSocio);
+		dsLogPlataformaDTO.setMatriculaAtendente(matriculaAtendente);
+		dsLogPlataformaDTO.setStatusRetornoSicli(statusRetornoSicli);
+		dsLogPlataformaDTO.setNumeroProtocolo(numeroProtocolo);
+		dsLogPlataformaDTO.setNumeroContaAtendimento(numeroContaAtendimento);
+		dsLogPlataformaDTO.setNumeroNota(numeroNota);
+		dsLogPlataformaDTO.setDataRegistroNota(dataRegistroNota);
+		dsLogPlataformaDTO.setVersaoSistema(versaoSistema);
+		dsLogPlataformaDTO.setIpUsuario(tokenUtils.getIpFromToken(token));
+		dsLogPlataformaDTO.setTipoPessoa(tipoPessoa);
+		dsLogPlataformaDTO.setTransacaoSistema(TRANSACAO_SISTEMA_CONTRATA_NOTA_ASSINATURA_ELETRONICA);
+		dsLogPlataformaDTO.setProduto(produto);
 
 		String dsLogPlataformaJson = null;
 		Clob dsLogPlataformaClob = null;
