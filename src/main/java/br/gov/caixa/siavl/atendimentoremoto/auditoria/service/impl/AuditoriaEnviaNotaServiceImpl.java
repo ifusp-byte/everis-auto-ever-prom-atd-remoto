@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaEnvioNotaDsLogPlataformaAnexoDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaEnvioNotaDsLogPlataformaDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.model.LogPlataforma;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.repository.LogPlataformaRepository;
@@ -64,27 +65,25 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 		}
 
 		LogPlataforma logPlataforma = new LogPlataforma();
-		List<AuditoriaEnvioNotaDsLogPlataformaDTO> dsLogPlataformaLista = new ArrayList<>();
+		AuditoriaEnvioNotaDsLogPlataformaDTO dsLogPlataformaDTO = new AuditoriaEnvioNotaDsLogPlataformaDTO();
+		List<AuditoriaEnvioNotaDsLogPlataformaAnexoDTO> anexos = new ArrayList<>();
 		List<Object[]> numeroNomeDocumento = documentoClienteRepository.numeroNomeDocumento(Long.parseLong(numeroNota), Long.parseLong(cpfConsulta));
 		
 		if (!numeroNomeDocumento.isEmpty()) {
+			dsLogPlataformaDTO.setPossuiAnexo("sim");			
 			numeroNomeDocumento.stream().forEach(documento -> {
-				AuditoriaEnvioNotaDsLogPlataformaDTO dsLogPlataforma = new AuditoriaEnvioNotaDsLogPlataformaDTO();
-				dsLogPlataforma.setPossuiAnexo("sim");
-				dsLogPlataforma.setCategoriaAnexo(String.valueOf(documento[0]));
-				dsLogPlataforma.setNomeAnexo(String.valueOf(documento[1]));
-				dsLogPlataformaLista.add(dsLogPlataforma);
+				AuditoriaEnvioNotaDsLogPlataformaAnexoDTO anexo = new AuditoriaEnvioNotaDsLogPlataformaAnexoDTO(); 
+				anexo.setCategoriaAnexo(String.valueOf(documento[0]));
+				anexo.setNomeAnexo(String.valueOf(documento[1]));			
+				anexos.add(anexo);
 			});	
 		} else {
-			AuditoriaEnvioNotaDsLogPlataformaDTO dsLogPlataforma = new AuditoriaEnvioNotaDsLogPlataformaDTO();
-			dsLogPlataforma.setPossuiAnexo("não");
-			dsLogPlataforma.setCategoriaAnexo("");
-			dsLogPlataforma.setNomeAnexo("");
-			dsLogPlataformaLista.add(dsLogPlataforma);
+			dsLogPlataformaDTO.setPossuiAnexo("não");	
+			AuditoriaEnvioNotaDsLogPlataformaAnexoDTO anexo = new AuditoriaEnvioNotaDsLogPlataformaAnexoDTO(); 
+			anexos.add(anexo);
 		}
 
-		AuditoriaEnvioNotaDsLogPlataformaDTO dsLogPlataformaDTO = dsLogPlataformaLista.get(0);	
-		
+		dsLogPlataformaDTO.setAnexos(anexos);
 		dsLogPlataformaDTO.setCpfCnpj(cpfCnpj);
 		dsLogPlataformaDTO.setCpfSocio(cpfSocio);
 		dsLogPlataformaDTO.setMatriculaAtendente(matriculaAtendente);

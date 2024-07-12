@@ -1,5 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.auditoria.dto;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import lombok.AllArgsConstructor;
@@ -59,10 +61,6 @@ public class AuditoriaEnvioNotaDsLogPlataformaDTO {
 	@Valid
 	private String possuiAnexo;
 
-	@Valid
-	private String nomeAnexo;
-
-	@Valid
-	private String categoriaAnexo;
+	private List<AuditoriaEnvioNotaDsLogPlataformaAnexoDTO> anexos;
 
 }
