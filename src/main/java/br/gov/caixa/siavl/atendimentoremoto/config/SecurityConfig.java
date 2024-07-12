@@ -28,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .cors().and()
             .authorizeRequests()
             .antMatchers(
+                "/actuator/**",
                 "/v2/api-docs",
                 "/configuration/ui/",
                 "/swagger-resources/**",
@@ -38,8 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/atendimentoremoto-contract/**",
                 "/public/**",
                 "/atendimentoremoto-contract.html",
-                "/atendimentoremoto-contract"
-            ).permitAll()
+                "/atendimentoremoto-contract")
+            .permitAll()
             .anyRequest().authenticated()
             .and()
             .addFilterBefore(new JwtAuthenticationFilter(authenticationManagerBean(), tokenUtils),
