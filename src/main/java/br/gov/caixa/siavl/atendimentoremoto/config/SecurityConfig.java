@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import br.gov.caixa.siavl.atendimentoremoto.filter.JwtAuthenticationFilter;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
-@SuppressWarnings({"deprecation", "squid:S6813"})
+@SuppressWarnings({ "deprecation", "squid:S6813" })
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -24,28 +24,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
-            .cors().and()
-            .authorizeRequests()
-            .antMatchers(
-                "/actuator/**",
-                "/v2/api-docs",
-                "/configuration/ui/",
-                "/swagger-resources/**",
-                "/configuration/security/",
-                "/webjars/**",
-                "/swagger-ui/**",
-                "/swagger-config/**",
-                "/atendimentoremoto-contract/**",
-                "/public/**",
-                "/atendimentoremoto-contract.html",
-                "/atendimentoremoto-contract")
-            .permitAll()
-            .anyRequest().authenticated()
-            .and()
-            .addFilterBefore(new JwtAuthenticationFilter(authenticationManagerBean(), tokenUtils),
-                    UsernamePasswordAuthenticationFilter.class)
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .csrf().disable()
+                .cors().and()
+                .authorizeRequests()
+                .antMatchers(
+                        "/actuator/**",
+                        "/v2/api-docs",
+                        "/configuration/ui/",
+                        "/swagger-resources/**",
+                        "/configuration/security/",
+                        "/webjars/**",
+                        "/swagger-ui/**",
+                        "/swagger-config/**",
+                        "/atendimentoremoto-contract/**",
+                        "/public/**",
+                        "/atendimentoremoto-contract.html",
+                        "/atendimentoremoto-contract")
+                .permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(new JwtAuthenticationFilter(authenticationManagerBean(), tokenUtils),
+                        UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Bean
