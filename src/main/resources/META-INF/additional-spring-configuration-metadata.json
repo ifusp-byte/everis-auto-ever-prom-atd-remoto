@@ -33,5 +33,10 @@
       "name": "url.sicli",
       "type": "java.lang.String",
       "description": "A description for 'url.sicli'"
+  },
+    {
+      "name": "url.ged.api",
+      "type": "java.lang.String",
+      "description": "A description for 'url.ged.api'"
   }
 ]}
