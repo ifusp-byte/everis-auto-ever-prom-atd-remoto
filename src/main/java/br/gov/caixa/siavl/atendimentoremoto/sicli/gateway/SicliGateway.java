@@ -14,6 +14,7 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -47,12 +48,20 @@ public class SicliGateway {
 
 	private final static Logger LOG = Logger.getLogger(SicliGateway.class.getName());
 	private static String API_KEY = "apikey";
-	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
-	private static String URL_BASE_1 = "https://api.des.caixa:8443/cadastro/v2/clientes?campos=dadosbasicos,composicaoSocietaria,enderecos,contratos,documentos,nicho,carteiragrc,vinculo,dadosatualizacaocadastral,meiocomunicacao,rendas,profissaosiric&classe=1&cpfcnpj=";
+
+	@Value("${env.apimanager.key}")
+	private String API_KEY_VALUE;
+
+	@Value("${env.apimanager.url}")
+	private String URL_BASE;
+
+	@Value("${env.url.sicli.conta}")
+	private String URL_SICLI_CONTA;
+
 	private static String REPLACE_IDENTIFICACAO = "0000000000000000";
 	private static String REPLACE_CONTA_1 = "0000";
 	private static String REPLACE_CONTA_2 = "000";
-	
+
 	@Autowired
 	RestTemplateUtils restTemplateUtils;
 
@@ -66,7 +75,7 @@ public class SicliGateway {
 	public HttpHeaders newHttpHeaders(String token) {
 
 		String sanitizedToken = StringUtils.normalizeSpace(token);
-		
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setBearerAuth(sanitizedToken);
@@ -75,7 +84,8 @@ public class SicliGateway {
 		return headers;
 	}
 
-	public ContaAtendimentoOutputDTO contaAtendimento(@Valid String token, @Valid  String cpfCnpj, @Valid boolean auditar) throws Exception {
+	public ContaAtendimentoOutputDTO contaAtendimento(@Valid String token, @Valid String cpfCnpj, @Valid boolean auditar)
+			throws Exception {
 
 		ContaAtendimentoOutputDTO contaAtendimentoOutputDTO = new ContaAtendimentoOutputDTO();
 		ResponseEntity<String> response = null;
@@ -85,14 +95,14 @@ public class SicliGateway {
 		boolean statusCreated = false;
 		List<ContasOutputDTO> contasAtendimento = new ArrayList<>();
 		List<SociosOutputDTO> sociosLista = new ArrayList<>();
-		
+
 		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
 
 		try {
 
-			String uri = URL_BASE_1 + cpfCnpj.replace(".", "").replace("-", "").trim();
+			String uri = URL_BASE + "/" + URL_SICLI_CONTA + cpfCnpj.replace(".", "").replace("-", "").trim();
 			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
-			
+
 			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,
 					newRequestEntityContaAtendimento(token), String.class);
 
@@ -108,42 +118,42 @@ public class SicliGateway {
 			String nomeCliente = Objects.requireNonNull(body.path("dadosBasicos").path("nome")).asText();
 			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento")).asText();
 			String razaoSocial = Objects.requireNonNull(body.path("dadosBasicos").path("razaoSocial")).asText();
-			String cnpj = null; 
-			
+			String cnpj = null;
+
 			if (cpfCnpj.trim().length() == 14) {
-				cnpj = cpfCnpj;	
+				cnpj = cpfCnpj;
 			}
-				
+
 			for (JsonNode nodeComposicaoSocietaria : composicaoSocietaria) {
-				
+
 				ArrayNode socios = (ArrayNode) nodeComposicaoSocietaria.path("socios");
-				
+
 				for (JsonNode nodeocios : socios) {
-					
+
 					SociosOutputDTO socio = new SociosOutputDTO();
-					
+
 					String nome = nodeocios.path("noPessoa").asText().trim();
 					String cpf = nodeocios.path("coDocumento").asText().trim();
-					
+
 					socio.setNome(nome);
 					socio.setCpf(cpf);
-				
+
 					sociosLista.add(socio);
 				}
 			}
-			
+
 			for (JsonNode node : contratos) {
-				
+
 				ContasOutputDTO conta = new ContasOutputDTO();
-				
+
 				String dtInicio = node.path("dtInicio").asText().trim();
 				String sgSistema = node.path("sgSistema").asText().trim();
 				String nuUnidade = node.path("nuUnidade").asText().trim();
 				String nuProduto = node.path("nuProduto").asText().trim();
 				String coIdentificacao = node.path("coIdentificacao").asText().trim();
-					
-				String contaInput = formataContaTotal(dtInicio, sgSistema, nuUnidade, nuProduto, coIdentificacao); 
-				
+
+				String contaInput = formataContaTotal(dtInicio, sgSistema, nuUnidade, nuProduto, coIdentificacao);
+
 				conta.setConta(contaInput);
 				contasAtendimento.add(conta);
 			}
@@ -155,7 +165,7 @@ public class SicliGateway {
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
-					//.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
+					// .response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
 					.statusCreated(statusCreated)
 					.dataCreated(formataData(new Date()))
 					.nomeCliente(nomeCliente)
@@ -186,7 +196,7 @@ public class SicliGateway {
 					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
 
 		} finally {
-			
+
 			restTemplateDto.getHttpClient().close();
 		}
 
@@ -240,14 +250,14 @@ public class SicliGateway {
 		}
 		return cpf;
 	}
-	
+
 	private String formataCnpj(Object object) {
 
 		String cnpjInput = null;
 		String formatCnpj = null;
 		String cnpj = null;
 		MaskFormatter cnpjMask = null;
-		
+
 		if (object != null) {
 			cnpjInput = String.valueOf(object).replace(".", "").replace("/", "").replace("/", "").replace("-", "");
 			formatCnpj = "00000000000000".substring(cnpjInput.length()) + cnpjInput;
@@ -262,55 +272,56 @@ public class SicliGateway {
 		return cnpj;
 	}
 
-	private String formataContaTotal (String dtInicio, String sgSistema, Object nuUnidade, Object nuProduto, Object coIdentificacao) {
+	private String formataContaTotal(String dtInicio, String sgSistema, Object nuUnidade, Object nuProduto,
+			Object coIdentificacao) {
 
-		String contaFormatada = null; 
-		
-		if ("SIART".equalsIgnoreCase(sgSistema)) {	
-			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");	
+		String contaFormatada = null;
+
+		if ("SIART".equalsIgnoreCase(sgSistema)) {
+			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");
 			String unidade = String.valueOf(nuUnidade);
-			String produto = String.valueOf(nuProduto);	
-			identificacao = identificacao.replace(unidade , ""); 
-			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length())+unidade;	
-			String formataProduto = REPLACE_CONTA_1.substring(produto.length())+produto;
-			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length())+identificacao;		
-			contaFormatada = formataUnidade+formataProduto+formatIdentificacao; 	
-			
+			String produto = String.valueOf(nuProduto);
+			identificacao = identificacao.replace(unidade, "");
+			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
+			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
+			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
+			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
+
 		} else if ("SIDEC".equalsIgnoreCase(sgSistema)) {
-			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");	
+			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");
 			String unidade = String.valueOf(nuUnidade);
-			String produto = String.valueOf(nuProduto);			
-			String formatProdutoReplace = REPLACE_CONTA_2.substring(produto.length())+produto;
-			identificacao = identificacao.replace(unidade+formatProdutoReplace , ""); 
-			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length())+identificacao;
-			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length())+unidade;	
-			String formataProduto = REPLACE_CONTA_1.substring(produto.length())+produto;
-			contaFormatada = formataUnidade+formataProduto+formatIdentificacao;
-			
+			String produto = String.valueOf(nuProduto);
+			String formatProdutoReplace = REPLACE_CONTA_2.substring(produto.length()) + produto;
+			identificacao = identificacao.replace(unidade + formatProdutoReplace, "");
+			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
+			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
+			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
+			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
+
 		} else if ("SIIFX".equalsIgnoreCase(sgSistema)) {
-			String dataInicio = String.valueOf(dtInicio).replace(".", "").replace("-", "");	
-			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");	
+			String dataInicio = String.valueOf(dtInicio).replace(".", "").replace("-", "");
+			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");
 			String unidade = String.valueOf(nuUnidade);
-			String produto = String.valueOf(nuProduto);		
-			identificacao = identificacao.replace(dataInicio , ""); 
-			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length())+identificacao;
-			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length())+unidade;	
-			String formataProduto = REPLACE_CONTA_1.substring(produto.length())+produto;	
-			contaFormatada = formataUnidade+formataProduto+formatIdentificacao;
-				
+			String produto = String.valueOf(nuProduto);
+			identificacao = identificacao.replace(dataInicio, "");
+			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
+			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
+			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
+			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
+
 		} else {
-			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");	
+			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");
 			String unidade = String.valueOf(nuUnidade);
-			String produto = String.valueOf(nuProduto);	
-			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length())+unidade;	
-			String formataProduto = REPLACE_CONTA_1.substring(produto.length())+produto;
-			identificacao = identificacao.replace(formataUnidade+ formataProduto, ""); 
-			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length())+identificacao;	
-			contaFormatada = formataUnidade+formataProduto+formatIdentificacao;
+			String produto = String.valueOf(nuProduto);
+			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
+			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
+			identificacao = identificacao.replace(formataUnidade + formataProduto, "");
+			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
+			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
 		}
-		
-		return contaFormatada; 
-		
+
+		return contaFormatada;
+
 	}
-	
+
 }
