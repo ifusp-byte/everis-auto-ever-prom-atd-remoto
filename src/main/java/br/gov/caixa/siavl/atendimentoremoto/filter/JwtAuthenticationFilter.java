@@ -18,45 +18,45 @@ import java.io.IOException;
 import java.util.Collections;
 
 @Component
+@SuppressWarnings({ "squid:S6813"})
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
-  @Autowired
-  private TokenUtils tokenUtils;
+    @Autowired
+    private TokenUtils tokenUtils;
 
-  public JwtAuthenticationFilter(AuthenticationManager authenticationManager, TokenUtils tokenUtils) {
-    super(authenticationManager);
-    this.tokenUtils = tokenUtils;
-  }
-
-  @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-      throws IOException, ServletException {
-
-    String header = request.getHeader("Authorization");
-
-    if (header == null || !header.startsWith("Bearer ")) {
-      chain.doFilter(request, response);
-
-      return;
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, TokenUtils tokenUtils) {
+        super(authenticationManager);
+        this.tokenUtils = tokenUtils;
     }
 
-    String token = header.replace("Bearer ", "");
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
-    // System.out.println("Válido: " + tokenUtils.certificadoValido(token));
+        String header = request.getHeader("Authorization");
 
-    if (!tokenUtils.certificadoValido(token)) {
-      response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-      response.setContentType("application/json");
-      response.setCharacterEncoding("UTF-8");
-      response.getWriter().write(
-          "{ \"error\": \"Acesso negado: Para acessar a Plataforma.CAIXA utilize o Certificado Digital.\" }");
-      return;
+        if (header == null || !header.startsWith("Bearer ")) {
+            chain.doFilter(request, response);
+
+            return;
+        }
+
+        String token = header.replace("Bearer ", "");
+
+        if (!tokenUtils.certificadoValido(token)) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(
+                    "{ \"error\": \"Acesso negado: Para acessar a Plataforma.CAIXA utilize o Certificado Digital.\" }");
+            return;
+        }
+
+        String username = tokenUtils.getMatriculaFromToken(token);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(username, null,
+                Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        chain.doFilter(request, response);
     }
-
-    String username = tokenUtils.getMatriculaFromToken(token);
-    Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
-    SecurityContextHolder.getContext().setAuthentication(authentication);
-
-    chain.doFilter(request, response);
-  }
 }

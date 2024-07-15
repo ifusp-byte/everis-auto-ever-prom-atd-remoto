@@ -5,6 +5,7 @@ import java.util.List;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaOutputDto;
 
+@SuppressWarnings({ "squid:S112"})
 public interface ModeloNotaService {
 
 	List<ModeloNotaOutputDto> consultaModeloNota();

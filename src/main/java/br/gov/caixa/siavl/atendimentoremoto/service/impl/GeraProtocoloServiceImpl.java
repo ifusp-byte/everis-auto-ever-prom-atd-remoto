@@ -24,7 +24,7 @@ import br.gov.caixa.siavl.atendimentoremoto.sicli.gateway.SicliGateway;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
-@SuppressWarnings({ "squid:S6813" })
+@SuppressWarnings({ "squid:S6813" , "squid:S112", "squid:S1854"})
 public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 
 	@Autowired
@@ -49,7 +49,7 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		
 		String tipoDocumento = null; 
 		Long matriculaAtendente = Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", ""));
-		Long cpfCnpj = Long.parseLong(geraProtocoloInputDTO.getCpfCnpj().trim()); 
+		Long cpfCnpj = Long.parseLong(geraProtocoloInputDTO.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim()); 
 		Long numeroUnidade = Long.parseLong(tokenUtils.getUnidadeFromToken(token));
 		
 		String canalAtendimento = geraProtocoloInputDTO.getTipoAtendimento();
@@ -59,26 +59,29 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		atendimentoCliente.setCanalAtendimento(canalAtendimento.charAt(0));
 		atendimentoCliente.setNumeroUnidade(numeroUnidade);
 
-		ContaAtendimentoOutputDTO contaAtendimento = sicliGateway.contaAtendimento(token, geraProtocoloInputDTO.getCpfCnpj().trim(), false);
+		ContaAtendimentoOutputDTO contaAtendimento = sicliGateway.contaAtendimento(token, geraProtocoloInputDTO.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim(), false);
 		
 		if (geraProtocoloInputDTO.getCpfCnpj().trim().length() == 11) {
 			atendimentoCliente.setNomeCliente(contaAtendimento.getNomeCliente());
 			atendimentoCliente.setCpfCliente(cpfCnpj);
 			tipoDocumento = DOCUMENT_TYPE_CPF;
 		} else {
+			atendimentoCliente.setNomeCliente(contaAtendimento.getRazaoSocial());
 			atendimentoCliente.setCnpjCliente(cpfCnpj);
 			tipoDocumento = DOCUMENT_TYPE_CNPJ;
 		}
-
+		
 		atendimentoCliente.setDataInicialAtendimento(formataDataBanco());
 		atendimentoCliente.setDataContatoCliente(formataDataBanco());
 		atendimentoCliente = geraProtocoloRespository.save(atendimentoCliente);
-
+		
 		GeraProtocoloOutputDTO geraProtocoloOutputDTO = new GeraProtocoloOutputDTO();
 		geraProtocoloOutputDTO.setStatus(true);
 		geraProtocoloOutputDTO.setNumeroProtocolo(String.valueOf(atendimentoCliente.getNumeroProtocolo()));
 		geraProtocoloOutputDTO.setSocios(contaAtendimento.getSocios());		
 		geraProtocoloOutputDTO.setRazaoSocial(contaAtendimento.getRazaoSocial());
+		geraProtocoloOutputDTO.setStatusSicli(contaAtendimento.getStatusCode());
+		geraProtocoloOutputDTO.setMensagemSicli(contaAtendimento.getStatusMessage());		
 		
 		AuditoriaPncProtocoloInputDTO auditoriaPncProtocoloInputDTO = new AuditoriaPncProtocoloInputDTO(); 
 		auditoriaPncProtocoloInputDTO = AuditoriaPncProtocoloInputDTO.builder()

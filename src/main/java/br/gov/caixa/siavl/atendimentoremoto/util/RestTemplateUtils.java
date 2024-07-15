@@ -3,9 +3,7 @@ package br.gov.caixa.siavl.atendimentoremoto.util;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-
 import javax.net.ssl.SSLContext;
-
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContexts;
@@ -18,7 +16,7 @@ import org.springframework.web.context.annotation.ApplicationScope;
 
 @Component
 @ApplicationScope
-@SuppressWarnings({ "deprecation", "squid:S1488", "squid:S4507" })
+@SuppressWarnings({ "deprecation", "squid:S1488", "squid:S4507", "squid:S112"})
 public class RestTemplateUtils {
 	
 	public RestTemplateDto newRestTemplate() {
@@ -39,7 +37,7 @@ public class RestTemplateUtils {
 			
 			restTemplateDto = RestTemplateDto.builder()
 					.httpClient(httpClient)
-					.RestTemplate(restTemplate)
+					.restTemplate(restTemplate)
 					.build();
 			return restTemplateDto;
 		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {

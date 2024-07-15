@@ -1,10 +1,10 @@
 package br.gov.caixa.siavl.atendimentoremoto.util;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.ApplicationScope;
-
 import com.auth0.jwt.impl.JWTParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,15 +12,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 @ApplicationScope
-@SuppressWarnings({ "squid:S4507", "squid:S117", "squid:S2129" })
+@SuppressWarnings({ "squid:S4507", "squid:S117", "squid:S2129", "squid:S112"}) 
 public class TokenUtils {
 
 	String accessToken;
+	public static final String CERTIFICADO = "2f_cert";
+	@Value("${env.certificadodigital.validar}")
+	private String certificadoDigitalValidar;
 
 	@Value("${env.certificadodigital.validar}")
 	private String certificadoDigitalValidar;
 
 	JWTParser parser = new JWTParser();
+	
+	private static String DEFAULT_IP_CAIXA = "127.0.0.1";
 
 	public String getMatriculaFromToken(String jwtToken) {
 
@@ -48,6 +53,7 @@ public class TokenUtils {
 	public String getIpFromToken(String jwtToken) {
 
 		String ipUsuario = null;
+		String ipRetorno = null;
 
 		String[] split_string = jwtToken.split("\\.");
 		String base64EncodedBody = split_string[1];
@@ -64,6 +70,10 @@ public class TokenUtils {
 			}
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
+		}
+		
+		if (ipUsuario == null || ipUsuario.equalsIgnoreCase(StringUtils.EMPTY)) {		
+			ipUsuario = DEFAULT_IP_CAIXA;
 		}
 		return ipUsuario;
 	}
@@ -98,15 +108,13 @@ public class TokenUtils {
 		Base64 base64Url = new Base64(true);
 		String body = new String(base64Url.decode(base64EncodedBody));
 
-		// System.out.print("Validar: " + certificadoDigitalValidar + " / ");
-
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode jsonToken;
 		try {
 			if (certificadoDigitalValidar.equalsIgnoreCase("true")) {
 				jsonToken = mapper.readTree(body);
-				if (jsonToken.has("2f_cert")) {
-					return jsonToken.get("2f_cert").asBoolean();
+				if (jsonToken.has(CERTIFICADO)) {
+					return jsonToken.get(CERTIFICADO).asBoolean();
 				} else {
 					return false;
 				}
@@ -116,25 +124,5 @@ public class TokenUtils {
 		}
 
 		return true;
-	}
-
-	public boolean isTwoFactorCertified(String jwtToken) {
-		String[] split_string = jwtToken.split("\\.");
-		String base64EncodedBody = split_string[1];
-
-		Base64 base64Url = new Base64(true);
-		String body = new String(base64Url.decode(base64EncodedBody));
-
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode jsonToken;
-		try {
-			jsonToken = mapper.readTree(body);
-			if (jsonToken.has("2f_cert")) {
-				return jsonToken.get("2f_cert").asBoolean();
-			}
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-		return false;
 	}
 }

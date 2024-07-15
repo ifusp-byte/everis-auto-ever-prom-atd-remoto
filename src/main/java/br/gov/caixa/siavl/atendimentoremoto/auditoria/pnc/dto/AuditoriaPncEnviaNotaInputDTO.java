@@ -26,11 +26,6 @@ public class AuditoriaPncEnviaNotaInputDTO {
 	@Valid
 	private String numeroProtocolo;
 	
-	/*
-	@Valid
-	private String numeroContaAtendimento;
-	*/
-	
 	@Valid
 	private String numeroNota;
 	
@@ -39,5 +34,14 @@ public class AuditoriaPncEnviaNotaInputDTO {
 	
 	@Valid
 	private String dataHoraTransacao; 
+	
+	@Valid
+	private String possuiAnexo;
+	
+	@Valid 
+	private String nomeAnexo;
+	
+	@Valid
+	private String categoriaAnexo; 
 
 }

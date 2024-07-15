@@ -18,10 +18,10 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
-@SuppressWarnings({ "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S3457" })
+@SuppressWarnings({"squid:S116", "squid:S1153", "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S3457", "squid:S2629" })
 public class AuditoriaPncGateway {
 
-	private final static Logger LOG = Logger.getLogger(AuditoriaPncGateway.class.getName());
+	private static final Logger LOG = Logger.getLogger(AuditoriaPncGateway.class.getName());
 	private static String API_KEY = "apikey";
 
 	@Value("${env.apimanager.key}")
