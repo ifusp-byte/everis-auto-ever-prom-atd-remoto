@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -34,13 +35,14 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 public class SiecmGateway {
 
 	private static final Logger LOG = Logger.getLogger(SiecmGateway.class.getName());
-
 	private static String API_KEY = "apikey";
 	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
-
-	private static String SIECM_URL_BASE = "https://siecm.des.caixa/siecm-web/ECM/v1/";
-	private static String SIECM_URL_BASE_DOSSIE = "dossie";
-	private static String SIECM_URL_BASE_DOCUMENTOS_INCLUIR = "documentos/incluir";
+	
+	@Value("${env.url.ged.api}")
+	private String URL_GED_API;
+	
+	private static String SIECM_URL_BASE_DOSSIE = "/dossie";
+	private static String SIECM_URL_BASE_DOCUMENTOS_INCLUIR = "/documentos/incluir";
 
 	private static String DEFAULT_IP = "127.0.0.1";
 	private static String DEFAULT_LOCAL_ARMAZENAMENTO = "OS_CAIXA";
@@ -90,7 +92,7 @@ public class SiecmGateway {
 		JsonNode body;
 
 		try {
-			response = restTemplateDto.getRestTemplate().postForEntity(SIECM_URL_BASE + SIECM_URL_BASE_DOSSIE,
+			response = restTemplateDto.getRestTemplate().postForEntity(URL_GED_API + SIECM_URL_BASE_DOSSIE,
 					newRequestEntityDossie(token, dossieInputDto), String.class);
 
 			siecmOutputDto = SiecmOutputDto.builder()
@@ -118,7 +120,7 @@ public class SiecmGateway {
 
 		try {
 			response = restTemplateDto.getRestTemplate().postForEntity(
-					SIECM_URL_BASE + SIECM_URL_BASE_DOCUMENTOS_INCLUIR,
+					URL_GED_API + SIECM_URL_BASE_DOCUMENTOS_INCLUIR,
 					newRequestEntityDocumentoIncluir(token, requestAnexarDocumento), String.class);
 
 			body = mapper.readTree(String.valueOf(response.getBody()));
