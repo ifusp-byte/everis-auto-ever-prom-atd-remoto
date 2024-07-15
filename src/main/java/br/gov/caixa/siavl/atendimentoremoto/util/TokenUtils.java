@@ -20,9 +20,6 @@ public class TokenUtils {
 	@Value("${env.certificadodigital.validar}")
 	private String certificadoDigitalValidar;
 
-	@Value("${env.certificadodigital.validar}")
-	private String certificadoDigitalValidar;
-
 	JWTParser parser = new JWTParser();
 	
 	private static String DEFAULT_IP_CAIXA = "127.0.0.1";
