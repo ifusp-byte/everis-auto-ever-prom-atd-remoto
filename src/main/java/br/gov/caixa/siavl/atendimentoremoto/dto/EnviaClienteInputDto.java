@@ -48,5 +48,11 @@ public class EnviaClienteInputDto {
 	
 	@Valid
 	private String cpfSocio; 
+	
+	@Valid
+	private String tokenValido;
+	
+	@Valid
+	private String tokenValidoTelefone;
 
 }
