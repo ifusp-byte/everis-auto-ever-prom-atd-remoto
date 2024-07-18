@@ -312,9 +312,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 		if (Boolean.TRUE.equals(statusContratacao)) {
 
-			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository
-					.getReferenceById(Long.parseLong(enviaClienteInputDto.getNumeroProtocolo()));
-
+			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(enviaClienteInputDto.getNumeroProtocolo()));
 			AssinaturaNota assinaturaNota = new AssinaturaNota();
 			assinaturaNota.setNumeroNota(numeroNota);
 			assinaturaNota.setCpfClienteAssinante(atendimentoCliente.getCpfCliente());
@@ -322,7 +320,19 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			assinaturaNota.setOrigemAssinatura((char) '1');
 			assinaturaNotaRepository.save(assinaturaNota);
 			pendenciaAtendimentoNotaRepository.inserePendenciaAtendimento(numeroNota);
-
+					
+			if (StringUtils.isNotBlank(enviaClienteInputDto.getTokenValido())) {			
+				NotaNegociacao notaNegociacao = notaNegociacaoRepository.getReferenceById(numeroNota);
+				RelatorioNotaNegociacao relatorioNotaNegociacao = relatorioNotaNegociacaoRepository.findByNumeroNota(numeroNota);
+				
+				if (Boolean.TRUE.equals(enviaClienteInputDto.getTokenValido())) {
+					notaNegociacao.setNumeroSituacaoNota(23L);
+					notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);
+					
+					relatorioNotaNegociacao.setSituacaoNota(23L);
+					relatorioNotaNegociacao = relatorioNotaNegociacaoRepository.save(relatorioNotaNegociacao);
+				}
+			}
 		}
 
 		if (enviaClienteInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim()
