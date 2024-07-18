@@ -23,6 +23,7 @@ import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncInputD
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncRegistraNotaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.gateway.AuditoriaPncGateway;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaEnviaNotaService;
+import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaEnviaNotaTokenService;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaRegistraNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
@@ -90,6 +91,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	@Autowired
 	AtendimentoNotaRepository atendimentoNotaRepository;
+	
+	@Autowired
+	AuditoriaEnviaNotaTokenService auditoriaEnviaNotaTokenService;
 
 	@Autowired
 	TokenUtils tokenUtils;
@@ -321,7 +325,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			assinaturaNotaRepository.save(assinaturaNota);
 			pendenciaAtendimentoNotaRepository.inserePendenciaAtendimento(numeroNota);
 					
-			if (StringUtils.isNotBlank(enviaClienteInputDto.getTokenValido())) {			
+			if (Boolean.TRUE.equals(enviaClienteInputDto.getAssinaturaToken())) {			
 				NotaNegociacao notaNegociacao = notaNegociacaoRepository.getReferenceById(numeroNota);
 				RelatorioNotaNegociacao relatorioNotaNegociacao = relatorioNotaNegociacaoRepository.findByNumeroNota(numeroNota);
 				
@@ -333,6 +337,11 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 					relatorioNotaNegociacao = relatorioNotaNegociacaoRepository.save(relatorioNotaNegociacao);
 				}
 			}
+			
+			auditoriaEnviaNotaTokenService.auditar(String.valueOf(formataData(new Date())), token, enviaClienteInputDto.getCpfCnpj(),
+					matriculaAtendente, String.valueOf(statusRetornoSicli), numeroProtocolo, numeroContaAtendimento,
+					String.valueOf(numeroNota), "0", enviaClienteInputDto.getProduto().trim(),
+					String.valueOf(enviaClienteInputDto.getCpfSocio()), enviaClienteInputDto.getAssinaturaToken(), enviaClienteInputDto.getTokenValido(), enviaClienteInputDto.getTokenValidoTelefone());			
 		}
 
 		if (enviaClienteInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim()
