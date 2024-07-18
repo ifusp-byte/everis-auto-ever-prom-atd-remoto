@@ -48,6 +48,7 @@ public class AuditoriaEnviaNotaTokenServiceImpl implements AuditoriaEnviaNotaTok
 
 	private static ObjectMapper mapper = new ObjectMapper();
 	private static final Long TRANSACAO_SISTEMA_CONTRATA_NOTA_SMS = 304L;
+	private static final Long TRANSACAO_SISTEMA_CONTRATA_NOTA_SMS_ERRO = 302L;
 	private static final String STEP3_COMPONENTE_TOKEN = "step3_componente_token";
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
@@ -79,7 +80,7 @@ public class AuditoriaEnviaNotaTokenServiceImpl implements AuditoriaEnviaNotaTok
 		dsLogPlataformaDTO.setVersaoSistema(versaoSistema);
 		dsLogPlataformaDTO.setIpUsuario(tokenUtils.getIpFromToken(token));
 		dsLogPlataformaDTO.setTipoPessoa(tipoPessoa);
-		dsLogPlataformaDTO.setTransacaoSistema(TRANSACAO_SISTEMA_CONTRATA_NOTA_SMS);
+		dsLogPlataformaDTO.setTransacaoSistema(Boolean.TRUE.equals(Boolean.parseBoolean(tokenValido)) ? TRANSACAO_SISTEMA_CONTRATA_NOTA_SMS : TRANSACAO_SISTEMA_CONTRATA_NOTA_SMS_ERRO);
 		dsLogPlataformaDTO.setProduto(produto);
 		dsLogPlataformaDTO.setAssinaturaToken(assinaturaToken);
 		dsLogPlataformaDTO.setTokenValido(tokenValido);
@@ -95,7 +96,7 @@ public class AuditoriaEnviaNotaTokenServiceImpl implements AuditoriaEnviaNotaTok
 			throw new RuntimeException(e);
 		}
 
-		logPlataforma = LogPlataforma.builder().transacaoSistema(TRANSACAO_SISTEMA_CONTRATA_NOTA_SMS)
+		logPlataforma = LogPlataforma.builder().transacaoSistema(Boolean.TRUE.equals(Boolean.parseBoolean(tokenValido)) ? TRANSACAO_SISTEMA_CONTRATA_NOTA_SMS : TRANSACAO_SISTEMA_CONTRATA_NOTA_SMS_ERRO)
 				.matriculaAtendente(Long.parseLong(matriculaAtendente.replaceAll("[a-zA-Z]", "")))
 				.dataCriacaoLogPlataforma(formataDataBanco()).ipUsuario(tokenUtils.getIpFromToken(token))
 				.versaoSistemaAgenciaVirtual(versaoSistema)
