@@ -50,6 +50,9 @@ public class EnviaClienteInputDto {
 	private String cpfSocio; 
 	
 	@Valid
+	private String assinaturaToken;
+	
+	@Valid
 	private String tokenValido;
 	
 	@Valid
