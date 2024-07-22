@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 @ApplicationScope
-@SuppressWarnings({ "squid:S4507", "squid:S117", "squid:S2129", "squid:S112"}) 
+@SuppressWarnings("all")
 public class TokenUtils {
 
 	String accessToken;

@@ -28,7 +28,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.TipoDocumentoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
-@SuppressWarnings({ "squid:S112", "squid:S6813", "squid:S1854" })
+@SuppressWarnings("all")
 public class AuditoriaEnviaNotaTokenServiceImpl implements AuditoriaEnviaNotaTokenService {
 
 	@Autowired
