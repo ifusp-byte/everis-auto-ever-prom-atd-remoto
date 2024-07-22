@@ -33,7 +33,14 @@ public class AuditoriaPncDesafioInputDTO {
 	private String tipoPessoa; 
 	
 	@Valid
-	private String transacaoSistema;
+	private String versaoSistema;
 	
+	@Valid
+	private String dataHoraTransacao; 
+	
+	@Valid
+	private String numeroProtocolo;
+	
+	private String cpfSocio;
 }
 

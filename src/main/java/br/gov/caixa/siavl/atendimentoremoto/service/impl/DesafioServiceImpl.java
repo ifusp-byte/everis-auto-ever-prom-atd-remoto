@@ -1,7 +1,11 @@
 package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -40,6 +44,7 @@ public class DesafioServiceImpl implements DesafioService {
 	
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
+	private static final String IDENTIFICACAO_POSITIVA = "identificação_positiva";
 	
 	static Logger logger = Logger.getLogger(DesafioServiceImpl.class.getName());
 	
@@ -68,10 +73,13 @@ public class DesafioServiceImpl implements DesafioService {
 	public RespondeDesafioOutputDTO desafioResponder(String token, String idDesafio, RespondeDesafioInputDTO respostaDesafio) throws Exception {
 		
 		String tipoPessoa = null; 
+		String cpfSocio = null; 
 		if (respostaDesafio.getCpfSocio().isBlank()) {		
 			tipoPessoa = PERSON_TYPE_PF;		
+			cpfSocio = StringUtils.EMPTY;
 		} else {	
 			tipoPessoa = PERSON_TYPE_PJ;	
+			cpfSocio = respostaDesafio.getCpfSocio();
 		}
 		
 		RespondeDesafioOutputDTO respondeDesafio = identificacaoPositivaGateway.desafioResponder(token, idDesafio, respostaDesafio);
@@ -82,13 +90,19 @@ public class DesafioServiceImpl implements DesafioService {
 				.matriculaAtendente(tokenUtils.getMatriculaFromToken(token))
 				.statusValidacao(String.valueOf(respondeDesafio.isStatusCreated()))
 				.tipoPessoa(tipoPessoa)
-				.transacaoSistema("144")
+				.versaoSistema("1.0.0")
+				.dataHoraTransacao(formataData(new Date()))
+				.numeroProtocolo(respostaDesafio.getProtocolo())
+				.cpfSocio(cpfSocio)
 				.build();
 				
+		String descricaoEnvioTransacao = null;
 		String descricaoTransacao = null;
 
 		try {
-			descricaoTransacao = mapper.writeValueAsString(auditoriaPncDesafioInputDTO);
+			descricaoTransacao = mapper.writeValueAsString(IDENTIFICACAO_POSITIVA);
+			descricaoEnvioTransacao = Base64.getEncoder()
+					.encodeToString(mapper.writeValueAsString(auditoriaPncDesafioInputDTO).getBytes());
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
@@ -96,6 +110,7 @@ public class DesafioServiceImpl implements DesafioService {
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
 
 		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder()
+				.descricaoEnvioTransacao(descricaoEnvioTransacao)
 				.descricaoTransacao(descricaoTransacao)
 				.ipTerminalUsuario(tokenUtils.getIpFromToken(token))
 				.nomeMfe("mfe_avl_atendimentoremoto")
@@ -105,6 +120,16 @@ public class DesafioServiceImpl implements DesafioService {
 
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
 		return respondeDesafio;
+	}
+	
+	
+	private String formataData(Date dateInput) {
+
+		String data = null;
+		Locale locale = new Locale("pt", "BR");
+		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
+		data = String.valueOf(sdfOut.format(dateInput));
+		return data;
 	}
 
 }
