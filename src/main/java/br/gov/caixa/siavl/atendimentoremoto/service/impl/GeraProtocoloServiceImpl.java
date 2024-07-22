@@ -1,6 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -43,6 +44,7 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 	
 	private static final String DOCUMENT_TYPE_CPF = "CPF";
 	private static final String DOCUMENT_TYPE_CNPJ = "CNPJ";
+	private static final String TIPO_ATENDIMENTO = "tipo_de_atendimento";
 
 	@Override
 	public GeraProtocoloOutputDTO geraProtocolo(String token, GeraProtocoloInputDTO geraProtocoloInputDTO) throws Exception {
@@ -85,25 +87,29 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		
 		AuditoriaPncProtocoloInputDTO auditoriaPncProtocoloInputDTO = new AuditoriaPncProtocoloInputDTO(); 
 		auditoriaPncProtocoloInputDTO = AuditoriaPncProtocoloInputDTO.builder()
-				.cpfCnpj(String.valueOf(cpfCnpj))
 				.canal(canalAtendimento)
 				.numeroProtocolo(String.valueOf(atendimentoCliente.getNumeroProtocolo()))
 				.dataInicioAtendimento(formataData(new Date()))
 				.matriculaAtendente(String.valueOf(matriculaAtendente))			
-				.transacaoSistema("287")
+				.versaoSistema("1.0.0")
+				.dataHoraTransacao(formataData(new Date()))
 				.build();
-		
+				
+		String descricaoEnvioTransacao = null;
 		String descricaoTransacao = null;
 
 		try {
-			descricaoTransacao = mapper.writeValueAsString(auditoriaPncProtocoloInputDTO);
+			descricaoTransacao = mapper.writeValueAsString(TIPO_ATENDIMENTO);
+			descricaoEnvioTransacao = Base64.getEncoder()
+					.encodeToString(mapper.writeValueAsString(auditoriaPncProtocoloInputDTO).getBytes());
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
-
+		
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
 
 		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder()
+				.descricaoEnvioTransacao(descricaoEnvioTransacao)
 				.descricaoTransacao(descricaoTransacao)
 				.ipTerminalUsuario(tokenUtils.getIpFromToken(token))
 				.nomeMfe("mfe_avl_atendimentoremoto")

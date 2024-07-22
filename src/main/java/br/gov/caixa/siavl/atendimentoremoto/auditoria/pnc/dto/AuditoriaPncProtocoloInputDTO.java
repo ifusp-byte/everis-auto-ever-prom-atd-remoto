@@ -21,9 +21,6 @@ import lombok.Setter;
 public class AuditoriaPncProtocoloInputDTO {
 
 	@Valid
-	private String cpfCnpj;
-	
-	@Valid
 	private String canal;
 	
 	@Valid
@@ -36,6 +33,9 @@ public class AuditoriaPncProtocoloInputDTO {
 	private String matriculaAtendente;
 	
 	@Valid
-	private String transacaoSistema;
+	private String versaoSistema;
+	
+	@Valid
+	private String dataHoraTransacao; 
 
 }
