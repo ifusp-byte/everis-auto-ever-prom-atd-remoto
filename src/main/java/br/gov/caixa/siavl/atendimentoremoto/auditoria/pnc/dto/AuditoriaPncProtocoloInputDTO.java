@@ -19,18 +19,9 @@ import lombok.Setter;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "AuditoriaPncProtocoloInputDTO")
 public class AuditoriaPncProtocoloInputDTO {
-
-	@Valid
-	private String canal;
 	
 	@Valid
 	private String numeroProtocolo;
-	
-	@Valid
-	private String dataInicioAtendimento;
-	
-	@Valid
-	private String matriculaAtendente;
 	
 	@Valid
 	private String versaoSistema;

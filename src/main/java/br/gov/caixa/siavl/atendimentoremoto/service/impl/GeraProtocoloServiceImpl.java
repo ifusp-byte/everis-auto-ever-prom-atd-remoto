@@ -87,10 +87,7 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		
 		AuditoriaPncProtocoloInputDTO auditoriaPncProtocoloInputDTO = new AuditoriaPncProtocoloInputDTO(); 
 		auditoriaPncProtocoloInputDTO = AuditoriaPncProtocoloInputDTO.builder()
-				.canal(canalAtendimento)
-				.numeroProtocolo(String.valueOf(atendimentoCliente.getNumeroProtocolo()))
-				.dataInicioAtendimento(formataData(new Date()))
-				.matriculaAtendente(String.valueOf(matriculaAtendente))			
+				.numeroProtocolo(String.valueOf(atendimentoCliente.getNumeroProtocolo()))		
 				.versaoSistema("1.0.0")
 				.dataHoraTransacao(formataData(new Date()))
 				.build();

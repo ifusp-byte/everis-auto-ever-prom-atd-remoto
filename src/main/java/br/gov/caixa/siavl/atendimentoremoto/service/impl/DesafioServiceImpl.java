@@ -24,6 +24,8 @@ import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafi
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.gateway.IdentificacaoPositivaGateway;
+import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
+import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
@@ -39,11 +41,16 @@ public class DesafioServiceImpl implements DesafioService {
 	
 	@Autowired
 	AuditoriaPncGateway auditoriaPncGateway;
+	
+	@Autowired
+	AtendimentoClienteRepository atendimentoClienteRepository;
 
 	private static final String NOME_SERVICO = "81";
 	
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
+	private static final String DOCUMENT_TYPE_CPF = "CPF";
+	private static final String DOCUMENT_TYPE_CNPJ = "CNPJ";
 	private static final String IDENTIFICACAO_POSITIVA = "identificação_positiva";
 	
 	static Logger logger = Logger.getLogger(DesafioServiceImpl.class.getName());
@@ -72,23 +79,31 @@ public class DesafioServiceImpl implements DesafioService {
 	@Override
 	public RespondeDesafioOutputDTO desafioResponder(String token, String idDesafio, RespondeDesafioInputDTO respostaDesafio) throws Exception {
 		
+		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(respostaDesafio.getProtocolo()));
+		
+		String tipoDocumento = null;
 		String tipoPessoa = null; 
 		String cpfSocio = null; 
-		if (respostaDesafio.getCpfSocio().isBlank()) {		
+		Long cpfCnpjPnc = null; 
+		
+		if (StringUtils.isBlank(String.valueOf(atendimentoCliente.getCnpjCliente()))) {	
+			tipoDocumento = DOCUMENT_TYPE_CPF;
 			tipoPessoa = PERSON_TYPE_PF;		
 			cpfSocio = StringUtils.EMPTY;
+			cpfCnpjPnc = atendimentoCliente.getCpfCliente();
+			
 		} else {	
+			tipoDocumento = DOCUMENT_TYPE_CNPJ;
 			tipoPessoa = PERSON_TYPE_PJ;	
 			cpfSocio = respostaDesafio.getCpfSocio();
+			cpfCnpjPnc = atendimentoCliente.getCnpjCliente();
 		}
 		
 		RespondeDesafioOutputDTO respondeDesafio = identificacaoPositivaGateway.desafioResponder(token, idDesafio, respostaDesafio);
 		
 		AuditoriaPncDesafioInputDTO auditoriaPncDesafioInputDTO = new AuditoriaPncDesafioInputDTO(); 	
-		auditoriaPncDesafioInputDTO = AuditoriaPncDesafioInputDTO.builder()
-				.idDesafio(idDesafio)		
-				.matriculaAtendente(tokenUtils.getMatriculaFromToken(token))
-				.statusValidacao(String.valueOf(respondeDesafio.isStatusCreated()))
+		auditoriaPncDesafioInputDTO = AuditoriaPncDesafioInputDTO.builder()		
+				.statusIdentificacaoPositiva(String.valueOf(respondeDesafio.isStatusCreated()))
 				.tipoPessoa(tipoPessoa)
 				.versaoSistema("1.0.0")
 				.dataHoraTransacao(formataData(new Date()))
@@ -116,6 +131,8 @@ public class DesafioServiceImpl implements DesafioService {
 				.nomeMfe("mfe_avl_atendimentoremoto")
 				.ambienteAplicacao("NACIONAL")
 				.numeroUnidadeLotacaoUsuario(50L)
+				.tipoDocumento(tipoDocumento)
+				.numeroIdentificacaoCliente(cpfCnpjPnc)
 				.build();
 
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
