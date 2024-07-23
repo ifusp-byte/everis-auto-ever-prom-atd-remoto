@@ -86,7 +86,7 @@ public class DesafioServiceImpl implements DesafioService {
 		String cpfSocio = null; 
 		Long cpfCnpjPnc = null; 
 		
-		if (StringUtils.isBlank(String.valueOf(atendimentoCliente.getCnpjCliente()))) {	
+		if (StringUtils.isBlank(String.valueOf(atendimentoCliente.getCnpjCliente())) || atendimentoCliente.getCnpjCliente() == null) {	
 			tipoDocumento = DOCUMENT_TYPE_CPF;
 			tipoPessoa = PERSON_TYPE_PF;		
 			cpfSocio = StringUtils.EMPTY;
