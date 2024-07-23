@@ -19,28 +19,21 @@ import lombok.Setter;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "AuditoriaPncDesafioInputDTO")
 public class AuditoriaPncDesafioInputDTO {
-	
+
 	@Valid
-	private String idDesafio;
-	
+	private String statusIdentificacaoPositiva;
+
 	@Valid
-	private String matriculaAtendente;
-	
-	@Valid
-	private String statusValidacao; 
-	
-	@Valid
-	private String tipoPessoa; 
-	
+	private String tipoPessoa;
+
 	@Valid
 	private String versaoSistema;
-	
+
 	@Valid
-	private String dataHoraTransacao; 
-	
+	private String dataHoraTransacao;
+
 	@Valid
 	private String numeroProtocolo;
-	
+
 	private String cpfSocio;
 }
-
