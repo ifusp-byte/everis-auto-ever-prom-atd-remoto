@@ -24,9 +24,6 @@ public class AuditoriaPncDesafioInputDTO {
 	private String statusIdentificacaoPositiva;
 
 	@Valid
-	private String tipoPessoa;
-
-	@Valid
 	private String versaoSistema;
 
 	@Valid

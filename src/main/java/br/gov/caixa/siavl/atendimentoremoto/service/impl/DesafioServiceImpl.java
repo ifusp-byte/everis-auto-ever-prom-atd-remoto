@@ -104,7 +104,6 @@ public class DesafioServiceImpl implements DesafioService {
 		AuditoriaPncDesafioInputDTO auditoriaPncDesafioInputDTO = new AuditoriaPncDesafioInputDTO(); 	
 		auditoriaPncDesafioInputDTO = AuditoriaPncDesafioInputDTO.builder()		
 				.statusIdentificacaoPositiva(String.valueOf(respondeDesafio.isStatusCreated()))
-				.tipoPessoa(tipoPessoa)
 				.versaoSistema("1.0.0")
 				.dataHoraTransacao(formataData(new Date()))
 				.numeroProtocolo(respostaDesafio.getProtocolo())
