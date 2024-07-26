@@ -123,18 +123,21 @@
             <artifactId>h2</artifactId>
             <version>2.1.214</version>
             <!-- $NO-MVN-MAN-VER$ -->
+        
         </dependency>
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
             <version>2.2.7</version>
             <!-- $NO-MVN-MAN-VER$ -->
+        
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-common</artifactId>
             <version>3.1.0</version>
             <!--$NO-MVN-MAN-VER$-->
+        
         </dependency>
         <dependency>
             <groupId>org.modelmapper</groupId>
@@ -208,6 +211,12 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>3.9.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -284,7 +293,7 @@
                                 </propertyfile>
                             </target>
                         </configuration>
-                        <?m2e execute?>
+                        <?m2e execute?>                   
                     </execution>
                 </executions>
             </plugin>
