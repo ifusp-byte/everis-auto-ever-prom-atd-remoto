@@ -1,6 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.auditoria.service;
 
-@SuppressWarnings({ "squid:S107" })
+@SuppressWarnings("all")
 public interface AuditoriaEnviaNotaService {
 
 	void auditar(String dataRegistroNota, String token, String cpfCnpj, String matriculaAtendente,

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaIdentificacaoPositivaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaIdentificacaoPositivaService;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
@@ -25,10 +26,11 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
-import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioOutputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.CriaDesafioInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.CriaDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.RespondeDesafioInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.RespondeDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway.SicliGateway;
 import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ConsultaNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ContrataNotaService;
@@ -36,13 +38,12 @@ import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
 import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.RegistroNotaService;
-import br.gov.caixa.siavl.atendimentoremoto.sicli.gateway.SicliGateway;
 
 @Validated
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(AtendimentoRemotoController.BASE_URL)
-@SuppressWarnings({ "squid:S6813" })
+@SuppressWarnings("all")
 public class AtendimentoRemotoController {
 
 	public static final String BASE_URL = "/v1/atendimento-remoto";

@@ -1,6 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.auditoria.service;
 
-import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContaAtendimentoOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContaAtendimentoOutputDTO;
 
 public interface AuditoriaRegistraNotaSicliService {
 	

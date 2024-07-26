@@ -2,7 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.auditoria.dto;
 
 import javax.validation.Valid;
 
-import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContaAtendimentoOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContaAtendimentoOutputDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

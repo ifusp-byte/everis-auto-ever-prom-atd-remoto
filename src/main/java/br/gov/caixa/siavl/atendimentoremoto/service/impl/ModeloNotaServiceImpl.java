@@ -22,6 +22,7 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinami
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaNumeroOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaOutputDto;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway.SicliGateway;
 import br.gov.caixa.siavl.atendimentoremoto.model.FluxoAtendimento;
 import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocioFavorito;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoNegocioRepository;
@@ -33,7 +34,6 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepo
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RoteiroFechamentoNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
-import br.gov.caixa.siavl.atendimentoremoto.sicli.gateway.SicliGateway;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service

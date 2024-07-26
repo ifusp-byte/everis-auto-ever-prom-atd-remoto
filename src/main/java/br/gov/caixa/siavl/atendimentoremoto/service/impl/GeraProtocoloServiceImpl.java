@@ -11,16 +11,16 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncProtocoloInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.gateway.AuditoriaPncGateway;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContaAtendimentoOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway.SicliGateway;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncProtocoloInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.gateway.AuditoriaPncGateway;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.repository.GeraProtocoloRespository;
 import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
-import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContaAtendimentoOutputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.sicli.gateway.SicliGateway;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service

@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import br.gov.caixa.siavl.atendimentoremoto.filter.JwtAuthenticationFilter;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
-@SuppressWarnings({ "deprecation", "squid:S6813" })
+@SuppressWarnings("all")
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {

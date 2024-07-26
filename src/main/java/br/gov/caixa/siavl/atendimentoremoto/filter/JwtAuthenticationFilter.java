@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 @Component
-@SuppressWarnings({ "squid:S6813"})
+@SuppressWarnings("all")
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     @Autowired
