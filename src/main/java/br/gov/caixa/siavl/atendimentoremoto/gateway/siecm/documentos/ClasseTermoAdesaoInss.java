@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+@SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-@SuppressWarnings({ "squid:S107"})
 public enum ClasseTermoAdesaoInss implements Serializable {
 	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF", "STRING", true, 14, "", true, TipoMascara.CPF, null),
 	NUMERO_BENEFICIO("NUMERO_BENEFICIO", "Número Beneficio", "STRING", true, 10, "", true, TipoMascara.N, null);

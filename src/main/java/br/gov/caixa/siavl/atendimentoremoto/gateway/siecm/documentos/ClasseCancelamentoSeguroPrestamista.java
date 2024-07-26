@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstants;
 
+@SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-@SuppressWarnings({ "squid:S107"})
 public enum ClasseCancelamentoSeguroPrestamista implements Serializable {
 	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", SiecmConstants.CPF, SiecmConstants.STRING, true, 14, "", true, TipoMascara.CPF, null),
 	NUMERO_PROPOSTA("NUMERO_PROPOSTA", "Número Proposta", SiecmConstants.STRING, true, 22, "", true, TipoMascara.NUMERO_CONTRATO,

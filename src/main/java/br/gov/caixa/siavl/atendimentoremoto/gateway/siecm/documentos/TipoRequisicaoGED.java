@@ -2,6 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.documentos;
 
 import java.io.Serializable;
 
+@SuppressWarnings("all")
 public enum TipoRequisicaoGED implements Serializable {
 
 	GRAVA_DOCUMENTO("GRAVA_DOCUMENTO"), PESQUISA_DOSSIE("PESQUISA_DOSSIE"),

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +30,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 
+import br.gov.caixa.siavl.atendimentoremoto.constants.Constants;
+
 @SuppressWarnings("all")
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -43,7 +46,7 @@ class AtendimentoRemotoControllerTest {
 
 	@LocalServerPort
 	private int port;
-	
+
 	private String defaultUrl = "http://localhost";
 	private static RestTemplate restTemplate;
 	private static ObjectMapper mapper;
@@ -59,7 +62,8 @@ class AtendimentoRemotoControllerTest {
 		atdremotoUrl = defaultUrl.concat(":").concat(port + "").concat(BASE_URL);
 		mapper = new ObjectMapper();
 		mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-		mapper.setVisibility(VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.DEFAULT));
+		mapper.setVisibility(
+				VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.DEFAULT));
 	}
 
 	public HttpEntity<?> newRequestEntity() {
@@ -76,9 +80,10 @@ class AtendimentoRemotoControllerTest {
 
 	@Test
 	void tipoDocumentoCamposTest() throws IOException, URISyntaxException {
-		String BASE_URL = atdremotoUrl + "/documento/tipo/campos/" + "CNH";
-		ResponseEntity<Object> response = restTemplate.getForEntity(BASE_URL, Object.class);
-		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		Arrays.asList(Constants.CLASSE_DOCUMENTOS).stream().forEach(documento -> {
+			String BASE_URL = atdremotoUrl + "/documento/tipo/campos/" + documento;
+			ResponseEntity<Object> response = restTemplate.getForEntity(BASE_URL, Object.class);
+			Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		});
 	}
-
 }

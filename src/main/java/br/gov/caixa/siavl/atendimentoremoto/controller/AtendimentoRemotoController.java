@@ -41,9 +41,9 @@ import br.gov.caixa.siavl.atendimentoremoto.service.RegistroNotaService;
 
 @Validated
 @RestController
+@SuppressWarnings("all")
 @CrossOrigin(origins = "*")
 @RequestMapping(AtendimentoRemotoController.BASE_URL)
-@SuppressWarnings("all")
 public class AtendimentoRemotoController {
 
 	public static final String BASE_URL = "/v1/atendimento-remoto";

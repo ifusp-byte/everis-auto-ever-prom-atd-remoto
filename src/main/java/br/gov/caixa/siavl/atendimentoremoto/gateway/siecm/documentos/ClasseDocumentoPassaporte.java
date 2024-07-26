@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+@SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-@SuppressWarnings({ "squid:S107"})
 public enum ClasseDocumentoPassaporte implements Serializable {
 	NUMERO_REGISTRO("NUMERO_REGISTRO", "Número de Registro", "STRING", true, 10, "", true, TipoMascara.NUMERICO, null),
 	PAIS_EMISSOR("PAIS_EMISSOR", "País Emissor", "STRING", true, 30, "", true, TipoMascara.TEXTO, null),

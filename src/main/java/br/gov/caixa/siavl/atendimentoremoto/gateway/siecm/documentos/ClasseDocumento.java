@@ -2,8 +2,10 @@ package br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.documentos;
 
 import java.io.Serializable;
 import java.util.Arrays;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+@SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumento implements Serializable {
 

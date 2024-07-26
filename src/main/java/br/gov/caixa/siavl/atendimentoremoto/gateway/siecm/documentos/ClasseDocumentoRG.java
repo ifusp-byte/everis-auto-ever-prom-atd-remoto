@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+@SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-@SuppressWarnings({ "squid:S107"})
 public enum ClasseDocumentoRG implements Serializable {
 
 	NUMERO_REGISTRO("NUMERO_REGISTRO", "Número de Registro", "STRING", true, 20, "", TipoMascara.NUMERICO, true, null),

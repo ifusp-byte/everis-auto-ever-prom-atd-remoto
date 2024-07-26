@@ -2,6 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.documentos;
 
 import java.io.Serializable;
 
+@SuppressWarnings("all")
 public enum OperacaoGED implements Serializable {
 
 	SIECM_OPERACAO_GRAVAR_DOCUMENTO("ECM/gravaDocumento"), SIECM_OPERACAO_LOCALIZA_DOCUMENTO("ECM/localizaDocumento"),

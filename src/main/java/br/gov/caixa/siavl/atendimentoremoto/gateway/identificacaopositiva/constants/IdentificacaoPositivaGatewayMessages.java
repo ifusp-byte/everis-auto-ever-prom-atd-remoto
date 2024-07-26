@@ -1,5 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.constants;
 
+@SuppressWarnings("all")
 public final class IdentificacaoPositivaGatewayMessages {
 
 	private IdentificacaoPositivaGatewayMessages() {

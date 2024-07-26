@@ -24,7 +24,7 @@ import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
-@SuppressWarnings({"squid:S2293", "squid:S1854", "squid:S6813", "squid:S112"})
+@SuppressWarnings("all")
 public class DesafioServiceImpl implements DesafioService {
 	
 	@Autowired

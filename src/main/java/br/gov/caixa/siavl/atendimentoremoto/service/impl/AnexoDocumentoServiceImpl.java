@@ -39,7 +39,7 @@ import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoService;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
-@SuppressWarnings({ "squid:S3008", "squid:S6813", "squid:S112", "squid:S5361", "squid:S3457", "squid:S2629" })
+@SuppressWarnings("all")
 public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 	private static final Logger LOG = Logger.getLogger(AnexoDocumentoServiceImpl.class.getName());

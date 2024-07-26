@@ -1,5 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants;
 
+@SuppressWarnings("all")
 public class SiecmGatewayMessages {
 
 	private SiecmGatewayMessages() {

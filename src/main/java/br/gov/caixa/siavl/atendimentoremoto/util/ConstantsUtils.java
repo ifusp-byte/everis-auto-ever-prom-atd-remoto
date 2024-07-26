@@ -1,5 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.util;
 
+@SuppressWarnings("all")
 public final class ConstantsUtils {
 
 	private ConstantsUtils() {

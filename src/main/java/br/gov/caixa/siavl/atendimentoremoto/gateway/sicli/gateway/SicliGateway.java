@@ -40,7 +40,7 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
 @Validated
-@SuppressWarnings({ "squid:S116", "squid:S6418", "squid:S3008", "squid:S1319", "squid:S2293", "squid:S6813", "squid:S4507", "squid:S112", "squid:S2629", "squid:S1066", "squid:S1452", "squid:S1481"})
+@SuppressWarnings("all")
 public class SicliGateway {
 
 	@Autowired

@@ -13,9 +13,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import br.gov.caixa.siavl.atendimentoremoto.filter.JwtAuthenticationFilter;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
-@SuppressWarnings("all")
 @Configuration
 @EnableWebSecurity
+@SuppressWarnings("all")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired

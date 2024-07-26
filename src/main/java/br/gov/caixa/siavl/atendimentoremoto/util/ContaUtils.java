@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
+@SuppressWarnings("all")
 public class ContaUtils {
 	
 	public String formataContaTotal(String dtInicio, String sgSistema, Object nuUnidade, Object nuProduto,

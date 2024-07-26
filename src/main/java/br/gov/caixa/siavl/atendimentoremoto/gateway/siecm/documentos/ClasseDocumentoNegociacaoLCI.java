@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+@SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-@SuppressWarnings({ "squid:S107"})
 public enum ClasseDocumentoNegociacaoLCI implements Serializable {
 	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", "STRING", true, 59, "", true, TipoMascara.CPFCNPJ, null),
 	NUMERO_NOTA("NUMERO_NOTA", "Número da Nota", "STRING", true, 14, "", true, TipoMascara.NUMERICO, null);

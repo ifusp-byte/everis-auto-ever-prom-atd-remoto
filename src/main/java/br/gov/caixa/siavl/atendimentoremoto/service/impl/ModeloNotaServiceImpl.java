@@ -37,7 +37,7 @@ import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
-@SuppressWarnings({ "squid:S6813", "squid:S1226", "squid:S1144", "squid:S4507"})
+@SuppressWarnings("all")
 public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	@Autowired

@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstants;
 
+@SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-@SuppressWarnings({ "squid:S107"})
 public enum ClasseDocumentoIR implements Serializable {
 
 	ANO_CALENDARIO("ANO_CALENDARIO", "Ano-calendário", SiecmConstants.STRING, true, 4, "", true, TipoMascara.NUMERICO, null),

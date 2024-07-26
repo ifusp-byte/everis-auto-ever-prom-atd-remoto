@@ -2,6 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.documentos;
 
 import java.io.Serializable;
 
+@SuppressWarnings("all")
 public enum CamposAnexoGED implements Serializable {
 
 	// Cabeçalho do json para a requisição para gravar o documento

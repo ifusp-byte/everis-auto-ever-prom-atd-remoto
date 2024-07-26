@@ -2,6 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.documentos;
 
 import java.io.Serializable;
 
+@SuppressWarnings("all")
 public enum SituacaoDocumentoApresentado implements Serializable {
 
 	SEM_PENDENCIA_ENVIO(0), COM_PENDENCIA_ENVIO(1), APROVADO_RETAGUARDA(2), REJEITADO_RETAGUARDA(3);

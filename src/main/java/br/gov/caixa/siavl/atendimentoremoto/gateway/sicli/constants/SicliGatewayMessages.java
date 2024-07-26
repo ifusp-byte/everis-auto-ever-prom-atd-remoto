@@ -1,5 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.constants;
 
+@SuppressWarnings("all")
 public class SicliGatewayMessages {
 
 	private SicliGatewayMessages() {

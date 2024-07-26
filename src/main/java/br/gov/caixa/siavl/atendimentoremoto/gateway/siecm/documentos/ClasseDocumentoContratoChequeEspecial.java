@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstants;
 
+@SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-@SuppressWarnings({ "squid:S107"})
 public enum ClasseDocumentoContratoChequeEspecial implements Serializable {
 	NUMERO_CONTRATO("NUMERO_CONTRATO", "Número da Conta", SiecmConstants.STRING, true, 24, "", true,
 			TipoMascara.NUMERO_CONTA, null),

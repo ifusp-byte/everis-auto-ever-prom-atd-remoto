@@ -4,7 +4,7 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.Cr
 import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.CriaDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.RespondeDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.RespondeDesafioOutputDTO;
-@SuppressWarnings({"squid:S112"})
+@SuppressWarnings("all")
 public interface DesafioService {
 
 	CriaDesafioOutputDTO desafioCriar(String token, String cpf, CriaDesafioInputDTO criaDesafioInputDTO) throws Exception;

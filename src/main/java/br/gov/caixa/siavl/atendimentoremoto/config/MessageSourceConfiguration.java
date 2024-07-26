@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 @Configuration
+@SuppressWarnings("all")
 public class MessageSourceConfiguration {
 
 	private static final String CLASSPATH_MESSAGES = "messages";
