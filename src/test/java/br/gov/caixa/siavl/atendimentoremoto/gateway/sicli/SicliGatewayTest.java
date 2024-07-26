@@ -1,4 +1,4 @@
-package br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.constants;
+package br.gov.caixa.siavl.atendimentoremoto.gateway.sicli;
 
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;

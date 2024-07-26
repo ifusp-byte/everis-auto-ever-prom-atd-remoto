@@ -28,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .authorizeRequests()
                 .antMatchers(
+                		"/v1/atendimento-remoto/**",
                         "/actuator/**",
                         "/v2/api-docs",
                         "/configuration/ui/",
