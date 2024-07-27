@@ -9,7 +9,6 @@ import java.lang.reflect.Modifier;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("all")
-
 class SiecmGatewayMessagesTest {
 
 	@Test

@@ -6,6 +6,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
+@SuppressWarnings("all")
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @TestPropertySource(properties = { "env.apimanager.key=l7xx2b6f4c64f3774870b0b9b399a77586f5",

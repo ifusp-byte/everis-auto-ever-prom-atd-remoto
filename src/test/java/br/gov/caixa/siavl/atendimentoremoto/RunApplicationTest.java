@@ -3,6 +3,7 @@ package br.gov.caixa.siavl.atendimentoremoto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("all")
 class RunApplicationTest {
 
 	@Test

@@ -9,7 +9,8 @@ import java.lang.reflect.Modifier;
 
 import org.junit.jupiter.api.Test;
 
-public class SicliGatewayMessagesTest {
+@SuppressWarnings("all")
+class SicliGatewayMessagesTest {
 
 	@Test
 	void testConstructorIsPrivate()

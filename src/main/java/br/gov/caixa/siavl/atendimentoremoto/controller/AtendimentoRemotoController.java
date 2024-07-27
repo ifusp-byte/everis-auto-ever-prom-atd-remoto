@@ -114,7 +114,7 @@ public class AtendimentoRemotoController {
 	}
 
 	@GetMapping("/modelo-nota")
-	public ResponseEntity<Object> consultaModeloFavorita() {
+	public ResponseEntity<Object> consultaModeloNota() {
 		return ResponseEntity.status(HttpStatus.CREATED).body(modeloNotaService.consultaModeloNota());
 	}
 

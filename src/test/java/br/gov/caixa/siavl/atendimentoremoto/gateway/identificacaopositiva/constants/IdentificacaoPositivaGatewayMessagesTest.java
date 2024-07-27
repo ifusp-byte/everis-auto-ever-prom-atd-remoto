@@ -9,6 +9,7 @@ import java.lang.reflect.Modifier;
 
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("all")
 class IdentificacaoPositivaGatewayMessagesTest {
 	@Test
 	void testConstructorIsPrivate()

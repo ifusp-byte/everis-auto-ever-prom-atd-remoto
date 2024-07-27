@@ -1,5 +1,8 @@
 package br.gov.caixa.siavl.atendimentoremoto.controller;
 
+import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.CLASSE_DOCUMENTOS;
+import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.TOKEN_VALIDO;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -16,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +33,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
-
-import br.gov.caixa.siavl.atendimentoremoto.constants.Constants;
 
 @SuppressWarnings("all")
 @RunWith(SpringRunner.class)
@@ -71,7 +73,7 @@ class AtendimentoRemotoControllerTest {
 	}
 
 	public HttpHeaders newHttpHeaders() {
-		String sanitizedToken = StringUtils.normalizeSpace("123456897");
+		String sanitizedToken = StringUtils.normalizeSpace(TOKEN_VALIDO);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setBearerAuth(sanitizedToken);
@@ -80,10 +82,32 @@ class AtendimentoRemotoControllerTest {
 
 	@Test
 	void tipoDocumentoCamposTest() throws IOException, URISyntaxException {
-		Arrays.asList(Constants.CLASSE_DOCUMENTOS).stream().forEach(documento -> {
+		Arrays.asList(CLASSE_DOCUMENTOS).stream().forEach(documento -> {
 			String BASE_URL = atdremotoUrl + "/documento/tipo/campos/" + documento;
 			ResponseEntity<Object> response = restTemplate.getForEntity(BASE_URL, Object.class);
 			Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		});
+	}
+
+	@Test
+	void consultaModeloNotaTest() {
+		String BASE_URL = atdremotoUrl + "/modelo-nota";
+		ResponseEntity<Object> response = restTemplate.getForEntity(BASE_URL, Object.class);
+		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+	}
+
+	@Test
+	void consultaModeloNotaMaisUtilizadaTest() {
+		String BASE_URL = atdremotoUrl + "/modelo-nota-mais-utilizada";
+		ResponseEntity<Object> response = restTemplate.getForEntity(BASE_URL, Object.class);
+		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+	}
+
+	@Test
+	void consultaModeloNotaFavoritaTest() {
+		String BASE_URL = atdremotoUrl + "/modelo-nota-favorita";
+		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, newRequestEntity(),
+				Object.class);
+		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
 }
