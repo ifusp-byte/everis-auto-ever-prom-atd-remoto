@@ -36,7 +36,9 @@ public class SiecmGateway {
 
 	private static final Logger LOG = Logger.getLogger(SiecmGateway.class.getName());
 	private static String API_KEY = "apikey";
-	private static String API_KEY_VALUE = "l7xx2b6f4c64f3774870b0b9b399a77586f5";
+	
+	@Value("${env.apimanager.key}")
+	private String API_KEY_VALUE;
 	
 	@Value("${env.url.ged.api}")
 	private String URL_GED_API;
@@ -129,7 +131,6 @@ public class SiecmGateway {
 
 			siecmOutputDto = SiecmOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
-					//.response(String.valueOf(Objects.requireNonNull(response.getBody())))
 					.linkThumbnail(linkThumbnail)
 					.statusCreated(true)
 					.statusMessage("Documento gravado com sucesso")
@@ -142,7 +143,6 @@ public class SiecmGateway {
 
 			siecmOutputDto = SiecmOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					//.response(String.valueOf(Objects.requireNonNull(e.getResponseBodyAsString())))
 					.build();
 		} finally {
 			restTemplateDto.getHttpClient().close();

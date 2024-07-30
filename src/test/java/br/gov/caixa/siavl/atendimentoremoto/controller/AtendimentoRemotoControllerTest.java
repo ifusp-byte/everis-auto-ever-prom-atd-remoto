@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -30,9 +31,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
+
+import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 
 @SuppressWarnings("all")
 @RunWith(SpringRunner.class)
@@ -72,6 +77,10 @@ class AtendimentoRemotoControllerTest {
 		return new HttpEntity<String>(newHttpHeaders());
 	}
 
+	public HttpEntity<?> newRequestEntity(ModeloNotaDinamicoInputDTO immediateCreateRequestDTO) {
+		return new HttpEntity<ModeloNotaDinamicoInputDTO>(immediateCreateRequestDTO, newHttpHeaders());
+	}
+
 	public HttpHeaders newHttpHeaders() {
 		String sanitizedToken = StringUtils.normalizeSpace(TOKEN_VALIDO);
 		HttpHeaders headers = new HttpHeaders();
@@ -109,5 +118,46 @@ class AtendimentoRemotoControllerTest {
 		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, newRequestEntity(),
 				Object.class);
 		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+	}
+
+	@Test
+	void adicionaModeloNotaFavorita() {
+		String BASE_URL = atdremotoUrl + "/modelo-nota-favorita/" + 8787;
+		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.POST, newRequestEntity(),
+				Object.class);
+		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+	}
+
+	@Test
+	void modeloNotaDinamico() throws StreamReadException, DatabindException, IOException {
+
+		String BASE_URL_1 = atdremotoUrl + "/modelo-nota-dinamico/" + 8704;
+		String BASE_URL_2 = atdremotoUrl + "/modelo-nota-dinamico/" + 3123;
+		String BASE_URL_3 = atdremotoUrl + "/modelo-nota-dinamico/" + 3124;
+
+		ModeloNotaDinamicoInputDTO immediateCreateRequestDTO1 = mapper.readValue(
+				new ClassPathResource("/modeloNotaDinamico/1modeloNotaDinamicoInputDTO.json").getFile(),
+				ModeloNotaDinamicoInputDTO.class);
+
+		ModeloNotaDinamicoInputDTO immediateCreateRequestDTO2 = mapper.readValue(
+				new ClassPathResource("/modeloNotaDinamico/2modeloNotaDinamicoInputDTO.json").getFile(),
+				ModeloNotaDinamicoInputDTO.class);
+
+		ModeloNotaDinamicoInputDTO immediateCreateRequestDTO3 = mapper.readValue(
+				new ClassPathResource("/modeloNotaDinamico/3modeloNotaDinamicoInputDTO.json").getFile(),
+				ModeloNotaDinamicoInputDTO.class);
+
+		ResponseEntity<Object> response1 = restTemplate.exchange(BASE_URL_1, HttpMethod.POST,
+				newRequestEntity(immediateCreateRequestDTO1), Object.class);
+
+		ResponseEntity<Object> response2 = restTemplate.exchange(BASE_URL_2, HttpMethod.POST,
+				newRequestEntity(immediateCreateRequestDTO2), Object.class);
+
+		ResponseEntity<Object> response3 = restTemplate.exchange(BASE_URL_3, HttpMethod.POST,
+				newRequestEntity(immediateCreateRequestDTO3), Object.class);
+
+		Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode());
+		Assertions.assertEquals(HttpStatus.CREATED, response2.getStatusCode());
+		Assertions.assertEquals(HttpStatus.CREATED, response3.getStatusCode());
 	}
 }

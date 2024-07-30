@@ -239,11 +239,15 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		modeloNotaDinamicoOutputDTO.setMenuNotaDinamico(mapper.writeValueAsString(dinamicos));
 		modeloNotaDinamicoOutputDTO.setMenuNotaProduto(notaProdutoLista.get(0));
 
-		Clob roteiro = roteiroFechamentoNotaRepository.roteiro(numeroModeloNota);
+		Optional<List<Clob>> roteiroListaConsulta = roteiroFechamentoNotaRepository.roteiro(numeroModeloNota);
+		List<Clob> roteiroRetorno = roteiroListaConsulta.isPresent() ? roteiroListaConsulta.get() : new ArrayList<>(); 
+		Clob roteiro = roteiroRetorno.isEmpty() ? roteiro = null : roteiroRetorno.get(0);
+
+		if (roteiro != null) { 
 		int tamanho = Integer.parseInt(String.valueOf(roteiro.length()));
-
 		modeloNotaDinamicoOutputDTO.setRoteiroFechamento(String.valueOf(roteiro.getSubString(1, tamanho)));
-
+		}
+		
 		return modeloNotaDinamicoOutputDTO;
 	}
 

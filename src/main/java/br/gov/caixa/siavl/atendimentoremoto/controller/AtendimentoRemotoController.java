@@ -88,7 +88,7 @@ public class AtendimentoRemotoController {
 
 	@PostMapping("/desafio-criar/{cpf}")
 	public ResponseEntity<CriaDesafioOutputDTO> desafioCriar(
-			@Valid @RequestHeader(value = "token", required = true) String token, @Valid @PathVariable String cpf,
+			@Valid @RequestHeader(value = "Authorization", required = true) String token, @Valid @PathVariable String cpf,
 			@Valid @RequestBody CriaDesafioInputDTO criaDesafioInputDTO) throws Exception {
 
 		return ResponseEntity.status(HttpStatus.OK)
@@ -127,7 +127,7 @@ public class AtendimentoRemotoController {
 
 	@PostMapping("/modelo-nota-favorita/{numeroModeloNota}")
 	public ResponseEntity<Object> adicionaModeloNotaFavorita(
-			@Valid @RequestHeader(value = "token", required = true) String token,
+			@Valid @RequestHeader(value = "Authorization", required = true) String token,
 			@Valid @PathVariable Long numeroModeloNota) {
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(modeloNotaService.adicionaModeloNotaFavorita(token.trim().replace(BEARER, StringUtils.EMPTY), numeroModeloNota));
@@ -139,7 +139,7 @@ public class AtendimentoRemotoController {
 	}
 
 	@PostMapping("/modelo-nota-dinamico/{numeroModeloNota}")
-	public ResponseEntity<Object> modeloNotaDinamico(@Valid @RequestHeader(value = "token", required = true) String token,
+	public ResponseEntity<Object> modeloNotaDinamico(@Valid @RequestHeader(value = "Authorization", required = true) String token,
 			@Valid @PathVariable Long numeroModeloNota,
 			@Valid @RequestBody ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO)
 			throws Exception {
