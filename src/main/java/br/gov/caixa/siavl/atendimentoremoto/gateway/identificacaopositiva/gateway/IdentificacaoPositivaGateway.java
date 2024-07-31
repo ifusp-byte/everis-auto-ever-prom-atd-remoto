@@ -135,21 +135,39 @@ public class IdentificacaoPositivaGateway {
 
 		} catch (RestClientResponseException e) {
 
+			String statusMessage = null; 
+			
+			try {
+				
 			jsonNode = mapper.readTree(e.getResponseBodyAsString());
 
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC " + mapper.writeValueAsString(jsonNode));
 
 			codigo422 = Objects.requireNonNull(jsonNode.path("codigo").asText());
-			String statusMessage = validateGatewayStatusDesafioCriar(Objects.requireNonNull(e.getRawStatusCode()),
-					codigo422);
+			
+			statusMessage = validateGatewayStatusDesafioCriar(Objects.requireNonNull(e.getRawStatusCode()), codigo422);
+			
+			} catch (Exception e1) {
+				
+				criaDesafioOutputDTO = CriaDesafioOutputDTO.builder()
+						.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
+						.statusMessage(statusMessage)
+						.statusCreated(false)
+						.dataCreated(formataData(new Date()))
+						.build();
+				
+				LOG.info("Identificação Positiva - Desafio Criar - Erro " + statusMessage);
+				
+			}
 
 			criaDesafioOutputDTO = CriaDesafioOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.response(Objects.requireNonNull(e.getResponseBodyAsString())).statusMessage(statusMessage)
-					.statusCreated(false).dataCreated(formataData(new Date())).build();
+					.statusMessage(statusMessage)
+					.statusCreated(false)
+					.dataCreated(formataData(new Date()))
+					.build();
 
-			LOG.info(
-					"Identificação Positiva - Desafio Criar - Resposta View " + mapper.writeValueAsString(criaDesafioOutputDTO));
+			LOG.info("Identificação Positiva - Desafio Criar - Resposta View " + mapper.writeValueAsString(criaDesafioOutputDTO));
 
 		} finally {
 
