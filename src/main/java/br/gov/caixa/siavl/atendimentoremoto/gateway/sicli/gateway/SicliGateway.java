@@ -58,7 +58,7 @@ public class SicliGateway {
 	@Value("${env.url.sicli}")
 	private String URL_SICLI;
 
-	private static String REPLACE_IDENTIFICACAO = "0000000000000000";
+	private static String REPLACE_IDENTIFICACAO = "00000000000000000000";
 	private static String REPLACE_CONTA_1 = "0000";
 	private static String REPLACE_CONTA_2 = "000";
 
@@ -160,12 +160,11 @@ public class SicliGateway {
 
 			if (!contasAtendimento.isEmpty() && !nomeCliente.isEmpty() && !cpfCliente.isEmpty()) {
 				statusCreated = true;
-				statusMessage = SicliGatewayMessages.SICLI_CONTA_ATENDIMENTO_RETORNO_NAO_200;
+				statusMessage = SicliGatewayMessages.SICLI_CONTA_ATENDIMENTO_RETORNO_200;
 			}
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
-					// .response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
 					.statusCreated(statusCreated)
 					.dataCreated(formataData(new Date()))
 					.nomeCliente(nomeCliente)
@@ -295,9 +294,9 @@ public class SicliGateway {
 			String formatProdutoReplace = REPLACE_CONTA_2.substring(produto.length()) + produto;
 			identificacao = identificacao.replace(unidade + formatProdutoReplace, "");
 			identificacao = StringUtils.stripStart(identificacao, "0");
-			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
 			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
 			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
+			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
 			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
 
 		} else if ("SIIFX".equalsIgnoreCase(sgSistema)) {
@@ -307,9 +306,9 @@ public class SicliGateway {
 			String produto = String.valueOf(nuProduto);
 			identificacao = identificacao.replace(dataInicio, "");
 			identificacao = StringUtils.stripStart(identificacao, "0");
-			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
 			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
 			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
+			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
 			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
 
 		} else {
