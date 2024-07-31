@@ -282,6 +282,7 @@ public class SicliGateway {
 			String unidade = String.valueOf(nuUnidade);
 			String produto = String.valueOf(nuProduto);
 			identificacao = identificacao.replace(unidade, "");
+			identificacao = StringUtils.stripStart(identificacao, "0");
 			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
 			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
 			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
@@ -293,6 +294,7 @@ public class SicliGateway {
 			String produto = String.valueOf(nuProduto);
 			String formatProdutoReplace = REPLACE_CONTA_2.substring(produto.length()) + produto;
 			identificacao = identificacao.replace(unidade + formatProdutoReplace, "");
+			identificacao = StringUtils.stripStart(identificacao, "0");
 			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
 			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
 			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
@@ -304,6 +306,7 @@ public class SicliGateway {
 			String unidade = String.valueOf(nuUnidade);
 			String produto = String.valueOf(nuProduto);
 			identificacao = identificacao.replace(dataInicio, "");
+			identificacao = StringUtils.stripStart(identificacao, "0");
 			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
 			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
 			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
@@ -316,6 +319,7 @@ public class SicliGateway {
 			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
 			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
 			identificacao = identificacao.replace(formataUnidade + formataProduto, "");
+			identificacao = StringUtils.stripStart(identificacao, "0");
 			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
 			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
 		}
