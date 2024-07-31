@@ -84,8 +84,8 @@ public class SicliGateway {
 		return headers;
 	}
 
-	public ContaAtendimentoOutputDTO contaAtendimento(@Valid String token, @Valid String cpfCnpj, @Valid boolean auditar)
-			throws Exception {
+	public ContaAtendimentoOutputDTO contaAtendimento(@Valid String token, @Valid String cpfCnpj,
+			@Valid boolean auditar) throws Exception {
 
 		ContaAtendimentoOutputDTO contaAtendimentoOutputDTO = new ContaAtendimentoOutputDTO();
 		ResponseEntity<String> response = null;
@@ -108,8 +108,7 @@ public class SicliGateway {
 
 			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
 
-			String statusMessage = validateGatewayStatusAtendimentoConta(
-					Objects.requireNonNull(response.getStatusCodeValue()));
+			String statusMessage = validateGatewayStatusAtendimentoConta(Objects.requireNonNull(response.getStatusCodeValue()));
 
 			body = mapper.readTree(String.valueOf(response.getBody()));
 			contratos = (ArrayNode) body.get("contratos");
@@ -152,15 +151,16 @@ public class SicliGateway {
 				String nuProduto = node.path("nuProduto").asText().trim();
 				String coIdentificacao = node.path("coIdentificacao").asText().trim();
 
-				String contaInput = formataContaTotal(dtInicio, sgSistema, nuUnidade, nuProduto, coIdentificacao);
-
-				conta.setConta(contaInput);
-				contasAtendimento.add(conta);
+				contasAtendimento = formataContaTotalLista(dtInicio, sgSistema, nuUnidade, nuProduto, coIdentificacao,
+						contasAtendimento);
 			}
 
 			if (!contasAtendimento.isEmpty() && !nomeCliente.isEmpty() && !cpfCliente.isEmpty()) {
 				statusCreated = true;
 				statusMessage = SicliGatewayMessages.SICLI_CONTA_ATENDIMENTO_RETORNO_200;
+			} else {
+				statusCreated = false;
+				statusMessage = SicliGatewayMessages.SICLI_CONTA_ATENDIMENTO_RETORNO_NAO_200;
 			}
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
@@ -188,8 +188,10 @@ public class SicliGateway {
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.response(Objects.requireNonNull(mapper.writeValueAsString(retornoSicli)))
-					.statusMessage(statusMessage).statusCreated(false).dataCreated(formataData(new Date())).build();
+					.statusMessage(statusMessage)
+					.statusCreated(false)
+					.dataCreated(formataData(new Date()))
+					.build();
 
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
 					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
@@ -271,23 +273,12 @@ public class SicliGateway {
 		return cnpj;
 	}
 
-	private String formataContaTotal(String dtInicio, String sgSistema, Object nuUnidade, Object nuProduto,
-			Object coIdentificacao) {
+	private List<ContasOutputDTO> formataContaTotalLista(String dtInicio, String sgSistema, Object nuUnidade,
+			Object nuProduto, Object coIdentificacao, List<ContasOutputDTO> contasAtendimento) {
 
 		String contaFormatada = null;
 
-		if ("SIART".equalsIgnoreCase(sgSistema)) {
-			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");
-			String unidade = String.valueOf(nuUnidade);
-			String produto = String.valueOf(nuProduto);
-			identificacao = identificacao.replace(unidade, "");
-			identificacao = StringUtils.stripStart(identificacao, "0");
-			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
-			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
-			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
-			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
-
-		} else if ("SIDEC".equalsIgnoreCase(sgSistema)) {
+		if ("SIDEC".equalsIgnoreCase(sgSistema)) {
 			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");
 			String unidade = String.valueOf(nuUnidade);
 			String produto = String.valueOf(nuProduto);
@@ -298,20 +289,12 @@ public class SicliGateway {
 			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
 			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
 			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
+			ContasOutputDTO conta = new ContasOutputDTO();
+			conta.setConta(contaFormatada);
+			contasAtendimento.add(conta);
+		}
 
-		} else if ("SIIFX".equalsIgnoreCase(sgSistema)) {
-			String dataInicio = String.valueOf(dtInicio).replace(".", "").replace("-", "");
-			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");
-			String unidade = String.valueOf(nuUnidade);
-			String produto = String.valueOf(nuProduto);
-			identificacao = identificacao.replace(dataInicio, "");
-			identificacao = StringUtils.stripStart(identificacao, "0");
-			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
-			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
-			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
-			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
-
-		} else {
+		if ("SID01".equalsIgnoreCase(sgSistema)) {
 			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");
 			String unidade = String.valueOf(nuUnidade);
 			String produto = String.valueOf(nuProduto);
@@ -321,9 +304,12 @@ public class SicliGateway {
 			identificacao = StringUtils.stripStart(identificacao, "0");
 			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
 			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
+			ContasOutputDTO conta = new ContasOutputDTO();
+			conta.setConta(contaFormatada);
+			contasAtendimento.add(conta);
 		}
 
-		return contaFormatada;
+		return contasAtendimento;
 
 	}
 
