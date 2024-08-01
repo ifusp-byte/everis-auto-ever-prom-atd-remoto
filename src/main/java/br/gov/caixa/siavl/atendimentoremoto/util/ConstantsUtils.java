@@ -45,4 +45,7 @@ public final class ConstantsUtils {
 	public static final String DOCUMENT_TYPE_CNPJ = "CNPJ";
 	public static final String API_KEY_1 = "apikey";
 	public static final String API_KEY_2 = "APIKey";
+	public static final String ZERO_CHAR = "0";
+	public static final int ZERO_NUMER = 0;
+	public static final int TRES_NUMER = 3;
 }
