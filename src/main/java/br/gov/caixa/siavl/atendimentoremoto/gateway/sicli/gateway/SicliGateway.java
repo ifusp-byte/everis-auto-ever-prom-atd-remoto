@@ -281,11 +281,11 @@ public class SicliGateway {
 		if ("SIDEC".equalsIgnoreCase(sgSistema)) {
 			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");
 			String unidade = String.valueOf(nuUnidade);
-			String produto = String.valueOf(nuProduto);
-			String formatProdutoReplace = REPLACE_CONTA_2.substring(produto.length()) + produto;
-			identificacao = identificacao.replace(unidade + formatProdutoReplace, "");
-			identificacao = StringUtils.stripStart(identificacao, "0");
 			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
+			identificacao = identificacao.replace(formataUnidade, "");
+			String produto = identificacao.substring(0, 3);		
+			identificacao = identificacao.replace(produto, "");
+			identificacao = StringUtils.stripStart(identificacao, "0");
 			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
 			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
 			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
@@ -300,7 +300,6 @@ public class SicliGateway {
 			String produto = String.valueOf(nuProduto);
 			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
 			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
-			identificacao = identificacao.replace(formataUnidade + formataProduto, "");
 			identificacao = StringUtils.stripStart(identificacao, "0");
 			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
 			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
