@@ -1,5 +1,11 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway;
 
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.PONTO;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRACO;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRES_NUMER;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_CHAR;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_NUMER;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -279,13 +285,13 @@ public class SicliGateway {
 		String contaFormatada = null;
 
 		if ("SIDEC".equalsIgnoreCase(sgSistema)) {
-			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");
+			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
 			String unidade = String.valueOf(nuUnidade);
-			String produto = String.valueOf(nuProduto);
-			String formatProdutoReplace = REPLACE_CONTA_2.substring(produto.length()) + produto;
-			identificacao = identificacao.replace(unidade + formatProdutoReplace, "");
-			identificacao = StringUtils.stripStart(identificacao, "0");
 			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
+			identificacao = identificacao.replace(formataUnidade, StringUtils.EMPTY);
+			String produto = identificacao.substring(ZERO_NUMER, TRES_NUMER);		
+			identificacao = identificacao.replace(produto, StringUtils.EMPTY);
+			identificacao = StringUtils.stripStart(identificacao, ZERO_CHAR);
 			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
 			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
 			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
@@ -295,13 +301,12 @@ public class SicliGateway {
 		}
 
 		if ("SID01".equalsIgnoreCase(sgSistema)) {
-			String identificacao = String.valueOf(coIdentificacao).replace(".", "").replace("-", "");
+			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
 			String unidade = String.valueOf(nuUnidade);
 			String produto = String.valueOf(nuProduto);
 			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
 			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
-			identificacao = identificacao.replace(formataUnidade + formataProduto, "");
-			identificacao = StringUtils.stripStart(identificacao, "0");
+			identificacao = StringUtils.stripStart(identificacao, ZERO_CHAR);
 			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
 			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
 			ContasOutputDTO conta = new ContasOutputDTO();
