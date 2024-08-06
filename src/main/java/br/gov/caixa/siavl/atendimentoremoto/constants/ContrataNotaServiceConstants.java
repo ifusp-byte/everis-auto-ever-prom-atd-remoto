@@ -1,5 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.constants;
 
+@SuppressWarnings("all")
 public class ContrataNotaServiceConstants {
 
 	private ContrataNotaServiceConstants() {

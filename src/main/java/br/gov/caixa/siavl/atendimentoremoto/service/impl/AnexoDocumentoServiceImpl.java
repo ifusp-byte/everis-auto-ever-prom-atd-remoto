@@ -17,6 +17,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstants;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.documentos.ClasseDocumento;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.SiecmCamposDinamico;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.SiecmDocumentosIncluirDadosRequisicaoInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.SiecmDocumentosIncluirDestinoDocumentoInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.SiecmDocumentosIncluirDocumentoAtributosCamposInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.SiecmDocumentosIncluirDocumentoAtributosInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.SiecmDocumentosIncluirDocumentoInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.SiecmDocumentosIncluirInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.SiecmOutputDto;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.gateway.SiecmGateway;
 import br.gov.caixa.siavl.atendimentoremoto.model.DocumentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.model.DocumentoNotaNegociacao;
 import br.gov.caixa.siavl.atendimentoremoto.model.TipoDocumentoCliente;
@@ -25,21 +36,10 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoNotaNegociacaoRe
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.TipoDocumentoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoService;
-import br.gov.caixa.siavl.atendimentoremoto.siecm.constants.SiecmConstants;
-import br.gov.caixa.siavl.atendimentoremoto.siecm.documentos.ClasseDocumento;
-import br.gov.caixa.siavl.atendimentoremoto.siecm.dto.SiecmCamposDinamico;
-import br.gov.caixa.siavl.atendimentoremoto.siecm.dto.SiecmDocumentosIncluirDadosRequisicaoInputDto;
-import br.gov.caixa.siavl.atendimentoremoto.siecm.dto.SiecmDocumentosIncluirDestinoDocumentoInputDto;
-import br.gov.caixa.siavl.atendimentoremoto.siecm.dto.SiecmDocumentosIncluirDocumentoAtributosCamposInputDto;
-import br.gov.caixa.siavl.atendimentoremoto.siecm.dto.SiecmDocumentosIncluirDocumentoAtributosInputDto;
-import br.gov.caixa.siavl.atendimentoremoto.siecm.dto.SiecmDocumentosIncluirDocumentoInputDto;
-import br.gov.caixa.siavl.atendimentoremoto.siecm.dto.SiecmDocumentosIncluirInputDto;
-import br.gov.caixa.siavl.atendimentoremoto.siecm.dto.SiecmOutputDto;
-import br.gov.caixa.siavl.atendimentoremoto.siecm.gateway.SiecmGateway;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
-@SuppressWarnings({ "squid:S3008", "squid:S6813", "squid:S112", "squid:S5361", "squid:S3457", "squid:S2629" })
+@SuppressWarnings("all")
 public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 	private static final Logger LOG = Logger.getLogger(AnexoDocumentoServiceImpl.class.getName());

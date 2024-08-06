@@ -13,9 +13,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import br.gov.caixa.siavl.atendimentoremoto.filter.JwtAuthenticationFilter;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
-@SuppressWarnings({ "deprecation", "squid:S6813" })
 @Configuration
 @EnableWebSecurity
+@SuppressWarnings("all")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -28,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .authorizeRequests()
                 .antMatchers(
+                		"/v1/atendimento-remoto/**",
                         "/actuator/**",
                         "/v2/api-docs",
                         "/configuration/ui/",

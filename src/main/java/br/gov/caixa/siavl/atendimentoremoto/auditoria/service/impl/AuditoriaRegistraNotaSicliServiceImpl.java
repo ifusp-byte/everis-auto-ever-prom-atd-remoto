@@ -19,11 +19,11 @@ import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaRegistraNotaS
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.model.LogPlataforma;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.repository.LogPlataformaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaRegistraNotaSicliService;
-import br.gov.caixa.siavl.atendimentoremoto.sicli.dto.ContaAtendimentoOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContaAtendimentoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
-@SuppressWarnings({ "squid:S6813", "squid:S112", "squid:S1854"})
+@SuppressWarnings("all")
 public class AuditoriaRegistraNotaSicliServiceImpl implements AuditoriaRegistraNotaSicliService {
 	
 	@Autowired

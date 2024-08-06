@@ -7,7 +7,7 @@
     <artifactId>SIAVL-atdremoto-backend</artifactId>
     <name>SIAVL-atdremoto-backend-${project.artifactId}</name>
     <packaging>jar</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -123,24 +123,21 @@
             <artifactId>h2</artifactId>
             <version>2.1.214</version>
             <!-- $NO-MVN-MAN-VER$ -->
-
-
+        
         </dependency>
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
             <version>2.2.7</version>
             <!-- $NO-MVN-MAN-VER$ -->
-
-
+        
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-common</artifactId>
             <version>3.1.0</version>
             <!--$NO-MVN-MAN-VER$-->
-
-
+        
         </dependency>
         <dependency>
             <groupId>org.modelmapper</groupId>
@@ -188,7 +185,6 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/javax.json/javax.json-api -->
         <dependency>
             <groupId>javax.json</groupId>
             <artifactId>javax.json-api</artifactId>
@@ -211,6 +207,17 @@
             <groupId>com.microsoft.azure</groupId>
             <artifactId>applicationinsights-runtime-attach</artifactId>
             <version>3.4.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>3.9.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
@@ -286,7 +293,7 @@
                                 </propertyfile>
                             </target>
                         </configuration>
-                        <?m2e execute?>
+                        <?m2e execute?>                   
                     </execution>
                 </executions>
             </plugin>

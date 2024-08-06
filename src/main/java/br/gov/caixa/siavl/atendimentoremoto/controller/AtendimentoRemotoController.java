@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaIdentificacaoPositivaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaIdentificacaoPositivaService;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
@@ -25,10 +26,11 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
-import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioOutputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.CriaDesafioInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.CriaDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.RespondeDesafioInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.RespondeDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway.SicliGateway;
 import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ConsultaNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ContrataNotaService;
@@ -36,13 +38,12 @@ import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
 import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.RegistroNotaService;
-import br.gov.caixa.siavl.atendimentoremoto.sicli.gateway.SicliGateway;
 
 @Validated
 @RestController
+@SuppressWarnings("all")
 @CrossOrigin(origins = "*")
 @RequestMapping(AtendimentoRemotoController.BASE_URL)
-@SuppressWarnings({ "squid:S6813" })
 public class AtendimentoRemotoController {
 
 	public static final String BASE_URL = "/v1/atendimento-remoto";
@@ -87,7 +88,7 @@ public class AtendimentoRemotoController {
 
 	@PostMapping("/desafio-criar/{cpf}")
 	public ResponseEntity<CriaDesafioOutputDTO> desafioCriar(
-			@Valid @RequestHeader(value = "token", required = true) String token, @Valid @PathVariable String cpf,
+			@Valid @RequestHeader(value = "Authorization", required = true) String token, @Valid @PathVariable String cpf,
 			@Valid @RequestBody CriaDesafioInputDTO criaDesafioInputDTO) throws Exception {
 
 		return ResponseEntity.status(HttpStatus.OK)
@@ -113,7 +114,7 @@ public class AtendimentoRemotoController {
 	}
 
 	@GetMapping("/modelo-nota")
-	public ResponseEntity<Object> consultaModeloFavorita() {
+	public ResponseEntity<Object> consultaModeloNota() {
 		return ResponseEntity.status(HttpStatus.CREATED).body(modeloNotaService.consultaModeloNota());
 	}
 
@@ -126,7 +127,7 @@ public class AtendimentoRemotoController {
 
 	@PostMapping("/modelo-nota-favorita/{numeroModeloNota}")
 	public ResponseEntity<Object> adicionaModeloNotaFavorita(
-			@Valid @RequestHeader(value = "token", required = true) String token,
+			@Valid @RequestHeader(value = "Authorization", required = true) String token,
 			@Valid @PathVariable Long numeroModeloNota) {
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(modeloNotaService.adicionaModeloNotaFavorita(token.trim().replace(BEARER, StringUtils.EMPTY), numeroModeloNota));
@@ -138,7 +139,7 @@ public class AtendimentoRemotoController {
 	}
 
 	@PostMapping("/modelo-nota-dinamico/{numeroModeloNota}")
-	public ResponseEntity<Object> modeloNotaDinamico(@Valid @RequestHeader(value = "token", required = true) String token,
+	public ResponseEntity<Object> modeloNotaDinamico(@Valid @RequestHeader(value = "Authorization", required = true) String token,
 			@Valid @PathVariable Long numeroModeloNota,
 			@Valid @RequestBody ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO)
 			throws Exception {

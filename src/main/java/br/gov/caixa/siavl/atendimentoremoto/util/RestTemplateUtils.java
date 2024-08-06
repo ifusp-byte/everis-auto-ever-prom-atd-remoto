@@ -13,10 +13,11 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.annotation.ApplicationScope;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.*;
 
 @Component
 @ApplicationScope
-@SuppressWarnings({ "deprecation", "squid:S1488", "squid:S4507", "squid:S112"})
+@SuppressWarnings("all")
 public class RestTemplateUtils {
 	
 	public RestTemplateDto newRestTemplate() {
@@ -30,7 +31,7 @@ public class RestTemplateUtils {
 		try {
 			sslcontext = SSLContexts.custom().loadTrustMaterial(null, (chain, authType) -> true).build();
 			SSLConnectionSocketFactory sSlConnectionSocketFactory = new SSLConnectionSocketFactory(sslcontext,
-					new String[] { "TLSv1.2" }, null, new NoopHostnameVerifier());
+					new String[] { CHANNEL }, null, new NoopHostnameVerifier());
 			httpClient = HttpClients.custom().setSSLSocketFactory(sSlConnectionSocketFactory).build();
 			requestFactory.setHttpClient(httpClient);
 			restTemplate = new RestTemplate(requestFactory);

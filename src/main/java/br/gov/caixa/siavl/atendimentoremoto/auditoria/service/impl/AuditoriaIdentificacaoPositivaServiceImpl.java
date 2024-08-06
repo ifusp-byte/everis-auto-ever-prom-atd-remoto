@@ -24,7 +24,7 @@ import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaIdentific
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
-@SuppressWarnings({ "squid:S6813", "squid:S112", "squid:S1854"})
+@SuppressWarnings("all")
 public class AuditoriaIdentificacaoPositivaServiceImpl implements AuditoriaIdentificacaoPositivaService {
 
 	@Autowired

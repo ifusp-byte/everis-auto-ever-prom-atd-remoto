@@ -22,6 +22,7 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinami
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaNumeroOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaOutputDto;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway.SicliGateway;
 import br.gov.caixa.siavl.atendimentoremoto.model.FluxoAtendimento;
 import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocioFavorito;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoNegocioRepository;
@@ -33,11 +34,10 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepo
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RoteiroFechamentoNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
-import br.gov.caixa.siavl.atendimentoremoto.sicli.gateway.SicliGateway;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
-@SuppressWarnings({ "squid:S6813", "squid:S1226", "squid:S1144", "squid:S4507"})
+@SuppressWarnings("all")
 public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	@Autowired
@@ -74,79 +74,75 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	public List<ModeloNotaOutputDto> consultaModeloNota() {
 		List<ModeloNotaOutputDto> modelosNota = new ArrayList<>();
-
-		modeloNotaFavoritoRepository.findModeloNota().stream().forEach(modeloNota ->
-
-		{
-			ModeloNotaOutputDto modeloNotaOutputDto = null;
-
-			modeloNotaOutputDto = ModeloNotaOutputDto.builder().numeroModeloNota(String.valueOf(modeloNota[0]))
-					.numeroAcaoProduto(String.valueOf(modeloNota[1]))
-					.descricaoAcaoProduto(String.valueOf(modeloNota[2])).build();
-			
-			Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
-			
-			if (!fluxoAtendimento.isPresent()) {
-				modelosNota.add(modeloNotaOutputDto);	
-			}
-
-		});
+		List<Object[]> findModeloNota = modeloNotaFavoritoRepository.findModeloNota();
+		if (!findModeloNota.isEmpty()) {
+			findModeloNota.stream().forEach(modeloNota -> {
+				ModeloNotaOutputDto modeloNotaOutputDto = null;
+				modeloNotaOutputDto = ModeloNotaOutputDto.builder().numeroModeloNota(String.valueOf(modeloNota[0]))
+						.numeroAcaoProduto(String.valueOf(modeloNota[1]))
+						.descricaoAcaoProduto(String.valueOf(modeloNota[2])).build();
+				Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository
+						.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
+				if (!fluxoAtendimento.isPresent()) {
+					modelosNota.add(modeloNotaOutputDto);
+				}
+			});
+		}
 		return modelosNota;
 	}
 
 	public List<ModeloNotaOutputDto> consultaModeloNotaMaisUtilizada() {
 		List<ModeloNotaOutputDto> modelosNota = new ArrayList<>();
+		List<ModeloNotaOutputDto> modelosNotaRetorno = new ArrayList<>();
+		List<Object[]> findModeloNotaMaisUtilizada = modeloNotaFavoritoRepository.findModeloNotaMaisUtilizada();
+		if (!findModeloNotaMaisUtilizada.isEmpty()) {
+			findModeloNotaMaisUtilizada.stream().forEach(modeloNota -> {
+				ModeloNotaOutputDto modeloNotaOutputDto = null;
+				modeloNotaOutputDto = ModeloNotaOutputDto.builder().numeroModeloNota(String.valueOf(modeloNota[1]))
+						.numeroAcaoProduto(String.valueOf(modeloNota[2]))
+						.descricaoAcaoProduto(String.valueOf(modeloNota[3])).build();
 
-		modeloNotaFavoritoRepository.findModeloNotaMaisUtilizada().stream().forEach(modeloNota ->
+				Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository
+						.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
 
-		{
-			ModeloNotaOutputDto modeloNotaOutputDto = null;
-
-			modeloNotaOutputDto = ModeloNotaOutputDto.builder().numeroModeloNota(String.valueOf(modeloNota[1]))
-					.numeroAcaoProduto(String.valueOf(modeloNota[2]))
-					.descricaoAcaoProduto(String.valueOf(modeloNota[3])).build();
-			
-			Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
-			
-			if (!fluxoAtendimento.isPresent()) {
-				modelosNota.add(modeloNotaOutputDto);	
-			}
-			
-		});
-		return modelosNota.subList(0, 5);
+				if (!fluxoAtendimento.isPresent()) {
+					modelosNota.add(modeloNotaOutputDto);
+				}
+			});
+		}
+		if (modelosNota.size() >= 5) {
+			modelosNotaRetorno = modelosNota.subList(0, 5);
+		} else {
+			modelosNotaRetorno = modelosNota;
+		}
+		return modelosNotaRetorno;
 	}
 
 	@Override
 	public List<ModeloNotaOutputDto> consultaModeloNotaFavorita(String token) {
-
 		Long matriculaAtendente = null;
 		matriculaAtendente = matriculaCriacaoNota(token);
-
 		List<ModeloNotaOutputDto> modelosNotaFavorita = new ArrayList<>();
 		List<ModeloNotaOutputDto> modelosNotaFavorita2 = new ArrayList<>();
 		List<ModeloNotaOutputDto> modelosNotaFavoritaRetorno = new ArrayList<>();
+		List<Object[]> findModeloNotaFavorita = modeloNotaFavoritoRepository.findModeloNotaFavorita(matriculaAtendente);
 
-		if (!modeloNotaFavoritoRepository.findModeloNotaFavorita(matriculaAtendente).isEmpty()) {
-			modeloNotaFavoritoRepository.findModeloNotaFavorita(matriculaAtendente).stream().forEach(modeloNotaFavorita ->
-
-			{
+		if (!findModeloNotaFavorita.isEmpty()) {
+			findModeloNotaFavorita.stream().forEach(modeloNotaFavorita -> {
 				ModeloNotaOutputDto modeloNotaOutputDto = null;
-
-				modeloNotaOutputDto = ModeloNotaOutputDto.builder().numeroModeloNota(String.valueOf(modeloNotaFavorita[0]))
+				modeloNotaOutputDto = ModeloNotaOutputDto.builder()
+						.numeroModeloNota(String.valueOf(modeloNotaFavorita[0]))
 						.numeroAcaoProduto(String.valueOf(modeloNotaFavorita[1]))
 						.descricaoAcaoProduto(String.valueOf(modeloNotaFavorita[2]))
 						.dataEscolhaFavorito(formataData(modeloNotaFavorita[3])).build();
-				
-				Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
-				
+
+				Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository
+						.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
 				if (!fluxoAtendimento.isPresent()) {
-					modelosNotaFavorita.add(modeloNotaOutputDto);	
+					modelosNotaFavorita.add(modeloNotaOutputDto);
 				}
-				
 			});
-
 			modelosNotaFavorita2.addAll(modelosNotaFavorita);
-
 			for (ModeloNotaOutputDto favorita : modelosNotaFavorita) {
 				for (int i = 0; i < modelosNotaFavorita.size(); i++) {
 					if (modelosNotaFavorita.get(i).getNumeroModeloNota().equals(favorita.getNumeroModeloNota())
@@ -157,17 +153,17 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 					}
 				}
 			}
-			
 			modelosNotaFavoritaRetorno = retornoListaFavorito(modelosNotaFavorita2, modelosNotaFavoritaRetorno);
 		}
 		return modelosNotaFavoritaRetorno;
 	}
-	
-	public List<ModeloNotaOutputDto> retornoListaFavorito (List<ModeloNotaOutputDto> modelosNotaFavorita2, List<ModeloNotaOutputDto> modelosNotaFavoritaRetorno){
-		
-		if (modelosNotaFavorita2.size() >= 5) {			
+
+	public List<ModeloNotaOutputDto> retornoListaFavorito(List<ModeloNotaOutputDto> modelosNotaFavorita2,
+			List<ModeloNotaOutputDto> modelosNotaFavoritaRetorno) {
+
+		if (modelosNotaFavorita2.size() >= 5) {
 			modelosNotaFavoritaRetorno = modelosNotaFavorita2.subList(0, 5);
-		} else {		
+		} else {
 			modelosNotaFavoritaRetorno = modelosNotaFavorita2;
 		}
 		return modelosNotaFavoritaRetorno;
@@ -203,10 +199,10 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 			notaProdutoLista.add(notaProdutoItem);
 		});
-		
+
 		ModeloNotaDinamicoMenuNotaNumeroOutputDTO modeloNotaDinamicoMenuNotaNumeroOutputDTO = new ModeloNotaDinamicoMenuNotaNumeroOutputDTO();
 		modeloNotaDinamicoMenuNotaNumeroOutputDTO.setDataModificacao(formataData(new Date()));
-		
+
 		List<ModeloNotaDinamicoMenuNotaDinamicoOutputDTO> dinamicos = new ArrayList<>();
 		modeloNotaFavoritoRepository.modeloNotaDinamico(numeroModeloNota).stream().forEach(dinamico -> {
 
@@ -243,11 +239,15 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		modeloNotaDinamicoOutputDTO.setMenuNotaDinamico(mapper.writeValueAsString(dinamicos));
 		modeloNotaDinamicoOutputDTO.setMenuNotaProduto(notaProdutoLista.get(0));
 
-		Clob roteiro = roteiroFechamentoNotaRepository.roteiro(numeroModeloNota);
+		Optional<List<Clob>> roteiroListaConsulta = roteiroFechamentoNotaRepository.roteiro(numeroModeloNota);
+		List<Clob> roteiroRetorno = roteiroListaConsulta.isPresent() ? roteiroListaConsulta.get() : new ArrayList<>(); 
+		Clob roteiro = roteiroRetorno.isEmpty() ? roteiro = null : roteiroRetorno.get(0);
+
+		if (roteiro != null) { 
 		int tamanho = Integer.parseInt(String.valueOf(roteiro.length()));
-
 		modeloNotaDinamicoOutputDTO.setRoteiroFechamento(String.valueOf(roteiro.getSubString(1, tamanho)));
-
+		}
+		
 		return modeloNotaDinamicoOutputDTO;
 	}
 

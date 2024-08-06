@@ -12,19 +12,19 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncDesafioInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto.AuditoriaPncInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.gateway.AuditoriaPncGateway;
-import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.CriaDesafioOutputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.dto.RespondeDesafioOutputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.identificacaopositiva.gateway.IdentificacaoPositivaGateway;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.CriaDesafioInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.CriaDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.RespondeDesafioInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.RespondeDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.gateway.IdentificacaoPositivaGateway;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncDesafioInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.gateway.AuditoriaPncGateway;
 import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
-@SuppressWarnings({"squid:S2293", "squid:S1854", "squid:S6813", "squid:S112"})
+@SuppressWarnings("all")
 public class DesafioServiceImpl implements DesafioService {
 	
 	@Autowired
