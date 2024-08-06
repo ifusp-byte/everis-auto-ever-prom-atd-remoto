@@ -1,0 +1,137 @@
+package br.gov.caixa.siavl.atendimentoremoto.service.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContaAtendimentoOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway.SicliGateway;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncProtocoloInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.gateway.AuditoriaPncGateway;
+import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
+import br.gov.caixa.siavl.atendimentoremoto.repository.GeraProtocoloRespository;
+import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
+import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
+
+@Service
+@SuppressWarnings("all")
+public class GeraProtocoloServiceImpl implements GeraProtocoloService {
+
+	@Autowired
+	TokenUtils tokenUtils;
+
+	@Autowired
+	GeraProtocoloRespository geraProtocoloRespository;
+
+	@Autowired
+	AuditoriaPncGateway auditoriaPncGateway;
+	
+	@Autowired
+	SicliGateway sicliGateway;
+
+	private static ObjectMapper mapper = new ObjectMapper();
+	
+	private static final String DOCUMENT_TYPE_CPF = "CPF";
+	private static final String DOCUMENT_TYPE_CNPJ = "CNPJ";
+
+	@Override
+	public GeraProtocoloOutputDTO geraProtocolo(String token, GeraProtocoloInputDTO geraProtocoloInputDTO) throws Exception {
+		
+		String tipoDocumento = null; 
+		Long matriculaAtendente = Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", ""));
+		Long cpfCnpj = Long.parseLong(geraProtocoloInputDTO.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim()); 
+		Long numeroUnidade = Long.parseLong(tokenUtils.getUnidadeFromToken(token));
+		
+		String canalAtendimento = geraProtocoloInputDTO.getTipoAtendimento();
+		AtendimentoCliente atendimentoCliente = new AtendimentoCliente();
+		
+		atendimentoCliente.setMatriculaAtendente(matriculaAtendente);
+		atendimentoCliente.setCanalAtendimento(canalAtendimento.charAt(0));
+		atendimentoCliente.setNumeroUnidade(numeroUnidade);
+
+		ContaAtendimentoOutputDTO contaAtendimento = sicliGateway.contaAtendimento(token, geraProtocoloInputDTO.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim(), false);
+		
+		if (geraProtocoloInputDTO.getCpfCnpj().trim().length() == 11) {
+			atendimentoCliente.setNomeCliente(contaAtendimento.getNomeCliente());
+			atendimentoCliente.setCpfCliente(cpfCnpj);
+			tipoDocumento = DOCUMENT_TYPE_CPF;
+		} else {
+			atendimentoCliente.setNomeCliente(contaAtendimento.getRazaoSocial());
+			atendimentoCliente.setCnpjCliente(cpfCnpj);
+			tipoDocumento = DOCUMENT_TYPE_CNPJ;
+		}
+		
+		atendimentoCliente.setDataInicialAtendimento(formataDataBanco());
+		atendimentoCliente.setDataContatoCliente(formataDataBanco());
+		atendimentoCliente = geraProtocoloRespository.save(atendimentoCliente);
+		
+		GeraProtocoloOutputDTO geraProtocoloOutputDTO = new GeraProtocoloOutputDTO();
+		geraProtocoloOutputDTO.setStatus(true);
+		geraProtocoloOutputDTO.setNumeroProtocolo(String.valueOf(atendimentoCliente.getNumeroProtocolo()));
+		geraProtocoloOutputDTO.setSocios(contaAtendimento.getSocios());		
+		geraProtocoloOutputDTO.setRazaoSocial(contaAtendimento.getRazaoSocial());
+		geraProtocoloOutputDTO.setStatusSicli(contaAtendimento.getStatusCode());
+		geraProtocoloOutputDTO.setMensagemSicli(contaAtendimento.getStatusMessage());		
+		
+		AuditoriaPncProtocoloInputDTO auditoriaPncProtocoloInputDTO = new AuditoriaPncProtocoloInputDTO(); 
+		auditoriaPncProtocoloInputDTO = AuditoriaPncProtocoloInputDTO.builder()
+				.cpfCnpj(String.valueOf(cpfCnpj))
+				.canal(canalAtendimento)
+				.numeroProtocolo(String.valueOf(atendimentoCliente.getNumeroProtocolo()))
+				.dataInicioAtendimento(formataData(new Date()))
+				.matriculaAtendente(String.valueOf(matriculaAtendente))			
+				.transacaoSistema("287")
+				.build();
+		
+		String descricaoTransacao = null;
+
+		try {
+			descricaoTransacao = mapper.writeValueAsString(auditoriaPncProtocoloInputDTO);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+
+		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
+
+		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder()
+				.descricaoTransacao(descricaoTransacao)
+				.ipTerminalUsuario(tokenUtils.getIpFromToken(token))
+				.nomeMfe("mfe_avl_atendimentoremoto")
+				.numeroUnidadeLotacaoUsuario(50L)
+				.ambienteAplicacao("NACIONAL")
+				.tipoDocumento(tipoDocumento)
+				.numeroIdentificacaoCliente(cpfCnpj)
+				.build();
+
+		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
+
+		return geraProtocoloOutputDTO;
+	}
+	
+	private Date formataDataBanco() {
+
+		Calendar time = Calendar.getInstance();
+		time.add(Calendar.HOUR, -3);
+		return time.getTime();
+	}
+	
+	private String formataData(Date dateInput) {
+
+		String data = null;
+		Locale locale = new Locale("pt", "BR");
+		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
+		data = String.valueOf(sdfOut.format(dateInput));
+		return data;
+	}
+
+}
