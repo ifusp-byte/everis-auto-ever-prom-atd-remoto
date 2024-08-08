@@ -7,6 +7,7 @@ public final class ConstantsUtils {
 		throw new IllegalStateException("Utility class");
 	}
 	
+	public static final String UNRECOGNIZED_TOKEN = "Unrecognized token";
 	public static final String BEARER_1 = "Bearer";
 	public static final String BEARER_2 = "Bearer ";
 	public static final String AUTHORIZATION = "Authorization";
