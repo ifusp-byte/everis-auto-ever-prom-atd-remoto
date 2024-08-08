@@ -193,7 +193,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			notaNegociacao.setNumeroEquipe(numeroEquipe);
 			
 			String qtdMetaInput = registraNotaInputDto.getQuantidadeMeta();
-			Long qtdMeta = qtdMetaInput == null || StringUtils.isBlank(qtdMetaInput) ? null : Long.parseLong(qtdMetaInput.replace(".", "").replace(",", "").trim());
+			Long qtdMeta = qtdMetaInput == null || StringUtils.isBlank(qtdMetaInput) ? 0 : Long.parseLong(qtdMetaInput.replace(".", "").replace(",", "").trim());
 			Optional.ofNullable(qtdMeta).ifPresent(notaNegociacao::setQtdItemNegociacao);			
 
 			notaNegociacao.setValorSolicitadoNota(Double.parseDouble(valorMeta));
