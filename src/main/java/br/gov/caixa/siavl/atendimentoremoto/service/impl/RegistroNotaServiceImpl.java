@@ -185,14 +185,17 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			notaNegociacao.setDataModificacaoNota(formataDataBanco());
 			notaNegociacao.setNumeroMatriculaCriacaoNota(matriculaCriacaoNota(token));
 			notaNegociacao.setNumeroMatriculaModificacaoNota(matriculaCriacaoNota(token));
-			notaNegociacao.setNumeroSituacaoNota(16L); // VERIFICAR
+			notaNegociacao.setNumeroSituacaoNota(16L);
 			notaNegociacao.setQtdItemNegociacao(1L);
 			notaNegociacao.setIcOrigemNota(1L);
 			notaNegociacao.setDataPrazoValidade(dataValidade);
 			notaNegociacao.setIcOrigemNota(1L);
 			notaNegociacao.setNumeroEquipe(numeroEquipe);
-			notaNegociacao.setQtdItemNegociacao(
-					Long.parseLong(registraNotaInputDto.getQuantidadeMeta().replace(".", "").replace(",", "").trim()));
+			
+			String qtdMetaInput = registraNotaInputDto.getQuantidadeMeta();
+			Long qtdMeta = qtdMetaInput == null || StringUtils.isBlank(qtdMetaInput) ? null : Long.parseLong(qtdMetaInput.replace(".", "").replace(",", "").trim());
+			Optional.ofNullable(qtdMeta).ifPresent(notaNegociacao::setQtdItemNegociacao);			
+
 			notaNegociacao.setValorSolicitadoNota(Double.parseDouble(valorMeta));
 			notaNegociacao.setNuUnidade(nuUnidade);
 			notaNegociacao.setNuProduto(nuProduto);
