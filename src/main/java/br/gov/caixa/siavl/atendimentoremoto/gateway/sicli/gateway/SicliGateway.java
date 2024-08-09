@@ -1,10 +1,5 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway;
 
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.PONTO;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRACO;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRES_NUMER;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_CHAR;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_NUMER;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.S;
 
 import java.text.ParseException;
@@ -42,6 +37,7 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.constants.SicliGateway
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContaAtendimentoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContasOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.SociosOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.util.ContaUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
@@ -71,6 +67,9 @@ public class SicliGateway {
 
 	@Autowired
 	RestTemplateUtils restTemplateUtils;
+	
+	@Autowired
+	ContaUtils contaUtils; 
 
 	private static ObjectMapper mapper = new ObjectMapper();
 
@@ -160,7 +159,7 @@ public class SicliGateway {
 				String nuProduto = node.path("nuProduto").asText().trim();
 				String coIdentificacao = node.path("coIdentificacao").asText().trim();
 
-				contasAtendimento = formataContaTotalLista(dtInicio, sgSistema, nuUnidade, nuProduto, coIdentificacao,
+				contasAtendimento = contaUtils.formataContaTotalLista(dtInicio, sgSistema, nuUnidade, nuProduto, coIdentificacao,
 						contasAtendimento);
 			}
 
@@ -308,47 +307,6 @@ public class SicliGateway {
 			}
 		}
 		return cnpj;
-	}
-
-	private List<ContasOutputDTO> formataContaTotalLista(String dtInicio, String sgSistema, Object nuUnidade,
-			Object nuProduto, Object coIdentificacao, List<ContasOutputDTO> contasAtendimento) {
-
-		String contaFormatada = null;
-
-		if ("SIDEC".equalsIgnoreCase(sgSistema)) {
-			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO,
-					StringUtils.EMPTY);
-			String unidade = String.valueOf(nuUnidade);
-			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
-			identificacao = identificacao.replace(formataUnidade, StringUtils.EMPTY);
-			String produto = identificacao.substring(ZERO_NUMER, TRES_NUMER);
-			identificacao = identificacao.replace(produto, StringUtils.EMPTY);
-			identificacao = StringUtils.stripStart(identificacao, ZERO_CHAR);
-			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
-			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
-			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
-			ContasOutputDTO conta = new ContasOutputDTO();
-			conta.setConta(contaFormatada);
-			contasAtendimento.add(conta);
-		}
-
-		if ("SID01".equalsIgnoreCase(sgSistema)) {
-			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO,
-					StringUtils.EMPTY);
-			String unidade = String.valueOf(nuUnidade);
-			String produto = String.valueOf(nuProduto);
-			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
-			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
-			identificacao = StringUtils.stripStart(identificacao, ZERO_CHAR);
-			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
-			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
-			ContasOutputDTO conta = new ContasOutputDTO();
-			conta.setConta(contaFormatada);
-			contasAtendimento.add(conta);
-		}
-
-		return contasAtendimento;
-
 	}
 
 }

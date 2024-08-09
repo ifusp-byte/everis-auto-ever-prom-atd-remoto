@@ -23,6 +23,7 @@ public final class ConstantsUtils {
 	public static final String CONTA_SIART = "SIART";
 	public static final String CONTA_SIDEC = "SIDEC";
 	public static final String CONTA_SIIFX = "SIIFX";
+	public static final String CONTA_SID01 = "SID01";
 	public static final String DEFAULT_IP = "127.0.0.1";
 	public static final String DEFAULT_LOCAL_ARMAZENAMENTO = "OS_CAIXA";
 	public static final String DEFAULT_LOCAL_GRAVACAO = "DOSSIE";
