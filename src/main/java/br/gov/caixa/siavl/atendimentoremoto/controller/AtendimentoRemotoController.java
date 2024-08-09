@@ -206,7 +206,7 @@ public class AtendimentoRemotoController {
 			@Valid @RequestHeader(value = "Authorization", required = true) String token,
 			@Valid @PathVariable String cpfCnpj) throws Exception {
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-				.body(sicliGateway.VerificarMarcaDoiSicli(token.trim().replace(BEARER, StringUtils.EMPTY), cpfCnpj));
+				.body(sicliGateway.verificaMarcaDoi(token.trim().replace(BEARER, StringUtils.EMPTY), cpfCnpj));
 	}
 
 }

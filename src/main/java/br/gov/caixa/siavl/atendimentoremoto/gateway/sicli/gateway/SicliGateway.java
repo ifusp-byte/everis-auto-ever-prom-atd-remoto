@@ -5,6 +5,7 @@ import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRACO;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRES_NUMER;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_CHAR;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_NUMER;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.S;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,7 +44,6 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContasOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.SociosOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
-import ch.qos.logback.core.joran.conditional.ElseAction;
 
 @Service
 @Validated
@@ -123,7 +123,8 @@ public class SicliGateway {
 			composicaoSocietaria = (ArrayNode) body.get("composicaoSocietaria");
 
 			String nomeCliente = Objects.requireNonNull(body.path("dadosBasicos").path("nome")).asText();
-			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento")).asText();
+			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento"))
+					.asText();
 			String razaoSocial = Objects.requireNonNull(body.path("dadosBasicos").path("razaoSocial")).asText();
 			String cnpj = null;
 
@@ -173,15 +174,10 @@ public class SicliGateway {
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
-					.statusCreated(statusCreated)
-					.dataCreated(formataData(new Date()))
-					.nomeCliente(nomeCliente)
+					.statusCreated(statusCreated).dataCreated(formataData(new Date())).nomeCliente(nomeCliente)
 					.cpfCliente(cpfCliente.equals(StringUtils.EMPTY) ? StringUtils.EMPTY : formataCpf(cpfCliente))
-					.contas(contasAtendimento)
-					.socios(sociosLista)
-					.razaoSocial(razaoSocial)
-					.cnpj(cnpj == null ? StringUtils.EMPTY : formataCnpj(cnpj))
-					.build();
+					.contas(contasAtendimento).socios(sociosLista).razaoSocial(razaoSocial)
+					.cnpj(cnpj == null ? StringUtils.EMPTY : formataCnpj(cnpj)).build();
 
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
 					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
@@ -196,10 +192,7 @@ public class SicliGateway {
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.statusMessage(statusMessage)
-					.statusCreated(false)
-					.dataCreated(formataData(new Date()))
-					.build();
+					.statusMessage(statusMessage).statusCreated(false).dataCreated(formataData(new Date())).build();
 
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
 					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
@@ -216,6 +209,42 @@ public class SicliGateway {
 		}
 
 		return contaAtendimentoOutputDTO;
+	}
+
+	public Boolean verificaMarcaDoi(@Valid String token, @Valid String cpfCnpj) throws Exception {
+		ResponseEntity<String> response = null;
+		JsonNode body;
+		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
+		Boolean verificado = false;
+
+		try {
+			String uri = URL_BASE + "/" + URL_SICLI + cpfCnpj.replace(".", "").replace("-", "").trim();
+			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
+
+			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,
+					newRequestEntityContaAtendimento(token), String.class);
+
+			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
+
+			String statusMessage = validateGatewayStatusAtendimentoConta(Objects.requireNonNull(response.getStatusCodeValue()));
+
+			body = mapper.readTree(String.valueOf(response.getBody()));
+			String marcaDOI = Objects.requireNonNull(body.path("dadosBasicos").path("marcaDOI")).asText();
+			
+			if (marcaDOI.equalsIgnoreCase(S)) {
+				verificado = true;
+			}
+
+		} catch (RestClientResponseException e) {
+			body = mapper.readTree(e.getResponseBodyAsString());
+			JsonNode retornoSicli = Objects.requireNonNull(body.path("retorno"));
+			LOG.info("Marca Doi - Consultar - Resposta SICLI " + mapper.writeValueAsString(body));
+
+		} finally {
+
+			restTemplateDto.getHttpClient().close();
+		}
+		return verificado;
 	}
 
 	public String validateGatewayStatusAtendimentoConta(int statusCode) {
@@ -322,40 +351,4 @@ public class SicliGateway {
 
 	}
 
-	public Boolean VerificarMarcaDoiSicli(@Valid String token, @Valid String cpfCnpj) throws Exception {
-		ResponseEntity<String> response = null;
-		JsonNode body;
-		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
-		Boolean verificado = false;
-
-		try {
-			String uri = URL_BASE + "/" + URL_SICLI + cpfCnpj.replace(".", "").replace("-", "").trim();
-			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
-
-			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,
-					newRequestEntityContaAtendimento(token), String.class);
-
-			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
-
-			String statusMessage = validateGatewayStatusAtendimentoConta(
-					Objects.requireNonNull(response.getStatusCodeValue()));
-
-			body = mapper.readTree(String.valueOf(response.getBody()));
-			String marcaDOI = Objects.requireNonNull(body.path("dadosBasicos").path("marcaDOI")).asText();
-			if (marcaDOI.equals("S") || marcaDOI.equals("s")) {
-				verificado = true;
-			}
-
-		} catch (RestClientResponseException e) {
-			body = mapper.readTree(e.getResponseBodyAsString());
-			JsonNode retornoSicli = Objects.requireNonNull(body.path("retorno"));
-
-			LOG.info("Marca Doi - Consultar - Resposta SICLI " + mapper.writeValueAsString(body));
-			String statusMessage = validateGatewayStatusAtendimentoConta(Objects.requireNonNull(e.getRawStatusCode()));
-		} finally {
-
-			restTemplateDto.getHttpClient().close();
-		}
-		return verificado;
-	}
 }
