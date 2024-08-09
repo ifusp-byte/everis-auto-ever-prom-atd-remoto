@@ -43,6 +43,7 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContasOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.SociosOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
+import ch.qos.logback.core.joran.conditional.ElseAction;
 
 @Service
 @Validated
@@ -114,7 +115,8 @@ public class SicliGateway {
 
 			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
 
-			String statusMessage = validateGatewayStatusAtendimentoConta(Objects.requireNonNull(response.getStatusCodeValue()));
+			String statusMessage = validateGatewayStatusAtendimentoConta(
+					Objects.requireNonNull(response.getStatusCodeValue()));
 
 			body = mapper.readTree(String.valueOf(response.getBody()));
 			contratos = (ArrayNode) body.get("contratos");
@@ -285,11 +287,12 @@ public class SicliGateway {
 		String contaFormatada = null;
 
 		if ("SIDEC".equalsIgnoreCase(sgSistema)) {
-			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
+			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO,
+					StringUtils.EMPTY);
 			String unidade = String.valueOf(nuUnidade);
 			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
 			identificacao = identificacao.replace(formataUnidade, StringUtils.EMPTY);
-			String produto = identificacao.substring(ZERO_NUMER, TRES_NUMER);		
+			String produto = identificacao.substring(ZERO_NUMER, TRES_NUMER);
 			identificacao = identificacao.replace(produto, StringUtils.EMPTY);
 			identificacao = StringUtils.stripStart(identificacao, ZERO_CHAR);
 			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
@@ -301,7 +304,8 @@ public class SicliGateway {
 		}
 
 		if ("SID01".equalsIgnoreCase(sgSistema)) {
-			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
+			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO,
+					StringUtils.EMPTY);
 			String unidade = String.valueOf(nuUnidade);
 			String produto = String.valueOf(nuProduto);
 			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
@@ -318,4 +322,40 @@ public class SicliGateway {
 
 	}
 
+	public Boolean VerificarMarcaDoiSicli(@Valid String token, @Valid String cpfCnpj) throws Exception {
+		ResponseEntity<String> response = null;
+		JsonNode body;
+		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
+		Boolean verificado = false;
+
+		try {
+			String uri = URL_BASE + "/" + URL_SICLI + cpfCnpj.replace(".", "").replace("-", "").trim();
+			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
+
+			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,
+					newRequestEntityContaAtendimento(token), String.class);
+
+			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
+
+			String statusMessage = validateGatewayStatusAtendimentoConta(
+					Objects.requireNonNull(response.getStatusCodeValue()));
+
+			body = mapper.readTree(String.valueOf(response.getBody()));
+			String marcaDOI = Objects.requireNonNull(body.path("dadosBasicos").path("marcaDOI")).asText();
+			if (marcaDOI.equals("S") || marcaDOI.equals("s")) {
+				verificado = true;
+			}
+
+		} catch (RestClientResponseException e) {
+			body = mapper.readTree(e.getResponseBodyAsString());
+			JsonNode retornoSicli = Objects.requireNonNull(body.path("retorno"));
+
+			LOG.info("Marca Doi - Consultar - Resposta SICLI " + mapper.writeValueAsString(body));
+			String statusMessage = validateGatewayStatusAtendimentoConta(Objects.requireNonNull(e.getRawStatusCode()));
+		} finally {
+
+			restTemplateDto.getHttpClient().close();
+		}
+		return verificado;
+	}
 }
