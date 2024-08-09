@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoController;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ExceptionOutputDto;
 
+@SuppressWarnings("all")
 @ControllerAdvice(assignableTypes = AtendimentoRemotoController.class)
 public class AtendimentoRemotoException {
 
