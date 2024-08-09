@@ -74,7 +74,7 @@ public class AtendimentoRemotoController {
 
 	@Autowired
 	SicliGateway sicliGateway;
-	
+
 	private static final String BEARER = "Bearer";
 
 	@PostMapping("/protocolo")
@@ -83,7 +83,8 @@ public class AtendimentoRemotoController {
 			@Valid @RequestBody GeraProtocoloInputDTO geraProtocoloInputDTO) throws Exception {
 
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-				.body(geraProtocoloService.geraProtocolo(token.trim().replace(BEARER, StringUtils.EMPTY), geraProtocoloInputDTO));
+				.body(
+						geraProtocoloService.geraProtocolo(token.trim().replace(BEARER, StringUtils.EMPTY), geraProtocoloInputDTO));
 	}
 
 	@PostMapping("/desafio-criar/{cpf}")
@@ -102,7 +103,8 @@ public class AtendimentoRemotoController {
 			throws Exception {
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(desafioService.desafioResponder(token.trim().replace(BEARER, StringUtils.EMPTY), idDesafio, respostaDesafio));
+				.body(desafioService.desafioResponder(token.trim().replace(BEARER, StringUtils.EMPTY), idDesafio,
+						respostaDesafio));
 	}
 
 	@PostMapping("/auditoria-identificacao-positiva")
@@ -130,7 +132,8 @@ public class AtendimentoRemotoController {
 			@Valid @RequestHeader(value = "Authorization", required = true) String token,
 			@Valid @PathVariable Long numeroModeloNota) {
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(modeloNotaService.adicionaModeloNotaFavorita(token.trim().replace(BEARER, StringUtils.EMPTY), numeroModeloNota));
+				.body(modeloNotaService.adicionaModeloNotaFavorita(token.trim().replace(BEARER, StringUtils.EMPTY),
+						numeroModeloNota));
 	}
 
 	@GetMapping("/modelo-nota-mais-utilizada")
@@ -139,7 +142,8 @@ public class AtendimentoRemotoController {
 	}
 
 	@PostMapping("/modelo-nota-dinamico/{numeroModeloNota}")
-	public ResponseEntity<Object> modeloNotaDinamico(@Valid @RequestHeader(value = "Authorization", required = true) String token,
+	public ResponseEntity<Object> modeloNotaDinamico(
+			@Valid @RequestHeader(value = "Authorization", required = true) String token,
 			@Valid @PathVariable Long numeroModeloNota,
 			@Valid @RequestBody ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO)
 			throws Exception {
@@ -170,7 +174,8 @@ public class AtendimentoRemotoController {
 			@Valid @RequestHeader(value = "Authorization", required = true) String token,
 			@Valid @PathVariable Long numeroNota, @Valid @RequestBody EnviaClienteInputDto enviaClienteInputDto) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(
-				registroNotaService.enviaCliente(token.trim().replace(BEARER, StringUtils.EMPTY), numeroNota, enviaClienteInputDto));
+				registroNotaService.enviaCliente(token.trim().replace(BEARER, StringUtils.EMPTY), numeroNota,
+						enviaClienteInputDto));
 	}
 
 	@PostMapping("/documento/{cpfCnpj}")
@@ -194,6 +199,14 @@ public class AtendimentoRemotoController {
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(anexoDocumentoService.tipoDocumentoCampos(codGED));
+	}
+
+	@GetMapping("/verificar-marca-doi/{cpfCnpj}")
+	public ResponseEntity<Object> verificarMarcaDoi(
+			@Valid @RequestHeader(value = "Authorization", required = true) String token,
+			@Valid @PathVariable String cpfCnpj) throws Exception {
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
+				.body(sicliGateway.VerificarMarcaDoiSicli(token.trim().replace(BEARER, StringUtils.EMPTY), cpfCnpj));
 	}
 
 }
