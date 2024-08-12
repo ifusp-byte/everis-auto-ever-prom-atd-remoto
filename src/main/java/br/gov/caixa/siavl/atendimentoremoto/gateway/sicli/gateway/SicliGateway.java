@@ -1,10 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway;
 
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.PONTO;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRACO;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRES_NUMER;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_CHAR;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_NUMER;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.S;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,6 +37,7 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.constants.SicliGateway
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContaAtendimentoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContasOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.SociosOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.util.ContaUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
@@ -70,6 +67,9 @@ public class SicliGateway {
 
 	@Autowired
 	RestTemplateUtils restTemplateUtils;
+	
+	@Autowired
+	ContaUtils contaUtils; 
 
 	private static ObjectMapper mapper = new ObjectMapper();
 
@@ -114,14 +114,16 @@ public class SicliGateway {
 
 			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
 
-			String statusMessage = validateGatewayStatusAtendimentoConta(Objects.requireNonNull(response.getStatusCodeValue()));
+			String statusMessage = validateGatewayStatusAtendimentoConta(
+					Objects.requireNonNull(response.getStatusCodeValue()));
 
 			body = mapper.readTree(String.valueOf(response.getBody()));
 			contratos = (ArrayNode) body.get("contratos");
 			composicaoSocietaria = (ArrayNode) body.get("composicaoSocietaria");
 
 			String nomeCliente = Objects.requireNonNull(body.path("dadosBasicos").path("nome")).asText();
-			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento")).asText();
+			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento"))
+					.asText();
 			String razaoSocial = Objects.requireNonNull(body.path("dadosBasicos").path("razaoSocial")).asText();
 			String cnpj = null;
 
@@ -157,7 +159,7 @@ public class SicliGateway {
 				String nuProduto = node.path("nuProduto").asText().trim();
 				String coIdentificacao = node.path("coIdentificacao").asText().trim();
 
-				contasAtendimento = formataContaTotalLista(dtInicio, sgSistema, nuUnidade, nuProduto, coIdentificacao,
+				contasAtendimento = contaUtils.formataContaTotalLista(dtInicio, sgSistema, nuUnidade, nuProduto, coIdentificacao,
 						contasAtendimento);
 			}
 
@@ -171,15 +173,10 @@ public class SicliGateway {
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
-					.statusCreated(statusCreated)
-					.dataCreated(formataData(new Date()))
-					.nomeCliente(nomeCliente)
+					.statusCreated(statusCreated).dataCreated(formataData(new Date())).nomeCliente(nomeCliente)
 					.cpfCliente(cpfCliente.equals(StringUtils.EMPTY) ? StringUtils.EMPTY : formataCpf(cpfCliente))
-					.contas(contasAtendimento)
-					.socios(sociosLista)
-					.razaoSocial(razaoSocial)
-					.cnpj(cnpj == null ? StringUtils.EMPTY : formataCnpj(cnpj))
-					.build();
+					.contas(contasAtendimento).socios(sociosLista).razaoSocial(razaoSocial)
+					.cnpj(cnpj == null ? StringUtils.EMPTY : formataCnpj(cnpj)).build();
 
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
 					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
@@ -194,10 +191,7 @@ public class SicliGateway {
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.statusMessage(statusMessage)
-					.statusCreated(false)
-					.dataCreated(formataData(new Date()))
-					.build();
+					.statusMessage(statusMessage).statusCreated(false).dataCreated(formataData(new Date())).build();
 
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
 					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
@@ -214,6 +208,42 @@ public class SicliGateway {
 		}
 
 		return contaAtendimentoOutputDTO;
+	}
+
+	public Boolean verificaMarcaDoi(@Valid String token, @Valid String cpfCnpj) throws Exception {
+		ResponseEntity<String> response = null;
+		JsonNode body;
+		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
+		Boolean verificado = false;
+
+		try {
+			String uri = URL_BASE + "/" + URL_SICLI + cpfCnpj.replace(".", "").replace("-", "").trim();
+			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
+
+			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,
+					newRequestEntityContaAtendimento(token), String.class);
+
+			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
+
+			String statusMessage = validateGatewayStatusAtendimentoConta(Objects.requireNonNull(response.getStatusCodeValue()));
+
+			body = mapper.readTree(String.valueOf(response.getBody()));
+			String marcaDOI = Objects.requireNonNull(body.path("dadosBasicos").path("marcaDOI")).asText();
+			
+			if (marcaDOI.equalsIgnoreCase(S)) {
+				verificado = true;
+			}
+
+		} catch (RestClientResponseException e) {
+			body = mapper.readTree(e.getResponseBodyAsString());
+			JsonNode retornoSicli = Objects.requireNonNull(body.path("retorno"));
+			LOG.info("Marca Doi - Consultar - Resposta SICLI " + mapper.writeValueAsString(body));
+
+		} finally {
+
+			restTemplateDto.getHttpClient().close();
+		}
+		return verificado;
 	}
 
 	public String validateGatewayStatusAtendimentoConta(int statusCode) {
@@ -277,45 +307,6 @@ public class SicliGateway {
 			}
 		}
 		return cnpj;
-	}
-
-	private List<ContasOutputDTO> formataContaTotalLista(String dtInicio, String sgSistema, Object nuUnidade,
-			Object nuProduto, Object coIdentificacao, List<ContasOutputDTO> contasAtendimento) {
-
-		String contaFormatada = null;
-
-		if ("SIDEC".equalsIgnoreCase(sgSistema)) {
-			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
-			String unidade = String.valueOf(nuUnidade);
-			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
-			identificacao = identificacao.replace(formataUnidade, StringUtils.EMPTY);
-			String produto = identificacao.substring(ZERO_NUMER, TRES_NUMER);		
-			identificacao = identificacao.replace(produto, StringUtils.EMPTY);
-			identificacao = StringUtils.stripStart(identificacao, ZERO_CHAR);
-			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
-			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
-			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
-			ContasOutputDTO conta = new ContasOutputDTO();
-			conta.setConta(contaFormatada);
-			contasAtendimento.add(conta);
-		}
-
-		if ("SID01".equalsIgnoreCase(sgSistema)) {
-			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
-			String unidade = String.valueOf(nuUnidade);
-			String produto = String.valueOf(nuProduto);
-			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
-			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
-			identificacao = StringUtils.stripStart(identificacao, ZERO_CHAR);
-			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
-			contaFormatada = formataUnidade + formataProduto + formatIdentificacao;
-			ContasOutputDTO conta = new ContasOutputDTO();
-			conta.setConta(contaFormatada);
-			contasAtendimento.add(conta);
-		}
-
-		return contasAtendimento;
-
 	}
 
 }
