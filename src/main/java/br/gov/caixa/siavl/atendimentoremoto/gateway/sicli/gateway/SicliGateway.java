@@ -2,6 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway;
 
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.S;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.text.MaskFormatter;
@@ -67,9 +69,9 @@ public class SicliGateway {
 
 	@Autowired
 	RestTemplateUtils restTemplateUtils;
-	
+
 	@Autowired
-	ContaUtils contaUtils; 
+	ContaUtils contaUtils;
 
 	private static ObjectMapper mapper = new ObjectMapper();
 
@@ -159,8 +161,8 @@ public class SicliGateway {
 				String nuProduto = node.path("nuProduto").asText().trim();
 				String coIdentificacao = node.path("coIdentificacao").asText().trim();
 
-				contasAtendimento = contaUtils.formataContaTotalLista(dtInicio, sgSistema, nuUnidade, nuProduto, coIdentificacao,
-						contasAtendimento);
+				contasAtendimento = contaUtils.formataContaTotalLista(dtInicio, sgSistema, nuUnidade, nuProduto,
+						coIdentificacao, contasAtendimento);
 			}
 
 			if (!contasAtendimento.isEmpty() && !nomeCliente.isEmpty() && !cpfCliente.isEmpty()) {
@@ -198,16 +200,19 @@ public class SicliGateway {
 
 		} finally {
 
-			restTemplateDto.getHttpClient().close();
-		}
-
-		if (!String.valueOf(HttpStatus.CREATED.value()).equals(contaAtendimentoOutputDTO.getStatusCode())) {
-			if (Boolean.TRUE.equals(auditar) && !statusCreated) {
-				auditoriaRegistraNotaSicliService.auditar(contaAtendimentoOutputDTO, token, cpfCnpj);
+			try {
+				restTemplateDto.getHttpClient().close();
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, "Erro. Não foi possível fechar a conexão com o socket.");
 			}
-		}
 
-		return contaAtendimentoOutputDTO;
+			if (!String.valueOf(HttpStatus.CREATED.value()).equals(contaAtendimentoOutputDTO.getStatusCode())) {
+				if (Boolean.TRUE.equals(auditar) && !statusCreated) {
+					auditoriaRegistraNotaSicliService.auditar(contaAtendimentoOutputDTO, token, cpfCnpj);
+				}
+			}
+			return contaAtendimentoOutputDTO;
+		}
 	}
 
 	public Boolean verificaMarcaDoi(@Valid String token, @Valid String cpfCnpj) throws Exception {
@@ -225,11 +230,12 @@ public class SicliGateway {
 
 			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
 
-			String statusMessage = validateGatewayStatusAtendimentoConta(Objects.requireNonNull(response.getStatusCodeValue()));
+			String statusMessage = validateGatewayStatusAtendimentoConta(
+					Objects.requireNonNull(response.getStatusCodeValue()));
 
 			body = mapper.readTree(String.valueOf(response.getBody()));
 			String marcaDOI = Objects.requireNonNull(body.path("dadosBasicos").path("marcaDOI")).asText();
-			
+
 			if (marcaDOI.equalsIgnoreCase(S)) {
 				verificado = true;
 			}
@@ -241,9 +247,15 @@ public class SicliGateway {
 
 		} finally {
 
-			restTemplateDto.getHttpClient().close();
+			try {
+				restTemplateDto.getHttpClient().close();
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, "Erro. Não foi possível fechar a conexão com o socket.");
+			}
+
+			return verificado;
 		}
-		return verificado;
+
 	}
 
 	public String validateGatewayStatusAtendimentoConta(int statusCode) {
