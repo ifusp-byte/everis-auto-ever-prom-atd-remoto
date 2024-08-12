@@ -1,9 +1,11 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.gateway;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.validation.Valid;
@@ -36,13 +38,13 @@ public class SiecmGateway {
 
 	private static final Logger LOG = Logger.getLogger(SiecmGateway.class.getName());
 	private static String API_KEY = "apikey";
-	
+
 	@Value("${env.apimanager.key}")
 	private String API_KEY_VALUE;
-	
+
 	@Value("${env.url.ged.api}")
 	private String URL_GED_API;
-	
+
 	private static String SIECM_URL_BASE_DOSSIE = "/dossie";
 	private static String SIECM_URL_BASE_DOCUMENTOS_INCLUIR = "/documentos/incluir";
 
@@ -121,36 +123,36 @@ public class SiecmGateway {
 		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
 
 		try {
-			response = restTemplateDto.getRestTemplate().postForEntity(
-					URL_GED_API + SIECM_URL_BASE_DOCUMENTOS_INCLUIR,
+			response = restTemplateDto.getRestTemplate().postForEntity(URL_GED_API + SIECM_URL_BASE_DOCUMENTOS_INCLUIR,
 					newRequestEntityDocumentoIncluir(token, requestAnexarDocumento), String.class);
 
 			body = mapper.readTree(String.valueOf(response.getBody()));
-			String linkThumbnail = Objects.requireNonNull(body.path("documento").path("atributos").path("link")).asText();
+			String linkThumbnail = Objects.requireNonNull(body.path("documento").path("atributos").path("link"))
+					.asText();
 			String id = Objects.requireNonNull(body.path("documento").path("atributos").path("id")).asText();
 
 			siecmOutputDto = SiecmOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
-					.linkThumbnail(linkThumbnail)
-					.statusCreated(true)
-					.statusMessage("Documento gravado com sucesso")
-					.dataCreated(formataDataSiecm(new Date()))
-					.id(id)
-					.build();
-					
+					.linkThumbnail(linkThumbnail).statusCreated(true).statusMessage("Documento gravado com sucesso")
+					.dataCreated(formataDataSiecm(new Date())).id(id).build();
+
 		} catch (RestClientResponseException e) {
 			body = mapper.readTree(e.getResponseBodyAsString());
 
 			siecmOutputDto = SiecmOutputDto.builder()
-					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.build();
+					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode()))).build();
 		} finally {
-			restTemplateDto.getHttpClient().close();
+
+			try {
+				restTemplateDto.getHttpClient().close();
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, "Erro. Não foi possível fechar a conexão com o socket.");
+			}
+			return siecmOutputDto;
 		}
-		return siecmOutputDto;
+
 	}
-	
-	
+
 	private String formataDataSiecm(Date dateInput) {
 
 		String data = null;
