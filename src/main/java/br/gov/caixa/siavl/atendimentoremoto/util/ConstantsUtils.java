@@ -16,7 +16,7 @@ public final class ConstantsUtils {
 	public static final String DEFAULT_ENCODING_UTF8 = "UTF-8";
 	public static final String CORS_CONFIG_1 = "/**";
 	public static final String CORS_CONFIG_2 = "*";
-	public static final String REPLACE_IDENTIFICACAO = "0000000000000000";
+	public static final String REPLACE_IDENTIFICACAO = "000000000000";
 	public static final String REPLACE_CONTA_1 = "0000";
 	public static final String REPLACE_CONTA_2 = "000";
 	public static final String CHANNEL = "TLSv1.2";
@@ -48,6 +48,7 @@ public final class ConstantsUtils {
 	public static final String API_KEY_1 = "apikey";
 	public static final String API_KEY_2 = "APIKey";
 	public static final String ZERO_CHAR = "0";
-	public static final int ZERO_NUMER = 0;
-	public static final int TRES_NUMER = 3;
+	public static final int ZERO_NUMBER = 0;
+	public static final int TRES_NUMBER = 3;
+	public static final int QUATRO_NUMBER = 4;
 }

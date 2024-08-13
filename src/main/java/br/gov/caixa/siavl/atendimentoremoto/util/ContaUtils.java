@@ -5,13 +5,14 @@ import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.CONTA_SID
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.CONTA_SIDEC;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.CONTA_SIIFX;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.PONTO;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.QUATRO_NUMBER;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.REPLACE_CONTA_1;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.REPLACE_CONTA_2;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.REPLACE_IDENTIFICACAO;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRACO;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRES_NUMER;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRES_NUMBER;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_CHAR;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_NUMER;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_NUMBER;
 
 import java.text.ParseException;
 import java.util.List;
@@ -91,21 +92,13 @@ public class ContaUtils {
 
 		if (CONTA_SIDEC.equalsIgnoreCase(sgSistema)) {
 			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
-			String unidade = String.valueOf(nuUnidade);
-			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
-			String produto = String.valueOf(nuProduto);
-			String formatProdutoReplace = REPLACE_CONTA_2.substring(produto.length()) + produto;
-
-			if (identificacao.contains(formataUnidade + formatProdutoReplace)) {
-				identificacao = identificacao.replace(formataUnidade + formatProdutoReplace, StringUtils.EMPTY);
-			} else {
-				identificacao = identificacao.replace(formataUnidade, StringUtils.EMPTY);
-				produto = identificacao.substring(ZERO_NUMER, TRES_NUMER);
-				identificacao = identificacao.replace(produto, StringUtils.EMPTY);
-			}
-
-			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
+			String unidade = identificacao.substring(ZERO_NUMBER, QUATRO_NUMBER);
+			identificacao = identificacao.replace(unidade, StringUtils.EMPTY);
+			String produto = identificacao.substring(ZERO_NUMBER, TRES_NUMBER);
+			identificacao = identificacao.replace(produto, StringUtils.EMPTY);
 			identificacao = StringUtils.stripStart(identificacao, ZERO_CHAR);
+			String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
+			String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
 			String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
 			contaFormatada = mascaraConta(formataUnidade + formataProduto + formatIdentificacao);
 			ContasOutputDTO conta = new ContasOutputDTO();
@@ -131,15 +124,14 @@ public class ContaUtils {
 		return contasAtendimento;
 
 	}
-	
-	
+
 	private String mascaraConta(String contaInput) {
 		String contaFormatada = null;
 		MaskFormatter contaMask = null;
 
 		if (contaInput != null && StringUtils.isNotBlank(contaInput)) {
 			try {
-				contaMask = new MaskFormatter("####.####.###############-#");
+				contaMask = new MaskFormatter("####.####.###########-#");
 				contaMask.setValueContainsLiteralCharacters(false);
 				contaFormatada = contaMask.valueToString(contaInput);
 			} catch (ParseException e) {
