@@ -97,9 +97,8 @@ public class ContaUtils {
 			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
 			if (identificacao.length() > SETE_NUMBER) {
 				String unidade = identificacao.substring(ZERO_NUMBER, QUATRO_NUMBER);
-				identificacao = identificacao.replace(unidade, StringUtils.EMPTY);
-				String produto = identificacao.substring(ZERO_NUMBER, TRES_NUMBER);
-				identificacao = identificacao.replace(produto, StringUtils.EMPTY);
+				String produto = identificacao.substring(QUATRO_NUMBER, SETE_NUMBER);
+				identificacao = identificacao.replace(unidade + produto, StringUtils.EMPTY);
 				identificacao = StringUtils.stripStart(identificacao, ZERO_CHAR);
 				if (identificacao.length() >= UM_NUMBER) {
 					String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
