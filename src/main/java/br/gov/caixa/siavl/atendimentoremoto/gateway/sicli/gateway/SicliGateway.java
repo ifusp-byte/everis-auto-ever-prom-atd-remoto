@@ -1,5 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway;
 
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.CONTA_SID01;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.CONTA_SIDEC;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.S;
 
 import java.io.IOException;
@@ -161,8 +163,10 @@ public class SicliGateway {
 				String nuProduto = node.path("nuProduto").asText().trim();
 				String coIdentificacao = node.path("coIdentificacao").asText().trim();
 
+				if (CONTA_SIDEC.equalsIgnoreCase(sgSistema) || CONTA_SID01.equalsIgnoreCase(sgSistema)) {
 				contasAtendimento = contaUtils.formataContaTotalLista(dtInicio, sgSistema, nuUnidade, nuProduto,
 						coIdentificacao, contasAtendimento);
+				}
 			}
 
 			if (!contasAtendimento.isEmpty() && !nomeCliente.isEmpty() && !cpfCliente.isEmpty()) {
