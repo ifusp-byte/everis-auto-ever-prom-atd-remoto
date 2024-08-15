@@ -37,7 +37,7 @@ public class AtendimentoRemotoException {
 
 			ExceptionOutputDto exceptionOutputDto = new ExceptionOutputDto();
 			exceptionOutputDto.setMensagem("Token não informado ou inválido");
-			exceptionOutputDto.setErros(errorsServiceUnavailableFields);
+			exceptionOutputDto.setErros(Arrays.asList(errorsServiceUnavailableFields));
 
 			response = ResponseEntity.status(HttpStatus.UNAUTHORIZED).contentType(MediaType.APPLICATION_JSON)
 					.body(exceptionOutputDto);
@@ -59,7 +59,7 @@ public class AtendimentoRemotoException {
 
 			ExceptionOutputDto exceptionOutputDto = new ExceptionOutputDto();
 			exceptionOutputDto.setMensagem("Token não informado ou inválido");
-			exceptionOutputDto.setErros(errorsServiceUnavailableHeader);
+			exceptionOutputDto.setErros(Arrays.asList(errorsServiceUnavailableHeader));
 
 			response = ResponseEntity.status(HttpStatus.UNAUTHORIZED).contentType(MediaType.APPLICATION_JSON)
 					.body(exceptionOutputDto);
@@ -79,7 +79,7 @@ public class AtendimentoRemotoException {
 
 			ExceptionOutputDto exceptionOutputDto = new ExceptionOutputDto();
 			exceptionOutputDto.setMensagem("Dados da requisição não informado ou inválido");
-			exceptionOutputDto.setErros(errorsBadRequesteFields);
+			exceptionOutputDto.setErros(Arrays.asList(errorsBadRequesteFields));
 
 			response = ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON)
 					.body(exceptionOutputDto);
@@ -98,7 +98,7 @@ public class AtendimentoRemotoException {
 
 			ExceptionOutputDto exceptionOutputDto = new ExceptionOutputDto();
 			exceptionOutputDto.setMensagem("Erro interno da aplicação");
-			exceptionOutputDto.setErros(errorsForbidden);
+			exceptionOutputDto.setErros(Arrays.asList(errorsForbidden));
 
 			response = ResponseEntity.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON)
 					.body(exceptionOutputDto);

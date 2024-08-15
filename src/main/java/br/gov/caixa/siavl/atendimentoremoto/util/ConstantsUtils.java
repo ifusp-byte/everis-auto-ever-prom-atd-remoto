@@ -7,6 +7,7 @@ public final class ConstantsUtils {
 		throw new IllegalStateException("Utility class");
 	}
 	
+	public static final String UTILITY_CLASS = "Utility class";
 	public static final String UNRECOGNIZED_TOKEN = "Unrecognized token";
 	public static final String BEARER_1 = "Bearer";
 	public static final String BEARER_2 = "Bearer ";
@@ -32,7 +33,6 @@ public final class ConstantsUtils {
 	public static final String PONTO = ".";
 	public static final String TRACO = "-";
 	public static final String SUBLINHADO = "_";
-	public static final int ONZE = 11;
 	public static final String S = "S";
 	public static final String N = "N";
 	public static final String PT = "pt";
@@ -48,10 +48,15 @@ public final class ConstantsUtils {
 	public static final String API_KEY_1 = "apikey";
 	public static final String API_KEY_2 = "APIKey";
 	public static final String ZERO_CHAR = "0";
+	public static final String AMBIENTE_NACIONAL = "NACIONAL";
+	public static final String NOME_MFE_AVL_ATENDIMENTOREMOTO = "mfe_avl_atendimentoremoto";
+	public static final String TRANSACAO_SISTEMA_ENVIA_PROTOCOLO = "287";
+	public static final String REGEX_REPLACE_LETRAS = "[a-zA-Z]"; 
 	public static final int ZERO_NUMBER = 0;
 	public static final int UM_NUMBER = 1;
 	public static final int TRES_NUMBER = 3;
 	public static final int QUATRO_NUMBER = 4;
 	public static final int SETE_NUMBER = 7;
 	public static final int OITO_NUMBER = 8;
+	public static final int ONZE = 11;
 }

@@ -2,6 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.controller;
 
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.CLASSE_DOCUMENTOS;
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.TOKEN_VALIDO;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.BASE_URL;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -40,16 +41,14 @@ import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 
 @SuppressWarnings("all")
+@RequestMapping(BASE_URL)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
-@RequestMapping(AtendimentoRemotoController.BASE_URL)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = { "env.url.ged.api=http://localhost:6065" })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class AtendimentoRemotoControllerTest {
-
-	public static final String BASE_URL = "/v1/atendimento-remoto";
 
 	@LocalServerPort
 	private int port;

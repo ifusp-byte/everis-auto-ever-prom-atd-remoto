@@ -1,5 +1,25 @@
 package br.gov.caixa.siavl.atendimentoremoto.controller;
 
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.AUDITORIA_IDENTIFICACAO_POSITIVA;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.BASE_URL;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.CONTA_ATENDIMENTO;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DESAFIO_CRIAR;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DESAFIO_RESPONDER;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_TIPO;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_TIPO_CAMPOS;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.MARCA_DOI;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.MODELO_NOTA;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.MODELO_NOTA_DINAMICO;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.MODELO_NOTA_FAVORITA;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.MODELO_NOTA_FAVORITA_BY_MODELO_NOTA;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.MODELO_NOTA_MAIS_UTILIZADA;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.NOTA_ENVIAR_CLIENTE;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.NOTA_SALVAR_NOTA;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.PROTOCOLO;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.AUTHORIZATION;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.BEARER_1;
+
 import javax.validation.Valid;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,7 +43,6 @@ import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaIdentific
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.CriaDesafioInputDTO;
@@ -42,11 +61,18 @@ import br.gov.caixa.siavl.atendimentoremoto.service.RegistroNotaService;
 @Validated
 @RestController
 @SuppressWarnings("all")
+@RequestMapping(BASE_URL)
 @CrossOrigin(origins = "*")
-@RequestMapping(AtendimentoRemotoController.BASE_URL)
 public class AtendimentoRemotoController {
 
-	public static final String BASE_URL = "/v1/atendimento-remoto";
+	@Autowired
+	SicliGateway sicliGateway;
+
+	@Autowired
+	DesafioService desafioService;
+
+	@Autowired
+	ModeloNotaService modeloNotaService;
 
 	@Autowired
 	ConsultaNotaService consultaNotaService;
@@ -55,158 +81,140 @@ public class AtendimentoRemotoController {
 	ContrataNotaService contrataNotaService;
 
 	@Autowired
-	ModeloNotaService modeloNotaService;
+	RegistroNotaService registroNotaService;
 
 	@Autowired
 	GeraProtocoloService geraProtocoloService;
 
 	@Autowired
-	DesafioService desafioService;
-
-	@Autowired
-	RegistroNotaService registroNotaService;
+	AnexoDocumentoService anexoDocumentoService;
 
 	@Autowired
 	AuditoriaIdentificacaoPositivaService auditoriaIdentificacaoPositivaService;
 
-	@Autowired
-	AnexoDocumentoService anexoDocumentoService;
-
-	@Autowired
-	SicliGateway sicliGateway;
-
-	private static final String BEARER = "Bearer";
-
-	@PostMapping("/protocolo")
-	public ResponseEntity<GeraProtocoloOutputDTO> geraProtocolo(
-			@Valid @RequestHeader(value = "Authorization", required = true) String token,
+	@PostMapping(PROTOCOLO)
+	public ResponseEntity<Object> geraProtocolo(
+			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @RequestBody GeraProtocoloInputDTO geraProtocoloInputDTO) throws Exception {
-
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-				.body(
-						geraProtocoloService.geraProtocolo(token.trim().replace(BEARER, StringUtils.EMPTY), geraProtocoloInputDTO));
+				.body(geraProtocoloService.geraProtocolo(getToken(token), geraProtocoloInputDTO));
 	}
 
-	@PostMapping("/desafio-criar/{cpf}")
+	@PostMapping(DESAFIO_CRIAR)
 	public ResponseEntity<CriaDesafioOutputDTO> desafioCriar(
-			@Valid @RequestHeader(value = "Authorization", required = true) String token, @Valid @PathVariable String cpf,
+			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token, @Valid @PathVariable String cpf,
 			@Valid @RequestBody CriaDesafioInputDTO criaDesafioInputDTO) throws Exception {
-
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(desafioService.desafioCriar(token.trim().replace(BEARER, StringUtils.EMPTY), cpf, criaDesafioInputDTO));
+				.body(desafioService.desafioCriar(getToken(token), cpf, criaDesafioInputDTO));
 	}
 
-	@PostMapping("/desafio-responder/{idDesafio}")
+	@PostMapping(DESAFIO_RESPONDER)
 	public ResponseEntity<RespondeDesafioOutputDTO> desafioResponder(
-			@Valid @RequestHeader(value = "Authorization", required = true) String token,
+			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable String idDesafio, @Valid @RequestBody RespondeDesafioInputDTO respostaDesafio)
 			throws Exception {
-
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(desafioService.desafioResponder(token.trim().replace(BEARER, StringUtils.EMPTY), idDesafio,
-						respostaDesafio));
+				.body(desafioService.desafioResponder(getToken(token), idDesafio, respostaDesafio));
 	}
 
-	@PostMapping("/auditoria-identificacao-positiva")
-	public ResponseEntity<Object> auditar(@Valid @RequestHeader(value = "Authorization", required = true) String token,
+	@PostMapping(AUDITORIA_IDENTIFICACAO_POSITIVA)
+	public ResponseEntity<Object> auditar(@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @RequestBody AuditoriaIdentificacaoPositivaInputDTO auditoriaIdentificacaoPositivaInputDTO) {
-
-		return ResponseEntity.status(HttpStatus.OK).body(auditoriaIdentificacaoPositivaService
-				.auditar(token.trim().replace(BEARER, StringUtils.EMPTY), auditoriaIdentificacaoPositivaInputDTO));
+		return ResponseEntity.status(HttpStatus.OK).body(
+				auditoriaIdentificacaoPositivaService.auditar(getToken(token), auditoriaIdentificacaoPositivaInputDTO));
 	}
 
-	@GetMapping("/modelo-nota")
+	@GetMapping(MODELO_NOTA)
 	public ResponseEntity<Object> consultaModeloNota() {
 		return ResponseEntity.status(HttpStatus.CREATED).body(modeloNotaService.consultaModeloNota());
 	}
 
-	@GetMapping("/modelo-nota-favorita")
+	@GetMapping(MODELO_NOTA_FAVORITA)
 	public ResponseEntity<Object> consultaModeloNotaFavorita(
-			@Valid @RequestHeader(value = "Authorization", required = true) String token) {
+			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token) {
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(modeloNotaService.consultaModeloNotaFavorita(token.trim().replace(BEARER, StringUtils.EMPTY)));
+				.body(modeloNotaService.consultaModeloNotaFavorita(getToken(token)));
 	}
 
-	@PostMapping("/modelo-nota-favorita/{numeroModeloNota}")
+	@PostMapping(MODELO_NOTA_FAVORITA_BY_MODELO_NOTA)
 	public ResponseEntity<Object> adicionaModeloNotaFavorita(
-			@Valid @RequestHeader(value = "Authorization", required = true) String token,
+			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable Long numeroModeloNota) {
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(modeloNotaService.adicionaModeloNotaFavorita(token.trim().replace(BEARER, StringUtils.EMPTY),
-						numeroModeloNota));
+				.body(modeloNotaService.adicionaModeloNotaFavorita(getToken(token), numeroModeloNota));
 	}
 
-	@GetMapping("/modelo-nota-mais-utilizada")
+	@GetMapping(MODELO_NOTA_MAIS_UTILIZADA)
 	public ResponseEntity<Object> consultaModeloMaisUtilizada() {
 		return ResponseEntity.status(HttpStatus.CREATED).body(modeloNotaService.consultaModeloNotaMaisUtilizada());
 	}
 
-	@PostMapping("/modelo-nota-dinamico/{numeroModeloNota}")
+	@PostMapping(MODELO_NOTA_DINAMICO)
 	public ResponseEntity<Object> modeloNotaDinamico(
-			@Valid @RequestHeader(value = "Authorization", required = true) String token,
+			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable Long numeroModeloNota,
-			@Valid @RequestBody ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO)
-			throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.contentType(MediaType.APPLICATION_JSON)
-				.body(modeloNotaService.modeloNotaDinamico(token, numeroModeloNota, modeloNotaDinamicoInputDTO));
+			@Valid @RequestBody ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO) throws Exception {
+		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(
+				modeloNotaService.modeloNotaDinamico(getToken(token), numeroModeloNota, modeloNotaDinamicoInputDTO));
 	}
 
-	@GetMapping("/conta-atendimento/{cpfCnpj}")
+	@GetMapping(CONTA_ATENDIMENTO)
 	public ResponseEntity<Object> contaAtendimento(
-			@Valid @RequestHeader(value = "Authorization", required = true) String token,
+			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable String cpfCnpj) throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
-				.body(sicliGateway.contaAtendimento(token.trim().replace(BEARER, StringUtils.EMPTY), cpfCnpj, true));
+				.body(sicliGateway.contaAtendimento(getToken(token), cpfCnpj, true));
 	}
 
-	@PostMapping("/nota/{numeroModeloNota}")
+	@PostMapping(NOTA_SALVAR_NOTA)
 	public ResponseEntity<Object> registraNota(
-			@Valid @RequestHeader(value = "Authorization", required = true) String token,
+			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @RequestBody RegistraNotaInputDto registraNotaInputDto, @Valid @PathVariable Long numeroModeloNota)
 			throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED).body(registroNotaService
-				.registraNota(token.trim().replace(BEARER, StringUtils.EMPTY), registraNotaInputDto, numeroModeloNota));
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(registroNotaService.registraNota(getToken(token), registraNotaInputDto, numeroModeloNota));
 	}
 
-	@PutMapping("/nota/{numeroNota}")
+	@PutMapping(NOTA_ENVIAR_CLIENTE)
 	public ResponseEntity<Object> contrataNota(
-			@Valid @RequestHeader(value = "Authorization", required = true) String token,
+			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable Long numeroNota, @Valid @RequestBody EnviaClienteInputDto enviaClienteInputDto) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(
-				registroNotaService.enviaCliente(token.trim().replace(BEARER, StringUtils.EMPTY), numeroNota,
-						enviaClienteInputDto));
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(registroNotaService.enviaCliente(getToken(token), numeroNota, enviaClienteInputDto));
 	}
 
-	@PostMapping("/documento/{cpfCnpj}")
+	@PostMapping(DOCUMENTO)
 	public ResponseEntity<Object> enviaDocumento(
-			@Valid @RequestHeader(value = "Authorization", required = true) String token,
+			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable String cpfCnpj, @RequestBody EnviaDocumentoInputDto enviaDocumentoInputDto)
 			throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED).body(anexoDocumentoService
-				.enviaDocumento(token.trim().replace(BEARER, StringUtils.EMPTY), cpfCnpj, enviaDocumentoInputDto));
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(anexoDocumentoService.enviaDocumento(getToken(token), cpfCnpj, enviaDocumentoInputDto));
 	}
 
-	@GetMapping("/documento/tipo/{cpfCnpj}")
+	@GetMapping(DOCUMENTO_TIPO)
 	public ResponseEntity<Object> tipoDocumento(@Valid @PathVariable String cpfCnpj) throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.contentType(MediaType.APPLICATION_JSON)
+		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
 				.body(anexoDocumentoService.tipoDocumento(cpfCnpj));
 	}
 
-	@GetMapping("/documento/tipo/campos/{codGED}")
+	@GetMapping(DOCUMENTO_TIPO_CAMPOS)
 	public ResponseEntity<Object> tipoDocumentoCampos(@Valid @PathVariable String codGED) throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.contentType(MediaType.APPLICATION_JSON)
+		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
 				.body(anexoDocumentoService.tipoDocumentoCampos(codGED));
 	}
 
-	@GetMapping("/verificar-marca-doi/{cpfCnpj}")
+	@GetMapping(MARCA_DOI)
 	public ResponseEntity<Object> verificarMarcaDoi(
-			@Valid @RequestHeader(value = "Authorization", required = true) String token,
+			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable String cpfCnpj) throws Exception {
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-				.body(sicliGateway.verificaMarcaDoi(token.trim().replace(BEARER, StringUtils.EMPTY), cpfCnpj));
+				.body(sicliGateway.verificaMarcaDoi(getToken(token), cpfCnpj));
+	}
+
+	public String getToken(String token) {
+		return token.trim().replace(BEARER_1, StringUtils.EMPTY);
+
 	}
 
 }

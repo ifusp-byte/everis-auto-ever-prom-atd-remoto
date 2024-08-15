@@ -25,6 +25,6 @@ public class ExceptionOutputDto {
 	
 	
 	private String mensagem;
-	private List<String> erros;
+	private List<Object> erros;
 
 }

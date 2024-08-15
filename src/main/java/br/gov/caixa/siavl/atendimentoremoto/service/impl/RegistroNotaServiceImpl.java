@@ -121,8 +121,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		String numeroProtocolo = registraNotaInputDto.getNumeroProtocolo();
 		String numeroContaAtendimento = registraNotaInputDto.getContaAtendimento().replace(".", "").replace("-", "").trim();
 		String versaoSistema = registraNotaInputDto.getVersaoSistema();
-		String valorMeta = registraNotaInputDto.getValorMeta().replace(".", "").replace("R$", "").replaceAll("\u00A0", "")
-				.trim();
+		String valorMeta = registraNotaInputDto.getValorMeta().replace(".", "").replace("R$", "").replaceAll("\u00A0", "").trim();
 		valorMeta = valorMeta.replace(",", ".");
 
 		Long nuUnidade = Long.parseLong(numeroContaAtendimento.substring(0, 4));

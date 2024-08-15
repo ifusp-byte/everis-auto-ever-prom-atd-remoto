@@ -98,9 +98,11 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		if (!findModeloNotaMaisUtilizada.isEmpty()) {
 			findModeloNotaMaisUtilizada.stream().forEach(modeloNota -> {
 				ModeloNotaOutputDto modeloNotaOutputDto = null;
-				modeloNotaOutputDto = ModeloNotaOutputDto.builder().numeroModeloNota(String.valueOf(modeloNota[1]))
+				modeloNotaOutputDto = ModeloNotaOutputDto.builder()
+						.numeroModeloNota(String.valueOf(modeloNota[1]))
 						.numeroAcaoProduto(String.valueOf(modeloNota[2]))
-						.descricaoAcaoProduto(String.valueOf(modeloNota[3])).build();
+						.descricaoAcaoProduto(String.valueOf(modeloNota[3]))
+						.build();
 
 				Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository
 						.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
