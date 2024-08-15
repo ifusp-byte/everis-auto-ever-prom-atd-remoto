@@ -124,7 +124,15 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		atendimentoCliente.setCanalAtendimento(canalAtendimento.charAt(0));
 		atendimentoCliente.setNumeroUnidade(numeroUnidade);
 		atendimentoCliente.setNomeCliente(documentoUtils.retornaCpf(cpfCnpjFormat) ? contaAtendimento.getNomeCliente() : contaAtendimento.getRazaoSocial());
-		atendimentoCliente.setCpfCliente(cpfCnpj);
+		
+		if (DOCUMENT_TYPE_CNPJ.equals(tipoDocumento)) {
+			atendimentoCliente.setCnpjCliente(cpfCnpj);
+		}
+		
+		if (DOCUMENT_TYPE_CPF.equals(tipoDocumento)) {
+			atendimentoCliente.setCpfCliente(cpfCnpj);
+		}
+		
 		atendimentoCliente.setDataInicialAtendimento(dataUtils.formataDataBanco());
 		atendimentoCliente.setDataContatoCliente(dataUtils.formataDataBanco());
 		atendimentoCliente = geraProtocoloRespository.save(atendimentoCliente);
