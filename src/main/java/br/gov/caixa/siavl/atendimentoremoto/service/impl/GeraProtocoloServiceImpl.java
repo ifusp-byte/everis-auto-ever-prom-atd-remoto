@@ -91,7 +91,7 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 				erroProtocoloOutputDto.setMensagem(MENSAGEM_PADRAO_ERRO_PROTOCOLO);
 				mensagensErroProtocolo.add(DADOS_CPF + cpfCnpjFormat + INVALIDOS);
 				mensagensErroProtocolo.add(MENSAGEM_SICLI + contaAtendimento.getMensagemSicli());
-				mensagensErroProtocolo.add(CONTAS + contaAtendimento.getContas());
+				mensagensErroProtocolo.add(CONTAS + metodosUtils.writeValueAsString(contaAtendimento.getContas()));
 				mensagensErroProtocolo.add(NOME_CLIENTE + contaAtendimento.getNomeCliente());
 				erroProtocoloOutputDto.setErros(Arrays.asList(mensagensErroProtocolo));
 				return erroProtocoloOutputDto;
@@ -101,13 +101,12 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		if (DOCUMENT_TYPE_CNPJ.equals(tipoDocumento)) {
 			if (contaAtendimento.getContas().isEmpty() 
 					|| contaAtendimento.getSocios().isEmpty()
-					|| StringUtils.isBlank(contaAtendimento.getNomeCliente())
 					|| StringUtils.isBlank(contaAtendimento.getRazaoSocial())) {
 				erroProtocoloOutputDto.setMensagem(MENSAGEM_PADRAO_ERRO_PROTOCOLO);
 				mensagensErroProtocolo.add(DADOS_CNPJ + cpfCnpjFormat + INVALIDOS);
 				mensagensErroProtocolo.add(MENSAGEM_SICLI + contaAtendimento.getMensagemSicli());
-				mensagensErroProtocolo.add(CONTAS + contaAtendimento.getContas());
-				mensagensErroProtocolo.add(SOCIOS + contaAtendimento.getSocios());
+				mensagensErroProtocolo.add(CONTAS + metodosUtils.writeValueAsString(contaAtendimento.getContas()));
+				mensagensErroProtocolo.add(SOCIOS + metodosUtils.writeValueAsString(contaAtendimento.getSocios()));
 				mensagensErroProtocolo.add(NOME_CLIENTE + contaAtendimento.getNomeCliente());
 				mensagensErroProtocolo.add(RAZAO_SOCIAL + contaAtendimento.getRazaoSocial());
 				erroProtocoloOutputDto.setErros(Arrays.asList(mensagensErroProtocolo));
