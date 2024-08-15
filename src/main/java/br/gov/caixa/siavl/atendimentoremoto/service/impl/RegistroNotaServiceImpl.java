@@ -189,7 +189,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			notaNegociacao.setIcOrigemNota(1L);
 			notaNegociacao.setDataPrazoValidade(dataValidade);
 			notaNegociacao.setIcOrigemNota(1L);
-			//notaNegociacao.setNumeroEquipe(numeroEquipe);
+			notaNegociacao.setNumeroEquipe(numeroEquipe);
 			
 			String qtdMetaInput = registraNotaInputDto.getQuantidadeMeta();
 			Long qtdMeta = qtdMetaInput == null || StringUtils.isBlank(qtdMetaInput) ? 0 : Long.parseLong(qtdMetaInput.replace(".", "").replace(",", "").trim());
