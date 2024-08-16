@@ -2,6 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway;
 
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.CONTA_SID01;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.CONTA_SIDEC;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.REGEX_APENAS_NUMEROS;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.S;
 
 import java.io.IOException;
@@ -149,9 +150,9 @@ public class SicliGateway {
 				ContasOutputDTO conta = new ContasOutputDTO();
 				String dtInicio = node.path("dtInicio").asText().trim();
 				String sgSistema = node.path("sgSistema").asText().trim();
-				String nuUnidade = node.path("nuUnidade").asText().trim();
-				String nuProduto = node.path("nuProduto").asText().trim();
-				String coIdentificacao = node.path("coIdentificacao").asText().trim();
+				String nuUnidade = node.path("nuUnidade").asText().trim().replaceAll(REGEX_APENAS_NUMEROS, StringUtils.EMPTY);
+				String nuProduto = node.path("nuProduto").asText().trim().replaceAll(REGEX_APENAS_NUMEROS, StringUtils.EMPTY);
+				String coIdentificacao = node.path("coIdentificacao").asText().trim().replaceAll("[^0-9]", StringUtils.EMPTY);
 
 				if (CONTA_SIDEC.equalsIgnoreCase(sgSistema) || CONTA_SID01.equalsIgnoreCase(sgSistema)) {
 					contasAtendimento = contaUtils.formataContaTotalLista(dtInicio, sgSistema, nuUnidade, nuProduto,
@@ -171,10 +172,10 @@ public class SicliGateway {
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
 					.statusCreated(statusCreated).dataCreated(dataUtils.formataData(new Date()))
 					.nomeCliente(nomeCliente)
-					.cpfCliente(cpfCliente.equals(StringUtils.EMPTY) ? StringUtils.EMPTY
-							: documentoUtils.formataCpf(cpfCliente))
+					.cpfCliente(cpfCliente.equals(StringUtils.EMPTY) ? StringUtils.EMPTY : documentoUtils.formataCpf(cpfCliente))
 					.contas(contasAtendimento).socios(sociosLista).mensagemSicli(statusMessage).razaoSocial(razaoSocial)
-					.cnpj(cnpj == null ? StringUtils.EMPTY : documentoUtils.formataCnpj(cnpj)).build();
+					.cnpj(cnpj == null ? StringUtils.EMPTY : documentoUtils.formataCnpj(cnpj))
+					.build();
 
 			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
 			LOG.info("Conta Atendimento - Consultar - Resposta View "
@@ -189,8 +190,11 @@ public class SicliGateway {
 
 			contaAtendimentoOutputDTO = ContaAtendimentoOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.statusMessage(statusMessage).statusCreated(false).contas(new ArrayList<>())
-					.socios(new ArrayList<>()).cpfCliente(StringUtils.EMPTY).nomeCliente(StringUtils.EMPTY)
+					.statusMessage(statusMessage)
+					.statusCreated(false)
+					.contas(contasAtendimento)
+					.socios(sociosLista)
+					.cpfCliente(StringUtils.EMPTY).nomeCliente(StringUtils.EMPTY)
 					.razaoSocial(StringUtils.EMPTY).cnpj(StringUtils.EMPTY).mensagemSicli(mensagemSicli)
 					.dataCreated(dataUtils.formataData(new Date())).build();
 

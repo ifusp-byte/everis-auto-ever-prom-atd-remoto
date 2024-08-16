@@ -18,7 +18,7 @@ public class ModeloNotaRepositoryImpl {
 		sb.append(" FROM  NotaNegociacao A, ModeloNotaNegocio B, AcaoProduto C ");
 		sb.append(" WHERE A.numeroModeloNota = B.numeroModeloNota ");
 		sb.append(" AND B.numeroAcao = C.numeroAcao ");
-		sb.append(" AND A.dataCriacaoNota > SYSDATE - 365 ");
+		sb.append(" AND A.dataCriacaoNota > CURRENT_DATE - 365 ");
 		sb.append(" AND B.modeloNotaAtivo = 1 ");
 		sb.append(" AND B.contratacaoAutomatica = 'N' ");
 		sb.append(" AND B.situacaoModeloNota = 'P' ");
