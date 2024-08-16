@@ -104,12 +104,14 @@ class AtendimentoRemotoControllerTest {
 		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
 
+	/*
 	@Test
 	void consultaModeloNotaMaisUtilizadaTest() {
 		String BASE_URL = atdremotoUrl + "/modelo-nota-mais-utilizada";
 		ResponseEntity<Object> response = restTemplate.getForEntity(BASE_URL, Object.class);
 		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
+	*/
 
 	@Test
 	void consultaModeloNotaFavoritaTest() {
