@@ -33,6 +33,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RoteiroFechamentoNotaRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.impl.ModeloNotaRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
@@ -70,6 +71,9 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 	@Autowired
 	FluxoAtendimentoRepository fluxoAtendimentoRepository;
 
+	@Autowired
+	ModeloNotaRepositoryImpl modeloNotaRepositoryImpl;
+
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	public List<ModeloNotaOutputDto> consultaModeloNota() {
@@ -93,31 +97,17 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	public List<ModeloNotaOutputDto> consultaModeloNotaMaisUtilizada() {
 		List<ModeloNotaOutputDto> modelosNota = new ArrayList<>();
-		List<ModeloNotaOutputDto> modelosNotaRetorno = new ArrayList<>();
-		List<Object[]> findModeloNotaMaisUtilizada = modeloNotaFavoritoRepository.findModeloNotaMaisUtilizada();
+		List<Object[]> findModeloNotaMaisUtilizada = modeloNotaRepositoryImpl.modeloNotaMaisUtilizada();
 		if (!findModeloNotaMaisUtilizada.isEmpty()) {
 			findModeloNotaMaisUtilizada.stream().forEach(modeloNota -> {
 				ModeloNotaOutputDto modeloNotaOutputDto = null;
-				modeloNotaOutputDto = ModeloNotaOutputDto.builder()
-						.numeroModeloNota(String.valueOf(modeloNota[1]))
+				modeloNotaOutputDto = ModeloNotaOutputDto.builder().numeroModeloNota(String.valueOf(modeloNota[1]))
 						.numeroAcaoProduto(String.valueOf(modeloNota[2]))
-						.descricaoAcaoProduto(String.valueOf(modeloNota[3]))
-						.build();
-
-				Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository
-						.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
-
-				if (!fluxoAtendimento.isPresent()) {
-					modelosNota.add(modeloNotaOutputDto);
-				}
+						.descricaoAcaoProduto(String.valueOf(modeloNota[3])).build();
+				modelosNota.add(modeloNotaOutputDto);
 			});
 		}
-		if (modelosNota.size() >= 5) {
-			modelosNotaRetorno = modelosNota.subList(0, 5);
-		} else {
-			modelosNotaRetorno = modelosNota;
-		}
-		return modelosNotaRetorno;
+		return modelosNota;
 	}
 
 	@Override
@@ -242,14 +232,14 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		modeloNotaDinamicoOutputDTO.setMenuNotaProduto(notaProdutoLista.get(0));
 
 		Optional<List<Clob>> roteiroListaConsulta = roteiroFechamentoNotaRepository.roteiro(numeroModeloNota);
-		List<Clob> roteiroRetorno = roteiroListaConsulta.isPresent() ? roteiroListaConsulta.get() : new ArrayList<>(); 
+		List<Clob> roteiroRetorno = roteiroListaConsulta.isPresent() ? roteiroListaConsulta.get() : new ArrayList<>();
 		Clob roteiro = roteiroRetorno.isEmpty() ? roteiro = null : roteiroRetorno.get(0);
 
-		if (roteiro != null) { 
-		int tamanho = Integer.parseInt(String.valueOf(roteiro.length()));
-		modeloNotaDinamicoOutputDTO.setRoteiroFechamento(String.valueOf(roteiro.getSubString(1, tamanho)));
+		if (roteiro != null) {
+			int tamanho = Integer.parseInt(String.valueOf(roteiro.length()));
+			modeloNotaDinamicoOutputDTO.setRoteiroFechamento(String.valueOf(roteiro.getSubString(1, tamanho)));
 		}
-		
+
 		return modeloNotaDinamicoOutputDTO;
 	}
 
