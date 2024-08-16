@@ -52,6 +52,7 @@ public final class ConstantsUtils {
 	public static final String NOME_MFE_AVL_ATENDIMENTOREMOTO = "mfe_avl_atendimentoremoto";
 	public static final String TRANSACAO_SISTEMA_ENVIA_PROTOCOLO = "287";
 	public static final String REGEX_REPLACE_LETRAS = "[a-zA-Z]"; 
+	public static final String REGEX_APENAS_NUMEROS = "[^0-9]";
 	public static final int ZERO_NUMBER = 0;
 	public static final int UM_NUMBER = 1;
 	public static final int TRES_NUMBER = 3;
