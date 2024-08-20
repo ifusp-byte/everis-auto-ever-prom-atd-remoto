@@ -41,6 +41,10 @@ public class ContaAtendimentoOutputDTO {
 	@Valid
 	@XmlElement(name = "statusCreated")
 	private boolean statusCreated;
+	
+	@Valid
+	@XmlElement(name = "mensagemSicli")
+	private String mensagemSicli;
 
 	@Valid
 	@XmlElement(name = "dataCreated")

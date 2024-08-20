@@ -2,6 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.controller;
 
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.CLASSE_DOCUMENTOS;
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.TOKEN_VALIDO;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.BASE_URL;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -40,16 +41,14 @@ import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 
 @SuppressWarnings("all")
+@RequestMapping(BASE_URL)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
-@RequestMapping(AtendimentoRemotoController.BASE_URL)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = { "env.url.ged.api=http://localhost:6065" })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class AtendimentoRemotoControllerTest {
-
-	public static final String BASE_URL = "/v1/atendimento-remoto";
 
 	@LocalServerPort
 	private int port;
@@ -77,8 +76,8 @@ class AtendimentoRemotoControllerTest {
 		return new HttpEntity<String>(newHttpHeaders());
 	}
 
-	public HttpEntity<?> newRequestEntity(ModeloNotaDinamicoInputDTO immediateCreateRequestDTO) {
-		return new HttpEntity<ModeloNotaDinamicoInputDTO>(immediateCreateRequestDTO, newHttpHeaders());
+	public HttpEntity<?> newRequestEntity(ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO) {
+		return new HttpEntity<ModeloNotaDinamicoInputDTO>(modeloNotaDinamicoInputDTO, newHttpHeaders());
 	}
 
 	public HttpHeaders newHttpHeaders() {
@@ -135,26 +134,26 @@ class AtendimentoRemotoControllerTest {
 		String BASE_URL_2 = atdremotoUrl + "/modelo-nota-dinamico/" + 3123;
 		String BASE_URL_3 = atdremotoUrl + "/modelo-nota-dinamico/" + 3124;
 
-		ModeloNotaDinamicoInputDTO immediateCreateRequestDTO1 = mapper.readValue(
+		ModeloNotaDinamicoInputDTO odeloNotaDinamicoInputDTO1 = mapper.readValue(
 				new ClassPathResource("/modeloNotaDinamico/1modeloNotaDinamicoInputDTO.json").getFile(),
 				ModeloNotaDinamicoInputDTO.class);
 
-		ModeloNotaDinamicoInputDTO immediateCreateRequestDTO2 = mapper.readValue(
+		ModeloNotaDinamicoInputDTO odeloNotaDinamicoInputDTO2 = mapper.readValue(
 				new ClassPathResource("/modeloNotaDinamico/2modeloNotaDinamicoInputDTO.json").getFile(),
 				ModeloNotaDinamicoInputDTO.class);
 
-		ModeloNotaDinamicoInputDTO immediateCreateRequestDTO3 = mapper.readValue(
+		ModeloNotaDinamicoInputDTO odeloNotaDinamicoInputDTO3 = mapper.readValue(
 				new ClassPathResource("/modeloNotaDinamico/3modeloNotaDinamicoInputDTO.json").getFile(),
 				ModeloNotaDinamicoInputDTO.class);
 
 		ResponseEntity<Object> response1 = restTemplate.exchange(BASE_URL_1, HttpMethod.POST,
-				newRequestEntity(immediateCreateRequestDTO1), Object.class);
+				newRequestEntity(odeloNotaDinamicoInputDTO1), Object.class);
 
 		ResponseEntity<Object> response2 = restTemplate.exchange(BASE_URL_2, HttpMethod.POST,
-				newRequestEntity(immediateCreateRequestDTO2), Object.class);
+				newRequestEntity(odeloNotaDinamicoInputDTO2), Object.class);
 
 		ResponseEntity<Object> response3 = restTemplate.exchange(BASE_URL_3, HttpMethod.POST,
-				newRequestEntity(immediateCreateRequestDTO3), Object.class);
+				newRequestEntity(odeloNotaDinamicoInputDTO3), Object.class);
 
 		Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode());
 		Assertions.assertEquals(HttpStatus.CREATED, response2.getStatusCode());

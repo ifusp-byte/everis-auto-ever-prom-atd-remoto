@@ -1,16 +1,30 @@
 package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import static br.gov.caixa.siavl.atendimentoremoto.constants.GeraProtocoloServiceConstans.CONTAS;
+import static br.gov.caixa.siavl.atendimentoremoto.constants.GeraProtocoloServiceConstans.DADOS_CNPJ;
+import static br.gov.caixa.siavl.atendimentoremoto.constants.GeraProtocoloServiceConstans.DADOS_CPF;
+import static br.gov.caixa.siavl.atendimentoremoto.constants.GeraProtocoloServiceConstans.INFORMAR_CPF_CNPJ_CLIENTE;
+import static br.gov.caixa.siavl.atendimentoremoto.constants.GeraProtocoloServiceConstans.INVALIDOS;
+import static br.gov.caixa.siavl.atendimentoremoto.constants.GeraProtocoloServiceConstans.MENSAGEM_PADRAO_ERRO_PROTOCOLO;
+import static br.gov.caixa.siavl.atendimentoremoto.constants.GeraProtocoloServiceConstans.MENSAGEM_SICLI;
+import static br.gov.caixa.siavl.atendimentoremoto.constants.GeraProtocoloServiceConstans.NOME_CLIENTE;
+import static br.gov.caixa.siavl.atendimentoremoto.constants.GeraProtocoloServiceConstans.RAZAO_SOCIAL;
+import static br.gov.caixa.siavl.atendimentoremoto.constants.GeraProtocoloServiceConstans.SOCIOS;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.AMBIENTE_NACIONAL;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DOCUMENT_TYPE_CNPJ;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DOCUMENT_TYPE_CPF;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.NOME_MFE_AVL_ATENDIMENTOREMOTO;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.REGEX_REPLACE_LETRAS;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRANSACAO_SISTEMA_ENVIA_PROTOCOLO;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.Locale;
-
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import br.gov.caixa.siavl.atendimentoremoto.dto.ExceptionOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContaAtendimentoOutputDTO;
@@ -21,6 +35,9 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.gateway.AuditoriaPncGa
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.repository.GeraProtocoloRespository;
 import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
+import br.gov.caixa.siavl.atendimentoremoto.util.DataUtils;
+import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
+import br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
@@ -28,87 +45,125 @@ import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 
 	@Autowired
+	DataUtils dataUtils;
+
+	@Autowired
 	TokenUtils tokenUtils;
+
+	@Autowired
+	MetodosUtils metodosUtils;
+
+	@Autowired
+	SicliGateway sicliGateway;
+
+	@Autowired
+	DocumentoUtils documentoUtils;
+
+	@Autowired
+	AuditoriaPncGateway auditoriaPncGateway;
 
 	@Autowired
 	GeraProtocoloRespository geraProtocoloRespository;
 
-	@Autowired
-	AuditoriaPncGateway auditoriaPncGateway;
-	
-	@Autowired
-	SicliGateway sicliGateway;
-
-	private static ObjectMapper mapper = new ObjectMapper();
-	
-	private static final String DOCUMENT_TYPE_CPF = "CPF";
-	private static final String DOCUMENT_TYPE_CNPJ = "CNPJ";
-
 	@Override
-	public GeraProtocoloOutputDTO geraProtocolo(String token, GeraProtocoloInputDTO geraProtocoloInputDTO) throws Exception {
-		
-		String tipoDocumento = null; 
-		Long matriculaAtendente = Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", ""));
-		Long cpfCnpj = Long.parseLong(geraProtocoloInputDTO.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim()); 
+	public Object geraProtocolo(String token, GeraProtocoloInputDTO geraProtocoloInputDTO) throws Exception {
+
+		ExceptionOutputDto erroProtocoloOutputDto = new ExceptionOutputDto();
+		List<String> mensagensErroProtocolo = new ArrayList<>();
+
+		String cpfCnpjFormat = documentoUtils.formataDocumento(geraProtocoloInputDTO.getCpfCnpj());
+
+		if (!NumberUtils.isParsable(cpfCnpjFormat)) {
+			erroProtocoloOutputDto.setMensagem(MENSAGEM_PADRAO_ERRO_PROTOCOLO);
+			mensagensErroProtocolo.add(INFORMAR_CPF_CNPJ_CLIENTE);
+			erroProtocoloOutputDto.setErros(Arrays.asList(mensagensErroProtocolo));
+			return erroProtocoloOutputDto;
+		}
+
+		ContaAtendimentoOutputDTO contaAtendimento = sicliGateway.contaAtendimento(token, cpfCnpjFormat, false);
+
+		String tipoDocumento = null;
+		tipoDocumento = documentoUtils.retornaCpf(cpfCnpjFormat) ? DOCUMENT_TYPE_CPF : DOCUMENT_TYPE_CNPJ;
+
+		if (DOCUMENT_TYPE_CPF.equals(tipoDocumento)) {
+			if (contaAtendimento.getContas().isEmpty() 
+					|| StringUtils.isBlank(contaAtendimento.getNomeCliente())) {
+				erroProtocoloOutputDto.setMensagem(MENSAGEM_PADRAO_ERRO_PROTOCOLO);
+				mensagensErroProtocolo.add(DADOS_CPF + cpfCnpjFormat + INVALIDOS);
+				mensagensErroProtocolo.add(MENSAGEM_SICLI + contaAtendimento.getMensagemSicli());
+				mensagensErroProtocolo.add(CONTAS + metodosUtils.writeValueAsString(contaAtendimento.getContas()));
+				mensagensErroProtocolo.add(NOME_CLIENTE + contaAtendimento.getNomeCliente());
+				erroProtocoloOutputDto.setErros(Arrays.asList(mensagensErroProtocolo));
+				return erroProtocoloOutputDto;
+			}
+		}
+
+		if (DOCUMENT_TYPE_CNPJ.equals(tipoDocumento)) {
+			if (contaAtendimento.getContas().isEmpty() 
+					|| contaAtendimento.getSocios().isEmpty()
+					|| StringUtils.isBlank(contaAtendimento.getRazaoSocial())) {
+				erroProtocoloOutputDto.setMensagem(MENSAGEM_PADRAO_ERRO_PROTOCOLO);
+				mensagensErroProtocolo.add(DADOS_CNPJ + cpfCnpjFormat + INVALIDOS);
+				mensagensErroProtocolo.add(MENSAGEM_SICLI + contaAtendimento.getMensagemSicli());
+				mensagensErroProtocolo.add(CONTAS + metodosUtils.writeValueAsString(contaAtendimento.getContas()));
+				mensagensErroProtocolo.add(SOCIOS + metodosUtils.writeValueAsString(contaAtendimento.getSocios()));
+				mensagensErroProtocolo.add(NOME_CLIENTE + contaAtendimento.getNomeCliente());
+				mensagensErroProtocolo.add(RAZAO_SOCIAL + contaAtendimento.getRazaoSocial());
+				erroProtocoloOutputDto.setErros(Arrays.asList(mensagensErroProtocolo));
+				return erroProtocoloOutputDto;
+			}
+		}
+
+		Long cpfCnpj = Long.parseLong(cpfCnpjFormat);
 		Long numeroUnidade = Long.parseLong(tokenUtils.getUnidadeFromToken(token));
-		
 		String canalAtendimento = geraProtocoloInputDTO.getTipoAtendimento();
+		Long matriculaAtendente = Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll(REGEX_REPLACE_LETRAS, StringUtils.EMPTY));
+
 		AtendimentoCliente atendimentoCliente = new AtendimentoCliente();
-		
 		atendimentoCliente.setMatriculaAtendente(matriculaAtendente);
 		atendimentoCliente.setCanalAtendimento(canalAtendimento.charAt(0));
 		atendimentoCliente.setNumeroUnidade(numeroUnidade);
-
-		ContaAtendimentoOutputDTO contaAtendimento = sicliGateway.contaAtendimento(token, geraProtocoloInputDTO.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim(), false);
+		atendimentoCliente.setNomeCliente(documentoUtils.retornaCpf(cpfCnpjFormat) ? contaAtendimento.getNomeCliente() : contaAtendimento.getRazaoSocial());
 		
-		if (geraProtocoloInputDTO.getCpfCnpj().trim().length() == 11) {
-			atendimentoCliente.setNomeCliente(contaAtendimento.getNomeCliente());
-			atendimentoCliente.setCpfCliente(cpfCnpj);
-			tipoDocumento = DOCUMENT_TYPE_CPF;
-		} else {
-			atendimentoCliente.setNomeCliente(contaAtendimento.getRazaoSocial());
+		if (DOCUMENT_TYPE_CNPJ.equals(tipoDocumento)) {
 			atendimentoCliente.setCnpjCliente(cpfCnpj);
-			tipoDocumento = DOCUMENT_TYPE_CNPJ;
 		}
 		
-		atendimentoCliente.setDataInicialAtendimento(formataDataBanco());
-		atendimentoCliente.setDataContatoCliente(formataDataBanco());
-		atendimentoCliente = geraProtocoloRespository.save(atendimentoCliente);
+		if (DOCUMENT_TYPE_CPF.equals(tipoDocumento)) {
+			atendimentoCliente.setCpfCliente(cpfCnpj);
+		}
 		
+		atendimentoCliente.setDataInicialAtendimento(dataUtils.formataDataBanco());
+		atendimentoCliente.setDataContatoCliente(dataUtils.formataDataBanco());
+		atendimentoCliente = geraProtocoloRespository.save(atendimentoCliente);
+
 		GeraProtocoloOutputDTO geraProtocoloOutputDTO = new GeraProtocoloOutputDTO();
-		geraProtocoloOutputDTO.setStatus(true);
 		geraProtocoloOutputDTO.setNumeroProtocolo(String.valueOf(atendimentoCliente.getNumeroProtocolo()));
-		geraProtocoloOutputDTO.setSocios(contaAtendimento.getSocios());		
+		geraProtocoloOutputDTO.setSocios(contaAtendimento.getSocios());
 		geraProtocoloOutputDTO.setRazaoSocial(contaAtendimento.getRazaoSocial());
 		geraProtocoloOutputDTO.setStatusSicli(contaAtendimento.getStatusCode());
-		geraProtocoloOutputDTO.setMensagemSicli(contaAtendimento.getStatusMessage());		
-		
-		AuditoriaPncProtocoloInputDTO auditoriaPncProtocoloInputDTO = new AuditoriaPncProtocoloInputDTO(); 
+		geraProtocoloOutputDTO.setMensagemSicli(contaAtendimento.getStatusMessage());
+		geraProtocoloOutputDTO.setStatus(true);
+
+		AuditoriaPncProtocoloInputDTO auditoriaPncProtocoloInputDTO = new AuditoriaPncProtocoloInputDTO();
 		auditoriaPncProtocoloInputDTO = AuditoriaPncProtocoloInputDTO.builder()
 				.cpfCnpj(String.valueOf(cpfCnpj))
 				.canal(canalAtendimento)
 				.numeroProtocolo(String.valueOf(atendimentoCliente.getNumeroProtocolo()))
-				.dataInicioAtendimento(formataData(new Date()))
-				.matriculaAtendente(String.valueOf(matriculaAtendente))			
-				.transacaoSistema("287")
+				.dataInicioAtendimento(dataUtils.formataData(new Date()))
+				.matriculaAtendente(String.valueOf(matriculaAtendente))
+				.transacaoSistema(TRANSACAO_SISTEMA_ENVIA_PROTOCOLO)
 				.build();
-		
-		String descricaoTransacao = null;
 
-		try {
-			descricaoTransacao = mapper.writeValueAsString(auditoriaPncProtocoloInputDTO);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
+		String descricaoTransacao = metodosUtils.writeValueAsString(auditoriaPncProtocoloInputDTO);
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
-
 		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder()
 				.descricaoTransacao(descricaoTransacao)
 				.ipTerminalUsuario(tokenUtils.getIpFromToken(token))
-				.nomeMfe("mfe_avl_atendimentoremoto")
+				.nomeMfe(NOME_MFE_AVL_ATENDIMENTOREMOTO)
 				.numeroUnidadeLotacaoUsuario(50L)
-				.ambienteAplicacao("NACIONAL")
+				.ambienteAplicacao(AMBIENTE_NACIONAL)
 				.tipoDocumento(tipoDocumento)
 				.numeroIdentificacaoCliente(cpfCnpj)
 				.build();
@@ -116,22 +171,6 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
 
 		return geraProtocoloOutputDTO;
-	}
-	
-	private Date formataDataBanco() {
-
-		Calendar time = Calendar.getInstance();
-		time.add(Calendar.HOUR, -3);
-		return time.getTime();
-	}
-	
-	private String formataData(Date dateInput) {
-
-		String data = null;
-		Locale locale = new Locale("pt", "BR");
-		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
-		data = String.valueOf(sdfOut.format(dateInput));
-		return data;
 	}
 
 }

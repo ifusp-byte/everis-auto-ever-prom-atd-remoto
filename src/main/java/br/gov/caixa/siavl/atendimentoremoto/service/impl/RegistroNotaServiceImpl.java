@@ -119,16 +119,15 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		String matriculaAtendente = tokenUtils.getMatriculaFromToken(token).replaceAll(PATTERN_MATRICULA, "");
 		boolean statusRetornoSicli = true;
 		String numeroProtocolo = registraNotaInputDto.getNumeroProtocolo();
-		String numeroContaAtendimento = registraNotaInputDto.getContaAtendimento();
+		String numeroContaAtendimento = registraNotaInputDto.getContaAtendimento().replace(".", "").replace("-", "").trim();
 		String versaoSistema = registraNotaInputDto.getVersaoSistema();
-		String valorMeta = registraNotaInputDto.getValorMeta().replace(".", "").replace("R$", "").replaceAll("\u00A0", "")
-				.trim();
+		String valorMeta = registraNotaInputDto.getValorMeta().replace(".", "").replace("R$", "").replaceAll("\u00A0", "").trim();
 		valorMeta = valorMeta.replace(",", ".");
 
-		Long nuUnidade = Long.parseLong(registraNotaInputDto.getContaAtendimento().substring(0, 4));
-		Long nuProduto = Long.parseLong(registraNotaInputDto.getContaAtendimento().substring(4, 8));
-		Long coIdentificacao = Long.parseLong(registraNotaInputDto.getContaAtendimento().substring(8,
-				registraNotaInputDto.getContaAtendimento().length()));
+		Long nuUnidade = Long.parseLong(numeroContaAtendimento.substring(0, 4));
+		Long nuProduto = Long.parseLong(numeroContaAtendimento.substring(4, 8));
+		Long coIdentificacao = Long.parseLong(numeroContaAtendimento.substring(8,
+				numeroContaAtendimento.length()));
 
 		numeroEquipe = equipeAtendimentoRepository.findEquipeByUnidadeSR(numeroUnidade);
 
@@ -185,14 +184,17 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			notaNegociacao.setDataModificacaoNota(formataDataBanco());
 			notaNegociacao.setNumeroMatriculaCriacaoNota(matriculaCriacaoNota(token));
 			notaNegociacao.setNumeroMatriculaModificacaoNota(matriculaCriacaoNota(token));
-			notaNegociacao.setNumeroSituacaoNota(16L); // VERIFICAR
+			notaNegociacao.setNumeroSituacaoNota(16L);
 			notaNegociacao.setQtdItemNegociacao(1L);
 			notaNegociacao.setIcOrigemNota(1L);
 			notaNegociacao.setDataPrazoValidade(dataValidade);
 			notaNegociacao.setIcOrigemNota(1L);
 			notaNegociacao.setNumeroEquipe(numeroEquipe);
-			notaNegociacao.setQtdItemNegociacao(
-					Long.parseLong(registraNotaInputDto.getQuantidadeMeta().replace(".", "").replace(",", "").trim()));
+			
+			String qtdMetaInput = registraNotaInputDto.getQuantidadeMeta();
+			Long qtdMeta = qtdMetaInput == null || StringUtils.isBlank(qtdMetaInput) ? 0 : Long.parseLong(qtdMetaInput.replace(".", "").replace(",", "").trim());
+			Optional.ofNullable(qtdMeta).ifPresent(notaNegociacao::setQtdItemNegociacao);			
+
 			notaNegociacao.setValorSolicitadoNota(Double.parseDouble(valorMeta));
 			notaNegociacao.setNuUnidade(nuUnidade);
 			notaNegociacao.setNuProduto(nuProduto);
@@ -294,17 +296,17 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	@Override
 	public Boolean enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto) {
 
-		String numeroContaAtendimento = enviaClienteInputDto.getNumeroConta();
+		String numeroContaAtendimento = enviaClienteInputDto.getNumeroConta().replace(".", "").replace("-", "").trim();
 		String numeroProtocolo = enviaClienteInputDto.getNumeroProtocolo();
 		boolean statusRetornoSicli = true;
 		String matriculaAtendente = tokenUtils.getMatriculaFromToken(token).replaceAll(PATTERN_MATRICULA, "");
 		String tipoDocumento = null;
 		Boolean statusContratacao = null;
 		Long cpfCnpjPnc = Long.parseLong(enviaClienteInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim());
-		Long nuUnidade = Long.parseLong(enviaClienteInputDto.getNumeroConta().substring(0, 4));
-		Long nuProduto = Long.parseLong(enviaClienteInputDto.getNumeroConta().substring(4, 8));
+		Long nuUnidade = Long.parseLong(numeroContaAtendimento.substring(0, 4));
+		Long nuProduto = Long.parseLong(numeroContaAtendimento.substring(4, 8));
 		Long coIdentificacao = Long.parseLong(
-				enviaClienteInputDto.getNumeroConta().substring(8, enviaClienteInputDto.getNumeroConta().length()));
+				numeroContaAtendimento.substring(8, numeroContaAtendimento.length()));
 	
 		notaNegociacaoRepository.enviaNotaCliente(numeroNota);
 		relatorioNotaNegociacaoRepository.enviaNotaCliente(numeroNota);
