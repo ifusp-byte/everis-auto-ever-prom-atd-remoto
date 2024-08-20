@@ -6,6 +6,6 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloOutputDTO;
 @SuppressWarnings("all")
 public interface GeraProtocoloService {
 
-	GeraProtocoloOutputDTO geraProtocolo(String token, GeraProtocoloInputDTO geraProtocoloInputDTO) throws Exception;
+	Object geraProtocolo(String token, GeraProtocoloInputDTO geraProtocoloInputDTO) throws Exception;
 
 }

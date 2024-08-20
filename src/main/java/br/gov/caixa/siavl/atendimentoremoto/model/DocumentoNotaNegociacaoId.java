@@ -6,6 +6,7 @@ import java.util.Date;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@SuppressWarnings("all")
 public class DocumentoNotaNegociacaoId implements Serializable {
 
 	private static final long serialVersionUID = 1L;

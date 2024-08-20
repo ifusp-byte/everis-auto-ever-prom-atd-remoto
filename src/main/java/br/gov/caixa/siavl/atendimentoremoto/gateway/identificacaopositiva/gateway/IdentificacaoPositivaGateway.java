@@ -1,11 +1,13 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.gateway;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.validation.Valid;
@@ -130,51 +132,52 @@ public class IdentificacaoPositivaGateway {
 					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
 					.statusCreated(true).dataCreated(formataData(new Date())).build();
 
-			LOG.info(
-					"Identificação Positiva - Desafio Criar - Resposta View " + mapper.writeValueAsString(criaDesafioOutputDTO));
+			LOG.info("Identificação Positiva - Desafio Criar - Resposta View "
+					+ mapper.writeValueAsString(criaDesafioOutputDTO));
 
 		} catch (RestClientResponseException e) {
 
-			String statusMessage = null; 
-			
+			String statusMessage = null;
+
 			try {
-				
-			jsonNode = mapper.readTree(e.getResponseBodyAsString());
 
-			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC " + mapper.writeValueAsString(jsonNode));
+				jsonNode = mapper.readTree(e.getResponseBodyAsString());
 
-			codigo422 = Objects.requireNonNull(jsonNode.path("codigo").asText());
-			
-			statusMessage = validateGatewayStatusDesafioCriar(Objects.requireNonNull(e.getRawStatusCode()), codigo422);
-			
+				LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC "
+						+ mapper.writeValueAsString(jsonNode));
+
+				codigo422 = Objects.requireNonNull(jsonNode.path("codigo").asText());
+
+				statusMessage = validateGatewayStatusDesafioCriar(Objects.requireNonNull(e.getRawStatusCode()),
+						codigo422);
+
 			} catch (Exception e1) {
-				
+
 				criaDesafioOutputDTO = CriaDesafioOutputDTO.builder()
 						.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-						.statusMessage(statusMessage)
-						.statusCreated(false)
-						.dataCreated(formataData(new Date()))
-						.build();
-				
+						.statusMessage(statusMessage).statusCreated(false).dataCreated(formataData(new Date())).build();
+
 				LOG.info("Identificação Positiva - Desafio Criar - Erro " + statusMessage);
-				
+
 			}
 
 			criaDesafioOutputDTO = CriaDesafioOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.statusMessage(statusMessage)
-					.statusCreated(false)
-					.dataCreated(formataData(new Date()))
-					.build();
+					.statusMessage(statusMessage).statusCreated(false).dataCreated(formataData(new Date())).build();
 
-			LOG.info("Identificação Positiva - Desafio Criar - Resposta View " + mapper.writeValueAsString(criaDesafioOutputDTO));
+			LOG.info("Identificação Positiva - Desafio Criar - Resposta View "
+					+ mapper.writeValueAsString(criaDesafioOutputDTO));
 
 		} finally {
 
-			restTemplateDto.getHttpClient().close();
-		}
+			try {
+				restTemplateDto.getHttpClient().close();
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, "Erro. Não foi possível fechar a conexão com o socket.");
+			}
 
-		return criaDesafioOutputDTO;
+			return criaDesafioOutputDTO;
+		}
 
 	}
 
@@ -193,7 +196,8 @@ public class IdentificacaoPositivaGateway {
 		try {
 
 			response = restTemplateDto.getRestTemplate().postForEntity(
-					URL_BASE + "/" + URL_POSITIVO_DESAFIO + "/" + Integer.parseInt(idDesafio.trim()) + "/enviar-respostas",
+					URL_BASE + "/" + URL_POSITIVO_DESAFIO + "/" + Integer.parseInt(idDesafio.trim())
+							+ "/enviar-respostas",
 					newRequestEntityDesafioResponder(token, respondeDesafioInputDTO), String.class);
 
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta SIIPC "
@@ -243,10 +247,14 @@ public class IdentificacaoPositivaGateway {
 
 		} finally {
 
-			restTemplateDto.getHttpClient().close();
-		}
+			try {
+				restTemplateDto.getHttpClient().close();
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, "Erro. Não foi possível fechar a conexão com o socket.");
+			}
 
-		return respondeDesafioOutputDTO;
+			return respondeDesafioOutputDTO;
+		}
 
 	}
 

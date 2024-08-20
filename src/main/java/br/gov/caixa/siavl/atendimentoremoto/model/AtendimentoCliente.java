@@ -20,9 +20,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@SuppressWarnings("all")
+@Builder(toBuilder = true)
 @Entity(name = "AtendimentoCliente")
 @Table(name = "AVLTB001_ATENDIMENTO_CLIENTE", schema = "AVL")
 public class AtendimentoCliente implements Serializable {
