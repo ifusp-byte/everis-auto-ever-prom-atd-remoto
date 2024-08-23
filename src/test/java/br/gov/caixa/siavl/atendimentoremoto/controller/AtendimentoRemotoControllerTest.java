@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import org.assertj.core.util.Arrays;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,11 +25,6 @@ class AtendimentoRemotoControllerTest extends ControllerTest {
 	@BeforeEach
 	public void beforeEach() {
 		setUpTest();
-	}
-
-	@AfterEach
-	public void afterEach() throws Exception {
-		tearDownTest();
 	}
 
 	@Test
