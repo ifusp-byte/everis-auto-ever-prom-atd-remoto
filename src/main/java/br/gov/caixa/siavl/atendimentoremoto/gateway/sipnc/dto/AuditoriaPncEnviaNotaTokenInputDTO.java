@@ -1,4 +1,4 @@
-package br.gov.caixa.siavl.atendimentoremoto.auditoria.pnc.dto;
+package br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto;
 
 import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlAccessType;

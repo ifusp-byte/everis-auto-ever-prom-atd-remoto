@@ -25,7 +25,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.ExceptionOutputDto;
@@ -157,7 +156,6 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 
 		AuditoriaPncProtocoloInputDTO auditoriaPncProtocoloInputDTO = new AuditoriaPncProtocoloInputDTO();
 		auditoriaPncProtocoloInputDTO = AuditoriaPncProtocoloInputDTO.builder()
-
 				.numeroProtocolo(String.valueOf(atendimentoCliente.getNumeroProtocolo()))
 				.versaoSistema("1.0.0")
 				.dataHoraTransacao(metodosUtils.formataData(new Date()))
@@ -166,13 +164,8 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		String descricaoEnvioTransacao = null;
 		String descricaoTransacao = null;
 
-		try {
-			descricaoTransacao = mapper.writeValueAsString(TIPO_ATENDIMENTO);
-			descricaoEnvioTransacao = Base64.getEncoder()
-					.encodeToString(mapper.writeValueAsString(auditoriaPncProtocoloInputDTO).getBytes());
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
+		descricaoTransacao = mapper.writeValueAsString(TIPO_ATENDIMENTO);
+		descricaoEnvioTransacao = Base64.getEncoder().encodeToString(mapper.writeValueAsString(auditoriaPncProtocoloInputDTO).getBytes());
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
 		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder().descricaoEnvioTransacao(descricaoEnvioTransacao)
