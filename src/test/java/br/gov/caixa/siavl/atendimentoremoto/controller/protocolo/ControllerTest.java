@@ -1,7 +1,11 @@
-package br.gov.caixa.siavl.atendimentoremoto.controller;
+package br.gov.caixa.siavl.atendimentoremoto.controller.protocolo;
 
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.TOKEN_VALIDO;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.BASE_URL;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,16 +28,23 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 
 @SuppressWarnings("all")
 @RequestMapping(BASE_URL)
 @RunWith(SpringRunner.class)
+@AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = { "env.url.ged.api=http://localhost:6065" })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class ControllerTest {
+
+	public static final String AUDITORIA_URL = "/plataforma-unificada/trilha/v1/registros";
+	public static final String CONSULTA_SICLI = "/cadastro/v2/clientes/";
+	static WireMockServer wireMockServer;
 
 	@LocalServerPort
 	public int port;
@@ -41,7 +53,7 @@ class ControllerTest {
 	public static RestTemplate restTemplate;
 	public static ObjectMapper mapper;
 	public String atdremotoUrl = null;
-
+	
 	@BeforeAll
 	public static void init() {
 		restTemplate = new RestTemplate();
@@ -51,7 +63,34 @@ class ControllerTest {
 		atdremotoUrl = defaultUrl.concat(":").concat(port + "").concat(BASE_URL);
 		mapper = new ObjectMapper();
 		mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-		mapper.setVisibility(VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.DEFAULT));
+		mapper.setVisibility(
+				VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.DEFAULT));
+	}
+
+	public void tearDownTest() throws Exception {
+		tearDownIntegracao();
+	}
+
+	public void setupIntegracao(int statusRetorno, String gravaAduditoriaBodyRetorno, String consultaSicliBodyRetorno,
+			String cpfCnpj) {
+		wireMockServer = new WireMockServer(wireMockConfig().dynamicPort().port(6060).bindAddress("localhost"));
+		wireMockServer.start();
+		WireMock.configureFor("localhost", wireMockServer.port());
+
+		stubFor(WireMock.post(urlPathMatching(AUDITORIA_URL))
+				.willReturn(aResponse().withStatus(statusRetorno)
+						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+						.withBodyFile(gravaAduditoriaBodyRetorno)));
+
+		stubFor(WireMock.get(urlPathMatching(CONSULTA_SICLI + cpfCnpj))
+				.willReturn(aResponse().withStatus(statusRetorno)
+						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+						.withBodyFile(consultaSicliBodyRetorno)));
+
+	}
+
+	public void tearDownIntegracao() throws Exception {
+		wireMockServer.stop();
 	}
 
 	public HttpEntity<?> newRequestEntity() {

@@ -1,4 +1,4 @@
-package br.gov.caixa.siavl.atendimentoremoto.controller;
+package br.gov.caixa.siavl.atendimentoremoto.controller.protocolo;
 
 import java.io.IOException;
 
