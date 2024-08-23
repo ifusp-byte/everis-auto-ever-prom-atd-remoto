@@ -114,19 +114,16 @@ public class SicliGateway {
 			String uri = URL_BASE + "/" + URL_SICLI + cpfCnpj.replace(".", "").replace("-", "").trim();
 			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
 
-			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,
-					newRequestEntityContaAtendimento(token), String.class);
+			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET, newRequestEntityContaAtendimento(token), String.class);
 
-			String statusMessage = validateGatewayStatusAtendimentoConta(
-					Objects.requireNonNull(response.getStatusCodeValue()));
+			String statusMessage = validateGatewayStatusAtendimentoConta(Objects.requireNonNull(response.getStatusCodeValue()));
 
 			body = mapper.readTree(String.valueOf(response.getBody()));
 			contratos = (ArrayNode) body.get("contratos");
 			composicaoSocietaria = (ArrayNode) body.get("composicaoSocietaria");
 
 			String nomeCliente = Objects.requireNonNull(body.path("dadosBasicos").path("nome")).asText();
-			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento"))
-					.asText();
+			String cpfCliente = Objects.requireNonNull(body.path("documentos").path("CPF").path("codigoDocumento")).asText();
 			String razaoSocial = Objects.requireNonNull(body.path("dadosBasicos").path("razaoSocial")).asText();
 			String cnpj = null;
 
@@ -148,11 +145,11 @@ public class SicliGateway {
 
 			for (JsonNode node : contratos) {
 				ContasOutputDTO conta = new ContasOutputDTO();
-				String dtInicio = node.path("dtInicio").asText().trim();
+				String dtInicio = node.path("dtInicio").asText().trim(); 
 				String sgSistema = node.path("sgSistema").asText().trim();
 				String nuUnidade = node.path("nuUnidade").asText().trim().replaceAll(REGEX_APENAS_NUMEROS, StringUtils.EMPTY);
 				String nuProduto = node.path("nuProduto").asText().trim().replaceAll(REGEX_APENAS_NUMEROS, StringUtils.EMPTY);
-				String coIdentificacao = node.path("coIdentificacao").asText().trim().replaceAll("[^0-9]", StringUtils.EMPTY);
+				String coIdentificacao = node.path("coIdentificacao").asText().trim().replaceAll(REGEX_APENAS_NUMEROS, StringUtils.EMPTY);
 
 				if (CONTA_SIDEC.equalsIgnoreCase(sgSistema) || CONTA_SID01.equalsIgnoreCase(sgSistema)) {
 					contasAtendimento = contaUtils.formataContaTotalLista(dtInicio, sgSistema, nuUnidade, nuProduto,
@@ -192,8 +189,8 @@ public class SicliGateway {
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
 					.statusMessage(statusMessage)
 					.statusCreated(false)
-					.contas(contasAtendimento)
-					.socios(sociosLista)
+					.contas(new ArrayList<>())
+					.socios(new ArrayList<>())
 					.cpfCliente(StringUtils.EMPTY).nomeCliente(StringUtils.EMPTY)
 					.razaoSocial(StringUtils.EMPTY).cnpj(StringUtils.EMPTY).mensagemSicli(mensagemSicli)
 					.dataCreated(dataUtils.formataData(new Date())).build();
