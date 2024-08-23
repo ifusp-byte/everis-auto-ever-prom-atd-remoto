@@ -4,6 +4,7 @@ import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.GERA_PROT
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,11 @@ class AtendimentoRemotoControllerProtocoloPJPF0Test extends AtendimentoRemotoCon
 		setUpTest();
 		setupIntegracao(HttpStatus.UNAUTHORIZED.value(), "sucessoAuditoriaPnc.json", "erroConsultaSicliPJPF.json",
 				"12402627000158");
+	}
+	
+	@AfterEach
+	public void tearDownTest() throws Exception {
+		tearDownIntegracao();
 	}
 	
 	@Test
