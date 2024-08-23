@@ -51,7 +51,6 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.Re
 import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.RespondeDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway.SicliGateway;
 import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoService;
-import br.gov.caixa.siavl.atendimentoremoto.service.ConsultaNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ContrataNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
 import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
@@ -73,9 +72,6 @@ public class AtendimentoRemotoController {
 
 	@Autowired
 	ModeloNotaService modeloNotaService;
-
-	@Autowired
-	ConsultaNotaService consultaNotaService;
 
 	@Autowired
 	ContrataNotaService contrataNotaService;

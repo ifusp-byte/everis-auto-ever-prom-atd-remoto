@@ -1,0 +1,178 @@
+{
+    "classeSistema": 1,
+    "sistema": "SIPNC",
+    "composicaoSocietaria": [
+    ],
+    "documentos": {
+        "NIF": []
+    },
+    "classe": "1",
+    "temporizadores": {
+        "tempoGeral": [
+            {
+                "total": "0.333",
+                "validaToken": "0.001"
+            }
+        ],
+        "tempoDadosBasicos": [
+            {
+                "SP073": "0.002"
+            }
+        ],
+        "tempoDocumentos": [
+            {
+                "SP075": "0.004"
+            }
+        ],
+        "tempoContrato": [
+            {
+                "SP077": "0.215"
+            }
+        ]
+    },
+    "dadosBasicos": {
+        "tipoPessoa": "PJ",
+        "marcaDOI": "N",
+        "razaoSocial": "KAIQUE E DAIANE PADARIA LTDA",
+        "nomeFantasia": "CONTA MEI - TESTE19",
+        "dtConstituicao": "10/01/2022",
+        "capitalSocial": 0.0,
+        "concla": "2135",
+        "naturezaJuridica": "EMPRESARIO (INDIVIDUAL)",
+        "cnaev1": "H",
+        "cnaev2": 49,
+        "cnaev3": 493,
+        "cnaev4": 49302,
+        "cnaev5": 4930204,
+        "cocli": "1740022473174",
+        "noReduzido": "",
+        "matrizFilial": "M",
+        "tpFimLucrativo": "1",
+        "tpFranquia": "",
+        "nuRegimeTributario": 0,
+        "deRegimeTributario": ""
+    },
+    "current_datetime": "2024-08-20 15:05:44",
+    "versao_api": "01.90.27",
+    "contratos": [
+        {
+            "coIdentificacao": "4455615564564545",
+            "dtInicio": "2024-01-01",
+            "nuProduto": "1",
+            "nuNaturalSistema": "4",
+            "sgSistema": "SIDEC   ",
+            "dtFim": null,
+            "nuUnidade": "156",
+            "dtSituacao": "2024-08-13",
+            "nuCrto": "1",
+            "nuConvenio": null,
+            "nuCanalCMRCO": null,
+            "noRdzdoContrato": null,
+            "icSituacao": "1",
+            "noProduto": "CONTA CORRENTE PESSOA FISICA                                                                                            ",
+            "nuTitular": "1"
+        },
+        {
+            "coIdentificacao": "400133549-1",
+            "dtInicio": "2024-01-01",
+            "nuProduto": "3",
+            "nuNaturalSistema": "4",
+            "sgSistema": "SIDEC   ",
+            "dtFim": null,
+            "nuUnidade": "2",
+            "dtSituacao": "2024-08-13",
+            "nuCrto": "39",
+            "nuConvenio": null,
+            "nuCanalCMRCO": null,
+            "noRdzdoContrato": null,
+            "icSituacao": "1",
+            "noProduto": "CONTA CORRENTE PESSOA JURIDICA                                                                                          ",
+            "nuTitular": "1"
+        },
+        {
+            "coIdentificacao": "0004001854627913",
+            "dtInicio": "2024-01-01",
+            "nuProduto": "1",
+            "nuNaturalSistema": "4",
+            "sgSistema": "SIDEC   ",
+            "dtFim": null,
+            "nuUnidade": "2",
+            "dtSituacao": "2024-08-13",
+            "nuCrto": "1",
+            "nuConvenio": null,
+            "nuCanalCMRCO": null,
+            "noRdzdoContrato": null,
+            "icSituacao": "1",
+            "noProduto": "CONTA CORRENTE PESSOA FISICA                                                                                            ",
+            "nuTitular": "1"
+        },
+        {
+            "coIdentificacao": "101143",
+            "dtInicio": "2024-01-01",
+            "nuProduto": "1",
+            "nuNaturalSistema": "4",
+            "sgSistema": "SIDEC   ",
+            "dtFim": null,
+            "nuUnidade": "2",
+            "dtSituacao": "2024-08-13",
+            "nuCrto": "1",
+            "nuConvenio": null,
+            "nuCanalCMRCO": null,
+            "noRdzdoContrato": null,
+            "icSituacao": "1",
+            "noProduto": "CONTA CORRENTE PESSOA FISICA                                                                                            ",
+            "nuTitular": "1"
+        },
+        {
+            "coIdentificacao": "0009803434999",
+            "dtInicio": "2024-01-01",
+            "nuProduto": "1288",
+            "nuNaturalSistema": "2851",
+            "sgSistema": "SID01   ",
+            "dtFim": null,
+            "nuUnidade": "1888",
+            "dtSituacao": "2024-08-13",
+            "nuCrto": null,
+            "nuConvenio": null,
+            "nuCanalCMRCO": null,
+            "noRdzdoContrato": null,
+            "icSituacao": "1",
+            "noProduto": "POUPANCA DA CAIXA - NSGD                                                                                                ",
+            "nuTitular": "1"
+        },
+        {
+            "coIdentificacao": "0004000176314",
+            "dtInicio": "2024-01-01",
+            "nuProduto": "3701",
+            "nuNaturalSistema": "2851",
+            "sgSistema": "SID01   ",
+            "dtFim": null,
+            "nuUnidade": "556",
+            "dtSituacao": "2024-08-13",
+            "nuCrto": null,
+            "nuConvenio": null,
+            "nuCanalCMRCO": "1",
+            "noRdzdoContrato": null,
+            "icSituacao": "1",
+            "noProduto": "CONTA CORRENTE PESSOA FISICA NSGD                                                                                       ",
+            "nuTitular": "1"
+        },
+        {
+            "coIdentificacao": "455202020202",
+            "dtInicio": "2024-01-01",
+            "nuProduto": "1040",
+            "nuNaturalSistema": "2887",
+            "sgSistema": "SIDEO   ",
+            "dtFim": null,
+            "nuUnidade": "2",
+            "dtSituacao": "2024-08-13",
+            "nuCrto": null,
+            "nuConvenio": null,
+            "nuCanalCMRCO": "22",
+            "noRdzdoContrato": null,
+            "icSituacao": "1",
+            "noProduto": "TESOURO DIRETO                                                                                                          ",
+            "nuTitular": "1"
+        }
+    ]
+}
