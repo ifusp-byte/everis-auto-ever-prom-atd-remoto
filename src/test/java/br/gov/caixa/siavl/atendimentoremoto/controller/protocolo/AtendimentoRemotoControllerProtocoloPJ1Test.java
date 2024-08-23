@@ -1,4 +1,4 @@
-package br.gov.caixa.siavl.atendimentoremoto.controller;
+package br.gov.caixa.siavl.atendimentoremoto.controller.protocolo;
 
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.GERA_PROTOCOLO_PJ;
 
@@ -13,12 +13,12 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 
 @SuppressWarnings("all")
-class AtendimentoRemotoControllerProtocoloPJ4Test extends AtendimentoRemotoControllerProtocoloTest {
+class AtendimentoRemotoControllerProtocoloPJ1Test extends AtendimentoRemotoControllerProtocoloTest {
 
 	@BeforeEach
 	public void setUp() {
 		setUpTest();
-		setupIntegracao(HttpStatus.OK.value(), "sucessoAuditoriaPnc.json", "sucessoConsultaSicliPJ4.json",
+		setupIntegracao(HttpStatus.OK.value(), "sucessoAuditoriaPnc.json", "sucessoConsultaSicliPJ1.json",
 				"12402627000158");
 	}
 	
@@ -28,7 +28,7 @@ class AtendimentoRemotoControllerProtocoloPJ4Test extends AtendimentoRemotoContr
 	}
 
 	@Test
-	void geraProtocoloTestPJ4Test() throws StreamReadException, DatabindException, IOException {
+	void geraProtocoloTestPJ1Test() throws StreamReadException, DatabindException, IOException {
 		geraProtocolo(GERA_PROTOCOLO_PJ);
 	}
 
