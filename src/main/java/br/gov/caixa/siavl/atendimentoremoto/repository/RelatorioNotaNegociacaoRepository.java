@@ -13,13 +13,17 @@ import br.gov.caixa.siavl.atendimentoremoto.model.RelatorioNotaNegociacao;
 public interface RelatorioNotaNegociacaoRepository extends JpaRepository<RelatorioNotaNegociacao, Long> {
 	
 	@Query(value="SELECT * FROM AVL.AVLTB065_RLTRO_NOTA_NEGOCIACAO A WHERE NU_NOTA_NEGOCIACAO = ?1", nativeQuery=true)
-	RelatorioNotaNegociacao findByNumeroNota(Long idModeloNota);
-	
+	RelatorioNotaNegociacao findByNumeroNota(Long idModeloNota);	
 	
 	@Modifying
 	@Transactional
 	@Query("UPDATE RelatorioNotaNegociacao A SET A.situacaoNota = 22 WHERE A.numeroNota = ?1")
 	void enviaNotaCliente(Long numeroNota); 
+	
+	@Modifying
+	@Transactional
+	@Query("UPDATE RelatorioNotaNegociacao A SET A.situacaoNota = 23 WHERE A.numeroNota = ?1")
+	void assinaNotaCliente(Long numeroNota); 
 	
 
 }
