@@ -17,20 +17,31 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "AuditoriaPncDesafioInputDTO")
-public class AuditoriaPncDesafioInputDTO {
-
+@XmlRootElement(name = "AuditoriaPncEnviaNotaTokenInputDTO")
+public class AuditoriaPncEnviaNotaTokenInputDTO {
+	
 	@Valid
-	private String statusIdentificacaoPositiva;
-
-	@Valid
-	private String versaoSistema;
-
-	@Valid
-	private String dataHoraTransacao;
-
+	private String situacaoNota;	
+	
 	@Valid
 	private String numeroProtocolo;
+	
+	@Valid
+	private String numeroNota;
+	
+	@Valid
+	private String versaoSistema;
+	
+	@Valid
+	private String dataHoraTransacao; 
+	
+	@Valid
+	private String assinaturaToken;
 
-	private String cpfSocio;
+	@Valid
+	private String tokenValido;
+
+	@Valid
+	private String tokenValidoTelefone;
+
 }

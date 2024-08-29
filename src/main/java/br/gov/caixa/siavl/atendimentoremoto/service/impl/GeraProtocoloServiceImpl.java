@@ -11,19 +11,22 @@ import static br.gov.caixa.siavl.atendimentoremoto.constants.GeraProtocoloServic
 import static br.gov.caixa.siavl.atendimentoremoto.constants.GeraProtocoloServiceConstans.RAZAO_SOCIAL;
 import static br.gov.caixa.siavl.atendimentoremoto.constants.GeraProtocoloServiceConstans.SOCIOS;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.AMBIENTE_NACIONAL;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DOCUMENT_TYPE_CNPJ;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DOCUMENT_TYPE_CPF;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.NOME_MFE_AVL_ATENDIMENTOREMOTO;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.REGEX_REPLACE_LETRAS;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRANSACAO_SISTEMA_ENVIA_PROTOCOLO;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import br.gov.caixa.siavl.atendimentoremoto.dto.ExceptionOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloOutputDTO;
@@ -65,6 +68,12 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 	@Autowired
 	GeraProtocoloRespository geraProtocoloRespository;
 
+	private static ObjectMapper mapper = new ObjectMapper();
+
+	private static final String DOCUMENT_TYPE_CPF = "CPF";
+	private static final String DOCUMENT_TYPE_CNPJ = "CNPJ";
+	private static final String TIPO_ATENDIMENTO = "tipo_de_atendimento";
+
 	@Override
 	public Object geraProtocolo(String token, GeraProtocoloInputDTO geraProtocoloInputDTO) throws Exception {
 
@@ -86,8 +95,7 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		tipoDocumento = documentoUtils.retornaCpf(cpfCnpjFormat) ? DOCUMENT_TYPE_CPF : DOCUMENT_TYPE_CNPJ;
 
 		if (DOCUMENT_TYPE_CPF.equals(tipoDocumento)) {
-			if (contaAtendimento.getContas().isEmpty() 
-					|| StringUtils.isBlank(contaAtendimento.getNomeCliente())) {
+			if (contaAtendimento.getContas().isEmpty() || StringUtils.isBlank(contaAtendimento.getNomeCliente())) {
 				erroProtocoloOutputDto.setMensagem(MENSAGEM_PADRAO_ERRO_PROTOCOLO);
 				mensagensErroProtocolo.add(DADOS_CPF + cpfCnpjFormat + INVALIDOS);
 				mensagensErroProtocolo.add(MENSAGEM_SICLI + contaAtendimento.getMensagemSicli());
@@ -99,8 +107,7 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		}
 
 		if (DOCUMENT_TYPE_CNPJ.equals(tipoDocumento)) {
-			if (contaAtendimento.getContas().isEmpty() 
-					|| contaAtendimento.getSocios().isEmpty()
+			if (contaAtendimento.getContas().isEmpty() || contaAtendimento.getSocios().isEmpty()
 					|| StringUtils.isBlank(contaAtendimento.getRazaoSocial())) {
 				erroProtocoloOutputDto.setMensagem(MENSAGEM_PADRAO_ERRO_PROTOCOLO);
 				mensagensErroProtocolo.add(DADOS_CNPJ + cpfCnpjFormat + INVALIDOS);
@@ -117,22 +124,24 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		Long cpfCnpj = Long.parseLong(cpfCnpjFormat);
 		Long numeroUnidade = Long.parseLong(tokenUtils.getUnidadeFromToken(token));
 		String canalAtendimento = geraProtocoloInputDTO.getTipoAtendimento();
-		Long matriculaAtendente = Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll(REGEX_REPLACE_LETRAS, StringUtils.EMPTY));
+		Long matriculaAtendente = Long
+				.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll(REGEX_REPLACE_LETRAS, StringUtils.EMPTY));
 
 		AtendimentoCliente atendimentoCliente = new AtendimentoCliente();
 		atendimentoCliente.setMatriculaAtendente(matriculaAtendente);
 		atendimentoCliente.setCanalAtendimento(canalAtendimento.charAt(0));
 		atendimentoCliente.setNumeroUnidade(numeroUnidade);
-		atendimentoCliente.setNomeCliente(documentoUtils.retornaCpf(cpfCnpjFormat) ? contaAtendimento.getNomeCliente() : contaAtendimento.getRazaoSocial());
-		
+		atendimentoCliente.setNomeCliente(documentoUtils.retornaCpf(cpfCnpjFormat) ? contaAtendimento.getNomeCliente()
+				: contaAtendimento.getRazaoSocial());
+
 		if (DOCUMENT_TYPE_CNPJ.equals(tipoDocumento)) {
 			atendimentoCliente.setCnpjCliente(cpfCnpj);
 		}
-		
+
 		if (DOCUMENT_TYPE_CPF.equals(tipoDocumento)) {
 			atendimentoCliente.setCpfCliente(cpfCnpj);
 		}
-		
+
 		atendimentoCliente.setDataInicialAtendimento(dataUtils.formataDataBanco());
 		atendimentoCliente.setDataContatoCliente(dataUtils.formataDataBanco());
 		atendimentoCliente = geraProtocoloRespository.save(atendimentoCliente);
@@ -147,25 +156,22 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 
 		AuditoriaPncProtocoloInputDTO auditoriaPncProtocoloInputDTO = new AuditoriaPncProtocoloInputDTO();
 		auditoriaPncProtocoloInputDTO = AuditoriaPncProtocoloInputDTO.builder()
-				.cpfCnpj(String.valueOf(cpfCnpj))
-				.canal(canalAtendimento)
 				.numeroProtocolo(String.valueOf(atendimentoCliente.getNumeroProtocolo()))
-				.dataInicioAtendimento(dataUtils.formataData(new Date()))
-				.matriculaAtendente(String.valueOf(matriculaAtendente))
-				.transacaoSistema(TRANSACAO_SISTEMA_ENVIA_PROTOCOLO)
+				.versaoSistema("1.0.0")
+				.dataHoraTransacao(metodosUtils.formataData(new Date()))
 				.build();
 
-		String descricaoTransacao = metodosUtils.writeValueAsString(auditoriaPncProtocoloInputDTO);
+		String descricaoEnvioTransacao = null;
+		String descricaoTransacao = null;
+
+		descricaoTransacao = mapper.writeValueAsString(TIPO_ATENDIMENTO);
+		descricaoEnvioTransacao = Base64.getEncoder().encodeToString(mapper.writeValueAsString(auditoriaPncProtocoloInputDTO).getBytes());
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
-		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder()
-				.descricaoTransacao(descricaoTransacao)
-				.ipTerminalUsuario(tokenUtils.getIpFromToken(token))
-				.nomeMfe(NOME_MFE_AVL_ATENDIMENTOREMOTO)
-				.numeroUnidadeLotacaoUsuario(50L)
-				.ambienteAplicacao(AMBIENTE_NACIONAL)
-				.tipoDocumento(tipoDocumento)
-				.numeroIdentificacaoCliente(cpfCnpj)
+		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder().descricaoEnvioTransacao(descricaoEnvioTransacao)
+				.descricaoTransacao(descricaoTransacao).ipTerminalUsuario(tokenUtils.getIpFromToken(token))
+				.nomeMfe(NOME_MFE_AVL_ATENDIMENTOREMOTO).numeroUnidadeLotacaoUsuario(50L)
+				.ambienteAplicacao(AMBIENTE_NACIONAL).tipoDocumento(tipoDocumento).numeroIdentificacaoCliente(cpfCnpj)
 				.build();
 
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);

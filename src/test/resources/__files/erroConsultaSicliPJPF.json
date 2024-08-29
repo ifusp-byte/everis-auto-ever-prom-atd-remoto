@@ -1,0 +1,18 @@
+{
+    "retorno": {
+        "codSituacao": "9",
+        "mensagem": "token inválido, acesso não autorizado ou timeout de validação",
+        "codBarramento": "XX",
+        "sqlCodeJava": null
+    },
+    "temporizadores": {
+        "tempoGeral": [
+            {
+                "total": "0.005",
+                "validaToken": "0.005"
+            }
+        ]
+    },
+    "current_datetime": "2024-08-22 20:51:51",
+    "versao_api": "01.90.27"
+}
