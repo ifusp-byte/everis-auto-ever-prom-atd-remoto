@@ -10,7 +10,7 @@ public class ModeloNotaRepositoryImpl {
 	@PersistenceContext
 	private EntityManager em;
 
-	public List<Object[]> modeloNotaMaisUtilizada() {
+	public List<Object[]> modeloNotaMaisUtilizada(Long publicoAlvo) {
 
 		StringBuilder sb = new StringBuilder();
 
@@ -24,10 +24,12 @@ public class ModeloNotaRepositoryImpl {
 		sb.append(" AND B.situacaoModeloNota = 'P' ");
 		sb.append(" AND C.acaoProdutoAtivo = 1 ");
 		sb.append(" AND B.numeroModeloNota NOT IN (SELECT C.numeroModeloNota FROM FluxoAtendimento C) ");
+		sb.append(" AND B.publicoAlvo <> :publicoAlvo ");
 		sb.append(" GROUP  BY A.numeroModeloNota, C.numeroAcao, C.descricao ");
 		sb.append(" ORDER  BY 1 DESC ");
 
 		TypedQuery<Object[]> query = em.createQuery(sb.toString(), Object[].class);
+		query.setParameter("publicoAlvo", publicoAlvo);
 		query.setMaxResults(5);
 
 		return query.getResultList();
