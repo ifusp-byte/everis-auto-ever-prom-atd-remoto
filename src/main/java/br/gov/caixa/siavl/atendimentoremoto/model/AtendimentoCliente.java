@@ -81,5 +81,8 @@ public class AtendimentoCliente implements Serializable {
 
 	@Column(name = "DE_SITUACAO_IDNFO_POSITIVA")
 	private String descricaoIdentificacaoPositiva;
+	
+	@Column(name = "DT_ENVIO_CHAVE_VALIDACAO_ATNTO")
+	private Date dataEnvioToken;
 
 }
