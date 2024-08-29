@@ -93,7 +93,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		siecmGateway.dossieCriar(token, cpfCnpjSiecm);
 
 		SiecmDocumentosIncluirDadosRequisicaoInputDto siecmDocumentosIncluirDadosRequisicao = new SiecmDocumentosIncluirDadosRequisicaoInputDto();
-		siecmDocumentosIncluirDadosRequisicao.setIpUsuarioFinal(DEFAULT_IP);
+		siecmDocumentosIncluirDadosRequisicao.setIpUsuarioFinal(tokenUtils.getIpFromToken(token));
 		siecmDocumentosIncluirDadosRequisicao.setLocalArmazenamento(DEFAULT_LOCAL_ARMAZENAMENTO);
 
 		SiecmDocumentosIncluirDestinoDocumentoInputDto siecmDocumentosIncluirDestinoDocumento = new SiecmDocumentosIncluirDestinoDocumentoInputDto();
