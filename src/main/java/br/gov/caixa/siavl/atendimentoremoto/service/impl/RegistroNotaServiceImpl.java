@@ -338,6 +338,13 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				if (Boolean.TRUE.equals(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getTokenValido())))) {			
 					notaNegociacaoRepository.assinaNotaCliente(numeroNota);
 					relatorioNotaNegociacaoRepository.assinaNotaCliente(numeroNota);
+					atendimentoCliente.setValidacaoTokenAtendimento(1L);
+					atendimentoCliente.setDataEnvioToken(formataDataBanco());
+					atendimentoClienteRepository.save(atendimentoCliente);
+				} else {				
+					atendimentoCliente.setValidacaoTokenAtendimento(2L);
+					atendimentoCliente.setDataEnvioToken(formataDataBanco());
+					atendimentoClienteRepository.save(atendimentoCliente);			
 				}
 
 				AuditoriaPncEnviaNotaTokenInputDTO auditoriaPncEnviaNotaTokenInputDTO = new AuditoriaPncEnviaNotaTokenInputDTO();
