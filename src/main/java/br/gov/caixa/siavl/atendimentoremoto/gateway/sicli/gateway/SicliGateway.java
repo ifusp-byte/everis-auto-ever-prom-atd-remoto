@@ -38,11 +38,11 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.constants.SicliGateway
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContaAtendimentoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContasOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.SociosOutputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.util.ContaUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.DataUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
+import br.gov.caixa.siavl.atendimentoremoto.util.conta.ContaUtils;
 
 @Service
 @Validated
@@ -153,7 +153,7 @@ public class SicliGateway {
 
 				if (CONTA_SIDEC.equalsIgnoreCase(sgSistema) || CONTA_SID01.equalsIgnoreCase(sgSistema)) {
 					contasAtendimento = contaUtils.formataContaTotalLista(dtInicio, sgSistema, nuUnidade, nuProduto,
-							coIdentificacao, contasAtendimento);
+							coIdentificacao, contasAtendimento, documentoUtils.tipoPessoa(cpfCnpj));
 				}
 			}
 
