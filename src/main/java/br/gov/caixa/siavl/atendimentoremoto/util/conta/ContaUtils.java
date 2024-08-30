@@ -1,10 +1,12 @@
-package br.gov.caixa.siavl.atendimentoremoto.util;
+package br.gov.caixa.siavl.atendimentoremoto.util.conta;
 
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.CONTA_SIART;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.CONTA_SID01;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.CONTA_SIDEC;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.CONTA_SIIFX;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.OITO_NUMBER;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.PERSON_TYPE_PF;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.PERSON_TYPE_PJ;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.PONTO;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.QUATRO_NUMBER;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.REPLACE_CONTA_1;
@@ -12,12 +14,12 @@ import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.REPLACE_C
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.REPLACE_IDENTIFICACAO;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.SETE_NUMBER;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRACO;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRES_NUMBER;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.UM_NUMBER;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_CHAR;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_NUMBER;
 
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.text.MaskFormatter;
@@ -30,7 +32,7 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContasOutputDTO;
 @Component
 @SuppressWarnings("all")
 public class ContaUtils {
-
+	
 	public String formataContaTotalOld(String dtInicio, String sgSistema, Object nuUnidade, Object nuProduto,
 			Object coIdentificacao) {
 
@@ -89,15 +91,21 @@ public class ContaUtils {
 	}
 
 	public List<ContasOutputDTO> formataContaTotalLista(String dtInicio, String sgSistema, Object nuUnidade,
-			Object nuProduto, Object coIdentificacao, List<ContasOutputDTO> contasAtendimento) {
+			Object nuProduto, Object coIdentificacao, List<ContasOutputDTO> contasAtendimento, String tipoPessoa) {
 
 		String contaFormatada = null;
 
 		if (CONTA_SIDEC.equalsIgnoreCase(sgSistema)) {
-			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
+			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO,
+					StringUtils.EMPTY);
 			if (identificacao.length() > SETE_NUMBER) {
 				String unidade = identificacao.substring(ZERO_NUMBER, QUATRO_NUMBER);
 				String produto = identificacao.substring(QUATRO_NUMBER, SETE_NUMBER);
+
+				if (validaProduto(tipoPessoa, produto)) {
+					return contasAtendimento;
+				}
+
 				identificacao = identificacao.replace(unidade + produto, StringUtils.EMPTY);
 				identificacao = StringUtils.stripStart(identificacao, ZERO_CHAR);
 				if (identificacao.length() >= UM_NUMBER) {
@@ -113,10 +121,16 @@ public class ContaUtils {
 		}
 
 		if (CONTA_SID01.equalsIgnoreCase(sgSistema)) {
-			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
+			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO,
+					StringUtils.EMPTY);
 			if (identificacao.length() > OITO_NUMBER) {
 				String unidade = String.valueOf(nuUnidade);
 				String produto = String.valueOf(nuProduto);
+
+				if (validaProduto(tipoPessoa, produto)) {
+					return contasAtendimento;
+				}
+
 				String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
 				String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
 				identificacao = identificacao.replace(formataUnidade + formataProduto, StringUtils.EMPTY);
@@ -132,6 +146,34 @@ public class ContaUtils {
 		}
 
 		return contasAtendimento;
+
+	}
+
+	private Boolean validaProduto(String tipoPessoa, String produto) {
+
+		boolean produtoValido = false;
+
+		if (PERSON_TYPE_PF.equalsIgnoreCase(tipoPessoa)
+				&& Arrays.stream(ContaSIDECPFEnum.values()).anyMatch(p -> p.getCodigo() != Integer.parseInt(produto))) {
+			produtoValido = true;
+		}
+
+		if (PERSON_TYPE_PJ.equalsIgnoreCase(tipoPessoa)
+				&& Arrays.stream(ContaSIDECPJEnum.values()).anyMatch(p -> p.getCodigo() != Integer.parseInt(produto))) {
+			produtoValido = true;
+		}
+
+		if (PERSON_TYPE_PF.equalsIgnoreCase(tipoPessoa)
+				&& Arrays.stream(ContaSID01PFEnum.values()).anyMatch(p -> p.getCodigo() != Integer.parseInt(produto))) {
+			produtoValido = true;
+		}
+
+		if (PERSON_TYPE_PJ.equalsIgnoreCase(tipoPessoa)
+				&& Arrays.stream(ContaSID01PJEnum.values()).anyMatch(p -> p.getCodigo() != Integer.parseInt(produto))) {
+			produtoValido = true;
+		}
+
+		return produtoValido;
 
 	}
 
