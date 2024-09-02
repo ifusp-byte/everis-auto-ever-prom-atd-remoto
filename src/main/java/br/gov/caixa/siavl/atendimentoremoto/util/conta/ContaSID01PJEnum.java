@@ -1,5 +1,12 @@
 package br.gov.caixa.siavl.atendimentoremoto.util.conta;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import wiremock.com.google.common.primitives.Ints;
+
+@SuppressWarnings("all")
 public enum ContaSID01PJEnum {
 	
 	CONTA_CORRENTE_PESSOA_JURIDICA(1292, "Conta Corrente Pessoa Jurídica"),
@@ -28,6 +35,12 @@ public enum ContaSID01PJEnum {
 
 	public String getDescricao() {
 		return descricao;
+	}
+	
+	public static int[] codigos() {
+		List<Integer> codigos = new ArrayList<>();
+		Arrays.stream(ContaSID01PJEnum.values()).forEach(c -> codigos.add(Integer.parseInt(String.valueOf(c.getCodigo()))));
+		return Ints.toArray(codigos);
 	}
 
 }
