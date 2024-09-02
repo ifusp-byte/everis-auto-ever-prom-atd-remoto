@@ -19,12 +19,12 @@ import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_CHAR
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_NUMBER;
 
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.text.MaskFormatter;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Component;
 
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContasOutputDTO;
@@ -96,7 +96,8 @@ public class ContaUtils {
 		String contaFormatada = null;
 
 		if (CONTA_SIDEC.equalsIgnoreCase(sgSistema)) {
-			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
+			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO,
+					StringUtils.EMPTY);
 			if (identificacao.length() > SETE_NUMBER) {
 				String unidade = identificacao.substring(ZERO_NUMBER, QUATRO_NUMBER);
 				String produto = identificacao.substring(QUATRO_NUMBER, SETE_NUMBER);
@@ -106,7 +107,8 @@ public class ContaUtils {
 					if (identificacao.length() >= UM_NUMBER) {
 						String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
 						String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
-						String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
+						String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length())
+								+ identificacao;
 						contaFormatada = mascaraConta(formataUnidade + formataProduto + formatIdentificacao);
 						ContasOutputDTO conta = new ContasOutputDTO();
 						conta.setConta(contaFormatada);
@@ -117,7 +119,8 @@ public class ContaUtils {
 		}
 
 		if (CONTA_SID01.equalsIgnoreCase(sgSistema)) {
-			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
+			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO,
+					StringUtils.EMPTY);
 			if (identificacao.length() > OITO_NUMBER) {
 				String unidade = String.valueOf(nuUnidade);
 				String produto = String.valueOf(nuProduto);
@@ -127,7 +130,8 @@ public class ContaUtils {
 					identificacao = identificacao.replace(formataUnidade + formataProduto, StringUtils.EMPTY);
 					identificacao = StringUtils.stripStart(identificacao, ZERO_CHAR);
 					if (identificacao.length() >= UM_NUMBER) {
-						String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
+						String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length())
+								+ identificacao;
 						contaFormatada = mascaraConta(formataUnidade + formataProduto + formatIdentificacao);
 						ContasOutputDTO conta = new ContasOutputDTO();
 						conta.setConta(contaFormatada);
@@ -146,22 +150,26 @@ public class ContaUtils {
 		boolean produtoValido = false;
 
 		if (PERSON_TYPE_PF.equalsIgnoreCase(tipoPessoa)
-				&& !Arrays.stream(ContaSIDECPFEnum.values()).anyMatch(p -> p.getCodigo() == Integer.parseInt(produto))) {
+				&& !ArrayUtils.contains(ContaSIDECPFEnum.values(), Integer.parseInt(produto))) {
+
 			produtoValido = true;
 		}
 
 		if (PERSON_TYPE_PJ.equalsIgnoreCase(tipoPessoa)
-				&& !Arrays.stream(ContaSIDECPJEnum.values()).anyMatch(p -> p.getCodigo() == Integer.parseInt(produto))) {
+				&& !ArrayUtils.contains(ContaSIDECPJEnum.values(), Integer.parseInt(produto))) {
+
 			produtoValido = true;
 		}
 
 		if (PERSON_TYPE_PF.equalsIgnoreCase(tipoPessoa)
-				&& !Arrays.stream(ContaSID01PFEnum.values()).anyMatch(p -> p.getCodigo() == Integer.parseInt(produto))) {
+				&& !ArrayUtils.contains(ContaSID01PFEnum.values(), Integer.parseInt(produto))) {
+
 			produtoValido = true;
 		}
 
 		if (PERSON_TYPE_PJ.equalsIgnoreCase(tipoPessoa)
-				&& !Arrays.stream(ContaSID01PJEnum.values()).anyMatch(p -> p.getCodigo() == Integer.parseInt(produto))) {
+				&& !ArrayUtils.contains(ContaSID01PJEnum.values(), Integer.parseInt(produto))) {
+
 			produtoValido = true;
 		}
 
