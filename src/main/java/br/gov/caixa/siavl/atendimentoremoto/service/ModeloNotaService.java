@@ -8,13 +8,13 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaOutputDto;
 @SuppressWarnings("all")
 public interface ModeloNotaService {
 
-	List<ModeloNotaOutputDto> consultaModeloNota();
+	List<ModeloNotaOutputDto> consultaModeloNota(String cpfCnpj);
 
-	List<ModeloNotaOutputDto> consultaModeloNotaFavorita(String token);
+	List<ModeloNotaOutputDto> consultaModeloNotaFavorita(String token, String cpfCnpj);
 
 	Boolean adicionaModeloNotaFavorita(String token, Long numeroModeloNota);
 	
-	List<ModeloNotaOutputDto> consultaModeloNotaMaisUtilizada();
+	List<ModeloNotaOutputDto> consultaModeloNotaMaisUtilizada(String cpfCnpj);
 	
 	Object modeloNotaDinamico (String token, Long numeroModeloNota, ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO) throws Exception;
 

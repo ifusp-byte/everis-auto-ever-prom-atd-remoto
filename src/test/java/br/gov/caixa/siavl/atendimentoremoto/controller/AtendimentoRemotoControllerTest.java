@@ -38,21 +38,21 @@ class AtendimentoRemotoControllerTest extends ControllerTest {
 
 	@Test
 	void consultaModeloNotaTest() {
-		String BASE_URL = atdremotoUrl + "/modelo-nota";
+		String BASE_URL = atdremotoUrl + "/modelo-nota/10020030088";
 		ResponseEntity<Object> response = restTemplate.getForEntity(BASE_URL, Object.class);
 		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
 
 	@Test
 	void consultaModeloNotaMaisUtilizadaTest() {
-		String BASE_URL = atdremotoUrl + "/modelo-nota-mais-utilizada";
+		String BASE_URL = atdremotoUrl + "/modelo-nota-mais-utilizada/10020030088";
 		ResponseEntity<Object> response = restTemplate.getForEntity(BASE_URL, Object.class);
 		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
 
 	@Test
 	void consultaModeloNotaFavoritaTest() {
-		String BASE_URL = atdremotoUrl + "/modelo-nota-favorita";
+		String BASE_URL = atdremotoUrl + "/modelo-nota-favorita/10020030088";
 		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, newRequestEntity(),
 				Object.class);
 		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
