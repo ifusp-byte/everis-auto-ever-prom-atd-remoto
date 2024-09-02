@@ -32,7 +32,7 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContasOutputDTO;
 @Component
 @SuppressWarnings("all")
 public class ContaUtils {
-	
+
 	public String formataContaTotalOld(String dtInicio, String sgSistema, Object nuUnidade, Object nuProduto,
 			Object coIdentificacao) {
 
@@ -96,51 +96,43 @@ public class ContaUtils {
 		String contaFormatada = null;
 
 		if (CONTA_SIDEC.equalsIgnoreCase(sgSistema)) {
-			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO,
-					StringUtils.EMPTY);
+			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
 			if (identificacao.length() > SETE_NUMBER) {
 				String unidade = identificacao.substring(ZERO_NUMBER, QUATRO_NUMBER);
 				String produto = identificacao.substring(QUATRO_NUMBER, SETE_NUMBER);
-
-				if (validaProduto(tipoPessoa, produto)) {
-					return contasAtendimento;
-				}
-
-				identificacao = identificacao.replace(unidade + produto, StringUtils.EMPTY);
-				identificacao = StringUtils.stripStart(identificacao, ZERO_CHAR);
-				if (identificacao.length() >= UM_NUMBER) {
-					String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
-					String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
-					String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
-					contaFormatada = mascaraConta(formataUnidade + formataProduto + formatIdentificacao);
-					ContasOutputDTO conta = new ContasOutputDTO();
-					conta.setConta(contaFormatada);
-					contasAtendimento.add(conta);
+				if (!validaProduto(tipoPessoa, produto)) {
+					identificacao = identificacao.replace(unidade + produto, StringUtils.EMPTY);
+					identificacao = StringUtils.stripStart(identificacao, ZERO_CHAR);
+					if (identificacao.length() >= UM_NUMBER) {
+						String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
+						String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
+						String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
+						contaFormatada = mascaraConta(formataUnidade + formataProduto + formatIdentificacao);
+						ContasOutputDTO conta = new ContasOutputDTO();
+						conta.setConta(contaFormatada);
+						contasAtendimento.add(conta);
+					}
 				}
 			}
 		}
 
 		if (CONTA_SID01.equalsIgnoreCase(sgSistema)) {
-			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO,
-					StringUtils.EMPTY);
+			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
 			if (identificacao.length() > OITO_NUMBER) {
 				String unidade = String.valueOf(nuUnidade);
 				String produto = String.valueOf(nuProduto);
-
-				if (validaProduto(tipoPessoa, produto)) {
-					return contasAtendimento;
-				}
-
-				String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
-				String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
-				identificacao = identificacao.replace(formataUnidade + formataProduto, StringUtils.EMPTY);
-				identificacao = StringUtils.stripStart(identificacao, ZERO_CHAR);
-				if (identificacao.length() >= UM_NUMBER) {
-					String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
-					contaFormatada = mascaraConta(formataUnidade + formataProduto + formatIdentificacao);
-					ContasOutputDTO conta = new ContasOutputDTO();
-					conta.setConta(contaFormatada);
-					contasAtendimento.add(conta);
+				if (!validaProduto(tipoPessoa, produto)) {
+					String formataUnidade = REPLACE_CONTA_1.substring(unidade.length()) + unidade;
+					String formataProduto = REPLACE_CONTA_1.substring(produto.length()) + produto;
+					identificacao = identificacao.replace(formataUnidade + formataProduto, StringUtils.EMPTY);
+					identificacao = StringUtils.stripStart(identificacao, ZERO_CHAR);
+					if (identificacao.length() >= UM_NUMBER) {
+						String formatIdentificacao = REPLACE_IDENTIFICACAO.substring(identificacao.length()) + identificacao;
+						contaFormatada = mascaraConta(formataUnidade + formataProduto + formatIdentificacao);
+						ContasOutputDTO conta = new ContasOutputDTO();
+						conta.setConta(contaFormatada);
+						contasAtendimento.add(conta);
+					}
 				}
 			}
 		}
@@ -154,22 +146,22 @@ public class ContaUtils {
 		boolean produtoValido = false;
 
 		if (PERSON_TYPE_PF.equalsIgnoreCase(tipoPessoa)
-				&& Arrays.stream(ContaSIDECPFEnum.values()).anyMatch(p -> p.getCodigo() != Integer.parseInt(produto))) {
+				&& !Arrays.stream(ContaSIDECPFEnum.values()).anyMatch(p -> p.getCodigo() == Integer.parseInt(produto))) {
 			produtoValido = true;
 		}
 
 		if (PERSON_TYPE_PJ.equalsIgnoreCase(tipoPessoa)
-				&& Arrays.stream(ContaSIDECPJEnum.values()).anyMatch(p -> p.getCodigo() != Integer.parseInt(produto))) {
+				&& !Arrays.stream(ContaSIDECPJEnum.values()).anyMatch(p -> p.getCodigo() == Integer.parseInt(produto))) {
 			produtoValido = true;
 		}
 
 		if (PERSON_TYPE_PF.equalsIgnoreCase(tipoPessoa)
-				&& Arrays.stream(ContaSID01PFEnum.values()).anyMatch(p -> p.getCodigo() != Integer.parseInt(produto))) {
+				&& !Arrays.stream(ContaSID01PFEnum.values()).anyMatch(p -> p.getCodigo() == Integer.parseInt(produto))) {
 			produtoValido = true;
 		}
 
 		if (PERSON_TYPE_PJ.equalsIgnoreCase(tipoPessoa)
-				&& Arrays.stream(ContaSID01PJEnum.values()).anyMatch(p -> p.getCodigo() != Integer.parseInt(produto))) {
+				&& !Arrays.stream(ContaSID01PJEnum.values()).anyMatch(p -> p.getCodigo() == Integer.parseInt(produto))) {
 			produtoValido = true;
 		}
 
