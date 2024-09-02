@@ -88,6 +88,7 @@ public class NotaNegociacao implements Serializable {
 	@Column(name = "NU_CONTA_CORRENTE_ATENDIMENTO")
 	private Long coIdentificacao;
 	
+	@Column(name = "IC_SISTEMA_CADASTRO_NOTA", columnDefinition = "CHAR(1)")
+	private String origemCadastroNota; 
 	
-
 }

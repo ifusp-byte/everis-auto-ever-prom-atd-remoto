@@ -100,6 +100,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	@Autowired
 	TokenUtils tokenUtils;
 
+	private static final String ORIGEM_CADASTRO_NOTA_MFE = "P";
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
 	private static final String DOCUMENT_TYPE_CPF = "CPF";
@@ -208,6 +209,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			notaNegociacao.setNuUnidade(nuUnidade);
 			notaNegociacao.setNuProduto(nuProduto);
 			notaNegociacao.setCoIdentificacao(coIdentificacao);
+			notaNegociacao.setOrigemCadastroNota(ORIGEM_CADASTRO_NOTA_MFE);
 			notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);
 
 			AtendimentoNegocio atendimentoNegocio = new AtendimentoNegocio();
