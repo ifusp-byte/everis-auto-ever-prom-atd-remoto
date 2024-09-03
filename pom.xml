@@ -7,7 +7,7 @@
     <artifactId>SIAVL-atdremoto-backend</artifactId>
     <name>SIAVL-atdremoto-backend-${project.artifactId}</name>
     <packaging>jar</packaging>
-    <version>1.2.0</version>
+    <version>1.2.0-snapshot</version>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
