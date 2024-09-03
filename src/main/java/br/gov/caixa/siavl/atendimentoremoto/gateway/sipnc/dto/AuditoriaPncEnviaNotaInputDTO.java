@@ -17,11 +17,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "AuditoriaPncRegistraNotaInputDTO")
+@XmlRootElement(name = "AuditoriaPncEnviaNotaInputDTO")
 public class AuditoriaPncEnviaNotaInputDTO {
 	
 	@Valid
-	private String situacaoNota;
+	private String situacaoNota;	
 	
 	@Valid
 	private String numeroProtocolo;

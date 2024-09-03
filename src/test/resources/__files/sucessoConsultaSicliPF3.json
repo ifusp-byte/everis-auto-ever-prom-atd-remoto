@@ -1,0 +1,185 @@
+{
+    "classeSistema": 1,
+    "sistema": "SIPNC",
+    "composicaoSocietaria": [],
+    "documentos": {
+        "CPF": {
+            "sequencial": 1,
+            "codigoDocumento": "11871923840",
+            "situacaoDocumento": "3",
+            "situacaoCPF": "00",
+            "tpDocumento": "6"
+        }
+    },
+    "classe": "1",
+    "temporizadores": {
+        "tempoGeral": [
+            {
+                "total": "0.196",
+                "validaToken": "0.002"
+            }
+        ],
+        "tempoDocumentos": [
+            {
+                "SP075": "0.088"
+            }
+        ],
+        "tempoContrato": [
+            {
+                "SP077": "0.01"
+            }
+        ],
+        "tempoDadosBasicos": [
+            {
+                "SP073": "0.003"
+            }
+        ]
+    },
+    "dadosBasicos": {
+        "tipoPessoa": "PF",
+        "marcaDOI": "N",
+        "nome": "ISMAEL LINO BRAGA",
+        "dtNascimento": "20/03/1977",
+        "tpPessoa": 1,
+        "nomeMae": "MARIA LOPES DE OLIVEIRA BRAGA",
+        "nuPaisOrigem": 10,
+        "nomeSocial": "",
+        "cocli": "5430006346543",
+        "nomePai": "",
+        "localidade": "NAO INFORMADO",
+        "sexo": "",
+        "nomeReduzido": "",
+        "estadoCivil": "0",
+        "naturalidade": "",
+        "escolaridade": 0,
+        "codigoLocalidade": 0,
+        "cpfConjuge": "",
+        "nomeConjuge": "",
+        "nomeMaeConjuge": "",
+        "dtNascConjuge": null,
+        "coIdentidadeGenero": null
+    },
+    "current_datetime": "2024-08-22 20:27:24",
+    "versao_api": "01.90.27",
+    "contratos": [
+        {
+            "coIdentificacao": "4455615564564545",
+            "dtInicio": "2024-01-01",
+            "nuProduto": "1",
+            "nuNaturalSistema": "4",
+            "sgSistema": "SIDEC   ",
+            "dtFim": null,
+            "nuUnidade": "156",
+            "dtSituacao": "2024-08-13",
+            "nuCrto": "1",
+            "nuConvenio": null,
+            "nuCanalCMRCO": null,
+            "noRdzdoContrato": null,
+            "icSituacao": "1",
+            "noProduto": "CONTA CORRENTE PESSOA FISICA                                                                                            ",
+            "nuTitular": "1"
+        },
+        {
+            "coIdentificacao": "400133549-1",
+            "dtInicio": "2024-01-01",
+            "nuProduto": "3",
+            "nuNaturalSistema": "4",
+            "sgSistema": "SIDEC   ",
+            "dtFim": null,
+            "nuUnidade": "2",
+            "dtSituacao": "2024-08-13",
+            "nuCrto": "39",
+            "nuConvenio": null,
+            "nuCanalCMRCO": null,
+            "noRdzdoContrato": null,
+            "icSituacao": "1",
+            "noProduto": "CONTA CORRENTE PESSOA JURIDICA                                                                                          ",
+            "nuTitular": "1"
+        },
+        {
+            "coIdentificacao": "0004001854627913",
+            "dtInicio": "2024-01-01",
+            "nuProduto": "1",
+            "nuNaturalSistema": "4",
+            "sgSistema": "SIDEC   ",
+            "dtFim": null,
+            "nuUnidade": "2",
+            "dtSituacao": "2024-08-13",
+            "nuCrto": "1",
+            "nuConvenio": null,
+            "nuCanalCMRCO": null,
+            "noRdzdoContrato": null,
+            "icSituacao": "1",
+            "noProduto": "CONTA CORRENTE PESSOA FISICA                                                                                            ",
+            "nuTitular": "1"
+        },
+        {
+            "coIdentificacao": "101143",
+            "dtInicio": "2024-01-01",
+            "nuProduto": "1",
+            "nuNaturalSistema": "4",
+            "sgSistema": "SIDEC   ",
+            "dtFim": null,
+            "nuUnidade": "2",
+            "dtSituacao": "2024-08-13",
+            "nuCrto": "1",
+            "nuConvenio": null,
+            "nuCanalCMRCO": null,
+            "noRdzdoContrato": null,
+            "icSituacao": "1",
+            "noProduto": "CONTA CORRENTE PESSOA FISICA                                                                                            ",
+            "nuTitular": "1"
+        },
+        {
+            "coIdentificacao": "0009803434999",
+            "dtInicio": "2024-01-01",
+            "nuProduto": "1288",
+            "nuNaturalSistema": "2851",
+            "sgSistema": "SID01   ",
+            "dtFim": null,
+            "nuUnidade": "1888",
+            "dtSituacao": "2024-08-13",
+            "nuCrto": null,
+            "nuConvenio": null,
+            "nuCanalCMRCO": null,
+            "noRdzdoContrato": null,
+            "icSituacao": "1",
+            "noProduto": "POUPANCA DA CAIXA - NSGD                                                                                                ",
+            "nuTitular": "1"
+        },
+        {
+            "coIdentificacao": "0004000176314",
+            "dtInicio": "2024-01-01",
+            "nuProduto": "3701",
+            "nuNaturalSistema": "2851",
+            "sgSistema": "SID01   ",
+            "dtFim": null,
+            "nuUnidade": "556",
+            "dtSituacao": "2024-08-13",
+            "nuCrto": null,
+            "nuConvenio": null,
+            "nuCanalCMRCO": "1",
+            "noRdzdoContrato": null,
+            "icSituacao": "1",
+            "noProduto": "CONTA CORRENTE PESSOA FISICA NSGD                                                                                       ",
+            "nuTitular": "1"
+        },
+        {
+            "coIdentificacao": "455202020202",
+            "dtInicio": "2024-01-01",
+            "nuProduto": "1040",
+            "nuNaturalSistema": "2887",
+            "sgSistema": "SIDEO   ",
+            "dtFim": null,
+            "nuUnidade": "2",
+            "dtSituacao": "2024-08-13",
+            "nuCrto": null,
+            "nuConvenio": null,
+            "nuCanalCMRCO": "22",
+            "noRdzdoContrato": null,
+            "icSituacao": "1",
+            "noProduto": "TESOURO DIRETO                                                                                                          ",
+            "nuTitular": "1"
+        }
+    ]
+}

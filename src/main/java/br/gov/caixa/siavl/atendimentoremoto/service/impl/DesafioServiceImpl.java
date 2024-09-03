@@ -1,6 +1,8 @@
 package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 
+import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -20,12 +22,18 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.gatewa
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.gateway.AuditoriaPncGateway;
+import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
+import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
+import br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
 @SuppressWarnings("all")
 public class DesafioServiceImpl implements DesafioService {
+	
+	@Autowired
+	MetodosUtils metodosUtils;
 	
 	@Autowired
 	TokenUtils tokenUtils;
@@ -35,11 +43,17 @@ public class DesafioServiceImpl implements DesafioService {
 	
 	@Autowired
 	AuditoriaPncGateway auditoriaPncGateway;
+	
+	@Autowired
+	AtendimentoClienteRepository atendimentoClienteRepository;
 
 	private static final String NOME_SERVICO = "81";
 	
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
+	private static final String DOCUMENT_TYPE_CPF = "CPF";
+	private static final String DOCUMENT_TYPE_CNPJ = "CNPJ";
+	private static final String IDENTIFICACAO_POSITIVA = "identificação_positiva";
 	
 	static Logger logger = Logger.getLogger(DesafioServiceImpl.class.getName());
 	
@@ -67,28 +81,44 @@ public class DesafioServiceImpl implements DesafioService {
 	@Override
 	public RespondeDesafioOutputDTO desafioResponder(String token, String idDesafio, RespondeDesafioInputDTO respostaDesafio) throws Exception {
 		
+		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(respostaDesafio.getProtocolo()));
+		
+		String tipoDocumento = null;
 		String tipoPessoa = null; 
-		if (respostaDesafio.getCpfSocio().isBlank()) {		
+		String cpfSocio = null; 
+		Long cpfCnpjPnc = null; 
+		
+		if (StringUtils.isBlank(String.valueOf(atendimentoCliente.getCnpjCliente())) || atendimentoCliente.getCnpjCliente() == null) {	
+			tipoDocumento = DOCUMENT_TYPE_CPF;
 			tipoPessoa = PERSON_TYPE_PF;		
+			cpfSocio = StringUtils.EMPTY;
+			cpfCnpjPnc = atendimentoCliente.getCpfCliente();
+			
 		} else {	
+			tipoDocumento = DOCUMENT_TYPE_CNPJ;
 			tipoPessoa = PERSON_TYPE_PJ;	
+			cpfSocio = respostaDesafio.getCpfSocio();
+			cpfCnpjPnc = atendimentoCliente.getCnpjCliente();
 		}
 		
 		RespondeDesafioOutputDTO respondeDesafio = identificacaoPositivaGateway.desafioResponder(token, idDesafio, respostaDesafio);
 		
 		AuditoriaPncDesafioInputDTO auditoriaPncDesafioInputDTO = new AuditoriaPncDesafioInputDTO(); 	
-		auditoriaPncDesafioInputDTO = AuditoriaPncDesafioInputDTO.builder()
-				.idDesafio(idDesafio)		
-				.matriculaAtendente(tokenUtils.getMatriculaFromToken(token))
-				.statusValidacao(String.valueOf(respondeDesafio.isStatusCreated()))
-				.tipoPessoa(tipoPessoa)
-				.transacaoSistema("144")
+		auditoriaPncDesafioInputDTO = AuditoriaPncDesafioInputDTO.builder()		
+				.statusIdentificacaoPositiva(String.valueOf(respondeDesafio.isStatusCreated()))
+				.versaoSistema("1.0.0")
+				.dataHoraTransacao(metodosUtils.formataData(new Date()))
+				.numeroProtocolo(respostaDesafio.getProtocolo())
+				.cpfSocio(cpfSocio)
 				.build();
 				
+		String descricaoEnvioTransacao = null;
 		String descricaoTransacao = null;
 
 		try {
-			descricaoTransacao = mapper.writeValueAsString(auditoriaPncDesafioInputDTO);
+			descricaoTransacao = mapper.writeValueAsString(IDENTIFICACAO_POSITIVA);
+			descricaoEnvioTransacao = Base64.getEncoder()
+					.encodeToString(mapper.writeValueAsString(auditoriaPncDesafioInputDTO).getBytes());
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
@@ -96,11 +126,14 @@ public class DesafioServiceImpl implements DesafioService {
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
 
 		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder()
+				.descricaoEnvioTransacao(descricaoEnvioTransacao)
 				.descricaoTransacao(descricaoTransacao)
 				.ipTerminalUsuario(tokenUtils.getIpFromToken(token))
 				.nomeMfe("mfe_avl_atendimentoremoto")
 				.ambienteAplicacao("NACIONAL")
 				.numeroUnidadeLotacaoUsuario(50L)
+				.tipoDocumento(tipoDocumento)
+				.numeroIdentificacaoCliente(cpfCnpjPnc)
 				.build();
 
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);

@@ -2,6 +2,9 @@ package br.gov.caixa.siavl.atendimentoremoto.util;
 
 import java.sql.Clob;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import javax.sql.rowset.serial.SerialClob;
 import javax.sql.rowset.serial.SerialException;
@@ -65,6 +68,15 @@ public class MetodosUtils {
 	public ResponseEntity response(HttpStatus status, Object body) {
 
 		return ResponseEntity.status(status).contentType(MediaType.APPLICATION_JSON).body(body);
+	}
+	
+	public String formataData(Date dateInput) {
+
+		String data = null;
+		Locale locale = new Locale("pt", "BR");
+		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
+		data = String.valueOf(sdfOut.format(dateInput));
+		return data;
 	}
 
 }
