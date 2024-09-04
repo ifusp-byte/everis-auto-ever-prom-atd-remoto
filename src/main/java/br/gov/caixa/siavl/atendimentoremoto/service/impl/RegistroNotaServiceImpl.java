@@ -49,6 +49,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.PendenciaAtendimentoNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RelatorioNotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.RegistroNotaService;
+import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
@@ -99,6 +100,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	@Autowired
 	TokenUtils tokenUtils;
+	
+	@Autowired
+	DocumentoUtils documentoUtils;
 
 	private static final String ORIGEM_CADASTRO_NOTA_MFE = "P";
 	private static final String PERSON_TYPE_PF = "PF";
@@ -108,7 +112,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	private static final String PATTERN_MATRICULA = "[a-zA-Z]";
 	private static final String STEP4_COMPROVANTE_ASSINAR_PELO_APP = "step4_comprovante_assinar_pelo_app";
 	private static final String SITUACAO_NOTA = "Aguardando assinatura do cliente";
-	private static final String SITUACAO_NOTA_TOKEN = "Pendente de Contratação";
+	private static final String SITUACAO_NOTA_TOKEN = "Pendente de Contratacao";
 	private static final String STEP3_COMPONENTE_TOKEN = "step3_componente_token";
 
 	static Logger LOG = Logger.getLogger(RegistroNotaServiceImpl.class.getName());
@@ -310,7 +314,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		String numeroProtocolo = enviaClienteInputDto.getNumeroProtocolo();
 		boolean statusRetornoSicli = true;
 		String matriculaAtendente = tokenUtils.getMatriculaFromToken(token).replaceAll(PATTERN_MATRICULA, "");
-		String tipoDocumento = null;
+		String tipoDocumento = documentoUtils.retornaCpf(enviaClienteInputDto.getCpfCnpj()) ? DOCUMENT_TYPE_CPF : DOCUMENT_TYPE_CNPJ;
 		Boolean statusContratacao = null;
 
 		Long cpfCnpjPnc = Long.parseLong(enviaClienteInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim());
@@ -356,7 +360,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 						.numeroNota(String.valueOf(numeroNota))
 						.versaoSistema(enviaClienteInputDto.getVersaoSistema())
 						.dataHoraTransacao(formataData(new Date()))
-						.assinaturaToken(Boolean.TRUE.equals(enviaClienteInputDto.getAssinaturaToken()) ? "sim" : "não")
+						.assinaturaToken(Boolean.TRUE.equals(enviaClienteInputDto.getAssinaturaToken()) ? "sim" : "nao")
 						.tokenValido(enviaClienteInputDto.getTokenValido())
 						.tokenValidoTelefone(enviaClienteInputDto.getTokenValidoTelefone())
 						.build();
@@ -394,13 +398,6 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 						enviaClienteInputDto.getTokenValidoTelefone());
 				auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
 			}
-		}
-
-		if (enviaClienteInputDto.getCpfCnpj().replace(".", "").replace("-", "").replace("/", "").trim()
-				.length() == 11) {
-			tipoDocumento = DOCUMENT_TYPE_CPF;
-		} else {
-			tipoDocumento = DOCUMENT_TYPE_CNPJ;
 		}
 
 		AuditoriaPncEnviaNotaInputDTO auditoriaPncEnviaNotaInputDTO = new AuditoriaPncEnviaNotaInputDTO();
