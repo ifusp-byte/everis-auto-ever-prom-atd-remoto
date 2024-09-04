@@ -81,5 +81,8 @@ public class AtendimentoCliente implements Serializable {
 
 	@Column(name = "DE_SITUACAO_IDNFO_POSITIVA")
 	private String descricaoIdentificacaoPositiva;
+	
+	@Column(name = "NU_CANAL_ATENDIMENTO")
+	private Long numeroCanalAtendimento;
 
 }
