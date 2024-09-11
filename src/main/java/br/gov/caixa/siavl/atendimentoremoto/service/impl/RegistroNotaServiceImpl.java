@@ -2,14 +2,16 @@ package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import java.sql.Clob;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import javax.sql.rowset.serial.SerialClob;
 
 import org.apache.commons.lang.StringUtils;
@@ -22,7 +24,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaEnviaNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaEnviaNotaTokenService;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaRegistraNotaService;
+import br.gov.caixa.siavl.atendimentoremoto.dto.CamposNota;
+import br.gov.caixa.siavl.atendimentoremoto.dto.ConteudoCampoMultiplo;
+import br.gov.caixa.siavl.atendimentoremoto.repository.CampoModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.dto.NegociacaoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncEnviaNotaInputDTO;
@@ -34,6 +40,7 @@ import br.gov.caixa.siavl.atendimentoremoto.model.AssinaturaNota;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNegocio;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNota;
+import br.gov.caixa.siavl.atendimentoremoto.model.CampoModeloNota;
 import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocio;
 import br.gov.caixa.siavl.atendimentoremoto.model.NegocioAgenciaVirtual;
 import br.gov.caixa.siavl.atendimentoremoto.model.NotaNegociacao;
@@ -50,6 +57,13 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.PendenciaAtendimentoNotaR
 import br.gov.caixa.siavl.atendimentoremoto.repository.RelatorioNotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.RegistroNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
+import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaFavoritoRepository;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.StringWriter;
+import org.hibernate.Hibernate;
+
 
 @Service
 @SuppressWarnings("all")
@@ -96,6 +110,12 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	@Autowired
 	AuditoriaEnviaNotaTokenService auditoriaEnviaNotaTokenService;
+
+	@Autowired
+	ModeloNotaFavoritoRepository modeloNotaFavoritoRepository;
+
+	@Autowired
+	CampoModeloNotaRepository campoModeloNotaRepository;
 
 	@Autowired
 	TokenUtils tokenUtils;
@@ -175,6 +195,74 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				relatorioNotaNegociacao = relatorioNotaNegociacaoRepository
 						.findByNumeroNota(Long.parseLong(registraNotaInputDto.getNumeroNota()));
 			}
+
+
+			//Começar aqui
+     //Mapear o objeto com as informações do banco
+			List<CamposNota> camposNotas = new ArrayList<>();
+			JsonNode relatorio = registraNotaInputDto.getRelatorioNota();
+			
+			
+		modeloNotaFavoritoRepository.modeloNotaDinamico(numeroModeloNota).stream().forEach(dinamico -> {
+			CamposNota camposNota = null;
+			String nomeCampo = String.valueOf(dinamico[3]);
+			JsonNode valor = relatorio.get(nomeCampo);
+			String texto = "";
+			if(valor!=null && !valor.isNull()){
+				texto = valor.asText();
+			}
+			
+			camposNota = CamposNota.builder()
+					.id(String.valueOf(dinamico[0])).idCampo(String.valueOf(dinamico[1]))
+					.ordemCampo(String.valueOf(dinamico[2])).nome(String.valueOf(dinamico[3]))
+					.predefinido("1".equals(String.valueOf(dinamico[4]))).editavel("1".equals(String.valueOf(dinamico[5])))
+					.obrigatorio("1".equals(String.valueOf(dinamico[6]))).espacoReservado(String.valueOf(dinamico[7]))
+					.tipoCampo(String.valueOf(dinamico[8])).tipoDado(String.valueOf(dinamico[9]))
+					.descricao(String.valueOf(dinamico[10])).tamanhoMaximo(String.valueOf(dinamico[11]))
+					.valorCampo(texto).mascaraCampo(String.valueOf(dinamico[13])).build();
+					
+					camposNotas.add(camposNota);
+		});
+
+		camposNotas.stream().forEach(dinamico -> {
+			List<ConteudoCampoMultiplo> conteudoCampoMultiplos = new ArrayList<>();
+			campoModeloNotaRepository.modeloNotaDinamicoCampos(Long.parseLong(dinamico.getIdCampo())).stream()
+					.forEach(campo -> {
+						ConteudoCampoMultiplo conteudoCampoMultiplo = null;
+						conteudoCampoMultiplo = conteudoCampoMultiplo.builder()
+								.id(String.valueOf(campo[0]))
+								.descricao(String.valueOf(campo[1]))
+								.build();
+
+					conteudoCampoMultiplos.add(conteudoCampoMultiplo);
+					});
+			dinamico.setConteudoCampoMultiplo(conteudoCampoMultiplos);
+		});
+
+
+		try {
+
+			NegociacaoOutputDTO notaNegociacaoXML = new NegociacaoOutputDTO();
+			notaNegociacaoXML.setCamposNota(camposNotas);
+			// Cria o contexto JAXB para a classe NotaNegociacao
+       JAXBContext jaxbContext = JAXBContext.newInstance(NegociacaoOutputDTO.class);
+      // Cria o Marshaller para a conversão
+       Marshaller marshaller = jaxbContext.createMarshaller();
+      // Formata o XML de saída
+       marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+      // Converte o objeto em XML e imprime no console
+       StringWriter sw = new StringWriter();
+       marshaller.marshal(notaNegociacaoXML, sw);
+       // Imprime o XML
+      String xmlContent = sw.toString();
+			String novoXml = xmlContent.replace("<NegociacaoOutputDTO>", "<notaNegociacao><camposNota>").replace("</NegociacaoOutputDTO>", "</camposNota></notaNegociacao>");
+			//add o xml a model
+			//TODO: Verificar quando for alterar.
+			notaNegociacao.setVrCampoNotaXML(novoXml);
+          System.out.println(novoXml);
+		} catch (JAXBException e) {
+				e.printStackTrace();
+		}
 
 			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository
 					.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
