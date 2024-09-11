@@ -396,16 +396,16 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 		String tokenValido = null;
 
-		if (Boolean.TRUE.equals(enviaClienteInputDto.getTokenValido())) {
+		if (Boolean.TRUE.equals(Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getTokenValido()))))) {
 			tokenValido = SIM;
 		}
 
-		if (Boolean.FALSE.equals(enviaClienteInputDto.getTokenValido())
+		if (Boolean.FALSE.equals(Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getTokenValido()))))
 				&& StringUtils.isNotBlank(enviaClienteInputDto.getTokenValidoTelefone())) {
 			tokenValido = NAO;
 		}
 
-		if (Boolean.FALSE.equals(enviaClienteInputDto.getTokenValido())
+		if (Boolean.FALSE.equals(Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getTokenValido()))))
 				&& StringUtils.isBlank(enviaClienteInputDto.getTokenValidoTelefone())) {
 			tokenValido = STEP3_COMPONENTE_TOKEN_ERRO_SUBMFE_TOKEN;
 		}
@@ -415,7 +415,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				.situacaoNota(SITUACAO_NOTA_TOKEN).numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo())
 				.numeroNota(String.valueOf(numeroNota)).versaoSistema(enviaClienteInputDto.getVersaoSistema())
 				.dataHoraTransacao(dataUtils.formataData(new Date()))
-				.assinaturaToken(Boolean.TRUE.equals(enviaClienteInputDto.getAssinaturaToken()) ? SIM : NAO)
+				.assinaturaToken(Boolean.TRUE.equals(Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getAssinaturaToken())))) ? SIM : NAO)
 				.tokenValido(tokenValido).tokenValidoTelefone(enviaClienteInputDto.getTokenValidoTelefone()).build();
 
 		String descricaoEnvioTransacao = Base64.getEncoder()
