@@ -20,8 +20,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "ConteudoCampoMultiplo")
-public class ConteudoCampoMultiplo {
+@XmlRootElement(name = "ConteudoCampoMultiploOutPutDTO")
+public class ConteudoCampoMultiploOutPutDTO {
 
 	@Valid
 	@XmlElement(name = "id")

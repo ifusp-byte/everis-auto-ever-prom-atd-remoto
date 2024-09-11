@@ -24,8 +24,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "CamposNota")
-public class CamposNota {
+@XmlRootElement(name = "CamposNotaOutputDTO")
+public class CamposNotaOutputDTO {
 
 	@Valid
 	@JsonIgnore
@@ -84,6 +84,6 @@ public class CamposNota {
 	@XmlElement(name = "mascaraCampo")
 	private String mascaraCampo;
 
-	List<ConteudoCampoMultiplo> conteudoCampoMultiplo;
+	List<ConteudoCampoMultiploOutPutDTO> conteudoCampoMultiplo;
 
 }

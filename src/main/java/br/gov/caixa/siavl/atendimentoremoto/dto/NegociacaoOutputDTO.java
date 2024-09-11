@@ -29,7 +29,7 @@ public class NegociacaoOutputDTO {
 	
 	@Valid
 	@XmlElement(name = "camposNota")
-	private List<CamposNota> camposNota;
+	private List<CamposNotaOutputDTO> camposNota;
 		
 	@Valid
 	@XmlElement(name = "qtItemNotaNegociacao")
