@@ -36,7 +36,9 @@ public final class ConstantsUtils {
 	public static final String S = "S";
 	public static final String N = "N";
 	public static final String SIM = "sim";
-	public static final String NAO = "nao";
+	public static final String NAO = "nao";	
+	public static final String VALIDO = "valido";
+	public static final String INVALIDO = "invalido";
 	public static final String PT = "pt";
 	public static final String BR = "BR";
 	public static final String DATA_SIECM_ANEXO = "dd-MM-yyyy_HH-mm-ss";

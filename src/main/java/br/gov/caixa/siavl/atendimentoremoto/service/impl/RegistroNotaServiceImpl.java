@@ -1,12 +1,14 @@
 package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.AMBIENTE_NACIONAL;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.INVALIDO;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.NAO;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.NOME_MFE_AVL_ATENDIMENTOREMOTO;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.PONTO;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.REGEX_REPLACE_LETRAS;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.SIM;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRACO;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.VALIDO;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_CHAR;
 
 import java.sql.Clob;
@@ -397,18 +399,25 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		String tokenValido = null;
 
 		if (Boolean.TRUE.equals(Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getTokenValido()))))) {
-			tokenValido = SIM;
+			tokenValido = VALIDO;
 		}
 
+		if (Boolean.FALSE.equals(Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getTokenValido()))))) {
+			tokenValido = INVALIDO;
+		}
+		
+		
+		/*
 		if (Boolean.FALSE.equals(Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getTokenValido()))))
 				&& StringUtils.isNotBlank(enviaClienteInputDto.getTokenValidoTelefone())) {
-			tokenValido = NAO;
+			tokenValido = INVALIDO;
 		}
-
+		
 		if (Boolean.FALSE.equals(Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getTokenValido()))))
 				&& StringUtils.isBlank(enviaClienteInputDto.getTokenValidoTelefone())) {
 			tokenValido = STEP3_COMPONENTE_TOKEN_ERRO_SUBMFE_TOKEN;
 		}
+		*/
 
 		AuditoriaPncEnviaNotaTokenInputDTO auditoriaPncEnviaNotaTokenInputDTO = new AuditoriaPncEnviaNotaTokenInputDTO();
 		auditoriaPncEnviaNotaTokenInputDTO = AuditoriaPncEnviaNotaTokenInputDTO.builder()
