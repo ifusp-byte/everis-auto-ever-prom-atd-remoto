@@ -90,5 +90,5 @@ public class NotaNegociacao implements Serializable {
 	
 	@Column(name = "IC_SISTEMA_CADASTRO_NOTA", columnDefinition = "CHAR(1)")
 	private String origemCadastroNota; 
-	
+
 }
