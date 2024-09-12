@@ -370,15 +370,15 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			NegociacaoOutputDTO notaNegociacaoXML = new NegociacaoOutputDTO();
 			notaNegociacaoXML.setCamposNota(camposNotas);
 			// Cria o contexto JAXB para a classe NotaNegociacao
-       JAXBContext jaxbContext = JAXBContext.newInstance(NegociacaoOutputDTO.class);
+      JAXBContext jaxbContext = JAXBContext.newInstance(NegociacaoOutputDTO.class);
       // Cria o Marshaller para a conversão
-       Marshaller marshaller = jaxbContext.createMarshaller();
+      Marshaller marshaller = jaxbContext.createMarshaller();
       // Formata o XML de saída
-       marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+      marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
       // Converte o objeto em XML e imprime no console
-       StringWriter sw = new StringWriter();
-       marshaller.marshal(notaNegociacaoXML, sw);
-       // Imprime o XML
+      StringWriter sw = new StringWriter();
+      marshaller.marshal(notaNegociacaoXML, sw);
+      // Imprime o XML
       String xmlContent = sw.toString();
 			String novoXml = xmlContent.replace("<ConteudoCampoMultiploOutPutDTO>","<conteudoCampoMultiplo>").replace("<CamposNotaOutputDTO>","<camposNota>").replace("<NegociacaoOutputDTO>", "<notaNegociacao><camposNota>").replace("</NegociacaoOutputDTO>", "</camposNota></notaNegociacao>");
 			//add o xml a model
@@ -386,7 +386,6 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		} catch (JAXBException e) {
 				e.printStackTrace();
 		}
-
 	}
 
 	@Override
