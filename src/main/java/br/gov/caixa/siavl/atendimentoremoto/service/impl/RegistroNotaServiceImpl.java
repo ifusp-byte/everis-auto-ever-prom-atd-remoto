@@ -134,6 +134,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	@Autowired
 	PendenciaAtendimentoNotaRepository pendenciaAtendimentoNotaRepository;
+	
+	@Autowired
 	ModeloNotaFavoritoRepository modeloNotaFavoritoRepository;
 
 	@Autowired
