@@ -146,7 +146,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	private static final String DOCUMENT_TYPE_CPF = "CPF";
 	private static final String DOCUMENT_TYPE_CNPJ = "CNPJ";
 	private static final String ORIGEM_CADASTRO_NOTA_MFE = "P";
-	private static final String SITUACAO_NOTA_TOKEN = "Pendente de Contratacao";
+	private static final String SITUACAO_NOTA_TOKEN_VALIDO = "Pendente de Contratacao";
+	private static final String SITUACAO_NOTA_TOKEN_INVALIDO = "Em atendimento Agencia";
 	private static final String STEP3_COMPONENTE_TOKEN = "step3_componente_token";
 	private static final String SITUACAO_NOTA = "Aguardando assinatura do cliente";
 	private static final String STEP4_COMPROVANTE_ASSINAR_PELO_APP = "step4_comprovante_assinar_pelo_app";
@@ -486,13 +487,16 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			String numeroContaAtendimento) {
 
 		String tokenValido = null;
+		String situacaoNota = null; 
 
 		if (Boolean.TRUE.equals(Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getTokenValido()))))) {
 			tokenValido = VALIDO;
+			situacaoNota = SITUACAO_NOTA_TOKEN_VALIDO;
 		}
 
 		if (Boolean.FALSE.equals(Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getTokenValido()))))) {
 			tokenValido = INVALIDO;
+			situacaoNota = SITUACAO_NOTA_TOKEN_INVALIDO;
 		}
 		
 		
@@ -510,7 +514,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 		AuditoriaPncEnviaNotaTokenInputDTO auditoriaPncEnviaNotaTokenInputDTO = new AuditoriaPncEnviaNotaTokenInputDTO();
 		auditoriaPncEnviaNotaTokenInputDTO = AuditoriaPncEnviaNotaTokenInputDTO.builder()
-				.situacaoNota(SITUACAO_NOTA_TOKEN).numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo())
+				.situacaoNota(situacaoNota).numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo())
 				.numeroNota(String.valueOf(numeroNota)).versaoSistema(enviaClienteInputDto.getVersaoSistema())
 				.dataHoraTransacao(dataUtils.formataData(new Date()))
 				.assinaturaToken(Boolean.TRUE.equals(Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getAssinaturaToken())))) ? SIM : NAO)
