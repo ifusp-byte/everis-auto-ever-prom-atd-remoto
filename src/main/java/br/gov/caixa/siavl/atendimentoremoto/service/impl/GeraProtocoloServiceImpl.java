@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ExceptionOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.enums.GeraProtocoloTipoAtendimentoEnum;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContaAtendimentoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway.SicliGateway;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncInputDTO;
@@ -124,15 +125,14 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		Long cpfCnpj = Long.parseLong(cpfCnpjFormat);
 		Long numeroUnidade = Long.parseLong(tokenUtils.getUnidadeFromToken(token));
 		String canalAtendimento = geraProtocoloInputDTO.getTipoAtendimento();
-		Long matriculaAtendente = Long
-				.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll(REGEX_REPLACE_LETRAS, StringUtils.EMPTY));
+		Long matriculaAtendente = Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll(REGEX_REPLACE_LETRAS, StringUtils.EMPTY));
 
 		AtendimentoCliente atendimentoCliente = new AtendimentoCliente();
 		atendimentoCliente.setMatriculaAtendente(matriculaAtendente);
 		atendimentoCliente.setCanalAtendimento(canalAtendimento.charAt(0));
+		atendimentoCliente.setNumeroCanalAtendimento(Long.parseLong(String.valueOf(GeraProtocoloTipoAtendimentoEnum.valueOf(canalAtendimento).getCodigo())));
 		atendimentoCliente.setNumeroUnidade(numeroUnidade);
-		atendimentoCliente.setNomeCliente(documentoUtils.retornaCpf(cpfCnpjFormat) ? contaAtendimento.getNomeCliente()
-				: contaAtendimento.getRazaoSocial());
+		atendimentoCliente.setNomeCliente(documentoUtils.retornaCpf(cpfCnpjFormat) ? contaAtendimento.getNomeCliente() : contaAtendimento.getRazaoSocial());
 
 		if (DOCUMENT_TYPE_CNPJ.equals(tipoDocumento)) {
 			atendimentoCliente.setCnpjCliente(cpfCnpj);

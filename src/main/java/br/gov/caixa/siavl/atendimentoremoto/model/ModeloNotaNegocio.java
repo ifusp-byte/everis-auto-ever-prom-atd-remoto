@@ -46,5 +46,8 @@ public class ModeloNotaNegocio implements Serializable {
 	
 	@Column(name = "IC_MODELO_VINCULA_DOCUMENTO")
 	private int vinculaDocumento;
+	
+	@Column(name = "IC_PUBLICO_ALVO_MODELO_NOTA")
+	private Long publicoAlvo;
 
 }
