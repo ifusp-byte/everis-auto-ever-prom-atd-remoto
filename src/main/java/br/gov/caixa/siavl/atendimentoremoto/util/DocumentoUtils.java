@@ -61,7 +61,7 @@ public class DocumentoUtils {
 	}
 
 	public boolean retornaCpf(String cpfCnpj) {
-		return cpfCnpj.replace(".", "").replace("-", "").replace("/", "").trim().length() == ONZE;
+		return formataDocumento(cpfCnpj).length() == ONZE;
 	}
 
 	public String tipoPessoa(String cpfCnpj) {
