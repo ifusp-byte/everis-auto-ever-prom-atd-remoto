@@ -10,6 +10,8 @@ import javax.swing.text.MaskFormatter;
 
 import org.springframework.stereotype.Component;
 
+import lombok.experimental.UtilityClass;
+
 @Component
 @SuppressWarnings("all")
 public class DocumentoUtils {

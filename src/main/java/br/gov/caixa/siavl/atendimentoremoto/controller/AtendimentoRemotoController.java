@@ -5,6 +5,7 @@ import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoC
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.CONTA_ATENDIMENTO;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DESAFIO_CRIAR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DESAFIO_RESPONDER;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DESAFIO_VALIDAR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_TIPO;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_TIPO_CAMPOS;
@@ -45,11 +46,11 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
-import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.CriaDesafioInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.CriaDesafioOutputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.RespondeDesafioInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.RespondeDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway.SicliGateway;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.CriaDesafioInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.CriaDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.RespondeDesafioInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.RespondeDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoService;
 import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
 import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
@@ -92,10 +93,17 @@ public class AtendimentoRemotoController {
 				.body(geraProtocoloService.geraProtocolo(getToken(token), geraProtocoloInputDTO));
 	}
 
+	@GetMapping(DESAFIO_VALIDAR)
+	public ResponseEntity<Object> desafioValidar(
+			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
+			@Valid @PathVariable String cpf) {
+		return ResponseEntity.status(HttpStatus.OK).body(desafioService.desafioValidar(getToken(token), cpf));
+	}
+
 	@PostMapping(DESAFIO_CRIAR)
 	public ResponseEntity<CriaDesafioOutputDTO> desafioCriar(
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token, @Valid @PathVariable String cpf,
-			@Valid @RequestBody CriaDesafioInputDTO criaDesafioInputDTO) throws Exception {
+			@Valid @RequestBody CriaDesafioInputDTO criaDesafioInputDTO) {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(desafioService.desafioCriar(getToken(token), cpf, criaDesafioInputDTO));
 	}
@@ -103,8 +111,7 @@ public class AtendimentoRemotoController {
 	@PostMapping(DESAFIO_RESPONDER)
 	public ResponseEntity<RespondeDesafioOutputDTO> desafioResponder(
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
-			@Valid @PathVariable String idDesafio, @Valid @RequestBody RespondeDesafioInputDTO respostaDesafio)
-			throws Exception {
+			@Valid @PathVariable String idDesafio, @Valid @RequestBody RespondeDesafioInputDTO respostaDesafio) {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(desafioService.desafioResponder(getToken(token), idDesafio, respostaDesafio));
 	}
@@ -122,8 +129,7 @@ public class AtendimentoRemotoController {
 	}
 
 	@GetMapping(MODELO_NOTA_FAVORITA)
-	public ResponseEntity<Object> consultaModeloNotaFavorita(
-			@Valid @PathVariable String cpfCnpj,
+	public ResponseEntity<Object> consultaModeloNotaFavorita(@Valid @PathVariable String cpfCnpj,
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token) {
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(modeloNotaService.consultaModeloNotaFavorita(getToken(token), cpfCnpj));
@@ -139,7 +145,8 @@ public class AtendimentoRemotoController {
 
 	@GetMapping(MODELO_NOTA_MAIS_UTILIZADA)
 	public ResponseEntity<Object> consultaModeloMaisUtilizada(@Valid @PathVariable String cpfCnpj) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(modeloNotaService.consultaModeloNotaMaisUtilizada(cpfCnpj));
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(modeloNotaService.consultaModeloNotaMaisUtilizada(cpfCnpj));
 	}
 
 	@PostMapping(MODELO_NOTA_DINAMICO)
