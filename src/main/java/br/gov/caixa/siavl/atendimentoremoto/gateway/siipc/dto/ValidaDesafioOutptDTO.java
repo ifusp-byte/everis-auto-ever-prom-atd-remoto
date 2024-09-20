@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonRawValue;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,18 +23,22 @@ import lombok.Setter;
 @XmlRootElement(name = "ValidaDesafioOutptDTO")
 public class ValidaDesafioOutptDTO {
 
+	@Hidden
 	@JsonRawValue
 	@XmlElement(name = "response")
 	private String response;
 
+	@Hidden
 	@JsonRawValue
 	@XmlElement(name = "canal")
 	private String canal;
 
+	@Hidden
 	@JsonRawValue
 	@XmlElement(name = "tsAtualizacao")
 	private String tsAtualizacao;
 	
+	@Hidden
 	@JsonRawValue
 	@XmlElement(name = "status")
 	private String status;
@@ -50,6 +55,7 @@ public class ValidaDesafioOutptDTO {
 	@XmlElement(name = "statusMessage")
 	private String statusMessage;
 
+	@Hidden
 	@XmlElement(name = "statusCreated")
 	private boolean statusCreated;
 
