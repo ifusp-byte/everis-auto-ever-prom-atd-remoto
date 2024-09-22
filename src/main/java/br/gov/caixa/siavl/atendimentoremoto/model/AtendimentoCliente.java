@@ -85,7 +85,7 @@ public class AtendimentoCliente implements Serializable {
 	@Column(name = "DT_ENVIO_CHAVE_VALIDACAO_ATNTO")
 	private Date dataEnvioToken;
 
-	@Column(name = "NU_CANAL_ATENDIMENTO")
-	private Long numeroCanalAtendimento;
+	//@Column(name = "NU_CANAL_ATENDIMENTO")
+	//private Long numeroCanalAtendimento;
 
 }
