@@ -35,6 +35,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RoteiroFechamentoNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.impl.ModeloNotaRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
+import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
@@ -43,6 +44,9 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	@Autowired
 	TokenUtils tokenUtils;
+
+	@Autowired
+	DocumentoUtils documentoUtils;
 
 	@Autowired
 	ModeloNotaRepository modeloNotaRepository;
@@ -74,11 +78,14 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 	@Autowired
 	ModeloNotaRepositoryImpl modeloNotaRepositoryImpl;
 
+	private static Long PUBLICO_ALVO_PF = 1L;
+	private static Long PUBLICO_ALVO_PJ = 2L;
+
 	private static ObjectMapper mapper = new ObjectMapper();
 
-	public List<ModeloNotaOutputDto> consultaModeloNota() {
+	public List<ModeloNotaOutputDto> consultaModeloNota(String cpfCnpj) {
 		List<ModeloNotaOutputDto> modelosNota = new ArrayList<>();
-		List<Object[]> findModeloNota = modeloNotaFavoritoRepository.findModeloNota();
+		List<Object[]> findModeloNota = modeloNotaFavoritoRepository.findModeloNota(retornaPublicoAlvo(cpfCnpj));
 		if (!findModeloNota.isEmpty()) {
 			findModeloNota.stream().forEach(modeloNota -> {
 				ModeloNotaOutputDto modeloNotaOutputDto = null;
@@ -95,9 +102,9 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		return modelosNota;
 	}
 
-	public List<ModeloNotaOutputDto> consultaModeloNotaMaisUtilizada() {
+	public List<ModeloNotaOutputDto> consultaModeloNotaMaisUtilizada(String cpfCnpj) {
 		List<ModeloNotaOutputDto> modelosNota = new ArrayList<>();
-		List<Object[]> findModeloNotaMaisUtilizada = modeloNotaRepositoryImpl.modeloNotaMaisUtilizada();
+		List<Object[]> findModeloNotaMaisUtilizada = modeloNotaRepositoryImpl.modeloNotaMaisUtilizada(retornaPublicoAlvo(cpfCnpj));
 		if (!findModeloNotaMaisUtilizada.isEmpty()) {
 			findModeloNotaMaisUtilizada.stream().forEach(modeloNota -> {
 				ModeloNotaOutputDto modeloNotaOutputDto = null;
@@ -111,13 +118,13 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 	}
 
 	@Override
-	public List<ModeloNotaOutputDto> consultaModeloNotaFavorita(String token) {
+	public List<ModeloNotaOutputDto> consultaModeloNotaFavorita(String token, String cpfCnpj) {
 		Long matriculaAtendente = null;
 		matriculaAtendente = matriculaCriacaoNota(token);
 		List<ModeloNotaOutputDto> modelosNotaFavorita = new ArrayList<>();
 		List<ModeloNotaOutputDto> modelosNotaFavorita2 = new ArrayList<>();
 		List<ModeloNotaOutputDto> modelosNotaFavoritaRetorno = new ArrayList<>();
-		List<Object[]> findModeloNotaFavorita = modeloNotaFavoritoRepository.findModeloNotaFavorita(matriculaAtendente);
+		List<Object[]> findModeloNotaFavorita = modeloNotaFavoritoRepository.findModeloNotaFavorita(matriculaAtendente, retornaPublicoAlvo(cpfCnpj));
 
 		if (!findModeloNotaFavorita.isEmpty()) {
 			findModeloNotaFavorita.stream().forEach(modeloNotaFavorita -> {
@@ -287,6 +294,16 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		time.add(Calendar.MINUTE, Integer.parseInt(horaValidade.substring(3, 4)));
 
 		return time.getTime();
+	}
+
+	public Long retornaPublicoAlvo(String cpfCnpj) {
+		Long publicoAlvo = null;
+		if (documentoUtils.retornaCpf(cpfCnpj)) {
+			publicoAlvo = PUBLICO_ALVO_PJ;
+		} else {
+			publicoAlvo = PUBLICO_ALVO_PF;
+		}
+		return publicoAlvo;
 	}
 
 }

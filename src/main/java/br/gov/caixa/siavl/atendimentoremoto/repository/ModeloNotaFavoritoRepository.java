@@ -9,11 +9,11 @@ import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocioFavorito;
 @Repository
 public interface ModeloNotaFavoritoRepository extends JpaRepository<ModeloNotaNegocioFavorito, Long> {
 	
-	@Query("SELECT A.numeroModeloNota, B.numeroAcao, B.descricao FROM ModeloNotaNegocio A, AcaoProduto B WHERE A.numeroAcao = B.numeroAcao AND B.acaoProdutoAtivo = 1 AND A.modeloNotaAtivo = 1 AND A.situacaoModeloNota = 'P' ORDER BY B.descricao ASC")
-	List<Object[]> findModeloNota();
+	@Query("SELECT A.numeroModeloNota, B.numeroAcao, B.descricao FROM ModeloNotaNegocio A, AcaoProduto B WHERE A.numeroAcao = B.numeroAcao AND B.acaoProdutoAtivo = 1 AND A.modeloNotaAtivo = 1 AND A.situacaoModeloNota = 'P' AND A.publicoAlvo <> ?1 ORDER BY B.descricao ASC")
+	List<Object[]> findModeloNota(Long publicoAlvo);
 	
-	@Query("SELECT A.numeroModeloNota, B.numeroAcao, B.descricao, C.dataEscolhaFavorito FROM ModeloNotaNegocio A, AcaoProduto B, ModeloNotaNegocioFavorito C WHERE A.numeroAcao = B.numeroAcao AND A.numeroModeloNota = C.numeroModeloNota AND B.acaoProdutoAtivo = 1 AND A.modeloNotaAtivo = 1 AND A.situacaoModeloNota = 'P' AND C.matriculaFavorito = ?1 ORDER BY C.dataEscolhaFavorito DESC")
-	List<Object[]> findModeloNotaFavorita(Long matriculaAtendente);
+	@Query("SELECT A.numeroModeloNota, B.numeroAcao, B.descricao, C.dataEscolhaFavorito FROM ModeloNotaNegocio A, AcaoProduto B, ModeloNotaNegocioFavorito C WHERE A.numeroAcao = B.numeroAcao AND A.numeroModeloNota = C.numeroModeloNota AND B.acaoProdutoAtivo = 1 AND A.modeloNotaAtivo = 1 AND A.situacaoModeloNota = 'P' AND C.matriculaFavorito = ?1 AND A.publicoAlvo <> ?2 ORDER BY C.dataEscolhaFavorito DESC")
+	List<Object[]> findModeloNotaFavorita(Long matriculaAtendente, Long publicoAlvo);
 	
 	@Query(value="SELECT A.NU_MODELO_NOTA_NEGOCIO, B.NU_CAMPO_MODELO_NOTA, B.NU_ORDEM_CAMPO_MODELO, C.NO_CAMPO_MODELO_NOTA, C.IC_CAMPO_DEFINIDO, C.IC_CAMPO_EDITAVEL, C.IC_CAMPO_OBRIGATORIO, C.DE_ESPACO_RESERVADO, C.IC_TIPO_DADO_CAMPO, C.IC_TIPO_ENTRADA_CAMPO, C.DE_CAMPO, C.QT_CARACTER_CAMPO, C.VR_INICIAL_CAMPO, C.CO_MASCARA_CAMPO FROM AVL.AVLTB005_MODELO_NOTA_NEGOCIO A, AVL.AVLTB018_CAMPO_MODELO B,  AVL.AVLTB017_CAMPO_MODELO_NOTA C WHERE A.NU_MODELO_NOTA_NEGOCIO = B.NU_MODELO_NOTA_NEGOCIO AND  B.NU_CAMPO_MODELO_NOTA = C.NU_CAMPO_MODELO_NOTA AND A.NU_MODELO_NOTA_NEGOCIO =?1 GROUP BY A.NU_MODELO_NOTA_NEGOCIO, B.NU_CAMPO_MODELO_NOTA, B.NU_ORDEM_CAMPO_MODELO, C.NO_CAMPO_MODELO_NOTA, C.IC_CAMPO_DEFINIDO, C.IC_CAMPO_EDITAVEL, C.IC_CAMPO_OBRIGATORIO, C.DE_ESPACO_RESERVADO, C.IC_TIPO_DADO_CAMPO, C.IC_TIPO_ENTRADA_CAMPO, C.DE_CAMPO, C.QT_CARACTER_CAMPO, C.VR_INICIAL_CAMPO, C.CO_MASCARA_CAMPO ORDER BY B.NU_ORDEM_CAMPO_MODELO ASC", nativeQuery=true)
 	List<Object[]> modeloNotaDinamico(Long idModeloNota);

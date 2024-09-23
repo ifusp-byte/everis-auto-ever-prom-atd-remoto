@@ -13,10 +13,10 @@ public class AtendimentoRemotoControllerEndpoints {
 	public static final String DESAFIO_CRIAR = "/desafio-criar/{cpf}";
 	public static final String DESAFIO_RESPONDER = "/desafio-responder/{idDesafio}";
 	public static final String AUDITORIA_IDENTIFICACAO_POSITIVA = "/auditoria-identificacao-positiva";
-	public static final String MODELO_NOTA = "/modelo-nota";
-	public static final String MODELO_NOTA_FAVORITA = "/modelo-nota-favorita";
+	public static final String MODELO_NOTA = "/modelo-nota/{cpfCnpj}";
+	public static final String MODELO_NOTA_FAVORITA = "/modelo-nota-favorita/{cpfCnpj}";
 	public static final String MODELO_NOTA_FAVORITA_BY_MODELO_NOTA = "/modelo-nota-favorita/{numeroModeloNota}";
-	public static final String MODELO_NOTA_MAIS_UTILIZADA = "/modelo-nota-mais-utilizada";
+	public static final String MODELO_NOTA_MAIS_UTILIZADA = "/modelo-nota-mais-utilizada/{cpfCnpj}";
 	public static final String MODELO_NOTA_DINAMICO = "/modelo-nota-dinamico/{numeroModeloNota}";
 	public static final String CONTA_ATENDIMENTO = "/conta-atendimento/{cpfCnpj}";
 	public static final String NOTA_SALVAR_NOTA = "/nota/{numeroModeloNota}";

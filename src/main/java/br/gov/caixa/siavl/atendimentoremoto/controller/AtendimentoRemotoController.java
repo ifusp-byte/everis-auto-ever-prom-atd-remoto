@@ -117,15 +117,16 @@ public class AtendimentoRemotoController {
 	}
 
 	@GetMapping(MODELO_NOTA)
-	public ResponseEntity<Object> consultaModeloNota() {
-		return ResponseEntity.status(HttpStatus.CREATED).body(modeloNotaService.consultaModeloNota());
+	public ResponseEntity<Object> consultaModeloNota(@Valid @PathVariable String cpfCnpj) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(modeloNotaService.consultaModeloNota(cpfCnpj));
 	}
 
 	@GetMapping(MODELO_NOTA_FAVORITA)
 	public ResponseEntity<Object> consultaModeloNotaFavorita(
+			@Valid @PathVariable String cpfCnpj,
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token) {
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(modeloNotaService.consultaModeloNotaFavorita(getToken(token)));
+				.body(modeloNotaService.consultaModeloNotaFavorita(getToken(token), cpfCnpj));
 	}
 
 	@PostMapping(MODELO_NOTA_FAVORITA_BY_MODELO_NOTA)
@@ -137,8 +138,8 @@ public class AtendimentoRemotoController {
 	}
 
 	@GetMapping(MODELO_NOTA_MAIS_UTILIZADA)
-	public ResponseEntity<Object> consultaModeloMaisUtilizada() {
-		return ResponseEntity.status(HttpStatus.CREATED).body(modeloNotaService.consultaModeloNotaMaisUtilizada());
+	public ResponseEntity<Object> consultaModeloMaisUtilizada(@Valid @PathVariable String cpfCnpj) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(modeloNotaService.consultaModeloNotaMaisUtilizada(cpfCnpj));
 	}
 
 	@PostMapping(MODELO_NOTA_DINAMICO)
