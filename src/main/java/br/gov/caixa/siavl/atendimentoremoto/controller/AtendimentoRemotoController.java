@@ -18,6 +18,7 @@ import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoC
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.NOTA_ENVIAR_CLIENTE;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.NOTA_SALVAR_NOTA;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.PROTOCOLO;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.RELATORIOS;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.AUTHORIZATION;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.BEARER_1;
 
@@ -51,6 +52,8 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.CriaDesafioInputDT
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.CriaDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.RespondeDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.RespondeDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.report.dto.ReportInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.report.service.ReportService;
 import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoService;
 import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
 import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
@@ -66,6 +69,9 @@ public class AtendimentoRemotoController {
 
 	@Autowired
 	SicliGateway sicliGateway;
+
+	@Autowired
+	ReportService reportService;
 
 	@Autowired
 	DesafioService desafioService;
@@ -212,9 +218,13 @@ public class AtendimentoRemotoController {
 				.body(sicliGateway.verificaMarcaDoi(getToken(token), cpfCnpj));
 	}
 
+	@GetMapping(RELATORIOS)
+	public Object relatorio(@RequestBody ReportInputDTO reportInputDTO) throws Exception {
+		return reportService.relatorio(reportInputDTO);
+	}
+
 	public String getToken(String token) {
 		return token.trim().replace(BEARER_1, StringUtils.EMPTY);
-
 	}
 
 }
