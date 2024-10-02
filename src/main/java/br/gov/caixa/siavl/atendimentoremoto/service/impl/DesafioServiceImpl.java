@@ -68,7 +68,6 @@ public class DesafioServiceImpl implements DesafioService {
 
 		HashMap<String, String> validaDesafioMap = new HashMap<String, String>();
 		validaDesafioMap.put("documento", documentoUtils.formataDocumento(cpf));
-		// criaDesafioMap.put("nome-servico", NOME_SERVICO);
 
 		ValidaDesafioOutptDTO validaDesafioOutptDTO = siipcGateway.desafioValidar(token, validaDesafioMap);
 
@@ -85,7 +84,7 @@ public class DesafioServiceImpl implements DesafioService {
 		}
 
 		validaDesafioOutptDTO.setDesafioExpirado(true);
-		validaDesafioOutptDTO.setMensagem("Refaça a IP.");
+		validaDesafioOutptDTO.setMensagem("Devido expiração do tempo de 30 minutos é preciso realizar uma nova Identificação Positiva.");
 
 		return validaDesafioOutptDTO;
 	}
