@@ -174,10 +174,6 @@ public class SicliGateway {
 					.cnpj(cnpj == null ? StringUtils.EMPTY : documentoUtils.formataCnpj(cnpj))
 					.build();
 
-			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
-			LOG.info("Conta Atendimento - Consultar - Resposta View "
-					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
-
 		} catch (RestClientResponseException e) {
 
 			body = mapper.readTree(e.getResponseBodyAsString());
@@ -194,10 +190,6 @@ public class SicliGateway {
 					.cpfCliente(StringUtils.EMPTY).nomeCliente(StringUtils.EMPTY)
 					.razaoSocial(StringUtils.EMPTY).cnpj(StringUtils.EMPTY).mensagemSicli(mensagemSicli)
 					.dataCreated(dataUtils.formataData(new Date())).build();
-
-			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(body));
-			LOG.info("Conta Atendimento - Consultar - Resposta View "
-					+ mapper.writeValueAsString(contaAtendimentoOutputDTO));
 
 		} finally {
 
@@ -229,8 +221,6 @@ public class SicliGateway {
 			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,
 					newRequestEntityContaAtendimento(token), String.class);
 
-			LOG.info("Conta Atendimento - Consultar - Resposta SICLI " + mapper.writeValueAsString(response));
-
 			String statusMessage = validateGatewayStatusAtendimentoConta(
 					Objects.requireNonNull(response.getStatusCodeValue()));
 
@@ -244,7 +234,6 @@ public class SicliGateway {
 		} catch (RestClientResponseException e) {
 			body = mapper.readTree(e.getResponseBodyAsString());
 			JsonNode retornoSicli = Objects.requireNonNull(body.path("retorno"));
-			LOG.info("Marca Doi - Consultar - Resposta SICLI " + mapper.writeValueAsString(body));
 
 		} finally {
 
