@@ -25,5 +25,6 @@ public class AtendimentoRemotoControllerEndpoints {
 	public static final String DOCUMENTO_TIPO = "/documento/tipo/{cpfCnpj}";
 	public static final String DOCUMENTO_TIPO_CAMPOS = "/documento/tipo/campos/{codGED}";
 	public static final String MARCA_DOI = "/marca-doi/{cpfCnpj}";
+	public static final String RELATORIOS = "/relatorios";
 
 }
