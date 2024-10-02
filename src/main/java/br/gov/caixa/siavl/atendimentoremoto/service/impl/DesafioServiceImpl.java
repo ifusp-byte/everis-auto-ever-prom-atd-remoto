@@ -14,7 +14,8 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.CriaDesafioInputDT
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.CriaDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.RespondeDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.RespondeDesafioOutputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.ValidaDesafioOutptDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.ValidaDesafioDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.ValidaDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.gateway.SiipcGateway;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncInputDTO;
@@ -69,24 +70,25 @@ public class DesafioServiceImpl implements DesafioService {
 		HashMap<String, String> validaDesafioMap = new HashMap<String, String>();
 		validaDesafioMap.put("documento", documentoUtils.formataDocumento(cpf));
 
-		ValidaDesafioOutptDTO validaDesafioOutptDTO = siipcGateway.desafioValidar(token, validaDesafioMap);
+		ValidaDesafioDTO validaDesafioDTO = siipcGateway.desafioValidar(token, validaDesafioMap);
+		ValidaDesafioOutputDTO validaDesafioOutputDTO = new ValidaDesafioOutputDTO();
 
-		if (!CANAL_PNC.equalsIgnoreCase(validaDesafioOutptDTO.getCanal())
-				&& STATUS_SUCESSO.equalsIgnoreCase(validaDesafioOutptDTO.getStatus())
-				&& dataUtils.menorTrintaMinutos(validaDesafioOutptDTO.getTsAtualizacao())) {
+		if (!CANAL_PNC.equalsIgnoreCase(validaDesafioDTO.getCanal())
+				&& STATUS_SUCESSO.equalsIgnoreCase(validaDesafioDTO.getStatus())
+				&& dataUtils.menorTrintaMinutos(validaDesafioDTO.getTsAtualizacao())) {
 
-			validaDesafioOutptDTO.setDesafioExpirado(false);
-			validaDesafioOutptDTO.setMensagem("A identificação positiva foi realizada pelo bot do WhatsApp em "
-					+ dataUtils.formataDataSiipc(validaDesafioOutptDTO.getTsAtualizacao() + "."));
+			validaDesafioOutputDTO.setDesafioExpirado(false);
+			validaDesafioOutputDTO.setMensagem("A identificação positiva foi realizada pelo bot do WhatsApp em "
+					+ dataUtils.formataDataSiipc(validaDesafioDTO.getTsAtualizacao() + "."));
 
-			return validaDesafioOutptDTO;
+			return validaDesafioOutputDTO;
 
 		}
 
-		validaDesafioOutptDTO.setDesafioExpirado(true);
-		validaDesafioOutptDTO.setMensagem("Devido expiração do tempo de 30 minutos é preciso realizar uma nova Identificação Positiva.");
+		validaDesafioOutputDTO.setDesafioExpirado(true);
+		validaDesafioOutputDTO.setMensagem("Devido expiração do tempo de 30 minutos é preciso realizar uma nova Identificação Positiva.");
 
-		return validaDesafioOutptDTO;
+		return validaDesafioOutputDTO;
 	}
 
 	@Override

@@ -5,15 +5,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.fasterxml.jackson.annotation.JsonRawValue;
-
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
@@ -21,30 +18,18 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "ValidaDesafioOutptDTO")
-public class ValidaDesafioOutptDTO {
+@XmlRootElement(name = "ValidaDesafioDTO")
+public class ValidaDesafioDTO {
 
-	@Hidden
-	@JsonRawValue
-	@ToString.Exclude
 	@XmlElement(name = "response")
 	private String response;
 
-	@Hidden
-	@JsonRawValue
-	@ToString.Exclude
 	@XmlElement(name = "canal")
 	private String canal;
 
-	@Hidden
-	@JsonRawValue
-	@ToString.Exclude
 	@XmlElement(name = "tsAtualizacao")
 	private String tsAtualizacao;
-	
-	@Hidden
-	@JsonRawValue
-	@ToString.Exclude
+
 	@XmlElement(name = "status")
 	private String status;
 

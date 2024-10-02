@@ -26,6 +26,7 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.constants.Identificaca
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.CriaDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.RespondeDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.RespondeDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.ValidaDesafioDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.ValidaDesafioOutptDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.enums.SiipcUrlEnum;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
@@ -102,9 +103,9 @@ public class SiipcGateway {
 		return headers;
 	}
 
-	public ValidaDesafioOutptDTO desafioValidar(@Valid String token, HashMap<String, String> validaDesafioMap) {
+	public ValidaDesafioDTO desafioValidar(@Valid String token, HashMap<String, String> validaDesafioMap) {
 
-		ValidaDesafioOutptDTO validaDesafioOutptDTO = new ValidaDesafioOutptDTO();
+		ValidaDesafioDTO validaDesafioDTO = new ValidaDesafioDTO();
 		ResponseEntity<String> response = null;
 		JsonNode body;
 		String codigo422 = null;
@@ -130,14 +131,14 @@ public class SiipcGateway {
 			String statusMessage = validateGatewayStatusDesafioCriar(
 					Objects.requireNonNull(response.getStatusCodeValue()), StringUtils.EMPTY);
 
-			validaDesafioOutptDTO = ValidaDesafioOutptDTO.builder()
+			validaDesafioDTO = ValidaDesafioDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
 					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).canal(canal)
 					.tsAtualizacao(tsAtualizacao).status(status).statusMessage(statusMessage).statusCreated(true)
 					.dataCreated(dataUtils.formataData(new Date())).build();
 
 			LOG.info("Identificação Positiva - Desafio Validar - Resposta View "
-					+ metodosUtils.writeValueAsString(validaDesafioOutptDTO));
+					+ metodosUtils.writeValueAsString(validaDesafioDTO));
 
 		} catch (RestClientResponseException e) {
 
@@ -157,7 +158,7 @@ public class SiipcGateway {
 
 			} catch (Exception e1) {
 
-				validaDesafioOutptDTO = ValidaDesafioOutptDTO.builder()
+				validaDesafioDTO = ValidaDesafioDTO.builder()
 						.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
 						.statusMessage(statusMessage).statusCreated(false)
 						.dataCreated(dataUtils.formataData(new Date())).build();
@@ -166,13 +167,13 @@ public class SiipcGateway {
 
 			}
 
-			validaDesafioOutptDTO = ValidaDesafioOutptDTO.builder()
+			validaDesafioDTO = ValidaDesafioDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
 					.statusMessage(statusMessage).statusCreated(false).dataCreated(dataUtils.formataData(new Date()))
 					.build();
 
 			LOG.info("Identificação Positiva - Desafio Validar - Resposta View "
-					+ metodosUtils.writeValueAsString(validaDesafioOutptDTO));
+					+ metodosUtils.writeValueAsString(validaDesafioDTO));
 
 		} finally {
 
@@ -182,7 +183,7 @@ public class SiipcGateway {
 				LOG.log(Level.SEVERE, "Erro. Não foi possível fechar a conexão com o socket.");
 			}
 
-			return validaDesafioOutptDTO;
+			return validaDesafioDTO;
 		}
 
 	}
