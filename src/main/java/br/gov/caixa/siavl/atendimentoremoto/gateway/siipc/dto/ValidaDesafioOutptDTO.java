@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -25,21 +26,25 @@ public class ValidaDesafioOutptDTO {
 
 	@Hidden
 	@JsonRawValue
+	@ToString.Exclude
 	@XmlElement(name = "response")
 	private String response;
 
 	@Hidden
 	@JsonRawValue
+	@ToString.Exclude
 	@XmlElement(name = "canal")
 	private String canal;
 
 	@Hidden
 	@JsonRawValue
+	@ToString.Exclude
 	@XmlElement(name = "tsAtualizacao")
 	private String tsAtualizacao;
 	
 	@Hidden
 	@JsonRawValue
+	@ToString.Exclude
 	@XmlElement(name = "status")
 	private String status;
 

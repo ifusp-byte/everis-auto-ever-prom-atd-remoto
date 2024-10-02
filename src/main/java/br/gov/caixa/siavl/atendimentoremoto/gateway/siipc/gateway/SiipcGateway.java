@@ -119,10 +119,10 @@ public class SiipcGateway {
 
 			body = metodosUtils.readTree(String.valueOf(response.getBody()));
 
-			String id = Objects.requireNonNull(body.path("id")).asText();
-			String canal = Objects.requireNonNull(body.path("canal")).asText();
-			String tsAtualizacao = Objects.requireNonNull(body.path("tsAtualizacao")).asText();
-			String status = Objects.requireNonNull(body.path("status")).asText();
+			//String id = Objects.requireNonNull(body.path("id")).asText();
+			String canal = String.valueOf(Objects.requireNonNull(body.path("canal")).asText());
+			String tsAtualizacao = String.valueOf(Objects.requireNonNull(body.path("tsAtualizacao")).asText());
+			String status = String.valueOf(Objects.requireNonNull(body.path("status")).asText());
 
 			LOG.info("Identificação Positiva - Desafio Validar - Resposta SIIPC "
 					+ metodosUtils.writeValueAsString(response));
