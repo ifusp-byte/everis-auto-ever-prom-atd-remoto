@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -49,7 +50,9 @@ public class ReportServiceImpl implements ReportService {
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		JasperExportManager.exportReportToPdfStream(JasperFillManager.fillReport(
 				(JasperReport) JRLoader.loadObject(
-						ResourceUtils.getFile(new ClassPathResource(reportResource).getFile().getAbsolutePath())),
+						ResourceUtils.getFile(															
+								new FileSystemResource(reportResource).getFile().getAbsolutePath())),
+								//new ClassPathResource(reportResource).getFile().getAbsolutePath())),
 				parameters, new JREmptyDataSource()), byteArrayOutputStream);
 
 		ByteArrayResource resource = new ByteArrayResource(byteArrayOutputStream.toByteArray());
