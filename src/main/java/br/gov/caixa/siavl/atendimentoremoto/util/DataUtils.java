@@ -3,6 +3,8 @@ package br.gov.caixa.siavl.atendimentoremoto.util;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.BR;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DATA_BANCO;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DATA_PADRAO;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DATA_PADRAO_SIIPC_FRONT_1;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DATA_PADRAO_SIIPC_FRONT_2;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DATA_SIECM;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DATA_SIECM_ANEXO;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DATA_SIIPC;
@@ -12,7 +14,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -89,23 +90,23 @@ public class DataUtils {
 		data = String.valueOf(sdfOut.format(dateInput));
 		return data;
 	}
-	
 
 	public Boolean menorTrintaMinutos(Object dataInicial) {
 		return calculaDiferencaDataMinutos(dataInicial) < 30;
 	}
-	
+
 	public Long diferencaDataMinutos(LocalDateTime dataInicial, LocalDateTime dataFinal) {
-		
+
 		System.err.println("DATA INICIAL: " + dataInicial);
 		System.err.println("DATA FINAL: " + dataFinal);
 		System.err.println("DIFERENCA MINUTOS: " + Duration.between(dataInicial, dataFinal).toMinutes());
 		return Duration.between(dataInicial, dataFinal).toMinutes();
 	}
 
-	public Long calculaDiferencaDataMinutos(Object dataInicial) {	
+	public Long calculaDiferencaDataMinutos(Object dataInicial) {
 		LocalDateTime dataFinalFormat = formataDataCalcularDiferencaSiipc(String.valueOf(formataData(new Date())));
-		LocalDateTime dataInicialFormat = formataDataCalcularDiferencaSiipc(String.valueOf(formataData(formataDataSiipc(dataInicial))));
+		LocalDateTime dataInicialFormat = formataDataCalcularDiferencaSiipc(
+				String.valueOf(formataData(formataDataSiipc(dataInicial))));
 		return diferencaDataMinutos(dataInicialFormat, dataFinalFormat);
 	}
 
@@ -127,6 +128,24 @@ public class DataUtils {
 			e.printStackTrace();
 		}
 		return data;
+	}
+
+	public String formataDataSiipcFront(Object object) {
+
+		Date diaMesAno = null;
+		Date horaMinuto = null;
+		Locale locale = new Locale(PT, BR);
+		SimpleDateFormat sdfIn = new SimpleDateFormat(DATA_SIIPC, locale);
+		SimpleDateFormat sdfOutDiaMesAno = new SimpleDateFormat(DATA_PADRAO_SIIPC_FRONT_1, locale);
+		SimpleDateFormat sdfOutHoraMinuto = new SimpleDateFormat(DATA_PADRAO_SIIPC_FRONT_2, locale);
+
+		try {
+			diaMesAno = sdfOutDiaMesAno.parse(sdfOutDiaMesAno.format(sdfIn.parse(String.valueOf(object))));
+			horaMinuto = sdfOutHoraMinuto.parse(sdfOutHoraMinuto.format(sdfIn.parse(String.valueOf(object))));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return String.valueOf(diaMesAno) + " às " + String.valueOf(horaMinuto);
 	}
 
 }

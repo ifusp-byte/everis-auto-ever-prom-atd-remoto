@@ -84,7 +84,7 @@ public class DesafioServiceImpl implements DesafioService {
 
 			validaDesafioOutputDTO.setDesafioExpirado(false);
 			validaDesafioOutputDTO.setMensagem("A identificação positiva foi realizada pelo bot do WhatsApp em "
-					+ dataUtils.formataDataSiipc(validaDesafioDTO.getTsAtualizacao() + "."));
+					+ dataUtils.formataDataSiipcFront(validaDesafioDTO.getTsAtualizacao() + "."));
 
 			return validaDesafioOutputDTO;
 
