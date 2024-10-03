@@ -43,7 +43,7 @@ public final class ConstantsUtils {
 	public static final String BR = "BR";
 	public static final String DATA_SIECM_ANEXO = "dd-MM-yyyy_HH-mm-ss";
 	public static final String DATA_SIECM = "dd-MM-yyyy HH:mm:ss";
-	public static final String DATA_SIIPC = "dd-MM-yyyy HH:mm:ss";
+	public static final String DATA_SIIPC = "yyyy-MM-dd HH:mm:ss";
 	public static final String DATA_BANCO = "yyyy-MM-dd HH:mm:ss'.0'";
 	public static final String DATA_PADRAO = "dd/MM/yyyy HH:mm:ss";
 	public static final String PERSON_TYPE_PF = "PF";

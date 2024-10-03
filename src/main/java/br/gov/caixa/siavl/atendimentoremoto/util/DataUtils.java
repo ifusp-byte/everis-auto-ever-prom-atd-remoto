@@ -96,8 +96,10 @@ public class DataUtils {
 	}
 	
 	public Long diferencaDataMinutos(LocalDateTime dataInicial, LocalDateTime dataFinal) {
-		Long MUUU = Duration.between(dataInicial, dataFinal).toMinutes();
 		
+		System.err.println("DATA INICIAL: " + dataInicial);
+		System.err.println("DATA FINAL: " + dataFinal);
+		System.err.println("DIFERENCA MINUTOS: " + Duration.between(dataInicial, dataFinal).toMinutes());
 		return Duration.between(dataInicial, dataFinal).toMinutes();
 	}
 

@@ -34,5 +34,8 @@ public class ValidaDesafioOutputDTO {
 	
 	@XmlElement(name = "canalUltimoDesafio")
 	private String canalUltimoDesafio;
+	
+	@XmlElement(name = "tempoUltimoDesafio")
+	private String tempoUltimoDesafio;
 
 }

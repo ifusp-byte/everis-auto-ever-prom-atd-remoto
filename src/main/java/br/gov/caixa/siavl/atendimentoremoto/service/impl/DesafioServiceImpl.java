@@ -73,6 +73,7 @@ public class DesafioServiceImpl implements DesafioService {
 		ValidaDesafioDTO validaDesafioDTO = siipcGateway.desafioValidar(token, validaDesafioMap);
 		ValidaDesafioOutputDTO validaDesafioOutputDTO = new ValidaDesafioOutputDTO();
 		
+		validaDesafioOutputDTO.setTempoUltimoDesafio(String.valueOf(dataUtils.calculaDiferencaDataMinutos(validaDesafioDTO.getTsAtualizacao())) + " minutos atrás");
 		validaDesafioOutputDTO.setDataUltimoDesafio(validaDesafioDTO.getTsAtualizacao());
 		validaDesafioOutputDTO.setStatusUltimoDesafio(validaDesafioDTO.getStatus());
 		validaDesafioOutputDTO.setCanalUltimoDesafio(validaDesafioDTO.getCanal());
