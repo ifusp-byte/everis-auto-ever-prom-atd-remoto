@@ -25,10 +25,14 @@ public class ReportInputDTO {
 
 	@Valid
 	@XmlElement(name = "numeroNota")
-	private String nomeRelatorio;
+	private Object nomeRelatorio;
+
+	@Valid
+	@XmlElement(name = "roteiroRelatorio")
+	private Object roteiroRelatorio;
 
 	@Valid
 	@XmlElement(name = "parametrosRelatorio")
-	private String parametrosRelatorio;
+	private Object parametrosRelatorio;
 
 }

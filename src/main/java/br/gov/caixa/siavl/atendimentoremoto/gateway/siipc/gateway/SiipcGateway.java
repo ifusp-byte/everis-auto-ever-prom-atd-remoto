@@ -27,7 +27,6 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.CriaDesafioOutputD
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.RespondeDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.RespondeDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.ValidaDesafioDTO;
-import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.ValidaDesafioOutptDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.enums.SiipcUrlEnum;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;

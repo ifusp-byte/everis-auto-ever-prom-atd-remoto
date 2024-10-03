@@ -40,7 +40,7 @@ public class ReportServiceImpl implements ReportService {
 		String reportResource = null;
 		String fileName = null;
 
-		if (ReportEnum.ROTEIRO_STEP4.getNome().equalsIgnoreCase(reportInputDTO.getNomeRelatorio())) {
+		if (ReportEnum.ROTEIRO_STEP4.getNome().equalsIgnoreCase(String.valueOf(reportInputDTO.getNomeRelatorio()))) {
 			parameters = roteiroStep4Parameters.buildParameters(reportInputDTO);
 			reportResource = ReportEnum.ROTEIRO_STEP4.getRelatorio();
 			fileName = parameters.get(ReportConstants.NOME_PDF) + ReportConstants.EXTENSION_PDF;

@@ -72,6 +72,10 @@ public class DesafioServiceImpl implements DesafioService {
 
 		ValidaDesafioDTO validaDesafioDTO = siipcGateway.desafioValidar(token, validaDesafioMap);
 		ValidaDesafioOutputDTO validaDesafioOutputDTO = new ValidaDesafioOutputDTO();
+		
+		validaDesafioOutputDTO.setDataUltimoDesafio(validaDesafioDTO.getTsAtualizacao());
+		validaDesafioOutputDTO.setStatusUltimoDesafio(validaDesafioDTO.getStatus());
+		validaDesafioOutputDTO.setCanalUltimoDesafio(validaDesafioDTO.getCanal());
 
 		if (!CANAL_PNC.equalsIgnoreCase(validaDesafioDTO.getCanal())
 				&& STATUS_SUCESSO.equalsIgnoreCase(validaDesafioDTO.getStatus())

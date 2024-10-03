@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -65,10 +66,6 @@ public class DataUtils {
 		return data;
 	}
 
-	public Long diferencaDataMinutos(LocalDateTime dataInicial, LocalDateTime dataFinal) {
-		return Duration.between(dataInicial, dataFinal).toMinutes();
-	}
-
 	public String formataDataSiecmAnexo(Date dateInput) {
 		String data = null;
 		Locale locale = new Locale(PT, BR);
@@ -92,19 +89,26 @@ public class DataUtils {
 		data = String.valueOf(sdfOut.format(dateInput));
 		return data;
 	}
+	
 
 	public Boolean menorTrintaMinutos(Object dataInicial) {
 		return calculaDiferencaDataMinutos(dataInicial) < 30;
 	}
+	
+	public Long diferencaDataMinutos(LocalDateTime dataInicial, LocalDateTime dataFinal) {
+		Long MUUU = Duration.between(dataInicial, dataFinal).toMinutes();
+		
+		return Duration.between(dataInicial, dataFinal).toMinutes();
+	}
 
-	public Long calculaDiferencaDataMinutos(Object dataInicial) {
-		LocalDateTime dataInicialFormat = formataDataCalcularDiferencaSiipc(String.valueOf(formataDataSiipc(dataInicial)));
+	public Long calculaDiferencaDataMinutos(Object dataInicial) {	
 		LocalDateTime dataFinalFormat = formataDataCalcularDiferencaSiipc(String.valueOf(formataData(new Date())));
+		LocalDateTime dataInicialFormat = formataDataCalcularDiferencaSiipc(String.valueOf(formataData(formataDataSiipc(dataInicial))));
 		return diferencaDataMinutos(dataInicialFormat, dataFinalFormat);
 	}
 
 	public LocalDateTime formataDataCalcularDiferencaSiipc(Object object) {
-		DateTimeFormatter format = DateTimeFormatter.ofPattern(DATA_SIIPC);
+		DateTimeFormatter format = DateTimeFormatter.ofPattern(DATA_PADRAO);
 		return LocalDateTime.parse(String.valueOf(object), format);
 	}
 

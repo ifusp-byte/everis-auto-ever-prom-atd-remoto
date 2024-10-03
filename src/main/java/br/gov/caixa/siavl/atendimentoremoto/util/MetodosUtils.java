@@ -18,8 +18,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import lombok.experimental.UtilityClass;
-
 @Component
 @SuppressWarnings("all")
 public class MetodosUtils {
@@ -71,7 +69,7 @@ public class MetodosUtils {
 
 		return ResponseEntity.status(status).contentType(MediaType.APPLICATION_JSON).body(body);
 	}
-	
+
 	public String formataData(Date dateInput) {
 
 		String data = null;

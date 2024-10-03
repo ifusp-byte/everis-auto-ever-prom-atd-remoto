@@ -5,7 +5,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,17 +26,13 @@ public class ValidaDesafioOutputDTO {
 	@XmlElement(name = "mensagem")
 	private String mensagem;
 
-	@XmlElement(name = "statusCode")
-	private String statusCode;
-
-	@XmlElement(name = "statusMessage")
-	private String statusMessage;
-
-	@Hidden
-	@XmlElement(name = "statusCreated")
-	private boolean statusCreated;
-
-	@XmlElement(name = "dataCreated")
-	private String dataCreated;
+	@XmlElement(name = "dataUltimoDesafio")
+	private String dataUltimoDesafio;
+	
+	@XmlElement(name = "statusUltimoDesafio")
+	private String statusUltimoDesafio;
+	
+	@XmlElement(name = "canalUltimoDesafio")
+	private String canalUltimoDesafio;
 
 }
