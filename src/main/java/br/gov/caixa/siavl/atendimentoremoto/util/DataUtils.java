@@ -132,20 +132,20 @@ public class DataUtils {
 
 	public String formataDataSiipcFront(Object object) {
 
-		Date diaMesAno = null;
-		Date horaMinuto = null;
+		String diaMesAno = null;
+		String horaMinuto = null;
 		Locale locale = new Locale(PT, BR);
 		SimpleDateFormat sdfIn = new SimpleDateFormat(DATA_SIIPC, locale);
 		SimpleDateFormat sdfOutDiaMesAno = new SimpleDateFormat(DATA_PADRAO_SIIPC_FRONT_1, locale);
 		SimpleDateFormat sdfOutHoraMinuto = new SimpleDateFormat(DATA_PADRAO_SIIPC_FRONT_2, locale);
 
 		try {
-			diaMesAno = sdfOutDiaMesAno.parse(sdfOutDiaMesAno.format(sdfIn.parse(String.valueOf(object))));
-			horaMinuto = sdfOutHoraMinuto.parse(sdfOutHoraMinuto.format(sdfIn.parse(String.valueOf(object))));
+			diaMesAno = String.valueOf(sdfOutDiaMesAno.format(sdfIn.parse(String.valueOf(object))));
+			horaMinuto = String.valueOf(sdfOutHoraMinuto.format(sdfIn.parse(String.valueOf(object))));
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		return String.valueOf(diaMesAno) + " às " + String.valueOf(horaMinuto);
+		return diaMesAno + " às " + horaMinuto;
 	}
 
 }
