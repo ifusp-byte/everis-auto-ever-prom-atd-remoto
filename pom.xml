@@ -222,6 +222,16 @@
         </dependency>
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>7.0.0</version>
+        </dependency>       
+         <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts-caixa</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
             <version>7.0.0</version>
         </dependency>
@@ -234,11 +244,6 @@
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.18.1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-fonts</artifactId>
-            <version>7.0.0</version>
         </dependency>
     </dependencies>
     <build>

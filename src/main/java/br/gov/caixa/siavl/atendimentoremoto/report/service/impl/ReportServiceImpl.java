@@ -1,4 +1,4 @@
-package br.gov.caixa.siavl.atendimentoremoto.report.impl;
+package br.gov.caixa.siavl.atendimentoremoto.report.service.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
