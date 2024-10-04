@@ -218,7 +218,7 @@ public class AtendimentoRemotoController {
 				.body(sicliGateway.verificaMarcaDoi(getToken(token), cpfCnpj));
 	}
 
-	@GetMapping(RELATORIOS)
+	@PostMapping(RELATORIOS)
 	public Object relatorio(@RequestBody ReportInputDTO reportInputDTO) throws Exception {
 		return reportService.relatorio(reportInputDTO);
 	}

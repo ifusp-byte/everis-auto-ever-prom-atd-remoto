@@ -7,11 +7,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
 import br.gov.caixa.siavl.atendimentoremoto.report.constants.ReportConstants;
 import br.gov.caixa.siavl.atendimentoremoto.report.dto.ReportInputDTO;
@@ -57,10 +57,19 @@ public class ReportServiceImpl implements ReportService {
 				parameters, new JREmptyDataSource()), byteArrayOutputStream);
 
 		ByteArrayResource resource = new ByteArrayResource(byteArrayOutputStream.toByteArray());
+	
+		org.springframework.http.ContentDisposition contentDisposition = ContentDisposition.builder(MediaType.APPLICATION_PDF.getType()).filename(fileName).build();
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_PDF);
+		headers.setContentDisposition(contentDisposition);
+		
 		return ResponseEntity.ok()
-				.header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION,
-						ReportConstants.ATTACHMENT_FILENAME + fileName + ReportConstants.BAR)
-				.contentLength(resource.contentLength()).contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
+				.headers(headers)
+				//.header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, ReportConstants.ATTACHMENT_FILENAME + fileName + ReportConstants.BAR)
+				.contentLength(resource.contentLength())
+				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.body(resource);
 
 	}
 
