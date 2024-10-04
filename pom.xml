@@ -30,12 +30,10 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
-        <!-- Spring Security Core -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        <!-- JWT Parser -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
@@ -237,6 +235,11 @@
             <artifactId>jsoup</artifactId>
             <version>1.18.1</version>
         </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>7.0.0</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>${project.artifactId}</finalName>
@@ -311,7 +314,7 @@
                                 </propertyfile>
                             </target>
                         </configuration>
-                        <?m2e execute?>                                      
+                        <?m2e execute?>                                                         
                     </execution>
                 </executions>
             </plugin>

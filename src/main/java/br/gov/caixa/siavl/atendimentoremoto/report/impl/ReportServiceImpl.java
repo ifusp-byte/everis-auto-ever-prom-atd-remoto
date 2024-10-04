@@ -50,8 +50,9 @@ public class ReportServiceImpl implements ReportService {
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		JasperExportManager.exportReportToPdfStream(JasperFillManager.fillReport(
 				(JasperReport) JRLoader.loadObject(
-						ResourceUtils.getFile(															
-								new FileSystemResource(reportResource).getFile().getAbsolutePath())),
+						new ClassPathResource(ReportEnum.ROTEIRO_STEP4.getRelatorio()).getInputStream()),
+						//ResourceUtils.getFile(											
+								//new FileSystemResource(reportResource).getFile().getAbsolutePath())),
 								//new ClassPathResource(reportResource).getFile().getAbsolutePath())),
 				parameters, new JREmptyDataSource()), byteArrayOutputStream);
 

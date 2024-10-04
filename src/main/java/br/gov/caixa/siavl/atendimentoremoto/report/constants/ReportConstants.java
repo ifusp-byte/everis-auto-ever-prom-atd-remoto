@@ -7,7 +7,7 @@ public class ReportConstants {
 		throw new IllegalStateException("Utility class");
 	}
 	
-	public static final String REOPORTS = "reports/";
+	public static final String REOPORTS = "/reports/";
 	public static final String EXTENSION_PDF = ".pdf";
 	public static final String EXTENSION_JASPER = ".jasper";
 	public static final String NOME_PDF = "nomePdf";
