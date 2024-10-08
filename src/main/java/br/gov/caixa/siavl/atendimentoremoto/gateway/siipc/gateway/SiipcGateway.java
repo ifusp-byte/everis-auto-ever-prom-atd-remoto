@@ -1,11 +1,8 @@
-package br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.gateway;
+package br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.gateway;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,27 +20,39 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.constants.IdentificacaoPositivaGatewayMessages;
-import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.CriaDesafioOutputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.RespondeDesafioInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto.RespondeDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.constants.IdentificacaoPositivaGatewayMessages;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.CriaDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.RespondeDesafioInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.RespondeDesafioOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.ValidaDesafioDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.enums.SiipcUrlEnum;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
+import br.gov.caixa.siavl.atendimentoremoto.util.DataUtils;
+import br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
 @SuppressWarnings("all")
-public class IdentificacaoPositivaGateway {
+public class SiipcGateway {
+
+	@Autowired
+	DataUtils dataUtils;
+
+	@Autowired
+	MetodosUtils metodosUtils;
+
+	@Autowired
+	RestTemplateUtils restTemplateUtils;
 
 	@Autowired
 	AtendimentoClienteRepository atendimentoClienteRepository;
 
-	private static final Logger LOG = Logger.getLogger(IdentificacaoPositivaGateway.class.getName());
+	private static final Logger LOG = Logger.getLogger(SiipcGateway.class.getName());
+
 	private static String API_KEY = "APIKey";
 
 	@Value("${env.apimanager.key}")
@@ -52,10 +61,6 @@ public class IdentificacaoPositivaGateway {
 	@Value("${env.apimanager.url}")
 	private String URL_BASE;
 
-	@Value("${env.url.positivo.desafio}")
-	private String URL_POSITIVO_DESAFIO;
-
-	private static ObjectMapper mapper = new ObjectMapper();
 	private static String CODIGO_422_0 = "0";
 	private static String CODIGO_422_1 = "1";
 	private static String CODIGO_422_2 = "2";
@@ -64,12 +69,13 @@ public class IdentificacaoPositivaGateway {
 	private static String CODIGO_422_5 = "5";
 	private static String CODIGO_422_6 = "6";
 
-	@Autowired
-	RestTemplateUtils restTemplateUtils;
+	public HttpEntity<HashMap<String, String>> newRequestEntityDesafioValidar(String token,
+			HashMap<String, String> validaDesafioMap) {
+		return new HttpEntity<HashMap<String, String>>(validaDesafioMap, newHttpHeaders(token));
+	}
 
 	public HttpEntity<HashMap<String, String>> newRequestEntityDesafioCriar(String token,
 			HashMap<String, String> criaDesafioMap) {
-
 		return new HttpEntity<HashMap<String, String>>(criaDesafioMap, newHttpHeaders(token));
 	}
 
@@ -77,15 +83,10 @@ public class IdentificacaoPositivaGateway {
 			RespondeDesafioInputDTO respondeDesafioInputDTO) {
 
 		HashMap<String, Object> respondeDesafioMap = new HashMap<String, Object>();
+
 		String request = null;
-		try {
-			respondeDesafioMap.put("listaResposta", respondeDesafioInputDTO.getListaResposta());
-			request = mapper.writeValueAsString(respondeDesafioMap).replaceAll("\\u005C", "").replaceAll("\\n", "");
-
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
-
+		respondeDesafioMap.put("listaResposta", respondeDesafioInputDTO.getListaResposta());
+		request = metodosUtils.writeValueAsString(respondeDesafioMap).replaceAll("\\u005C", "").replaceAll("\\n", "");
 		return new HttpEntity<>(request, newHttpHeaders(token));
 	}
 
@@ -101,8 +102,93 @@ public class IdentificacaoPositivaGateway {
 		return headers;
 	}
 
+	public ValidaDesafioDTO desafioValidar(@Valid String token, HashMap<String, String> validaDesafioMap) {
+
+		ValidaDesafioDTO validaDesafioDTO = new ValidaDesafioDTO();
+		ResponseEntity<String> response = null;
+		JsonNode body;
+		String codigo422 = null;
+
+		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
+
+		try {
+
+			response = restTemplateDto.getRestTemplate().postForEntity(
+					URL_BASE + SiipcUrlEnum.DESAFIO_VALIDAR_URL_BASE_1.getUrl(),
+					newRequestEntityDesafioCriar(token, validaDesafioMap), String.class);
+
+			body = metodosUtils.readTree(String.valueOf(response.getBody()));
+
+			//String id = Objects.requireNonNull(body.path("id")).asText();
+			String canal = String.valueOf(Objects.requireNonNull(body.path("canal")).asText());
+			String tsAtualizacao = String.valueOf(Objects.requireNonNull(body.path("tsAtualizacao")).asText());
+			String status = String.valueOf(Objects.requireNonNull(body.path("status")).asText());
+
+			LOG.info("Identificação Positiva - Desafio Validar - Resposta SIIPC "
+					+ metodosUtils.writeValueAsString(response));
+
+			String statusMessage = validateGatewayStatusDesafioCriar(
+					Objects.requireNonNull(response.getStatusCodeValue()), StringUtils.EMPTY);
+
+			validaDesafioDTO = ValidaDesafioDTO.builder()
+					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
+					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).canal(canal)
+					.tsAtualizacao(tsAtualizacao).status(status).statusMessage(statusMessage).statusCreated(true)
+					.dataCreated(dataUtils.formataData(new Date())).build();
+
+			LOG.info("Identificação Positiva - Desafio Validar - Resposta View "
+					+ metodosUtils.writeValueAsString(validaDesafioDTO));
+
+		} catch (RestClientResponseException e) {
+
+			String statusMessage = null;
+
+			try {
+
+				body = metodosUtils.readTree(e.getResponseBodyAsString());
+
+				LOG.info("Identificação Positiva - Desafio Validar - Resposta SIIPC "
+						+ metodosUtils.writeValueAsString(body));
+
+				codigo422 = Objects.requireNonNull(body.path("codigo").asText());
+
+				statusMessage = validateGatewayStatusDesafioCriar(Objects.requireNonNull(e.getRawStatusCode()),
+						codigo422);
+
+			} catch (Exception e1) {
+
+				validaDesafioDTO = ValidaDesafioDTO.builder()
+						.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
+						.statusMessage(statusMessage).statusCreated(false)
+						.dataCreated(dataUtils.formataData(new Date())).build();
+
+				LOG.info("Identificação Positiva - Desafio Validar - Erro " + statusMessage);
+
+			}
+
+			validaDesafioDTO = ValidaDesafioDTO.builder()
+					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
+					.statusMessage(statusMessage).statusCreated(false).dataCreated(dataUtils.formataData(new Date()))
+					.build();
+
+			LOG.info("Identificação Positiva - Desafio Validar - Resposta View "
+					+ metodosUtils.writeValueAsString(validaDesafioDTO));
+
+		} finally {
+
+			try {
+				restTemplateDto.getHttpClient().close();
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, "Erro. Não foi possível fechar a conexão com o socket.");
+			}
+
+			return validaDesafioDTO;
+		}
+
+	}
+
 	public CriaDesafioOutputDTO desafioCriar(@Valid String token, HashMap<String, String> criaDesafioMap, Long cpfSocio,
-			Long protocolo) throws Exception {
+			Long protocolo) {
 
 		CriaDesafioOutputDTO criaDesafioOutputDTO = new CriaDesafioOutputDTO();
 		ResponseEntity<String> response = null;
@@ -119,10 +205,12 @@ public class IdentificacaoPositivaGateway {
 
 		try {
 
-			response = restTemplateDto.getRestTemplate().postForEntity(URL_BASE + "/" + URL_POSITIVO_DESAFIO,
+			response = restTemplateDto.getRestTemplate().postForEntity(
+					URL_BASE + SiipcUrlEnum.DESAFIO_CRIAR_URL_BASE_1.getUrl(),
 					newRequestEntityDesafioCriar(token, criaDesafioMap), String.class);
 
-			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC " + mapper.writeValueAsString(response));
+			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC "
+					+ metodosUtils.writeValueAsString(response));
 
 			String statusMessage = validateGatewayStatusDesafioCriar(
 					Objects.requireNonNull(response.getStatusCodeValue()), StringUtils.EMPTY);
@@ -130,10 +218,10 @@ public class IdentificacaoPositivaGateway {
 			criaDesafioOutputDTO = CriaDesafioOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
 					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
-					.statusCreated(true).dataCreated(formataData(new Date())).build();
+					.statusCreated(true).dataCreated(dataUtils.formataData(new Date())).build();
 
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta View "
-					+ mapper.writeValueAsString(criaDesafioOutputDTO));
+					+ metodosUtils.writeValueAsString(criaDesafioOutputDTO));
 
 		} catch (RestClientResponseException e) {
 
@@ -141,10 +229,10 @@ public class IdentificacaoPositivaGateway {
 
 			try {
 
-				jsonNode = mapper.readTree(e.getResponseBodyAsString());
+				jsonNode = metodosUtils.readTree(e.getResponseBodyAsString());
 
 				LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC "
-						+ mapper.writeValueAsString(jsonNode));
+						+ metodosUtils.writeValueAsString(jsonNode));
 
 				codigo422 = Objects.requireNonNull(jsonNode.path("codigo").asText());
 
@@ -155,7 +243,8 @@ public class IdentificacaoPositivaGateway {
 
 				criaDesafioOutputDTO = CriaDesafioOutputDTO.builder()
 						.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-						.statusMessage(statusMessage).statusCreated(false).dataCreated(formataData(new Date())).build();
+						.statusMessage(statusMessage).statusCreated(false)
+						.dataCreated(dataUtils.formataData(new Date())).build();
 
 				LOG.info("Identificação Positiva - Desafio Criar - Erro " + statusMessage);
 
@@ -163,10 +252,11 @@ public class IdentificacaoPositivaGateway {
 
 			criaDesafioOutputDTO = CriaDesafioOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.statusMessage(statusMessage).statusCreated(false).dataCreated(formataData(new Date())).build();
+					.statusMessage(statusMessage).statusCreated(false).dataCreated(dataUtils.formataData(new Date()))
+					.build();
 
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta View "
-					+ mapper.writeValueAsString(criaDesafioOutputDTO));
+					+ metodosUtils.writeValueAsString(criaDesafioOutputDTO));
 
 		} finally {
 
@@ -182,7 +272,7 @@ public class IdentificacaoPositivaGateway {
 	}
 
 	public RespondeDesafioOutputDTO desafioResponder(String token, String idDesafio,
-			RespondeDesafioInputDTO respondeDesafioInputDTO) throws Exception {
+			RespondeDesafioInputDTO respondeDesafioInputDTO) {
 
 		RespondeDesafioOutputDTO respondeDesafioOutputDTO = new RespondeDesafioOutputDTO();
 		ResponseEntity<String> response = null;
@@ -195,13 +285,13 @@ public class IdentificacaoPositivaGateway {
 
 		try {
 
-			response = restTemplateDto.getRestTemplate().postForEntity(
-					URL_BASE + "/" + URL_POSITIVO_DESAFIO + "/" + Integer.parseInt(idDesafio.trim())
-							+ "/enviar-respostas",
-					newRequestEntityDesafioResponder(token, respondeDesafioInputDTO), String.class);
+			response = restTemplateDto.getRestTemplate()
+					.postForEntity(URL_BASE + SiipcUrlEnum.DESAFIO_RESPONDER_URL_BASE_1.getUrl()
+							+ Integer.parseInt(idDesafio.trim()) + SiipcUrlEnum.DESAFIO_RESPONDER_URL_BASE_2.getUrl(),
+							newRequestEntityDesafioResponder(token, respondeDesafioInputDTO), String.class);
 
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta SIIPC "
-					+ mapper.writeValueAsString(response));
+					+ metodosUtils.writeValueAsString(response));
 
 			String statusMessage = validateGatewayStatusDesafioResponder(
 					Objects.requireNonNull(response.getStatusCodeValue()), StringUtils.EMPTY);
@@ -209,23 +299,23 @@ public class IdentificacaoPositivaGateway {
 			respondeDesafioOutputDTO = RespondeDesafioOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
 					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
-					.statusCreated(true).dataCreated(formataData(new Date())).build();
+					.statusCreated(true).dataCreated(dataUtils.formataData(new Date())).build();
 
 			atendimentoCliente.setSituacaoIdPositiva(1L);
 			atendimentoCliente.setDescricaoIdentificacaoPositiva("SUCESSO");
-			atendimentoCliente.setDataIdentificacaoPositiva(formataDataBanco());
-			atendimentoCliente.setDataValidacaoPositiva(formataDataBanco());
+			atendimentoCliente.setDataIdentificacaoPositiva(dataUtils.formataDataBanco());
+			atendimentoCliente.setDataValidacaoPositiva(dataUtils.formataDataBanco());
 			atendimentoClienteRepository.save(atendimentoCliente);
 
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta View "
-					+ mapper.writeValueAsString(respondeDesafioOutputDTO));
+					+ metodosUtils.writeValueAsString(respondeDesafioOutputDTO));
 
 		} catch (RestClientResponseException e) {
 
-			jsonNode = mapper.readTree(e.getResponseBodyAsString());
+			jsonNode = metodosUtils.readTree(e.getResponseBodyAsString());
 
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta SIIPC "
-					+ mapper.writeValueAsString(jsonNode));
+					+ metodosUtils.writeValueAsString(jsonNode));
 
 			codigo422 = Objects.requireNonNull(jsonNode.path("codigo").asText());
 			String statusMessage = validateGatewayStatusDesafioResponder(Objects.requireNonNull(e.getRawStatusCode()),
@@ -234,16 +324,16 @@ public class IdentificacaoPositivaGateway {
 			respondeDesafioOutputDTO = RespondeDesafioOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
 					.response(Objects.requireNonNull(e.getResponseBodyAsString())).statusMessage(statusMessage)
-					.statusCreated(false).dataCreated(formataData(new Date())).build();
+					.statusCreated(false).dataCreated(dataUtils.formataData(new Date())).build();
 
 			atendimentoCliente.setSituacaoIdPositiva(2L);
 			atendimentoCliente.setDescricaoIdentificacaoPositiva("BLOQUEADO");
-			atendimentoCliente.setDataIdentificacaoPositiva(formataDataBanco());
-			atendimentoCliente.setDataValidacaoPositiva(formataDataBanco());
+			atendimentoCliente.setDataIdentificacaoPositiva(dataUtils.formataDataBanco());
+			atendimentoCliente.setDataValidacaoPositiva(dataUtils.formataDataBanco());
 			atendimentoClienteRepository.save(atendimentoCliente);
 
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta View "
-					+ mapper.writeValueAsString(respondeDesafioOutputDTO));
+					+ metodosUtils.writeValueAsString(respondeDesafioOutputDTO));
 
 		} finally {
 
@@ -334,11 +424,11 @@ public class IdentificacaoPositivaGateway {
 			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_422_3;
 		} else if (CODIGO_422_4.equalsIgnoreCase(codigo422)) {
 			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_422_4
-					+ IdentificacaoPositivaGatewayMessages.CONSULTA_REALIZADA + formataData(new Date())
+					+ IdentificacaoPositivaGatewayMessages.CONSULTA_REALIZADA + dataUtils.formataData(new Date())
 					+ IdentificacaoPositivaGatewayMessages.PONTO;
 		} else if (CODIGO_422_5.equalsIgnoreCase(codigo422)) {
 			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_422_5
-					+ IdentificacaoPositivaGatewayMessages.CONSULTA_REALIZADA + formataData(new Date())
+					+ IdentificacaoPositivaGatewayMessages.CONSULTA_REALIZADA + dataUtils.formataData(new Date())
 					+ IdentificacaoPositivaGatewayMessages.PONTO;
 		} else if (CODIGO_422_6.equalsIgnoreCase(codigo422)) {
 			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_422_6;
@@ -347,23 +437,5 @@ public class IdentificacaoPositivaGateway {
 		}
 
 		return statusMessage;
-
 	}
-
-	private String formataData(Date dateInput) {
-
-		String data = null;
-		Locale locale = new Locale("pt", "BR");
-		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
-		data = String.valueOf(sdfOut.format(dateInput));
-		return data;
-	}
-
-	private Date formataDataBanco() {
-
-		Calendar time = Calendar.getInstance();
-		time.add(Calendar.HOUR, -3);
-		return time.getTime();
-	}
-
 }

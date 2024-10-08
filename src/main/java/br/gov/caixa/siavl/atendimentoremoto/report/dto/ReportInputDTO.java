@@ -1,6 +1,4 @@
-package br.gov.caixa.siavl.atendimentoremoto.dto;
-
-import java.util.List;
+package br.gov.caixa.siavl.atendimentoremoto.report.dto;
 
 import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -22,14 +20,19 @@ import lombok.Setter;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "NegociacaoOutputDTO")
-public class NegociacaoOutputDTO {
+@XmlRootElement(name = "ReportInputDTO")
+public class ReportInputDTO {
 
 	@Valid
-	@XmlElement(name = "camposNota")
-	private List<CamposNotaOutputDTO> camposNota;
+	@XmlElement(name = "numeroNota")
+	private Object nomeRelatorio;
 
 	@Valid
-	@XmlElement(name = "qtItemNotaNegociacao")
-	private int qtItemNotaNegociacao;
+	@XmlElement(name = "roteiroRelatorio")
+	private Object roteiroRelatorio;
+
+	@Valid
+	@XmlElement(name = "parametrosRelatorio")
+	private Object parametrosRelatorio;
+
 }

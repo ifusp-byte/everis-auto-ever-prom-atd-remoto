@@ -10,6 +10,8 @@ import javax.swing.text.MaskFormatter;
 
 import org.springframework.stereotype.Component;
 
+import lombok.experimental.UtilityClass;
+
 @Component
 @SuppressWarnings("all")
 public class DocumentoUtils {
@@ -61,7 +63,7 @@ public class DocumentoUtils {
 	}
 
 	public boolean retornaCpf(String cpfCnpj) {
-		return cpfCnpj.replace(".", "").replace("-", "").replace("/", "").trim().length() == ONZE;
+		return formataDocumento(cpfCnpj).length() == ONZE;
 	}
 
 	public String tipoPessoa(String cpfCnpj) {

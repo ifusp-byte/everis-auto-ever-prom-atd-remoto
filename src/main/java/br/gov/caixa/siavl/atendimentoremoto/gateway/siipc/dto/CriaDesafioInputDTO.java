@@ -1,6 +1,4 @@
-package br.gov.caixa.siavl.atendimentoremoto.gateway.identificacaopositiva.dto;
-
-import java.util.List;
+package br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,15 +17,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "RespondeDesafioInputDTO")
-public class RespondeDesafioInputDTO {
-	
-	@XmlElement(name = "listaResposta")
-	private List<?> listaResposta;
+@XmlRootElement(name = "CriaDesafioInputDTO")
+public class CriaDesafioInputDTO {
 	
 	@XmlElement(name = "protocolo")
 	private String protocolo;
 
 	@XmlElement(name = "cpfSocio")
 	private String cpfSocio;
+
 }

@@ -10,6 +10,7 @@ public class AtendimentoRemotoControllerEndpoints {
 
 	public static final String BASE_URL = "/v1/atendimento-remoto";
 	public static final String PROTOCOLO = "/protocolo";
+	public static final String DESAFIO_VALIDAR = "/desafio-validar/{cpf}";
 	public static final String DESAFIO_CRIAR = "/desafio-criar/{cpf}";
 	public static final String DESAFIO_RESPONDER = "/desafio-responder/{idDesafio}";
 	public static final String AUDITORIA_IDENTIFICACAO_POSITIVA = "/auditoria-identificacao-positiva";
@@ -25,5 +26,6 @@ public class AtendimentoRemotoControllerEndpoints {
 	public static final String DOCUMENTO_TIPO = "/documento/tipo/{cpfCnpj}";
 	public static final String DOCUMENTO_TIPO_CAMPOS = "/documento/tipo/campos/{codGED}";
 	public static final String MARCA_DOI = "/marca-doi/{cpfCnpj}";
+	public static final String RELATORIOS = "/relatorios";
 
 }

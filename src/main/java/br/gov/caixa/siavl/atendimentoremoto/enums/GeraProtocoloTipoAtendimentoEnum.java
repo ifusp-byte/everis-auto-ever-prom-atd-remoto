@@ -14,7 +14,7 @@ public enum GeraProtocoloTipoAtendimentoEnum {
 	E(7, "E-mail"), 
 	C(8, "Webchat"),
 	F(9, "Videoconferência"), 
-	P(9, "Presencial");
+	P(10, "Presencial");
 
 	private final int codigo;
 	private final String descricao;
