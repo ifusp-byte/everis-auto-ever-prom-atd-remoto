@@ -130,7 +130,12 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		AtendimentoCliente atendimentoCliente = new AtendimentoCliente();
 		atendimentoCliente.setMatriculaAtendente(matriculaAtendente);
 		atendimentoCliente.setCanalAtendimento(canalAtendimento.charAt(0));
-		//atendimentoCliente.setNumeroCanalAtendimento(Long.parseLong(String.valueOf(GeraProtocoloTipoAtendimentoEnum.valueOf(canalAtendimento).getCodigo())));
+		
+		/**
+		 * este trecho de código deve ser comentado na branch de PRD
+		 */
+		atendimentoCliente.setNumeroCanalAtendimento(Long.parseLong(String.valueOf(GeraProtocoloTipoAtendimentoEnum.valueOf(canalAtendimento).getCodigo())));
+		
 		atendimentoCliente.setNumeroUnidade(numeroUnidade);
 		atendimentoCliente.setNomeCliente(documentoUtils.retornaCpf(cpfCnpjFormat) ? contaAtendimento.getNomeCliente() : contaAtendimento.getRazaoSocial());
 
