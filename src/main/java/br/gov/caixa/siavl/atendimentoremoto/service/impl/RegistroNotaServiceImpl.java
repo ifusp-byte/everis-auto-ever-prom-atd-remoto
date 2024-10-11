@@ -196,7 +196,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			NotaNegociacao notaNegociacao = null;
 			RelatorioNotaNegociacao relatorioNotaNegociacao = null;
 
-			if (registraNotaInputDto.getNumeroNota() == null) {
+			if (registraNotaInputDto.getNumeroNota() == null || StringUtils.isBlank(registraNotaInputDto.getNumeroNota())) {
 				notaNegociacao = new NotaNegociacao();
 				relatorioNotaNegociacao = new RelatorioNotaNegociacao();
 			} else {
