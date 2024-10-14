@@ -57,5 +57,8 @@ public class EnviaClienteInputDto {
 	
 	@Valid
 	private String tokenValidoTelefone;
+	
+	@Valid
+	private String tipoAssinatura;
 
 }

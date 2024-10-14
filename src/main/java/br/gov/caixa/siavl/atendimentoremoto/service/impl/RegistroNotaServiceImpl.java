@@ -188,17 +188,28 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			ModeloNotaNegocio modeloNotaNegocio = modeloNotaRepository.prazoValidade(numeroModeloNota);
 			Date dataValidade = dataUtils.formataDataValidade(modeloNotaNegocio.getPrazoValidade(), modeloNotaNegocio.getHoraValidade());
 
-			NegocioAgenciaVirtual negocioAgenciaVirtual = new NegocioAgenciaVirtual();
-			negocioAgenciaVirtual.setDataCriacaoNegocio(new Date());
-			negocioAgenciaVirtual.setSituacaoNegocio("E".charAt(0));
-			negocioAgenciaVirtual = negocioAgenciaVirtualRepository.save(negocioAgenciaVirtual);
-
 			NotaNegociacao notaNegociacao = null;
 			RelatorioNotaNegociacao relatorioNotaNegociacao = null;
+			NegocioAgenciaVirtual negocioAgenciaVirtual = null;
+			AtendimentoNegocio atendimentoNegocio = null;
 
 			if (registraNotaInputDto.getNumeroNota() == null || StringUtils.isBlank(registraNotaInputDto.getNumeroNota())) {
+				
 				notaNegociacao = new NotaNegociacao();
 				relatorioNotaNegociacao = new RelatorioNotaNegociacao();
+				
+				negocioAgenciaVirtual = new NegocioAgenciaVirtual();
+				negocioAgenciaVirtual.setDataCriacaoNegocio(new Date());
+				negocioAgenciaVirtual.setSituacaoNegocio("E".charAt(0));
+				negocioAgenciaVirtual = negocioAgenciaVirtualRepository.save(negocioAgenciaVirtual);
+				
+				atendimentoNegocio = new AtendimentoNegocio();
+				atendimentoNegocio.setNumeroProtocolo(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
+				atendimentoNegocio.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
+				atendimentoNegocio = atendimentoNegocioRepository.save(atendimentoNegocio);
+				
+				notaNegociacao.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
+								
 			} else {
 				notaNegociacao = notaNegociacaoRepository.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroNota()));
 				relatorioNotaNegociacao = relatorioNotaNegociacaoRepository.findByNumeroNota(Long.parseLong(registraNotaInputDto.getNumeroNota()));
@@ -213,7 +224,6 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				atendimentoCliente = atendimentoClienteRepository.save(atendimentoCliente);
 			}
 
-			notaNegociacao.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
 			notaNegociacao.setNumeroModeloNota(numeroModeloNota);
 			notaNegociacao.setDataCriacaoNota(dataUtils.formataDataBanco());
 			notaNegociacao.setDataModificacaoNota(dataUtils.formataDataBanco());
@@ -237,13 +247,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			notaNegociacao.setOrigemCadastroNota(ORIGEM_CADASTRO_NOTA_MFE);
 			notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);
 
-			// Todo: Melhorar e a forma com que o springboot trabalha com o xml
 			AtualizarXML(registraNotaInputDto, numeroModeloNota, notaNegociacao.getNumeroNota());
-
-			AtendimentoNegocio atendimentoNegocio = new AtendimentoNegocio();
-			atendimentoNegocio.setNumeroProtocolo(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
-			atendimentoNegocio.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
-			atendimentoNegocio = atendimentoNegocioRepository.save(atendimentoNegocio);
 
 			AtendimentoNota atendimentoNota = new AtendimentoNota();
 			atendimentoNota.setNumeroNota(notaNegociacao.getNumeroNota());
@@ -388,7 +392,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				atendimentoCliente.setDataEnvioToken(dataUtils.formataDataBanco());
 				atendimentoClienteRepository.save(atendimentoCliente);
 
-				auditoriaToken(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade, nuProduto,
+				auditoriaTokenSms(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade, nuProduto,
 						coIdentificacao, matriculaAtendente, statusRetornoSicli, numeroProtocolo,
 						numeroContaAtendimento);
 				return false;
@@ -400,7 +404,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			atendimentoCliente.setDataEnvioToken(dataUtils.formataDataBanco());
 			atendimentoClienteRepository.save(atendimentoCliente);
 
-			auditoriaToken(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade, nuProduto,
+			auditoriaTokenSms(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade, nuProduto,
 					coIdentificacao, matriculaAtendente, statusRetornoSicli, numeroProtocolo, numeroContaAtendimento);
 			return true;
 		}
@@ -481,7 +485,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	}
 
-	public void auditoriaToken(EnviaClienteInputDto enviaClienteInputDto, Long numeroNota, String token,
+	public void auditoriaTokenSms(EnviaClienteInputDto enviaClienteInputDto, Long numeroNota, String token,
 			String tipoDocumento, Long cpfCnpjPnc, Long nuUnidade, Long nuProduto, Long coIdentificacao,
 			String matriculaAtendente, Boolean statusRetornoSicli, String numeroProtocolo,
 			String numeroContaAtendimento) {
