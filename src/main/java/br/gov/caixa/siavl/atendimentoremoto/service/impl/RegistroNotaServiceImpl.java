@@ -40,6 +40,7 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.CamposNotaOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ConteudoCampoMultiploOutPutDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.NegociacaoOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncEnviaNotaInputDTO;
@@ -67,6 +68,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepo
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.PendenciaAtendimentoNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RelatorioNotaNegociacaoRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.impl.NotaNegociacaoRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.service.RegistroNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.util.DataUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
@@ -115,6 +117,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	@Autowired
 	AtendimentoClienteRepository atendimentoClienteRepository;
+	
+	@Autowired
+	NotaNegociacaoRepositoryImpl notaNegociacaoRepositoryImpl;
 
 	@Autowired
 	AuditoriaRegistraNotaService auditoriaRegistraNotaService;
@@ -179,7 +184,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 		numeroEquipe = equipeAtendimentoRepository.findEquipeByUnidadeSR(numeroUnidade);
 
-		RegistraNotaOutputDto registraNotaOutputDto = new RegistraNotaOutputDto();
+		RegistraNotaOutputDto registraNotaOutputDto = new RegistraNotaOutputDto(); 
 
 		if (numeroEquipe == null) {
 			registraNotaOutputDto = RegistraNotaOutputDto.builder().statusNotaRegistrada(false).mensagem("A unidade não possui equipe vinculada.").build();
@@ -191,7 +196,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			NotaNegociacao notaNegociacao = null;
 			RelatorioNotaNegociacao relatorioNotaNegociacao = null;
 			NegocioAgenciaVirtual negocioAgenciaVirtual = null;
-			AtendimentoNegocio atendimentoNegocio = null;
+			AtendimentoNegocio atendimentoNegocio = null; 
 
 			if (registraNotaInputDto.getNumeroNota() == null || StringUtils.isBlank(registraNotaInputDto.getNumeroNota())) {
 				
@@ -204,9 +209,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				negocioAgenciaVirtual = negocioAgenciaVirtualRepository.save(negocioAgenciaVirtual);
 				
 				atendimentoNegocio = new AtendimentoNegocio();
-				atendimentoNegocio.setNumeroProtocolo(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
-				atendimentoNegocio.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
-				atendimentoNegocio = atendimentoNegocioRepository.save(atendimentoNegocio);
+				atendimentoNegocioRepository.salvaAtendimentoNegocio(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()), negocioAgenciaVirtual.getNumeroNegocio());
 				
 				notaNegociacao.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
 								
@@ -373,7 +376,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	}
 
 	@Override
-	public Boolean enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto) {
+	public Object enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto) {
 
 		Boolean statusRetornoSicli = true;
 		String numeroContaAtendimento = enviaClienteInputDto.getNumeroConta().replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY).trim();
@@ -423,7 +426,13 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		auditoriaApp(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade, nuProduto,
 				coIdentificacao, matriculaAtendente, statusRetornoSicli, numeroProtocolo, numeroContaAtendimento);
 
-		return true;
+		return notas(Long.parseLong(numeroProtocolo));
+	}
+	
+	public List<NotasByProtocoloOutputDTO> notas(Long numeroProtocolo) {
+		
+		return notaNegociacaoRepositoryImpl.notasByProtocolo(numeroProtocolo);
+			
 	}
 
 	public RegistraNotaOutputDto vinculaDocumento(RegistraNotaOutputDto registraNotaOutputDto, Long numeroModeloNota) {

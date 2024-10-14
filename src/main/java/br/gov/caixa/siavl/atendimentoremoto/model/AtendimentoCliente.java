@@ -5,12 +5,9 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -48,9 +45,11 @@ public class AtendimentoCliente implements Serializable {
 	@Column(name = "NU_CNPJ_CLIENTE")
 	private Long cnpjCliente;
 
+	/*
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "NU_PROTOCOLO_ATNTO_CLNTE", nullable = true, insertable = false, updatable = false)
 	private AtendimentoNegocio atendimentoNegocio;
+	*/
 
 	@Column(name = "IC_CANAL_ATENDIMENTO")
 	private char canalAtendimento;
