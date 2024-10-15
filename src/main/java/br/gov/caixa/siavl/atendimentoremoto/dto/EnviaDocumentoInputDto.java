@@ -31,4 +31,6 @@ public class EnviaDocumentoInputDto {
 	
 	private String numeroNota;
 	
+	private String nomeGED;
+	
 }

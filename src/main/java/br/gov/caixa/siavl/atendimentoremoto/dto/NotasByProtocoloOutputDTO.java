@@ -1,5 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.dto;
 
+import static br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils.formataCnpj;
+import static br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils.formataCpf;
 import static br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils.StringToJson;
 
 import java.sql.Clob;
@@ -60,12 +62,12 @@ public class NotasByProtocoloOutputDTO {
 	@XmlElement(name = "situacaoNota")
 	private String situacaoNota;
 
-	public NotasByProtocoloOutputDTO(String numeroNota, String nomeCliente, String cpf, String cnpj, String produto,
+	public NotasByProtocoloOutputDTO(Long numeroNota, String nomeCliente, Long cpf, Long cnpj, String produto,
 			String situacaoNota, Clob relatorioNota) {
-		this.numeroNota = numeroNota;
+		this.numeroNota = String.valueOf(numeroNota);
 		this.nomeCliente = nomeCliente;
-		this.cpf = cpf;
-		this.cnpj = cnpj;
+		this.cpf = formataCpf(String.valueOf(cpf));
+		this.cnpj = formataCnpj(String.valueOf(cnpj));
 		this.produto = produto;
 		this.situacaoNota = situacaoNota;
 		this.valor = valorMetaByRelatorioNota(relatorioNota);

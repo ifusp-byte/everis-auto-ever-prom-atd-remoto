@@ -33,7 +33,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RoteiroFechamentoNotaRepository;
-import br.gov.caixa.siavl.atendimentoremoto.repository.impl.ModeloNotaRepositoryImpl;
+import br.gov.caixa.siavl.atendimentoremoto.repository.custom.ModeloNotaRepositoryCustom;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
@@ -76,7 +76,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 	FluxoAtendimentoRepository fluxoAtendimentoRepository;
 
 	@Autowired
-	ModeloNotaRepositoryImpl modeloNotaRepositoryImpl;
+	ModeloNotaRepositoryCustom modeloNotaRepositoryCustom;
 
 	private static Long PUBLICO_ALVO_PF = 1L;
 	private static Long PUBLICO_ALVO_PJ = 2L;
@@ -104,7 +104,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	public List<ModeloNotaOutputDto> consultaModeloNotaMaisUtilizada(String cpfCnpj) {
 		List<ModeloNotaOutputDto> modelosNota = new ArrayList<>();
-		List<Object[]> findModeloNotaMaisUtilizada = modeloNotaRepositoryImpl.modeloNotaMaisUtilizada(retornaPublicoAlvo(cpfCnpj));
+		List<Object[]> findModeloNotaMaisUtilizada = modeloNotaRepositoryCustom.modeloNotaMaisUtilizada(retornaPublicoAlvo(cpfCnpj));
 		if (!findModeloNotaMaisUtilizada.isEmpty()) {
 			findModeloNotaMaisUtilizada.stream().forEach(modeloNota -> {
 				ModeloNotaOutputDto modeloNotaOutputDto = null;

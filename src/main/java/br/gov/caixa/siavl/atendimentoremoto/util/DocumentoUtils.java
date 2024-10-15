@@ -16,7 +16,7 @@ import lombok.experimental.UtilityClass;
 @SuppressWarnings("all")
 public class DocumentoUtils {
 
-	public String formataCpf(Object object) {
+	public static String formataCpf(Object object) {
 
 		String cpfInput = null;
 		String formatCpf = null;
@@ -37,7 +37,7 @@ public class DocumentoUtils {
 		return cpf;
 	}
 
-	public String formataCnpj(Object object) {
+	public static String formataCnpj(Object object) {
 
 		String cnpjInput = null;
 		String formatCnpj = null;

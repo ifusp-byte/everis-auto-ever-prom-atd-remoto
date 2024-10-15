@@ -1,4 +1,4 @@
-package br.gov.caixa.siavl.atendimentoremoto.repository.impl;
+package br.gov.caixa.siavl.atendimentoremoto.repository.custom;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import javax.persistence.TypedQuery;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloOutputDTO;
 
-public class NotaNegociacaoRepositoryImpl {
+public class NotaNegociacaoRepositoryCustom {
 
 	@PersistenceContext
 	private EntityManager em;
