@@ -18,12 +18,17 @@ public interface RelatorioNotaNegociacaoRepository extends JpaRepository<Relator
 	@Modifying
 	@Transactional
 	@Query("UPDATE RelatorioNotaNegociacao A SET A.situacaoNota = 22 WHERE A.numeroNota = ?1")
-	void enviaNotaCliente(Long numeroNota); 
+	void enviaNotaClienteApp(Long numeroNota); 
 	
 	@Modifying
 	@Transactional
 	@Query("UPDATE RelatorioNotaNegociacao A SET A.situacaoNota = 23 WHERE A.numeroNota = ?1")
 	void assinaNotaCliente(Long numeroNota); 
+	
+	@Modifying
+	@Transactional
+	@Query("UPDATE RelatorioNotaNegociacao A SET A.situacaoNota = 23 WHERE A.numeroNota = ?1")
+	void enviaNotaClienteTokenProduto(Long numeroNota); 
 	
 
 }

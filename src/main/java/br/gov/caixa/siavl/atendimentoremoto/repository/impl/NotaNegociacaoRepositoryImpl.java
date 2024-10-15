@@ -25,6 +25,7 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" , G.descricao ");
 		sb.append(" , E.descricao ");
 		sb.append(" , H.relatorioNota ");
+		sb.append(" ) ");
 		sb.append(" FROM");
 		sb.append(" AtendimentoCliente A ");
 		sb.append(" , AtendimentoNegocio B ");
@@ -44,7 +45,7 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" AND F.numeroAcao = G.numeroAcao ");
 		sb.append(" AND A.numeroProtocolo = :numeroProtocolo ");
 		sb.append(" ORDER BY D.numeroNota DESC ");
-		sb.append(" ) ");
+
 
 		TypedQuery<NotasByProtocoloOutputDTO> query = em.createQuery(sb.toString(), NotasByProtocoloOutputDTO.class);
 		query.setParameter("numeroProtocolo", numeroProtocolo);
