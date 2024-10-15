@@ -69,7 +69,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepo
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.PendenciaAtendimentoNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RelatorioNotaNegociacaoRepository;
-import br.gov.caixa.siavl.atendimentoremoto.repository.custom.NotaNegociacaoRepositoryCustom;
+import br.gov.caixa.siavl.atendimentoremoto.repository.impl.NotaNegociacaoRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.service.RegistroNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.util.DataUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
@@ -120,7 +120,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	AtendimentoClienteRepository atendimentoClienteRepository;
 
 	@Autowired
-	NotaNegociacaoRepositoryCustom notaNegociacaoRepositoryCustom;
+	NotaNegociacaoRepositoryImpl notaNegociacaoRepositoryImpl;
 
 	@Autowired
 	AuditoriaRegistraNotaService auditoriaRegistraNotaService;
@@ -464,7 +464,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	public List<NotasByProtocoloOutputDTO> notas(Long numeroProtocolo) {
 
-		return notaNegociacaoRepositoryCustom.notasByProtocolo(numeroProtocolo);
+		return notaNegociacaoRepositoryImpl.notasByProtocolo(numeroProtocolo);
 
 	}
 

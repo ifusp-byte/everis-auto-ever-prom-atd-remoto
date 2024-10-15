@@ -1,11 +1,11 @@
-package br.gov.caixa.siavl.atendimentoremoto.repository.custom;
+package br.gov.caixa.siavl.atendimentoremoto.repository.impl;
 
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-public class ModeloNotaRepositoryCustom {
+public class ModeloNotaRepositoryImpl {
 
 	@PersistenceContext
 	private EntityManager em;

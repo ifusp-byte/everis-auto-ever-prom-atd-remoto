@@ -16,7 +16,7 @@ import lombok.experimental.UtilityClass;
 @SuppressWarnings("all")
 public class DocumentoUtils {
 
-	public static String formataCpf(Object object) {
+	public String formataCpf(Object object) {
 
 		String cpfInput = null;
 		String formatCpf = null;
@@ -37,7 +37,49 @@ public class DocumentoUtils {
 		return cpf;
 	}
 
-	public static String formataCnpj(Object object) {
+	public String formataCnpj(Object object) {
+
+		String cnpjInput = null;
+		String formatCnpj = null;
+		String cnpj = null;
+		MaskFormatter cnpjMask = null;
+
+		if (object != null) {
+			cnpjInput = String.valueOf(object).replace(".", "").replace("/", "").replace("/", "").replace("-", "");
+			formatCnpj = "00000000000000".substring(cnpjInput.length()) + cnpjInput;
+			try {
+				cnpjMask = new MaskFormatter("##.###.###/####-##");
+				cnpjMask.setValueContainsLiteralCharacters(false);
+				cnpj = cnpjMask.valueToString(formatCnpj);
+			} catch (ParseException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return cnpj;
+	}
+	
+	public static String formataCpfFront(Object object) {
+
+		String cpfInput = null;
+		String formatCpf = null;
+		String cpf = null;
+		MaskFormatter cpfMask = null;
+
+		if (object != null) {
+			cpfInput = String.valueOf(object).replace(".", "").replace("/", "").replace("/", "").replace("-", "");
+			formatCpf = "00000000000".substring(cpfInput.length()) + cpfInput;
+			try {
+				cpfMask = new MaskFormatter("###.###.###-##");
+				cpfMask.setValueContainsLiteralCharacters(false);
+				cpf = cpfMask.valueToString(formatCpf);
+			} catch (ParseException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return cpf;
+	}
+
+	public static String formataCnpjFront(Object object) {
 
 		String cnpjInput = null;
 		String formatCnpj = null;

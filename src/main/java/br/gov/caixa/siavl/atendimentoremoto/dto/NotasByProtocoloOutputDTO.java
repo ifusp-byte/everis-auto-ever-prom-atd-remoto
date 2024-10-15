@@ -1,7 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.dto;
 
-import static br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils.formataCnpj;
-import static br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils.formataCpf;
+import static br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils.formataCnpjFront;
+import static br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils.formataCpfFront;
 import static br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils.StringToJson;
 
 import java.sql.Clob;
@@ -66,8 +66,8 @@ public class NotasByProtocoloOutputDTO {
 			String situacaoNota, Clob relatorioNota) {
 		this.numeroNota = String.valueOf(numeroNota);
 		this.nomeCliente = nomeCliente;
-		this.cpf = formataCpf(String.valueOf(cpf));
-		this.cnpj = formataCnpj(String.valueOf(cnpj));
+		this.cpf = formataCpfFront(String.valueOf(cpf));
+		this.cnpj = formataCnpjFront(String.valueOf(cnpj));
 		this.produto = produto;
 		this.situacaoNota = situacaoNota;
 		this.valor = valorMetaByRelatorioNota(relatorioNota);
