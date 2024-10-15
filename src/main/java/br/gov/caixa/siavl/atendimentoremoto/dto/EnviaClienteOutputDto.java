@@ -1,5 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.dto;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -21,7 +23,7 @@ import lombok.Setter;
 @XmlRootElement(name = "EnviaClienteOutputDto")
 public class EnviaClienteOutputDto {
 
-	private boolean statusContratacao;
-	private boolean vinculaDocumento;
+	private boolean status;
+	private List<NotasByProtocoloOutputDTO> notas;
 
 }

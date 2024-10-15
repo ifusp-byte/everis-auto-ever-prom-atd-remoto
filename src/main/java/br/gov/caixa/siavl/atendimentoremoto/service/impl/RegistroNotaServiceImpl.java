@@ -39,6 +39,7 @@ import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaRegistraN
 import br.gov.caixa.siavl.atendimentoremoto.dto.CamposNotaOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ConteudoCampoMultiploOutPutDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.NegociacaoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
@@ -392,19 +393,16 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	public Object enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto) {
 
 		Boolean statusRetornoSicli = true;
-		String numeroContaAtendimento = enviaClienteInputDto.getNumeroConta().replace(PONTO, StringUtils.EMPTY)
-				.replace(TRACO, StringUtils.EMPTY).trim();
+		String numeroContaAtendimento = enviaClienteInputDto.getNumeroConta().replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY).trim();
 		String numeroProtocolo = enviaClienteInputDto.getNumeroProtocolo();
-		String matriculaAtendente = tokenUtils.getMatriculaFromToken(token).replaceAll(REGEX_REPLACE_LETRAS,
-				StringUtils.EMPTY);
-		String tipoDocumento = documentoUtils.retornaCpf(enviaClienteInputDto.getCpfCnpj()) ? DOCUMENT_TYPE_CPF
-				: DOCUMENT_TYPE_CNPJ;
+		String matriculaAtendente = tokenUtils.getMatriculaFromToken(token).replaceAll(REGEX_REPLACE_LETRAS, StringUtils.EMPTY);
+		String tipoDocumento = documentoUtils.retornaCpf(enviaClienteInputDto.getCpfCnpj()) ? DOCUMENT_TYPE_CPF : DOCUMENT_TYPE_CNPJ;
 		Long cpfCnpjPnc = Long.parseLong(documentoUtils.formataDocumento(enviaClienteInputDto.getCpfCnpj()));
 		Long nuUnidade = Long.parseLong(numeroContaAtendimento.substring(0, 4));
 		Long nuProduto = Long.parseLong(numeroContaAtendimento.substring(4, 8));
 		Long coIdentificacao = Long.parseLong(numeroContaAtendimento.substring(8, numeroContaAtendimento.length()));
-		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository
-				.getReferenceById(Long.parseLong(enviaClienteInputDto.getNumeroProtocolo()));
+		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(enviaClienteInputDto.getNumeroProtocolo()));
+		EnviaClienteOutputDto enviaClienteOutputDto = new EnviaClienteOutputDto(); 
 
 		if (EnviaNotaTipoAssinaturaEnum.TOKEN_SMS.equals(enviaClienteInputDto.getTipoAssinatura())) {
 
@@ -430,7 +428,10 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				auditoriaTokenSms(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade,
 						nuProduto, coIdentificacao, matriculaAtendente, statusRetornoSicli, numeroProtocolo,
 						numeroContaAtendimento);
-				return notas(Long.parseLong(numeroProtocolo));
+				
+				enviaClienteOutputDto.setStatus(true);
+				enviaClienteOutputDto.setNotas(notas(Long.parseLong(numeroProtocolo)));
+				return enviaClienteOutputDto;
 			}
 
 		}
@@ -458,8 +459,10 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			relatorioNotaNegociacaoRepository.enviaNotaClienteTokenProduto(numeroNota);
 
 		}
-
-		return notas(Long.parseLong(numeroProtocolo));
+		
+		enviaClienteOutputDto.setStatus(true);
+		enviaClienteOutputDto.setNotas(notas(Long.parseLong(numeroProtocolo)));
+		return enviaClienteOutputDto;
 	}
 
 	public List<NotasByProtocoloOutputDTO> notas(Long numeroProtocolo) {
