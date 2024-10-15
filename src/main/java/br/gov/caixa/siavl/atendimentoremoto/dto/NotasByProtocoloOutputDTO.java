@@ -41,49 +41,45 @@ public class NotasByProtocoloOutputDTO {
 	@Valid
 	@XmlElement(name = "nomeCliente")
 	private String nomeCliente;
-
+	
 	@Valid
-	@XmlElement(name = "cpf")
-	private String cpf;
-
-	@Valid
-	@XmlElement(name = "cnpj")
-	private String cnpj;
+	@XmlElement(name = "cpfCnpj")
+	private String cpfCnpj;
 
 	@Valid
 	@XmlElement(name = "produto")
 	private String produto;
 
 	@Valid
-	@XmlElement(name = "valor")
-	private String valor;
+	@XmlElement(name = "valorMeta")
+	private String valorMeta;
 
 	@Valid
 	@XmlElement(name = "situacaoNota")
 	private String situacaoNota;
 
 	public NotasByProtocoloOutputDTO(Long numeroNota, String nomeCliente, Long cpf, Long cnpj, String produto,
-			String situacaoNota, Clob relatorioNota) {
+			String situacaoNota, Object relatorioNota) {
 		this.numeroNota = String.valueOf(numeroNota);
 		this.nomeCliente = nomeCliente;
-		this.cpf = formataCpfFront(String.valueOf(cpf));
-		this.cnpj = formataCnpjFront(String.valueOf(cnpj));
+		this.cpfCnpj = cnpj == null ? formataCpfFront(cpf) : formataCnpjFront(cnpj);
 		this.produto = produto;
 		this.situacaoNota = situacaoNota;
-		this.valor = valorMetaByRelatorioNota(relatorioNota);
+		this.valorMeta = valorMetaByRelatorioNota(relatorioNota);
 	}
 
-	public String valorMetaByRelatorioNota(Clob relatorioNota) {
+	public String valorMetaByRelatorioNota(Object relatorioNota) {
 
 		int tamanho;
 		String body = null;
 		String valorMeta = StringUtils.EMPTY;
+		Clob relatorioNota1 = (Clob) relatorioNota;
 
 		if (relatorioNota != null) {
 
 			try {
-				tamanho = Integer.parseInt(String.valueOf(relatorioNota.length()));
-				body = String.valueOf(relatorioNota.getSubString(1, tamanho));
+				tamanho = Integer.parseInt(String.valueOf(relatorioNota1.length()));
+				body = String.valueOf(relatorioNota1.getSubString(1, tamanho));
 				valorMeta = Objects.requireNonNull(StringToJson(body).path("relatorioNota").path("Valor (meta)"))
 						.asText();
 			} catch (NumberFormatException e) {

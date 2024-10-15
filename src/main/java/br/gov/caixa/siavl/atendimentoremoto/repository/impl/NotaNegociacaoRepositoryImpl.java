@@ -17,7 +17,7 @@ public class NotaNegociacaoRepositoryImpl {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(" SELECT DISTINCT NEW  br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloOutputDTO ( ");
+		sb.append(" SELECT NEW  br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloOutputDTO ( ");
 		sb.append(" D.numeroNota ");
 		sb.append(" , A.nomeCliente ");
 		sb.append(" , A.cpfCliente ");
@@ -26,7 +26,7 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" , E.descricao ");
 		sb.append(" , H.relatorioNota ");
 		sb.append(" ) ");
-		sb.append(" FROM");
+		sb.append(" FROM ");
 		sb.append(" AtendimentoCliente A ");
 		sb.append(" , AtendimentoNegocio B ");
 		sb.append(" , NegocioAgenciaVirtual C ");
