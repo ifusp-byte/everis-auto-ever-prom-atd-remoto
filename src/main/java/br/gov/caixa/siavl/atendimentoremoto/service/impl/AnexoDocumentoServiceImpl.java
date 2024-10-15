@@ -10,8 +10,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.TipoDocumentoClienteOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstants;
@@ -42,13 +40,6 @@ import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 @SuppressWarnings("all")
 public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
-	private static final Logger LOG = Logger.getLogger(AnexoDocumentoServiceImpl.class.getName());
-
-	private static String DEFAULT_LOCAL_ARMAZENAMENTO = "OS_CAIXA";
-	private static String DEFAULT_LOCAL_GRAVACAO = "DOSSIE";
-	private static String DEFAULT_DOCUMENTO_TIPO = "pdf";
-	private static String DEFAULT_MIME_TYPE = "application/pdf";
-
 	@Autowired
 	DataUtils dataUtils;
 
@@ -76,19 +67,27 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 	@Autowired
 	DocumentoNotaNegociacaoRepository documentoNotaNegociacaoRepository;
 
-	private static ObjectMapper mapper = new ObjectMapper();
-
+	private static final String DEFAULT_LOCAL_ARMAZENAMENTO = "OS_CAIXA";
+	private static final String DEFAULT_LOCAL_GRAVACAO_OBRIGATORIO = "DOCUMENTOS_OBRIGATORIOS";
+	private static final String DEFAULT_LOCAL_GRAVACAO_OPCIONAL = "DOCUMENTOS_OPCIONAIS";
+	private static final String DEFAULT_DOCUMENTO_TIPO = "pdf";
+	private static final String DEFAULT_MIME_TYPE = "application/pdf";
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
 	private static final String PATTERN_MATRICULA = "[a-zA-Z]";
 	private static final String INCLUI_DOCUMENTO_OPCIONAL = " Requisicao - Incluir Documento Opcional Step2: ";
 	private static final String INCLUI_DOCUMENTO_OBRIGATORIO = " Requisicao - Incluir Documento Obrigatorio Step3: ";
+	private static final String DOCUMENTO_OPCIONAL = "OPCIONAL";
+	private static final String DOCUMENTO_OBRGATORIO = "OBRIGATORIO";
+
+	private static final Logger LOG = Logger.getLogger(AnexoDocumentoServiceImpl.class.getName());
 
 	@Override
 	public SiecmOutputDto enviaDocumento(String token, String cpfCnpj, EnviaDocumentoInputDto enviaDocumentoInputDto)
 			throws Exception {
 
 		SiecmOutputDto siecmOutputDto = null;
+		String mensagemDocumento = null;
 
 		String cpfCnpjSiecm = documentoUtils.formataDocumento(cpfCnpj);
 		String tipoPessoa = documentoUtils.tipoPessoa(cpfCnpj);
@@ -101,7 +100,17 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 		SiecmDocumentosIncluirDestinoDocumentoInputDto siecmDocumentosIncluirDestinoDocumento = new SiecmDocumentosIncluirDestinoDocumentoInputDto();
 		siecmDocumentosIncluirDestinoDocumento.setIdDestino(cpfCnpjSiecm);
-		siecmDocumentosIncluirDestinoDocumento.setLocalGravacao(DEFAULT_LOCAL_GRAVACAO);
+
+		if (DOCUMENTO_OPCIONAL.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
+			mensagemDocumento = INCLUI_DOCUMENTO_OPCIONAL;
+			siecmDocumentosIncluirDestinoDocumento.setLocalGravacao(DEFAULT_LOCAL_GRAVACAO_OPCIONAL);
+		}
+
+		if (DOCUMENTO_OBRGATORIO.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
+			mensagemDocumento = INCLUI_DOCUMENTO_OBRIGATORIO;
+			siecmDocumentosIncluirDestinoDocumento.setLocalGravacao(DEFAULT_LOCAL_GRAVACAO_OBRIGATORIO);
+		}
+
 		siecmDocumentosIncluirDestinoDocumento.setSubPasta(StringUtils.EMPTY);
 
 		SiecmDocumentosIncluirDocumentoAtributosCamposInputDto siecmDocumentosIncluirDocumentoAtributosCampos = new SiecmDocumentosIncluirDocumentoAtributosCamposInputDto();
@@ -117,14 +126,28 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		siecmCamposDinamicoObrigatorios.add(new SiecmCamposDinamico(SiecmConstants.RESPONSAVEL_CAPTURA,
 				tokenUtils.getMatriculaFromToken(token), SiecmConstants.STRING));
 		siecmCamposDinamicoObrigatorios.add(new SiecmCamposDinamico(SiecmConstants.STATUS, "0", SiecmConstants.STRING));
-		siecmCamposDinamicoObrigatorios.addAll(enviaDocumentoInputDto.getListaCamposDinamico());
+		siecmCamposDinamicoObrigatorios.add(new SiecmCamposDinamico(SiecmConstants.NU_NOTA_NEGOCIACAO,
+				enviaDocumentoInputDto.getNumeroNota(), SiecmConstants.STRING));
+
+		if (DOCUMENTO_OBRGATORIO.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
+			siecmCamposDinamicoObrigatorios.addAll(enviaDocumentoInputDto.getListaCamposDinamico());
+		}
 
 		siecmDocumentosIncluirDocumentoAtributosCampos.setCampo(siecmCamposDinamicoObrigatorios);
 		siecmDocumentosIncluirDocumentoAtributosCampos.setTipo(DEFAULT_DOCUMENTO_TIPO);
 		siecmDocumentosIncluirDocumentoAtributosCampos.setMimeType(DEFAULT_MIME_TYPE);
 		siecmDocumentosIncluirDocumentoAtributosCampos.setGerarThumbnail(true);
-		siecmDocumentosIncluirDocumentoAtributosCampos.setNome(dataUtils.formataData(new Date()) + "_"
-				+ enviaDocumentoInputDto.getCodGED().trim() + "." + DEFAULT_DOCUMENTO_TIPO);
+
+		if (DOCUMENTO_OBRGATORIO.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
+			siecmDocumentosIncluirDocumentoAtributosCampos.setNome(dataUtils.formataData(new Date()) + "_"
+					+ enviaDocumentoInputDto.getCodGED().trim() + "." + DEFAULT_DOCUMENTO_TIPO);
+		}
+
+		if (DOCUMENTO_OPCIONAL.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
+			siecmDocumentosIncluirDocumentoAtributosCampos
+					.setNome(dataUtils.formataData(new Date()) + "_" + enviaDocumentoInputDto.getNomeTipoDocumento()
+							.trim().replaceAll("[^\\p{L}\\p{N}]+", StringUtils.EMPTY) + "." + DEFAULT_DOCUMENTO_TIPO);
+		}
 
 		SiecmDocumentosIncluirDocumentoAtributosInputDto siecmDocumentosIncluirDocumentoAtributos = new SiecmDocumentosIncluirDocumentoAtributosInputDto();
 		siecmDocumentosIncluirDocumentoAtributos.setBinario(enviaDocumentoInputDto.getArquivoContrato());
@@ -164,23 +187,17 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		documentoCliente.setInclusaoDocumento(dtInclusaoDocumento);
 		documentoClienteRepository.save(documentoCliente);
 
-		String mensagemDocumento = INCLUI_DOCUMENTO_OPCIONAL;
-		String numeroNota = enviaDocumentoInputDto.getNumeroNota();
+		DocumentoNotaNegociacao documentoNotaNegociacao = new DocumentoNotaNegociacao();
+		documentoNotaNegociacao.setTipoPessoa(tipoPessoa);
+		documentoNotaNegociacao.setNumeroNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()));
+		documentoNotaNegociacao.setCpfCnpjCliente(Long.parseLong(cpfCnpjSiecm));
+		documentoNotaNegociacao.setTipoDocumentoCliente(numeroTipoDoc);
+		documentoNotaNegociacao.setInclusaoDocumento(dtInclusaoDocumento);
+		documentoNotaNegociacaoRepository.save(documentoNotaNegociacao);
+		mensagemDocumento = INCLUI_DOCUMENTO_OBRIGATORIO;
 
-		if (!StringUtils.isEmpty(enviaDocumentoInputDto.getNumeroNota())) {
-
-			DocumentoNotaNegociacao documentoNotaNegociacao = new DocumentoNotaNegociacao();
-			documentoNotaNegociacao.setTipoPessoa(tipoPessoa);
-			documentoNotaNegociacao.setNumeroNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()));
-			documentoNotaNegociacao.setCpfCnpjCliente(Long.parseLong(cpfCnpjSiecm));
-			documentoNotaNegociacao.setTipoDocumentoCliente(numeroTipoDoc);
-			documentoNotaNegociacao.setInclusaoDocumento(dtInclusaoDocumento);
-			documentoNotaNegociacaoRepository.save(documentoNotaNegociacao);
-			mensagemDocumento = INCLUI_DOCUMENTO_OBRIGATORIO;
-
-		}
-
-		LOG.log(Level.INFO, "Nota: " + numeroNota + mensagemDocumento + requestAnexarDocumento);
+		LOG.log(Level.INFO,
+				"Nota: " + enviaDocumentoInputDto.getNumeroNota() + mensagemDocumento + requestAnexarDocumento);
 
 		return siecmOutputDto;
 
@@ -195,20 +212,20 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		List<TipoDocumentoCliente> documentosObrigatorios = new ArrayList<>();
 
 		if (documentoUtils.retornaCpf(cpfCnpj)) {
-			
+
 			documentosOpcionais.addAll(tipoDocumentoRepository.opcionalTipoDocumentoPF());
 			documentosOpcionais.addAll(tipoDocumentoRepository.opcionalTipoDocumentoAmbosPFPJ());
 			tipoDocumentoClienteOutputDTO.setDocumentosOpcionais(documentosOpcionais);
-			
+
 			documentosObrigatorios.addAll(tipoDocumentoRepository.obrigatorioTipoDocumentoPF());
 			tipoDocumentoClienteOutputDTO.setDocumentosObrigatorios(documentosObrigatorios);
 
 		} else {
-			
+
 			documentosOpcionais.addAll(tipoDocumentoRepository.opcionalTipoDocumentoPJ());
 			documentosOpcionais.addAll(tipoDocumentoRepository.opcionalTipoDocumentoAmbosPFPJ());
 			tipoDocumentoClienteOutputDTO.setDocumentosOpcionais(documentosOpcionais);
-			
+
 			documentosObrigatorios.addAll(tipoDocumentoRepository.obrigatorioTipoDocumentoPJ());
 			tipoDocumentoClienteOutputDTO.setDocumentosObrigatorios(documentosObrigatorios);
 
