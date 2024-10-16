@@ -68,8 +68,10 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 	DocumentoNotaNegociacaoRepository documentoNotaNegociacaoRepository;
 
 	private static final String DEFAULT_LOCAL_ARMAZENAMENTO = "OS_CAIXA";
+	private static final String DEFAULT_LOCAL_GRAVACAO = "DOSSIE";
 	private static final String DEFAULT_LOCAL_GRAVACAO_OBRIGATORIO = "DOCUMENTOS_OBRIGATORIOS";
 	private static final String DEFAULT_LOCAL_GRAVACAO_OPCIONAL = "DOCUMENTOS_OPCIONAIS";
+	private static final String DEFAULT_DOCUMENTO_OPCIONAL = "DOCUMENTO_OPCIONAL";
 	private static final String DEFAULT_DOCUMENTO_TIPO = "pdf";
 	private static final String DEFAULT_MIME_TYPE = "application/pdf";
 	private static final String PERSON_TYPE_PF = "PF";
@@ -95,26 +97,28 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		siecmGateway.dossieCriar(token, cpfCnpjSiecm);
 
 		SiecmDocumentosIncluirDadosRequisicaoInputDto siecmDocumentosIncluirDadosRequisicao = new SiecmDocumentosIncluirDadosRequisicaoInputDto();
+		SiecmDocumentosIncluirDestinoDocumentoInputDto siecmDocumentosIncluirDestinoDocumento = new SiecmDocumentosIncluirDestinoDocumentoInputDto();
+		SiecmDocumentosIncluirDocumentoAtributosCamposInputDto siecmDocumentosIncluirDocumentoAtributosCampos = new SiecmDocumentosIncluirDocumentoAtributosCamposInputDto();
+		
 		siecmDocumentosIncluirDadosRequisicao.setIpUsuarioFinal(tokenUtils.getIpFromToken(token));
 		siecmDocumentosIncluirDadosRequisicao.setLocalArmazenamento(DEFAULT_LOCAL_ARMAZENAMENTO);
 
-		SiecmDocumentosIncluirDestinoDocumentoInputDto siecmDocumentosIncluirDestinoDocumento = new SiecmDocumentosIncluirDestinoDocumentoInputDto();
 		siecmDocumentosIncluirDestinoDocumento.setIdDestino(cpfCnpjSiecm);
 
 		if (DOCUMENTO_OPCIONAL.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
 			mensagemDocumento = INCLUI_DOCUMENTO_OPCIONAL;
-			siecmDocumentosIncluirDestinoDocumento.setLocalGravacao(DEFAULT_LOCAL_GRAVACAO_OPCIONAL);
+			siecmDocumentosIncluirDestinoDocumento.setLocalGravacao(DEFAULT_LOCAL_GRAVACAO);
+			siecmDocumentosIncluirDestinoDocumento.setSubPasta(DEFAULT_LOCAL_GRAVACAO_OPCIONAL);
+			siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(DOCUMENTO_OPCIONAL);
 		}
 
 		if (DOCUMENTO_OBRGATORIO.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
 			mensagemDocumento = INCLUI_DOCUMENTO_OBRIGATORIO;
-			siecmDocumentosIncluirDestinoDocumento.setLocalGravacao(DEFAULT_LOCAL_GRAVACAO_OBRIGATORIO);
+			siecmDocumentosIncluirDestinoDocumento.setLocalGravacao(DEFAULT_LOCAL_GRAVACAO);
+			siecmDocumentosIncluirDestinoDocumento.setSubPasta(DEFAULT_LOCAL_GRAVACAO_OBRIGATORIO);
+			siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(enviaDocumentoInputDto.getCodGED().trim());
 		}
 
-		siecmDocumentosIncluirDestinoDocumento.setSubPasta(StringUtils.EMPTY);
-
-		SiecmDocumentosIncluirDocumentoAtributosCamposInputDto siecmDocumentosIncluirDocumentoAtributosCampos = new SiecmDocumentosIncluirDocumentoAtributosCamposInputDto();
-		siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(enviaDocumentoInputDto.getCodGED().trim());
 
 		List<Object> siecmCamposDinamicoObrigatorios = new ArrayList<>();
 		siecmCamposDinamicoObrigatorios
