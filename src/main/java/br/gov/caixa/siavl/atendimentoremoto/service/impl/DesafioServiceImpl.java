@@ -72,26 +72,38 @@ public class DesafioServiceImpl implements DesafioService {
 
 		ValidaDesafioDTO validaDesafioDTO = siipcGateway.desafioValidar(token, validaDesafioMap);
 		ValidaDesafioOutputDTO validaDesafioOutputDTO = new ValidaDesafioOutputDTO();
-		
-		validaDesafioOutputDTO.setTempoUltimoDesafio(String.valueOf(dataUtils.calculaDiferencaDataMinutos(validaDesafioDTO.getTsAtualizacao())) + " minutos atrás");
+
+		validaDesafioOutputDTO.setTempoUltimoDesafio(
+				String.valueOf(dataUtils.calculaDiferencaDataMinutos(validaDesafioDTO.getTsAtualizacao()))
+						+ " minutos atrás");
 		validaDesafioOutputDTO.setDataUltimoDesafio(validaDesafioDTO.getTsAtualizacao());
 		validaDesafioOutputDTO.setStatusUltimoDesafio(validaDesafioDTO.getStatus());
 		validaDesafioOutputDTO.setCanalUltimoDesafio(validaDesafioDTO.getCanal());
 
-		if (!CANAL_PNC.equalsIgnoreCase(validaDesafioDTO.getCanal())
-				&& STATUS_SUCESSO.equalsIgnoreCase(validaDesafioDTO.getStatus())
-				&& dataUtils.menorTrintaMinutos(validaDesafioDTO.getTsAtualizacao())) {
+		Long tempoDesafioMinutos = dataUtils.calculaDiferencaDataMinutos(validaDesafioDTO.getTsAtualizacao());
 
-			validaDesafioOutputDTO.setDesafioExpirado(false);
-			validaDesafioOutputDTO.setMensagem("A identificação positiva foi realizada pelo bot do WhatsApp em "
-					+ dataUtils.formataDataSiipcFront(validaDesafioDTO.getTsAtualizacao()) + ". Clique no botão Prosseguir para continuar o atendimento.");
+		if (!CANAL_PNC.equalsIgnoreCase(validaDesafioDTO.getCanal())
+				&& STATUS_SUCESSO.equalsIgnoreCase(validaDesafioDTO.getStatus())) {
+
+			if (tempoDesafioMinutos <= 30) {
+				validaDesafioOutputDTO.setDesafioExpirado(false);
+				validaDesafioOutputDTO.setMensagem("A identificação positiva foi realizada pelo bot do WhatsApp em "
+						+ dataUtils.formataDataSiipcFront(validaDesafioDTO.getTsAtualizacao())
+						+ ". Clique no botão Prosseguir para continuar o atendimento.");
+			}
+
+			if (tempoDesafioMinutos > 30 && tempoDesafioMinutos <= 120) {
+				validaDesafioOutputDTO.setDesafioExpirado(true);
+				validaDesafioOutputDTO.setMensagem(
+						"Devido expiração do tempo de 30 minutos é preciso realizar uma nova Identificação Positiva.");
+			}
 
 			return validaDesafioOutputDTO;
 
 		}
 
 		validaDesafioOutputDTO.setDesafioExpirado(true);
-		validaDesafioOutputDTO.setMensagem("Devido expiração do tempo de 30 minutos é preciso realizar uma nova Identificação Positiva.");
+		validaDesafioOutputDTO.setMensagem(StringUtils.EMPTY);
 
 		return validaDesafioOutputDTO;
 	}
