@@ -92,7 +92,8 @@ public class DataUtils {
 	}
 
 	public Boolean menorTrintaMinutos(Object dataInicial) {
-		return calculaDiferencaDataMinutos(dataInicial) < 30;
+		Long diferenca = calculaDiferencaDataMinutos(dataInicial); 
+		return diferenca > 30 && diferenca < 120 ;
 	}
 
 	public Long diferencaDataMinutos(LocalDateTime dataInicial, LocalDateTime dataFinal) {
