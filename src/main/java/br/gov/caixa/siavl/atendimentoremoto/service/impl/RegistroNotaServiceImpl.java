@@ -404,7 +404,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(enviaClienteInputDto.getNumeroProtocolo()));
 		EnviaClienteOutputDto enviaClienteOutputDto = new EnviaClienteOutputDto(); 
 
-		if (EnviaNotaTipoAssinaturaEnum.TOKEN_SMS.equals(enviaClienteInputDto.getTipoAssinatura())) {
+		if (EnviaNotaTipoAssinaturaEnum.TOKEN_SMS.getDescricao().equalsIgnoreCase(enviaClienteInputDto.getTipoAssinatura())) {
 
 			if (Boolean.TRUE.equals(Objects
 					.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getAssinaturaToken()))))) {
@@ -444,7 +444,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		assinaturaNotaRepository.save(assinaturaNota);
 		pendenciaAtendimentoNotaRepository.inserePendenciaAtendimento(numeroNota);
 
-		if (EnviaNotaTipoAssinaturaEnum.APP.equals(enviaClienteInputDto.getTipoAssinatura())) {
+		if (EnviaNotaTipoAssinaturaEnum.APP.getDescricao().equalsIgnoreCase(enviaClienteInputDto.getTipoAssinatura())) {
 
 			notaNegociacaoRepository.enviaNotaClienteApp(numeroNota);
 			relatorioNotaNegociacaoRepository.enviaNotaClienteApp(numeroNota);
@@ -453,7 +453,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 					coIdentificacao, matriculaAtendente, statusRetornoSicli, numeroProtocolo, numeroContaAtendimento);
 		}
 
-		if (EnviaNotaTipoAssinaturaEnum.TOKEN_PRODUTO.equals(enviaClienteInputDto.getTipoAssinatura())) {
+		if (EnviaNotaTipoAssinaturaEnum.TOKEN_PRODUTO.getDescricao().equalsIgnoreCase(enviaClienteInputDto.getTipoAssinatura())) {
 
 			notaNegociacaoRepository.enviaNotaClienteTokenProduto(numeroNota);
 			relatorioNotaNegociacaoRepository.enviaNotaClienteTokenProduto(numeroNota);
