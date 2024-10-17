@@ -172,7 +172,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		siecmOutputDto = siecmGateway.documentoIncluir(token, cpfCnpj, requestAnexarDocumento);
 
 		Long numeroTipoDoc = tipoDocumentoRepository
-				.numeroTipoDocumentoCliente(enviaDocumentoInputDto.getCodGED().trim());
+				.numeroTipoDocumentoByNomeDocumento(enviaDocumentoInputDto.getNomeTipoDocumento());
 
 		Date dtInclusaoDocumento = dataUtils.formataDataBanco();
 
