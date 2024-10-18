@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,11 +43,11 @@ public class RoteiroStep4Parameters {
 		String cpfSocio = Objects.requireNonNull(jsonNode.path(CPF_SOCIO)).asText();
 		String nomeSocio = Objects.requireNonNull(jsonNode.path(NOME_SOCIO)).asText();		
 		String contaAtendimento = Objects.requireNonNull(jsonNode.path(CONTA_ATENDIMENTO)).asText();
-		String roteiroFechamento = String.valueOf(reportInputDTO.getRoteiroRelatorio());
+		String roteiroFechamento = StringUtils.EMPTY;// String.valueOf(reportInputDTO.getRoteiroRelatorio());
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(NOME_NOTA, nomeNota);
-		parameters.put(ASSINATURA, "ASSINATURA: " + assinaturaNota);
+		parameters.put(ASSINATURA, "ASSINATURA: " + assinaturaNota);	
 		parameters.put(NUMERO_NOTA, "NOTA DE NEGOCIAÇÃO Nº: " + numeroNota);
 		parameters.put(NOME_CLIENTE, "NOME: " + nomeCliente);
 		parameters.put(CPF_CNPJ, "CPF/CNPJ: " + cpfCnpj);
