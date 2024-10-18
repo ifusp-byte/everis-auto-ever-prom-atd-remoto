@@ -12,12 +12,13 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.gov.caixa.siavl.atendimentoremoto.report.service.RoteiroNotaReportService;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RoteiroFechamentoNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils;
 
 @Service
 @SuppressWarnings("all")
-public class RoteiroNotaReportServiceImpl {
+public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService{
 
 	@Autowired
 	RoteiroFechamentoNotaRepository roteiroFechamentoNotaRepository;
