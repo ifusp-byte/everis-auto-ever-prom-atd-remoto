@@ -42,6 +42,7 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.NegociacaoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
+import br.gov.caixa.siavl.atendimentoremoto.enums.TipoCampoDinamicoEnum;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncEnviaNotaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncEnviaNotaTokenInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncInputDTO;
@@ -316,6 +317,10 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			String texto = "";
 			if (valor != null && !valor.isNull()) {
 				texto = valor.asText();
+			}
+			String tipoCampo = String.valueOf(dinamico[8]);
+			if(tipoCampo.equals(TipoCampoDinamicoEnum.DATA.getDescricao()) && texto.contains("-") ){
+				texto =	DataUtils.formataDataLocalTexto(texto);
 			}
 
 			camposNota = CamposNotaOutputDTO.builder().id(String.valueOf(dinamico[0]))
