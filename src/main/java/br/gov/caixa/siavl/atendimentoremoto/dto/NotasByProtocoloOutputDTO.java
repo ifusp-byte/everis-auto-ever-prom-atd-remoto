@@ -57,15 +57,25 @@ public class NotasByProtocoloOutputDTO {
 	@Valid
 	@XmlElement(name = "situacaoNota")
 	private String situacaoNota;
+	
+	@Valid
+	@XmlElement(name = "numeroModeloNota")
+	private String numeroModeloNota;
+	
+	@Valid
+	@XmlElement(name = "contaAtendimento")
+	private String contaAtendimento;
 
 	public NotasByProtocoloOutputDTO(Long numeroNota, String nomeCliente, Long cpf, Long cnpj, String produto,
-			String situacaoNota, Object relatorioNota) {
+			String situacaoNota, Object relatorioNota, Long numeroModeloNota) {
 		this.numeroNota = String.valueOf(numeroNota);
 		this.nomeCliente = nomeCliente;
 		this.cpfCnpj = cnpj == null ? formataCpfFront(cpf) : formataCnpjFront(cnpj);
 		this.produto = produto;
 		this.situacaoNota = situacaoNota;
 		this.valorMeta = valorMetaByRelatorioNota(relatorioNota);
+		this.numeroModeloNota = String.valueOf(numeroModeloNota);
+		this.contaAtendimento = contaAtendimentoByRelatorioNota(relatorioNota); 
 	}
 
 	public String valorMetaByRelatorioNota(Object relatorioNota) {
@@ -80,8 +90,7 @@ public class NotasByProtocoloOutputDTO {
 			try {
 				tamanho = Integer.parseInt(String.valueOf(relatorioNota1.length()));
 				body = String.valueOf(relatorioNota1.getSubString(1, tamanho));
-				valorMeta = Objects.requireNonNull(StringToJson(body).path("relatorioNota").path("Valor (meta)"))
-						.asText();
+				valorMeta = Objects.requireNonNull(StringToJson(body).path("relatorioNota").path("Valor (meta)")).asText();
 			} catch (NumberFormatException e) {
 				throw new RuntimeException(e);
 			} catch (SQLException e) {
@@ -91,6 +100,32 @@ public class NotasByProtocoloOutputDTO {
 		}
 
 		return valorMeta;
+
+	}
+	
+	
+	public String contaAtendimentoByRelatorioNota(Object relatorioNota) {
+
+		int tamanho;
+		String body = null;
+		String contaAtendimento = StringUtils.EMPTY;
+		Clob relatorioNota1 = (Clob) relatorioNota;
+
+		if (relatorioNota != null) {
+
+			try {
+				tamanho = Integer.parseInt(String.valueOf(relatorioNota1.length()));
+				body = String.valueOf(relatorioNota1.getSubString(1, tamanho));
+				contaAtendimento = Objects.requireNonNull(StringToJson(body).path("contaAtendimento")).asText();
+			} catch (NumberFormatException e) {
+				throw new RuntimeException(e);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+
+		}
+
+		return contaAtendimento;
 
 	}
 

@@ -25,6 +25,7 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" , G.descricao ");
 		sb.append(" , E.descricao ");
 		sb.append(" , H.relatorioNota ");
+		sb.append(" , F.numeroModeloNota ");
 		sb.append(" ) ");
 		sb.append(" FROM ");
 		sb.append(" AtendimentoCliente A ");
