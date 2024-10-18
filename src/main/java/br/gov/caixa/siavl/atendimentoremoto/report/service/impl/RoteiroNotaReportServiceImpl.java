@@ -24,6 +24,15 @@ public class RoteiroNotaReportServiceImpl {
 
 	@Autowired
 	MetodosUtils metodosUtils;
+	
+	public String retornaRoteiroFormatado(Long numeroModeloNota) {
+		
+		
+		
+		return localizaRoteiroByModeloNota(numeroModeloNota);
+		
+		
+	}
 
 	public String localizaRoteiroByModeloNota(Long numeroModeloNota) {
 
