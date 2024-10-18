@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -52,12 +53,12 @@ public class RoteiroStep4Parameters {
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(NOME_NOTA, nomeNota);
-		parameters.put(ASSINATURA, "ASSINATURA: " + assinaturaNota);
+		parameters.put(ASSINATURA, "ASSINATURA: " + StringUtils.upperCase(assinaturaNota));
 		parameters.put(NUMERO_NOTA, "NOTA DE NEGOCIAÇÃO Nº: " + numeroNota);
-		parameters.put(NOME_CLIENTE, "NOME: " + nomeCliente);
+		parameters.put(NOME_CLIENTE, "NOME: " + StringUtils.upperCase(nomeCliente));
 		parameters.put(CPF_CNPJ, "CPF/CNPJ: " + cpfCnpj);
-		parameters.put(CPF_SOCIO, "CPF SÓCIO: " + cpfSocio);
-		parameters.put(NOME_SOCIO, "NOME DO(A) SÓCIO(A): " + nomeSocio);
+		parameters.put(CPF_SOCIO, "CPF SÓCIO(A): " + cpfSocio);
+		parameters.put(NOME_SOCIO, "NOME DO(A) SÓCIO(A): " + StringUtils.upperCase(nomeSocio));
 		parameters.put(CONTA_ATENDIMENTO, "CONTA ATENDIMENTO: " + contaAtendimento);
 		parameters.put(ROTEIRO_FECHAMENTO, roteiroFechamento);
 		parameters.put(NOME_PDF, "Nota-Negociacao_" + numeroNota);

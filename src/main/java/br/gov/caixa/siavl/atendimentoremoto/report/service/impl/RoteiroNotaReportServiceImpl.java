@@ -27,12 +27,7 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService{
 	MetodosUtils metodosUtils;
 	
 	public String retornaRoteiroFormatado(Long numeroModeloNota) {
-		
-		
-		
 		return localizaRoteiroByModeloNota(numeroModeloNota);
-		
-		
 	}
 
 	public String localizaRoteiroByModeloNota(Long numeroModeloNota) {
@@ -71,5 +66,12 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService{
 
 		return camposParaSubstituicao;
 
+	}
+	
+	public String replaceObrigatorios() {
+		
+		
+		return null; 
+		
 	}
 }

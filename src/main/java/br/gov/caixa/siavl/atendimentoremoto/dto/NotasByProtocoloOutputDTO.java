@@ -14,7 +14,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.commons.lang.StringUtils;
+import com.fasterxml.jackson.annotation.JsonRawValue;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,7 +42,7 @@ public class NotasByProtocoloOutputDTO {
 	@Valid
 	@XmlElement(name = "nomeCliente")
 	private String nomeCliente;
-	
+
 	@Valid
 	@XmlElement(name = "cpfCnpj")
 	private String cpfCnpj;
@@ -57,14 +58,35 @@ public class NotasByProtocoloOutputDTO {
 	@Valid
 	@XmlElement(name = "situacaoNota")
 	private String situacaoNota;
-	
+
 	@Valid
 	@XmlElement(name = "numeroModeloNota")
 	private String numeroModeloNota;
-	
+
 	@Valid
 	@XmlElement(name = "contaAtendimento")
 	private String contaAtendimento;
+
+	@Valid
+	@XmlElement(name = "razaoSocial")
+	private String razaoSocial;
+
+	@Valid
+	@XmlElement(name = "cnpj")
+	private String cnpj;
+
+	@Valid
+	@XmlElement(name = "nomeSocio")
+	private String nomeSocio;
+
+	@Valid
+	@XmlElement(name = "cpfSocio")
+	private String cpfSocio;
+	
+	@Valid
+	@JsonRawValue
+	@XmlElement(name = "relatorioNota")
+	private String relatorioNota; 
 
 	public NotasByProtocoloOutputDTO(Long numeroNota, String nomeCliente, Long cpf, Long cnpj, String produto,
 			String situacaoNota, Object relatorioNota, Long numeroModeloNota) {
@@ -73,24 +95,30 @@ public class NotasByProtocoloOutputDTO {
 		this.cpfCnpj = cnpj == null ? formataCpfFront(cpf) : formataCnpjFront(cnpj);
 		this.produto = produto;
 		this.situacaoNota = situacaoNota;
-		this.valorMeta = valorMetaByRelatorioNota(relatorioNota);
 		this.numeroModeloNota = String.valueOf(numeroModeloNota);
-		this.contaAtendimento = contaAtendimentoByRelatorioNota(relatorioNota); 
+
+		JsonNode relatorioNotaPath = relatorioNota(relatorioNota);
+
+		this.valorMeta = relatorioNotaPath.path("relatorioNota").path("Valor (meta)").asText();
+		this.contaAtendimento = relatorioNotaPath.path("contaAtendimento").asText();
+		this.razaoSocial = relatorioNotaPath.path("razaoSocial").asText();
+		this.cnpj = relatorioNotaPath.path("cnpj").asText();
+		this.nomeSocio = relatorioNotaPath.path("nomeSocio").asText();
+		this.cpfSocio = relatorioNotaPath.path("cpfSocio").asText();
+		this.relatorioNota = relatorioNotaPath.path("relatorioNota").asText();
 	}
 
-	public String valorMetaByRelatorioNota(Object relatorioNota) {
+	public JsonNode relatorioNota(Object relatorioNota) {
 
 		int tamanho;
-		String body = null;
-		String valorMeta = StringUtils.EMPTY;
+		String relatorioNota1ToString = null;
 		Clob relatorioNota1 = (Clob) relatorioNota;
 
 		if (relatorioNota != null) {
 
 			try {
 				tamanho = Integer.parseInt(String.valueOf(relatorioNota1.length()));
-				body = String.valueOf(relatorioNota1.getSubString(1, tamanho));
-				valorMeta = Objects.requireNonNull(StringToJson(body).path("relatorioNota").path("Valor (meta)")).asText();
+				relatorioNota1ToString = String.valueOf(relatorioNota1.getSubString(1, tamanho));
 			} catch (NumberFormatException e) {
 				throw new RuntimeException(e);
 			} catch (SQLException e) {
@@ -98,35 +126,7 @@ public class NotasByProtocoloOutputDTO {
 			}
 
 		}
-
-		return valorMeta;
-
-	}
-	
-	
-	public String contaAtendimentoByRelatorioNota(Object relatorioNota) {
-
-		int tamanho;
-		String body = null;
-		String contaAtendimento = StringUtils.EMPTY;
-		Clob relatorioNota1 = (Clob) relatorioNota;
-
-		if (relatorioNota != null) {
-
-			try {
-				tamanho = Integer.parseInt(String.valueOf(relatorioNota1.length()));
-				body = String.valueOf(relatorioNota1.getSubString(1, tamanho));
-				contaAtendimento = Objects.requireNonNull(StringToJson(body).path("contaAtendimento")).asText();
-			} catch (NumberFormatException e) {
-				throw new RuntimeException(e);
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-
-		}
-
-		return contaAtendimento;
-
+		return Objects.requireNonNull(StringToJson(relatorioNota1ToString));
 	}
 
 }
