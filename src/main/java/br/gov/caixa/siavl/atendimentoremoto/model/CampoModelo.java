@@ -15,14 +15,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "CampoModeloNota")
-@Table(name = "AVLTB017_CAMPO_MODELO_NOTA", schema = "AVL")
-public class CampoModeloNota {
+@Table(name = "AVLTB018_CAMPO_MODELO", schema = "AVL")
+public class CampoModelo {
 
 	@Id
 	@Column(name = "NU_CAMPO_MODELO_NOTA")
 	private Long numeroCampoModeloNota;
-
-	@Column(name = "NO_CAMPO_MODELO_NOTA")
-	private String nomeCampoModeloNota;
 
 }
