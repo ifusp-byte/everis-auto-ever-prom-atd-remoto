@@ -1,5 +1,19 @@
 package br.gov.caixa.siavl.atendimentoremoto.report.parameters;
 
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.ASSINATURA;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.CNPJ;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.CONTA_ATENDIMENTO;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.CPF_CNPJ;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.CPF_SOCIO;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.NOME_CLIENTE;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.NOME_NOTA;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.NOME_PDF;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.NOME_SOCIO;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.NUMERO_MODELO_NOTA;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.NUMERO_NOTA;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.RAZAO_SOCIAL;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.ROTEIRO_FECHAMENTO;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -12,6 +26,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import br.gov.caixa.siavl.atendimentoremoto.report.dto.ReportInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.report.service.RoteiroNotaReportService;
+import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils;
 
 @Component
@@ -23,18 +38,9 @@ public class RoteiroStep4Parameters {
 
 	@Autowired
 	RoteiroNotaReportService roteiroNotaReportService;
-
-	private static final String NOME_NOTA = "nomeNota";
-	private static final String ASSINATURA = "assinaturaNota";
-	private static final String NUMERO_NOTA = "numeroNota";
-	private static final String NOME_CLIENTE = "nomeCliente";
-	private static final String CPF_CNPJ = "cpfCnpj";
-	private static final String CPF_SOCIO = "cpfSocio";
-	private static final String NOME_SOCIO = "nomeSocio";
-	private static final String CONTA_ATENDIMENTO = "contaAtendimento";
-	private static final String ROTEIRO_FECHAMENTO = "roteiroFechamento";
-	private static final String NOME_PDF = "nomePdf";
-	private static final String NUMERO_MODELO_NOTA = "numeroModeloNota";
+	
+	@Autowired
+	DocumentoUtils documentoUtils;
 
 	public Map<String, Object> buildParameters(ReportInputDTO reportInputDTO) {
 
@@ -49,18 +55,32 @@ public class RoteiroStep4Parameters {
 		String nomeSocio = Objects.requireNonNull(jsonNode.path(NOME_SOCIO)).asText();
 		String contaAtendimento = Objects.requireNonNull(jsonNode.path(CONTA_ATENDIMENTO)).asText();
 		String numeroModeloNota = Objects.requireNonNull(jsonNode.path(NUMERO_MODELO_NOTA)).asText();
-		String roteiroFechamento = roteiroNotaReportService.retornaRoteiroFormatado(Long.valueOf(numeroModeloNota));
+		String cnpj = Objects.requireNonNull(jsonNode.path(CNPJ)).asText();
+		String razaoSocial = Objects.requireNonNull(jsonNode.path(RAZAO_SOCIAL)).asText();
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(NOME_NOTA, nomeNota);
 		parameters.put(ASSINATURA, "ASSINATURA: " + StringUtils.upperCase(assinaturaNota));
 		parameters.put(NUMERO_NOTA, "NOTA DE NEGOCIAÇÃO Nº: " + numeroNota);
+		
+		if (documentoUtils.retornaCpf(cpfCnpj)) {
+			
 		parameters.put(NOME_CLIENTE, "NOME: " + StringUtils.upperCase(nomeCliente));
-		parameters.put(CPF_CNPJ, "CPF/CNPJ: " + cpfCnpj);
+		parameters.put(CPF_CNPJ, "CPF: " + cpfCnpj);
+		
+		} else {
+			
+			parameters.put(NOME_CLIENTE, "RAZÃO SOCIAL: " + StringUtils.upperCase(nomeCliente));
+			parameters.put(CPF_CNPJ, "CNPJ: " + cpfCnpj);
+			
+		}
+		
+		parameters.put(CNPJ, "CPF SÓCIO(A): " + cnpj);
+		parameters.put(RAZAO_SOCIAL, "CPF SÓCIO(A): " + razaoSocial);	
 		parameters.put(CPF_SOCIO, "CPF SÓCIO(A): " + cpfSocio);
 		parameters.put(NOME_SOCIO, "NOME DO(A) SÓCIO(A): " + StringUtils.upperCase(nomeSocio));
 		parameters.put(CONTA_ATENDIMENTO, "CONTA ATENDIMENTO: " + contaAtendimento);
-		parameters.put(ROTEIRO_FECHAMENTO, roteiroFechamento);
+		parameters.put(ROTEIRO_FECHAMENTO, roteiroNotaReportService.retornaRoteiroFormatado(Long.valueOf(numeroModeloNota), parameters));
 		parameters.put(NOME_PDF, "Nota-Negociacao_" + numeroNota);
 
 		return parameters;

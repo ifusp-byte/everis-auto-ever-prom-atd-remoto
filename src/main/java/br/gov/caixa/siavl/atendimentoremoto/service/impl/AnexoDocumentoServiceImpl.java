@@ -69,8 +69,6 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 	private static final String DEFAULT_LOCAL_ARMAZENAMENTO = "OS_CAIXA";
 	private static final String DEFAULT_LOCAL_GRAVACAO = "DOSSIE";
-	private static final String DEFAULT_LOCAL_GRAVACAO_OBRIGATORIO = "DOCUMENTOS_OBRIGATORIOS";
-	private static final String DEFAULT_LOCAL_GRAVACAO_OPCIONAL = "DOCUMENTOS_OPCIONAIS";
 	private static final String DEFAULT_DOCUMENTO_OPCIONAL = "DOCUMENTO_OPCIONAL";
 	private static final String DEFAULT_DOCUMENTO_TIPO = "pdf";
 	private static final String DEFAULT_MIME_TYPE = "application/pdf";
@@ -81,6 +79,8 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 	private static final String INCLUI_DOCUMENTO_OBRIGATORIO = " Requisicao - Incluir Documento Obrigatorio Step3: ";
 	private static final String DOCUMENTO_OPCIONAL = "OPCIONAL";
 	private static final String DOCUMENTO_OBRGATORIO = "OBRIGATORIO";
+	private static final String DEFAULT_NOME_OBRIGATORIO = "DOCUMENTO_OBRIGATORIO";
+	private static final String DEFAULT_NOME_OPCIONAL = "DOCUMENTO_OPCIONAL";
 
 	private static final Logger LOG = Logger.getLogger(AnexoDocumentoServiceImpl.class.getName());
 
@@ -104,18 +104,16 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		siecmDocumentosIncluirDadosRequisicao.setLocalArmazenamento(DEFAULT_LOCAL_ARMAZENAMENTO);
 
 		siecmDocumentosIncluirDestinoDocumento.setIdDestino(cpfCnpjSiecm);
+		siecmDocumentosIncluirDestinoDocumento.setLocalGravacao(DEFAULT_LOCAL_GRAVACAO);
+		siecmDocumentosIncluirDestinoDocumento.setSubPasta(SiecmConstants.NU_NOTA_NEGOCIACAO+"_"+enviaDocumentoInputDto.getNumeroNota());
 
 		if (DOCUMENTO_OPCIONAL.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
 			mensagemDocumento = INCLUI_DOCUMENTO_OPCIONAL;
-			siecmDocumentosIncluirDestinoDocumento.setLocalGravacao(DEFAULT_LOCAL_GRAVACAO);
-			siecmDocumentosIncluirDestinoDocumento.setSubPasta(DEFAULT_LOCAL_GRAVACAO_OPCIONAL);
 			siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(DOCUMENTO_OPCIONAL);
 		}
 
 		if (DOCUMENTO_OBRGATORIO.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
 			mensagemDocumento = INCLUI_DOCUMENTO_OBRIGATORIO;
-			siecmDocumentosIncluirDestinoDocumento.setLocalGravacao(DEFAULT_LOCAL_GRAVACAO);
-			siecmDocumentosIncluirDestinoDocumento.setSubPasta(DEFAULT_LOCAL_GRAVACAO_OBRIGATORIO);
 			siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(enviaDocumentoInputDto.getCodGED().trim());
 		}
 
@@ -130,8 +128,6 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		siecmCamposDinamicoObrigatorios.add(new SiecmCamposDinamico(SiecmConstants.RESPONSAVEL_CAPTURA,
 				tokenUtils.getMatriculaFromToken(token), SiecmConstants.STRING));
 		siecmCamposDinamicoObrigatorios.add(new SiecmCamposDinamico(SiecmConstants.STATUS, "0", SiecmConstants.STRING));
-		siecmCamposDinamicoObrigatorios.add(new SiecmCamposDinamico(SiecmConstants.NU_NOTA_NEGOCIACAO,
-				enviaDocumentoInputDto.getNumeroNota(), SiecmConstants.STRING));
 
 		if (DOCUMENTO_OBRGATORIO.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
 			siecmCamposDinamicoObrigatorios.addAll(enviaDocumentoInputDto.getListaCamposDinamico());
@@ -143,13 +139,13 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		siecmDocumentosIncluirDocumentoAtributosCampos.setGerarThumbnail(true);
 
 		if (DOCUMENTO_OBRGATORIO.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
-			siecmDocumentosIncluirDocumentoAtributosCampos.setNome(dataUtils.formataData(new Date()) + "_"
-					+ enviaDocumentoInputDto.getCodGED().trim() + "." + DEFAULT_DOCUMENTO_TIPO);
+			siecmDocumentosIncluirDocumentoAtributosCampos.setNome(dataUtils.formataData(new Date()) + "_" +
+					DEFAULT_NOME_OBRIGATORIO +"-"+ enviaDocumentoInputDto.getCodGED().trim() + "." + DEFAULT_DOCUMENTO_TIPO);
 		}
 
 		if (DOCUMENTO_OPCIONAL.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
 			siecmDocumentosIncluirDocumentoAtributosCampos
-					.setNome(dataUtils.formataData(new Date()) + "_" + enviaDocumentoInputDto.getNomeTipoDocumento()
+					.setNome(dataUtils.formataData(new Date()) + "_" + DEFAULT_NOME_OPCIONAL +"-"+ enviaDocumentoInputDto.getNomeTipoDocumento()
 							.trim().replaceAll("[^\\p{L}\\p{N}]+", StringUtils.EMPTY) + "." + DEFAULT_DOCUMENTO_TIPO);
 		}
 

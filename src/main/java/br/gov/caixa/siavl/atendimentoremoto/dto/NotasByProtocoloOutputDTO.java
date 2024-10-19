@@ -84,9 +84,8 @@ public class NotasByProtocoloOutputDTO {
 	private String cpfSocio;
 	
 	@Valid
-	@JsonRawValue
 	@XmlElement(name = "relatorioNota")
-	private String relatorioNota; 
+	private Object relatorioNota; 
 
 	public NotasByProtocoloOutputDTO(Long numeroNota, String nomeCliente, Long cpf, Long cnpj, String produto,
 			String situacaoNota, Object relatorioNota, Long numeroModeloNota) {
@@ -105,7 +104,7 @@ public class NotasByProtocoloOutputDTO {
 		this.cnpj = relatorioNotaPath.path("cnpj").asText();
 		this.nomeSocio = relatorioNotaPath.path("nomeSocio").asText();
 		this.cpfSocio = relatorioNotaPath.path("cpfSocio").asText();
-		this.relatorioNota = relatorioNotaPath.path("relatorioNota").asText();
+		this.relatorioNota = relatorioNotaPath.path("relatorioNota");
 	}
 
 	public JsonNode relatorioNota(Object relatorioNota) {
