@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "CampoModeloNota")
+@Entity(name = "CampoModelo")
 @Table(name = "AVLTB018_CAMPO_MODELO", schema = "AVL")
 public class CampoModelo {
 
