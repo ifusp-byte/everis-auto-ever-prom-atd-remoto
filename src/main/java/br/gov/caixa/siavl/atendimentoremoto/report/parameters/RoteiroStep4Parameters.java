@@ -12,6 +12,7 @@ import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaR
 import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.NUMERO_MODELO_NOTA;
 import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.NUMERO_NOTA;
 import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.RAZAO_SOCIAL;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.RELATORIO_NOTA;
 import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.ROTEIRO_FECHAMENTO;
 
 import java.util.HashMap;
@@ -57,30 +58,31 @@ public class RoteiroStep4Parameters {
 		String numeroModeloNota = Objects.requireNonNull(jsonNode.path(NUMERO_MODELO_NOTA)).asText();
 		String cnpj = Objects.requireNonNull(jsonNode.path(CNPJ)).asText();
 		String razaoSocial = Objects.requireNonNull(jsonNode.path(RAZAO_SOCIAL)).asText();
+		JsonNode relatorioNotaDinamico = Objects.requireNonNull(jsonNode.path(RELATORIO_NOTA));
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(NOME_NOTA, nomeNota);
-		parameters.put(ASSINATURA, "ASSINATURA: " + StringUtils.upperCase(assinaturaNota));
-		parameters.put(NUMERO_NOTA, "NOTA DE NEGOCIAÇÃO Nº: " + numeroNota);
+		parameters.put(ASSINATURA, "<b>ASSINATURA:</b> " + StringUtils.upperCase(assinaturaNota));
+		parameters.put(NUMERO_NOTA, "<b>NOTA DE NEGOCIAÇÃO Nº:</b> " + numeroNota);
 		
 		if (documentoUtils.retornaCpf(cpfCnpj)) {
 			
-		parameters.put(NOME_CLIENTE, "NOME: " + StringUtils.upperCase(nomeCliente));
-		parameters.put(CPF_CNPJ, "CPF: " + cpfCnpj);
+		parameters.put(NOME_CLIENTE, "<b>NOME:</b> " + StringUtils.upperCase(nomeCliente));
+		parameters.put(CPF_CNPJ, "<b>CPF:</b> " + cpfCnpj);
 		
 		} else {
 			
-			parameters.put(NOME_CLIENTE, "RAZÃO SOCIAL: " + StringUtils.upperCase(nomeCliente));
-			parameters.put(CPF_CNPJ, "CNPJ: " + cpfCnpj);
+			parameters.put(NOME_CLIENTE, "<b>RAZÃO SOCIAL:</b> " + StringUtils.upperCase(nomeCliente));
+			parameters.put(CPF_CNPJ, "<b>CNPJ:</b> " + cpfCnpj);
 			
 		}
 		
-		parameters.put(CNPJ, "CPF SÓCIO(A): " + cnpj);
-		parameters.put(RAZAO_SOCIAL, "CPF SÓCIO(A): " + razaoSocial);	
-		parameters.put(CPF_SOCIO, "CPF SÓCIO(A): " + cpfSocio);
-		parameters.put(NOME_SOCIO, "NOME DO(A) SÓCIO(A): " + StringUtils.upperCase(nomeSocio));
-		parameters.put(CONTA_ATENDIMENTO, "CONTA ATENDIMENTO: " + contaAtendimento);
-		parameters.put(ROTEIRO_FECHAMENTO, roteiroNotaReportService.retornaRoteiroFormatado(Long.valueOf(numeroModeloNota), parameters));
+		parameters.put(CNPJ, "<b>CPF SÓCIO(A):</b> " + cnpj);
+		parameters.put(RAZAO_SOCIAL, "<b>CPF SÓCIO(A):</b> " + razaoSocial);	
+		parameters.put(CPF_SOCIO, "<b>CPF SÓCIO(A):</b> " + cpfSocio);
+		parameters.put(NOME_SOCIO, "<b>NOME DO(A) SÓCIO(A):</b> " + StringUtils.upperCase(nomeSocio));
+		parameters.put(CONTA_ATENDIMENTO, "<b>CONTA ATENDIMENTO:</b> " + contaAtendimento);
+		parameters.put(ROTEIRO_FECHAMENTO, roteiroNotaReportService.retornaRoteiroFormatado(Long.valueOf(numeroModeloNota), parameters, relatorioNotaDinamico));
 		parameters.put(NOME_PDF, "Nota-Negociacao_" + numeroNota);
 
 		return parameters;

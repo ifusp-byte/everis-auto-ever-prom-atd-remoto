@@ -14,9 +14,13 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import br.gov.caixa.siavl.atendimentoremoto.report.dto.RoteiroNotaCampoDinamicoDTO;
 import br.gov.caixa.siavl.atendimentoremoto.report.enums.RoteiroNotaCamposObrigatoriosPFEnum;
 import br.gov.caixa.siavl.atendimentoremoto.report.service.RoteiroNotaReportService;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RoteiroFechamentoNotaRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.impl.CampoModeloNotaRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils;
 
 @Service
@@ -27,10 +31,15 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService {
 	RoteiroFechamentoNotaRepository roteiroFechamentoNotaRepository;
 
 	@Autowired
+	CampoModeloNotaRepositoryImpl campoModeloNotaRepositoryImpl;
+
+	@Autowired
 	MetodosUtils metodosUtils;
 
-	public String retornaRoteiroFormatado(Long numeroModeloNota, Map<String, Object> parameters) {
-		return replaceObrigatorios(localizaRoteiroByModeloNota(numeroModeloNota), parameters);
+	public String retornaRoteiroFormatado(Long numeroModeloNota, Map<String, Object> parameters,
+			JsonNode relatorioNotaDinamico) {
+		return replaceObrigatorios(localizaRoteiroByModeloNota(numeroModeloNota), parameters, numeroModeloNota,
+				relatorioNotaDinamico);
 	}
 
 	public String localizaRoteiroByModeloNota(Long numeroModeloNota) {
@@ -70,33 +79,68 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService {
 
 	}
 
-	public String replaceObrigatorios(String roteiroFechamento, Map<String, Object> parameters) {
+	public String replaceObrigatorios(String roteiroFechamento, Map<String, Object> parameters, Long numeroModeloNota,
+			JsonNode relatorioNotaDinamico) {
 
+		List<RoteiroNotaCampoDinamicoDTO> listaCamposDinamicos = campoModeloNotaRepositoryImpl.camposDinamicosByModelo(numeroModeloNota);
 		List<String> camposRelatorio = localizaCamposRoteiroParaSubstituicao(roteiroFechamento);
-		List<Map<String, Object>> camposRelatorioReplace = new ArrayList<>();
+
+		List<Map<String, Object>> listaSubstituicaoObrigatorio = new ArrayList<>();
+		List<Map<String, Object>> listaSubstituicaoDinamico = new ArrayList<>();
 
 		if (!camposRelatorio.isEmpty()) {
+
 			for (String campoRelatorio : camposRelatorio) {
-				Map<String, Object> campoRelatorioSubstituicao = new HashMap<>();
-				String campoSubstituicao = StringUtils.EMPTY;
+
+				Map<String, Object> substituicaoObrigatorio = new HashMap<>();
+				Map<String, Object> substituicaoDinamico = new HashMap<>();
+
+				String campoSubstituicaoObrigatorio = StringUtils.EMPTY;
+				String campoSubstituicaoDinamico = StringUtils.EMPTY;
 
 				for (RoteiroNotaCamposObrigatoriosPFEnum campo : RoteiroNotaCamposObrigatoriosPFEnum.values()) {
+
 					if (campo.getCampoObrigatorio().equalsIgnoreCase(campoRelatorio)) {
-						campoSubstituicao = campo.getCampoObrigatorioReplace();
+
+						campoSubstituicaoObrigatorio = campo.getCampoObrigatorioReplace();
+						substituicaoObrigatorio.put("campoRelatorio", campoRelatorio);
+						substituicaoObrigatorio.put("campoSubstituicao", campoSubstituicaoObrigatorio);
+						substituicaoObrigatorio.put("valor", parameters.get(campoSubstituicaoObrigatorio));
+						listaSubstituicaoObrigatorio.add(substituicaoObrigatorio);
+
+					} else {
+
+						for (RoteiroNotaCampoDinamicoDTO campoDinamico : listaCamposDinamicos) {
+
+							if (campoRelatorio.contains(campoDinamico.getIdCampoDinamico())) {
+
+								campoSubstituicaoDinamico = campoDinamico.getNomeCampoDinamico();
+								substituicaoDinamico.put("campoRelatorio", campoRelatorio);
+								substituicaoDinamico.put("campoSubstituicao", campoSubstituicaoDinamico);
+								substituicaoDinamico.put("valor", campoSubstituicaoDinamico +": "+ relatorioNotaDinamico.path(campoSubstituicaoDinamico).asText());
+								listaSubstituicaoDinamico.add(substituicaoDinamico);
+
+							}
+
+						}
+
 					}
 				}
 
-				campoRelatorioSubstituicao.put("campoRelatorio", campoRelatorio);
-				campoRelatorioSubstituicao.put("campoSubstituicao", campoSubstituicao);
-				campoRelatorioSubstituicao.put("valor", parameters.get(campoSubstituicao));
-				camposRelatorioReplace.add(campoRelatorioSubstituicao);
 			}
 		}
 
-		if (!camposRelatorioReplace.isEmpty()) {
-			for (Map<String, Object> campoRelatorio : camposRelatorioReplace) {
-				roteiroFechamento = roteiroFechamento.replaceAll(String.valueOf(campoRelatorio.get("campoRelatorio")),
-						String.valueOf(campoRelatorio.get("valor")));
+		if (!listaSubstituicaoObrigatorio.isEmpty()) {
+			for (Map<String, Object> campoObrigatorio : listaSubstituicaoObrigatorio) {
+				roteiroFechamento = roteiroFechamento.replaceAll(String.valueOf(campoObrigatorio.get("campoRelatorio")),
+						String.valueOf(campoObrigatorio.get("valor")));
+			}
+		}
+		
+		if (!listaSubstituicaoDinamico.isEmpty()) {
+			for (Map<String, Object> campoDinamico : listaSubstituicaoDinamico) {
+				roteiroFechamento = roteiroFechamento.replaceAll(String.valueOf(campoDinamico.get("campoRelatorio")),
+						String.valueOf(campoDinamico.get("valor")));
 			}
 		}
 
