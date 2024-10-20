@@ -21,5 +21,8 @@ public class CampoModelo {
 	@Id
 	@Column(name = "NU_CAMPO_MODELO_NOTA")
 	private Long numeroCampoModeloNota;
+	
+	@Column(name = "NU_MODELO_NOTA_NEGOCIO")
+	private Long numeroModeloNota;
 
 }

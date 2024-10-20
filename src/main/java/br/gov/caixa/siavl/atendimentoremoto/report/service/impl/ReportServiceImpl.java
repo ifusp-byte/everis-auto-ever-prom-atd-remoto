@@ -51,9 +51,6 @@ public class ReportServiceImpl implements ReportService {
 		JasperExportManager.exportReportToPdfStream(JasperFillManager.fillReport(
 				(JasperReport) JRLoader.loadObject(
 						new ClassPathResource(ReportEnum.ROTEIRO_STEP4.getRelatorio()).getInputStream()),
-						//ResourceUtils.getFile(											
-								//new FileSystemResource(reportResource).getFile().getAbsolutePath())),
-								//new ClassPathResource(reportResource).getFile().getAbsolutePath())),
 				parameters, new JREmptyDataSource()), byteArrayOutputStream);
 
 		ByteArrayResource resource = new ByteArrayResource(byteArrayOutputStream.toByteArray());
@@ -66,7 +63,6 @@ public class ReportServiceImpl implements ReportService {
 		
 		return ResponseEntity.ok()
 				.headers(headers)
-				//.header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, ReportConstants.ATTACHMENT_FILENAME + fileName + ReportConstants.BAR)
 				.contentLength(resource.contentLength())
 				.contentType(MediaType.APPLICATION_OCTET_STREAM)
 				.body(resource);

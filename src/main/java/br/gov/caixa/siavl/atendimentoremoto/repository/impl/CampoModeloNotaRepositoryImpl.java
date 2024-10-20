@@ -27,10 +27,10 @@ public class CampoModeloNotaRepositoryImpl {
 		sb.append(" , CampoModelo B ");
 		sb.append(" , CampoModeloNota C  ");
 		sb.append(" WHERE  ");
-		sb.append(" A.numeroModeloNota = B.numeroCampoModeloNota ");
+		sb.append(" A.numeroModeloNota = B.numeroModeloNota ");
 		sb.append(" AND B.numeroCampoModeloNota = C.numeroCampoModeloNota ");
 		sb.append(" AND A.numeroModeloNota = :numeroModeloNota ");
-		sb.append(" GROUP BY B.numeroCampoModeloNota, C.numeroCampoModeloNota ");
+		sb.append(" GROUP BY B.numeroCampoModeloNota, C.nomeCampoModeloNota ");
 		sb.append(" ORDER BY B.numeroCampoModeloNota DESC ");
 
 		TypedQuery<RoteiroNotaCampoDinamicoDTO> query = em.createQuery(sb.toString(), RoteiroNotaCampoDinamicoDTO.class);

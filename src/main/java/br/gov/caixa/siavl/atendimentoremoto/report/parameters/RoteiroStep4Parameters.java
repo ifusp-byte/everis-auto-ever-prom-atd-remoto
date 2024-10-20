@@ -77,8 +77,8 @@ public class RoteiroStep4Parameters {
 			
 		}
 		
-		parameters.put(CNPJ, "<b>CPF SÓCIO(A):</b> " + cnpj);
-		parameters.put(RAZAO_SOCIAL, "<b>CPF SÓCIO(A):</b> " + razaoSocial);	
+		parameters.put(CNPJ, "<b>CNPJ:</b> " + cnpj);
+		parameters.put(RAZAO_SOCIAL, "<b>RAZÃO SOCIAL:</b> " + razaoSocial);	
 		parameters.put(CPF_SOCIO, "<b>CPF SÓCIO(A):</b> " + cpfSocio);
 		parameters.put(NOME_SOCIO, "<b>NOME DO(A) SÓCIO(A):</b> " + StringUtils.upperCase(nomeSocio));
 		parameters.put(CONTA_ATENDIMENTO, "<b>CONTA ATENDIMENTO:</b> " + contaAtendimento);

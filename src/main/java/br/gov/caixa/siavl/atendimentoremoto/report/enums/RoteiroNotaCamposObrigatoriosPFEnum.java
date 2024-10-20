@@ -11,8 +11,6 @@ import br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportCo
 public enum RoteiroNotaCamposObrigatoriosPFEnum {
 	NOME("!NOME#NOME#", RoteiroNotaReportConstants.NOME_CLIENTE), 
 	CPF("!CPF#CPF#", RoteiroNotaReportConstants.CPF_CNPJ), 
-	CNPJ("!CNPJ#CNPJ#", RoteiroNotaReportConstants.CNPJ), 
-	RAZAO_SOCIAL("!RAZAOSOCIAL#RAZAOSOCIAL#", RoteiroNotaReportConstants.RAZAO_SOCIAL),
 	CONTA_ATENDIMENTO("!CONTAATENDIMENTO#CONTAATENDIMENTO#", RoteiroNotaReportConstants.CONTA_ATENDIMENTO);
 
 	private final String campoObrigatorio;
