@@ -13,7 +13,8 @@ public enum RoteiroNotaCamposObrigatoriosPJEnum {
 	CPF("!CPF#CPF#", RoteiroNotaReportConstants.CPF_SOCIO), 
 	CNPJ("!CNPJ#CNPJ#", RoteiroNotaReportConstants.CNPJ), 
 	RAZAO_SOCIAL("!RAZAOSOCIAL#RAZAOSOCIAL#", RoteiroNotaReportConstants.RAZAO_SOCIAL),
-	CONTA_ATENDIMENTO("!CONTAATENDIMENTO#CONTAATENDIMENTO#", RoteiroNotaReportConstants.CONTA_ATENDIMENTO);
+	CONTA_ATENDIMENTO("!CONTAATENDIMENTO#CONTAATENDIMENTO#", RoteiroNotaReportConstants.CONTA_ATENDIMENTO),
+	VALOR_META("!VALORMETA#VALORMETA#", RoteiroNotaReportConstants.VALOR_META);
 
 	private final String campoObrigatorio;
 	private final String campoObrigatorioReplace;

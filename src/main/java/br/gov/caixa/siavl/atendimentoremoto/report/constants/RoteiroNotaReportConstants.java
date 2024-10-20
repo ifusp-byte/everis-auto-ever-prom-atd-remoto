@@ -21,4 +21,5 @@ public class RoteiroNotaReportConstants {
 	public static final String RAZAO_SOCIAL = "razaoSocial";
 	public static final String CNPJ = "cnpj";
 	public static final String RELATORIO_NOTA = "relatorioNota";
+	public static final String VALOR_META = "valorMeta";
 }

@@ -12,8 +12,8 @@ import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaR
 import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.NUMERO_MODELO_NOTA;
 import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.NUMERO_NOTA;
 import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.RAZAO_SOCIAL;
-import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.RELATORIO_NOTA;
 import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.ROTEIRO_FECHAMENTO;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.VALOR_META;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +58,8 @@ public class RoteiroStep4Parameters {
 		String numeroModeloNota = Objects.requireNonNull(jsonNode.path(NUMERO_MODELO_NOTA)).asText();
 		String cnpj = Objects.requireNonNull(jsonNode.path(CNPJ)).asText();
 		String razaoSocial = Objects.requireNonNull(jsonNode.path(RAZAO_SOCIAL)).asText();
-		JsonNode relatorioNotaDinamico = Objects.requireNonNull(jsonNode.path(RELATORIO_NOTA));
+		String valorMeta = Objects.requireNonNull(jsonNode.path(RAZAO_SOCIAL)).asText();
+		JsonNode relatorioNotaDinamico = Objects.requireNonNull(jsonNode.path(VALOR_META));
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(NOME_NOTA, nomeNota);
