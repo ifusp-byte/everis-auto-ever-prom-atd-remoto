@@ -199,11 +199,13 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService {
 			if (campoRelatorio.contains(campoDinamico.getIdCampoDinamico())) {
 				
 				String valor = relatorioNotaDinamico.path(campoSubstituicaoDinamico).asText();
+				valor = pattern.matcher(valor).matches() ? formataDataLocalTexto(valor) : valor;
+				valor = valor.equals(StringUtils.EMPTY) ? "NÃO SE APLICA" : valor;
 
 				campoSubstituicaoDinamico = campoDinamico.getNomeCampoDinamico();
 				substituicaoDinamico.put("campoRelatorio", campoRelatorio);
 				substituicaoDinamico.put("campoSubstituicao", campoSubstituicaoDinamico);
-				substituicaoDinamico.put("valor", campoSubstituicaoDinamico + ": " + (pattern.matcher(valor).matches() ? formataDataLocalTexto(valor) : valor));
+				substituicaoDinamico.put("valor", campoSubstituicaoDinamico + ": " + valor);
 				listaSubstituicaoDinamico.add(substituicaoDinamico);
 
 			}
