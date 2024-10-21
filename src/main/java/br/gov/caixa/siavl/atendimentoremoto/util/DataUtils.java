@@ -9,6 +9,7 @@ import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DATA_SIEC
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DATA_SIECM_ANEXO;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DATA_SIIPC;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.PT;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DATA_US;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -148,5 +149,19 @@ public class DataUtils {
 		}
 		return diaMesAno + " às " + horaMinuto;
 	}
+
+  public static String formataDataLocalTexto(String data) {
+    
+    Locale locale = new Locale(PT, BR);
+    SimpleDateFormat sdfIn = new SimpleDateFormat(DATA_US, locale);
+    SimpleDateFormat sdfOut = new SimpleDateFormat(DATA_PADRAO_SIIPC_FRONT_1, locale);
+
+    try {
+      data = sdfOut.format(sdfIn.parse(data));
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+   return data;
+  }
 
 }
