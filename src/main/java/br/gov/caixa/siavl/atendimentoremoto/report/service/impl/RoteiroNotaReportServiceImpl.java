@@ -187,12 +187,12 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService {
 
 		for (RoteiroNotaCampoDinamicoDTO campoDinamico : listaCamposDinamicos) {
 
-			if (campoRelatorio.contains(campoDinamico.getIdCampoDinamico())) {
+			if (campoRelatorio.contains(campoDinamico.getIdCampoDinamico()) || campoRelatorio.contains(campoDinamico.getNomeCampoDinamico())) {
 
 				campoSubstituicaoDinamico = campoDinamico.getNomeCampoDinamico();
 				substituicaoDinamico.put("campoRelatorio", campoRelatorio);
 				substituicaoDinamico.put("campoSubstituicao", campoSubstituicaoDinamico);
-				substituicaoDinamico.put("valor", campoSubstituicaoDinamico + ": " + relatorioNotaDinamico.path(campoSubstituicaoDinamico).asText());
+				substituicaoDinamico.put("valor", campoSubstituicaoDinamico + ": " + (relatorioNotaDinamico.path(campoSubstituicaoDinamico).asText().equals(StringUtils.EMPTY) ? "NÃO SE APLICA" : relatorioNotaDinamico.path(campoSubstituicaoDinamico).asText()));
 				listaSubstituicaoDinamico.add(substituicaoDinamico);
 
 			}
