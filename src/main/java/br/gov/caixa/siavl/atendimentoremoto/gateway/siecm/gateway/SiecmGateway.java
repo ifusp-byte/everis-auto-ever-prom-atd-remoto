@@ -127,7 +127,7 @@ public class SiecmGateway {
 					newRequestEntityDocumentoIncluir(token, requestAnexarDocumento), String.class);
 
 			body = mapper.readTree(String.valueOf(response.getBody()));
-			String linkThumbnail = Objects.requireNonNull(body.path("documento").path("atributos").path("link")).asText();
+			String linkThumbnail = Objects.requireNonNull(body.path("documento").path("atributos").path("link")).asText().replaceAll("http", "https");
 			String id = Objects.requireNonNull(body.path("documento").path("atributos").path("id")).asText();
 
 			siecmOutputDto = SiecmOutputDto.builder()
