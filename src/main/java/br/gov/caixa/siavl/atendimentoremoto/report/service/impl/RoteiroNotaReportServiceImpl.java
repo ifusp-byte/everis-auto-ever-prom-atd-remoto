@@ -79,6 +79,7 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService {
 
 		while (matcher.find()) {
 			camposParaSubstituicao.add(matcher.group(0).toString());
+			System.err.println("CAMPO PARA REPLACE: " + matcher.group(0).toString());
 		}
 
 		return camposParaSubstituicao;
@@ -120,14 +121,14 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService {
 		if (!listaSubstituicaoObrigatorio.isEmpty()) {
 			for (Map<String, Object> campoObrigatorio : listaSubstituicaoObrigatorio) {
 				roteiroFechamento = roteiroFechamento.replaceAll(String.valueOf(campoObrigatorio.get("campoRelatorio")),
-						String.valueOf(campoObrigatorio.get("valor")).trim());
+						Matcher.quoteReplacement(String.valueOf(campoObrigatorio.get("valor")).trim()));
 			}
 		}
 
 		if (!listaSubstituicaoDinamico.isEmpty()) {
 			for (Map<String, Object> campoDinamico : listaSubstituicaoDinamico) {
 				roteiroFechamento = roteiroFechamento.replaceAll(String.valueOf(campoDinamico.get("campoRelatorio")),
-						String.valueOf(campoDinamico.get("valor")).trim());
+						Matcher.quoteReplacement(String.valueOf(campoDinamico.get("valor")).trim()));
 			}
 		}
 
@@ -152,6 +153,8 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService {
 
 			}
 		}
+		
+		System.err.println("OBRIGATORIOS: " + metodosUtils.writeValueAsString(listaSubstituicaoObrigatorio));
 
 		return listaSubstituicaoObrigatorio;
 
@@ -174,6 +177,8 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService {
 
 			}
 		}
+		
+		System.err.println("OBRIGATORIOS: " + metodosUtils.writeValueAsString(listaSubstituicaoObrigatorio));
 
 		return listaSubstituicaoObrigatorio;
 
@@ -184,19 +189,23 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService {
 			JsonNode relatorioNotaDinamico, List<RoteiroNotaCampoDinamicoDTO> listaCamposDinamicos) {
 
 		String campoSubstituicaoDinamico = StringUtils.EMPTY;
+		
+		System.err.println("DINAMICOS SALVOS RELATORIO: " + metodosUtils.writeValueAsString(relatorioNotaDinamico));
 
 		for (RoteiroNotaCampoDinamicoDTO campoDinamico : listaCamposDinamicos) {
 
-			if (campoRelatorio.contains(campoDinamico.getIdCampoDinamico()) || campoRelatorio.contains(campoDinamico.getNomeCampoDinamico())) {
+			if (campoRelatorio.contains(campoDinamico.getIdCampoDinamico())) {
 
 				campoSubstituicaoDinamico = campoDinamico.getNomeCampoDinamico();
 				substituicaoDinamico.put("campoRelatorio", campoRelatorio);
 				substituicaoDinamico.put("campoSubstituicao", campoSubstituicaoDinamico);
-				substituicaoDinamico.put("valor", campoSubstituicaoDinamico + ": " + (relatorioNotaDinamico.path(campoSubstituicaoDinamico).asText().equals(StringUtils.EMPTY) ? "NÃO SE APLICA" : relatorioNotaDinamico.path(campoSubstituicaoDinamico).asText()));
+				substituicaoDinamico.put("valor", campoSubstituicaoDinamico + ": " + relatorioNotaDinamico.path(campoSubstituicaoDinamico).asText());
 				listaSubstituicaoDinamico.add(substituicaoDinamico);
 
 			}
 		}
+		
+		System.err.println("OBRIGATORIOS: " + metodosUtils.writeValueAsString(listaSubstituicaoDinamico));
 
 		return listaSubstituicaoDinamico;
 	}
