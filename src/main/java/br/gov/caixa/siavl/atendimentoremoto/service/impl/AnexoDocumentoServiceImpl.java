@@ -81,6 +81,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 	private static final String DOCUMENTO_OBRGATORIO = "OBRIGATORIO";
 	private static final String DEFAULT_NOME_OBRIGATORIO = "DOCUMENTO_OBRIGATORIO";
 	private static final String DEFAULT_NOME_OPCIONAL = "DOCUMENTO_OPCIONAL";
+	private static final String DEFAULT_CLASSE_OPCIONAL = "NOTA_NEGOCIACAO";
 
 	private static final Logger LOG = Logger.getLogger(AnexoDocumentoServiceImpl.class.getName());
 
@@ -109,7 +110,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 		if (DOCUMENTO_OPCIONAL.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
 			mensagemDocumento = INCLUI_DOCUMENTO_OPCIONAL;
-			siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(DOCUMENTO_OPCIONAL);
+			siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(DEFAULT_CLASSE_OPCIONAL);
 		}
 
 		if (DOCUMENTO_OBRGATORIO.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
@@ -194,7 +195,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		documentoNotaNegociacao.setTipoDocumentoCliente(numeroTipoDoc);
 		documentoNotaNegociacao.setInclusaoDocumento(dtInclusaoDocumento);
 		documentoNotaNegociacaoRepository.save(documentoNotaNegociacao);
-		mensagemDocumento = INCLUI_DOCUMENTO_OBRIGATORIO;
+		//mensagemDocumento = INCLUI_DOCUMENTO_OBRIGATORIO;
 
 		LOG.log(Level.INFO,
 				"Nota: " + enviaDocumentoInputDto.getNumeroNota() + mensagemDocumento + requestAnexarDocumento);
