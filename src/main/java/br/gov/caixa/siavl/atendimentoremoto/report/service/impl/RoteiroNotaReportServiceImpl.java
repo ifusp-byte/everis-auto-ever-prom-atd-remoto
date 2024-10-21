@@ -26,6 +26,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.RoteiroFechamentoNotaRepo
 import br.gov.caixa.siavl.atendimentoremoto.repository.impl.CampoModeloNotaRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils;
+import static br.gov.caixa.siavl.atendimentoremoto.util.DataUtils.formataDataLocalTexto;
 
 @Service
 @SuppressWarnings("all")
@@ -189,17 +190,20 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService {
 			JsonNode relatorioNotaDinamico, List<RoteiroNotaCampoDinamicoDTO> listaCamposDinamicos) {
 
 		String campoSubstituicaoDinamico = StringUtils.EMPTY;
+		Pattern pattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d", Pattern.CASE_INSENSITIVE);
 		
 		System.err.println("DINAMICOS SALVOS RELATORIO: " + metodosUtils.writeValueAsString(relatorioNotaDinamico));
 
 		for (RoteiroNotaCampoDinamicoDTO campoDinamico : listaCamposDinamicos) {
 
 			if (campoRelatorio.contains(campoDinamico.getIdCampoDinamico())) {
+				
+				String valor = relatorioNotaDinamico.path(campoSubstituicaoDinamico).asText();
 
 				campoSubstituicaoDinamico = campoDinamico.getNomeCampoDinamico();
 				substituicaoDinamico.put("campoRelatorio", campoRelatorio);
 				substituicaoDinamico.put("campoSubstituicao", campoSubstituicaoDinamico);
-				substituicaoDinamico.put("valor", campoSubstituicaoDinamico + ": " + relatorioNotaDinamico.path(campoSubstituicaoDinamico).asText());
+				substituicaoDinamico.put("valor", campoSubstituicaoDinamico + ": " + (pattern.matcher(valor).matches() ? formataDataLocalTexto(valor) : valor));
 				listaSubstituicaoDinamico.add(substituicaoDinamico);
 
 			}
