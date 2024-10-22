@@ -411,8 +411,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 		if (EnviaNotaTipoAssinaturaEnum.TOKEN_SMS.getDescricao().equalsIgnoreCase(enviaClienteInputDto.getTipoAssinatura())) {
 
-			if (Boolean.TRUE.equals(Objects
-					.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getAssinaturaToken()))))) {
+			if (Boolean.TRUE.equals(Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getAssinaturaToken()))))) {
 				if (Boolean.FALSE.equals(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getTokenValido())))) {
 					atendimentoCliente.setValidacaoTokenAtendimento(2L);
 					atendimentoCliente.setDataEnvioToken(dataUtils.formataDataBanco());
@@ -471,9 +470,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	}
 
 	public List<NotasByProtocoloOutputDTO> notas(Long numeroProtocolo) {
-
+		
 		return notaNegociacaoRepositoryImpl.notasByProtocolo(numeroProtocolo);
-
 	}
 
 	public RegistraNotaOutputDto vinculaDocumento(RegistraNotaOutputDto registraNotaOutputDto, Long numeroModeloNota) {
