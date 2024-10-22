@@ -47,6 +47,8 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" AND D.numeroModeloNota = F.numeroModeloNota ");
 		sb.append(" AND F.numeroAcao = G.numeroAcao ");
 		sb.append(" AND D.numeroNota = L.numeroNota ");
+		sb.append(" AND H.numeroNota = L.numeroNota ");		
+		sb.append(" AND L.transacaoSistema = 299 ");
 		sb.append(" AND A.numeroProtocolo = :numeroProtocolo ");
 		sb.append(" ORDER BY D.numeroNota DESC ");
 
