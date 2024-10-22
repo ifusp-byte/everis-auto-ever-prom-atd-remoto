@@ -87,8 +87,13 @@ public class NotasByProtocoloOutputDTO {
 	@XmlElement(name = "relatorioNota")
 	private Object relatorioNota; 
 
+	@Valid
+	@XmlElement(name = "tipoAssinatura")
+	private String tipoAssinatura;
+	
+	
 	public NotasByProtocoloOutputDTO(Long numeroNota, String nomeCliente, Long cpf, Long cnpj, String produto,
-			String situacaoNota, Object relatorioNota, Long numeroModeloNota) {
+			String situacaoNota, Object relatorioNota, Long numeroModeloNota, Object jsonLogPlataforma) {
 		this.numeroNota = String.valueOf(numeroNota);
 		this.nomeCliente = nomeCliente;
 		this.cpfCnpj = cnpj == null ? formataCpfFront(cpf) : formataCnpjFront(cnpj);
@@ -97,6 +102,7 @@ public class NotasByProtocoloOutputDTO {
 		this.numeroModeloNota = String.valueOf(numeroModeloNota);
 
 		JsonNode relatorioNotaPath = relatorioNota(relatorioNota);
+		JsonNode logPlataformaPath = logPlataforma(jsonLogPlataforma);
 
 		this.valorMeta = relatorioNotaPath.path("relatorioNota").path("Valor (meta)").asText();
 		this.contaAtendimento = relatorioNotaPath.path("contaAtendimento").asText();
@@ -105,6 +111,7 @@ public class NotasByProtocoloOutputDTO {
 		this.nomeSocio = relatorioNotaPath.path("nomeSocio").asText();
 		this.cpfSocio = relatorioNotaPath.path("cpfSocio").asText();
 		this.relatorioNota = relatorioNotaPath.path("relatorioNota");
+		this.tipoAssinatura = logPlataformaPath.path("tipoAssinatura").asText(); 
 	}
 
 	public JsonNode relatorioNota(Object relatorioNota) {
@@ -126,6 +133,27 @@ public class NotasByProtocoloOutputDTO {
 
 		}
 		return Objects.requireNonNull(StringToJson(relatorioNota1ToString));
+	}
+	
+	public JsonNode logPlataforma(Object jsonLogPlataforma) {
+
+		int tamanho;
+		String logPlataformaToString = null;
+		Clob logPlataforma = (Clob) jsonLogPlataforma;
+
+		if (jsonLogPlataforma != null) {
+
+			try {
+				tamanho = Integer.parseInt(String.valueOf(logPlataforma.length()));
+				logPlataformaToString = String.valueOf(logPlataforma.getSubString(1, tamanho));
+			} catch (NumberFormatException e) {
+				throw new RuntimeException(e);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+
+		}
+		return Objects.requireNonNull(StringToJson(logPlataformaToString));
 	}
 
 }

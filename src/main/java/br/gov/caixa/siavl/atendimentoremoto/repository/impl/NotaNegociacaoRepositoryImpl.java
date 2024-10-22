@@ -26,6 +26,7 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" , E.descricao ");
 		sb.append(" , H.relatorioNota ");
 		sb.append(" , F.numeroModeloNota ");
+		sb.append(" , L.jsonLogPlataforma ");
 		sb.append(" ) ");
 		sb.append(" FROM ");
 		sb.append(" AtendimentoCliente A ");
@@ -36,6 +37,7 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" , ModeloNotaNegocio F ");
 		sb.append(" , AcaoProduto G ");
 		sb.append(" , RelatorioNotaNegociacao H ");
+		sb.append(" , LogPlataforma L ");		
 		sb.append(" WHERE ");
 		sb.append(" A.numeroProtocolo = B.numeroProtocolo ");
 		sb.append(" AND B.numeroNegocio = C.numeroNegocio ");
@@ -44,6 +46,7 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" AND D.numeroSituacaoNota = E.numeroSituacaoNota ");
 		sb.append(" AND D.numeroModeloNota = F.numeroModeloNota ");
 		sb.append(" AND F.numeroAcao = G.numeroAcao ");
+		sb.append(" AND D.numeroNota = L.numeroNota ");
 		sb.append(" AND A.numeroProtocolo = :numeroProtocolo ");
 		sb.append(" ORDER BY D.numeroNota DESC ");
 
