@@ -215,7 +215,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		if (documentoUtils.retornaCpf(cpfCnpj)) {
 
 			documentosOpcionais.addAll(tipoDocumentoRepository.opcionalTipoDocumentoPF());
-			documentosOpcionais.addAll(tipoDocumentoRepository.opcionalTipoDocumentoAmbosPFPJ());
+			//documentosOpcionais.addAll(tipoDocumentoRepository.opcionalTipoDocumentoAmbosPFPJ());
 			tipoDocumentoClienteOutputDTO.setDocumentosOpcionais(documentosOpcionais);
 
 			documentosObrigatorios.addAll(tipoDocumentoRepository.obrigatorioTipoDocumentoPF());
@@ -224,7 +224,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		} else {
 
 			documentosOpcionais.addAll(tipoDocumentoRepository.opcionalTipoDocumentoPJ());
-			documentosOpcionais.addAll(tipoDocumentoRepository.opcionalTipoDocumentoAmbosPFPJ());
+			//documentosOpcionais.addAll(tipoDocumentoRepository.opcionalTipoDocumentoAmbosPFPJ());
 			tipoDocumentoClienteOutputDTO.setDocumentosOpcionais(documentosOpcionais);
 
 			documentosObrigatorios.addAll(tipoDocumentoRepository.obrigatorioTipoDocumentoPJ());

@@ -16,7 +16,7 @@ public interface TipoDocumentoRepository extends JpaRepository<TipoDocumentoClie
 
 	static final String OPCIONAL_GED_PF = "'Boleto Engenharia', 'DAMP', 'Documento de Margem', 'Dossie Habitacional', 'Nota de Negociação LCI', 'Termo Adesão INSS'";
 	static final String OPCIONAL_GED_PJ = "'Consulta CPEND', 'Consulta CADIN', 'Consulta CND Estadual', 'Consulta CND Federal', 'Consulta CNDT', 'Consulta CNPJ/QSA', 'Consulta CONRES', 'Consulta CRF', 'Consulta SICOW', 'Consulta SIJUR', 'Consulta TJDFT'";
-	static final String OPCIONAL_GED_AMBOS_PF_PJ = "'Analise de Perfil Investidor', 'Cancelamento Seguro Prestamista', 'Conversa Whatsapp',  'Nota de Negociação CDB',  'Pedido de Oferta Pública',  'PA de conformidade',  'Proposta Seguro Prestamista',  'Requisição/Consulta jurídica',  'Simulação',  'Telas de erro Sistemas',  'Outros'";
+	static final String OPCIONAL_GED_AMBOS_PF_PJ = ", 'Analise de Perfil Investidor', 'Cancelamento Seguro Prestamista', 'Conversa Whatsapp',  'Nota de Negociação CDB',  'Pedido de Oferta Pública',  'PA de conformidade',  'Proposta Seguro Prestamista',  'Requisição/Consulta jurídica',  'Simulação',  'Telas de erro Sistemas',  'Outros'";
 	
 	@Query(value = "SELECT * FROM AVL.AVLTB039_TIPO_DOCUMENTO_CLNTE A WHERE A.CO_CLASSE_DOCUMENTO_GED IN ("+ OBRIGATORIO_GED_PF +") ORDER BY A.NO_TIPO_DOCUMENTO_CLIENTE ASC", nativeQuery = true)
 	List<TipoDocumentoCliente> obrigatorioTipoDocumentoPF();
@@ -24,14 +24,14 @@ public interface TipoDocumentoRepository extends JpaRepository<TipoDocumentoClie
 	@Query(value = "SELECT * FROM AVL.AVLTB039_TIPO_DOCUMENTO_CLNTE A WHERE A.CO_CLASSE_DOCUMENTO_GED IN ("+ OBRIGATORIO_GED_PJ +") ORDER BY A.NO_TIPO_DOCUMENTO_CLIENTE ASC", nativeQuery = true)
 	List<TipoDocumentoCliente> obrigatorioTipoDocumentoPJ();
 	
-	@Query(value = "SELECT * FROM AVL.AVLTB039_TIPO_DOCUMENTO_CLNTE A WHERE A.NO_TIPO_DOCUMENTO_CLIENTE IN ("+ OPCIONAL_GED_PF +") ORDER BY A.NO_TIPO_DOCUMENTO_CLIENTE ASC", nativeQuery = true)
+	@Query(value = "SELECT * FROM AVL.AVLTB039_TIPO_DOCUMENTO_CLNTE A WHERE A.NO_TIPO_DOCUMENTO_CLIENTE IN ("+ OPCIONAL_GED_PF + OPCIONAL_GED_AMBOS_PF_PJ +") ORDER BY A.NO_TIPO_DOCUMENTO_CLIENTE ASC", nativeQuery = true)
 	List<TipoDocumentoCliente> opcionalTipoDocumentoPF();
 	
-	@Query(value = "SELECT * FROM AVL.AVLTB039_TIPO_DOCUMENTO_CLNTE A WHERE A.NO_TIPO_DOCUMENTO_CLIENTE IN ("+ OPCIONAL_GED_PJ +") ORDER BY A.NO_TIPO_DOCUMENTO_CLIENTE ASC", nativeQuery = true)
+	@Query(value = "SELECT * FROM AVL.AVLTB039_TIPO_DOCUMENTO_CLNTE A WHERE A.NO_TIPO_DOCUMENTO_CLIENTE IN ("+ OPCIONAL_GED_PJ + OPCIONAL_GED_AMBOS_PF_PJ +") ORDER BY A.NO_TIPO_DOCUMENTO_CLIENTE ASC", nativeQuery = true)
 	List<TipoDocumentoCliente> opcionalTipoDocumentoPJ();
 	
-	@Query(value = "SELECT * FROM AVL.AVLTB039_TIPO_DOCUMENTO_CLNTE A WHERE A.NO_TIPO_DOCUMENTO_CLIENTE IN ("+ OPCIONAL_GED_AMBOS_PF_PJ +") ORDER BY A.NO_TIPO_DOCUMENTO_CLIENTE ASC", nativeQuery = true)
-	List<TipoDocumentoCliente> opcionalTipoDocumentoAmbosPFPJ();
+	//@Query(value = "SELECT * FROM AVL.AVLTB039_TIPO_DOCUMENTO_CLNTE A WHERE A.NO_TIPO_DOCUMENTO_CLIENTE IN ("+ OPCIONAL_GED_AMBOS_PF_PJ +") ORDER BY A.NO_TIPO_DOCUMENTO_CLIENTE ASC", nativeQuery = true)
+	//List<TipoDocumentoCliente> opcionalTipoDocumentoAmbosPFPJ();
 	
 	@Query(value="SELECT A.NU_TIPO_DOCUMENTO_CLIENTE FROM AVL.AVLTB039_TIPO_DOCUMENTO_CLNTE A WHERE A.CO_CLASSE_DOCUMENTO_GED LIKE ?1", nativeQuery = true)
 	Long numeroTipoDocumentoCliente(String codGED);
