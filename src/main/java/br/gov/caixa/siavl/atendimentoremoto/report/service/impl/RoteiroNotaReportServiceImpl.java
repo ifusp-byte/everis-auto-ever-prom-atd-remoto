@@ -80,7 +80,6 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService {
 
 		while (matcher.find()) {
 			camposParaSubstituicao.add(matcher.group(0).toString());
-			System.err.println("CAMPO PARA REPLACE: " + matcher.group(0).toString());
 		}
 
 		return camposParaSubstituicao;
@@ -155,8 +154,6 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService {
 			}
 		}
 		
-		System.err.println("OBRIGATORIOS: " + metodosUtils.writeValueAsString(listaSubstituicaoObrigatorio));
-
 		return listaSubstituicaoObrigatorio;
 
 	}
@@ -178,8 +175,6 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService {
 
 			}
 		}
-		
-		System.err.println("OBRIGATORIOS: " + metodosUtils.writeValueAsString(listaSubstituicaoObrigatorio));
 
 		return listaSubstituicaoObrigatorio;
 
@@ -191,8 +186,6 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService {
 
 		String campoSubstituicaoDinamico = StringUtils.EMPTY;
 		Pattern pattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d", Pattern.CASE_INSENSITIVE);
-		
-		System.err.println("DINAMICOS SALVOS RELATORIO: " + metodosUtils.writeValueAsString(relatorioNotaDinamico));
 
 		for (RoteiroNotaCampoDinamicoDTO campoDinamico : listaCamposDinamicos) {
 
@@ -211,8 +204,6 @@ public class RoteiroNotaReportServiceImpl implements RoteiroNotaReportService {
 
 			}
 		}
-		
-		System.err.println("OBRIGATORIOS: " + metodosUtils.writeValueAsString(listaSubstituicaoDinamico));
 
 		return listaSubstituicaoDinamico;
 	}
