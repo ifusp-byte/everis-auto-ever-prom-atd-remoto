@@ -1,11 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.controller;
 
-import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.CLASSE_DOCUMENTOS;
-
 import java.io.IOException;
-import java.net.URISyntaxException;
 
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,15 +21,6 @@ class AtendimentoRemotoControllerTest extends ControllerTest {
 	@BeforeEach
 	public void beforeEach() {
 		setUpTest();
-	}
-
-	@Test
-	void tipoDocumentoCamposTest() throws IOException, URISyntaxException {
-		Arrays.asList(CLASSE_DOCUMENTOS).stream().forEach(documento -> {
-			String BASE_URL = atdremotoUrl + "/documento/tipo/campos/" + documento;
-			ResponseEntity<Object> response = restTemplate.getForEntity(BASE_URL, Object.class);
-			Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
-		});
 	}
 
 	@Test

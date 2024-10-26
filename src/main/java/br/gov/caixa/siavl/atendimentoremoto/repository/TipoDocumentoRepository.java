@@ -30,14 +30,11 @@ public interface TipoDocumentoRepository extends JpaRepository<TipoDocumentoClie
 	@Query(value = "SELECT * FROM AVL.AVLTB039_TIPO_DOCUMENTO_CLNTE A WHERE A.NO_TIPO_DOCUMENTO_CLIENTE IN ("+ OPCIONAL_GED_PJ + OPCIONAL_GED_AMBOS_PF_PJ +") ORDER BY A.NO_TIPO_DOCUMENTO_CLIENTE ASC", nativeQuery = true)
 	List<TipoDocumentoCliente> opcionalTipoDocumentoPJ();
 	
-	//@Query(value = "SELECT * FROM AVL.AVLTB039_TIPO_DOCUMENTO_CLNTE A WHERE A.NO_TIPO_DOCUMENTO_CLIENTE IN ("+ OPCIONAL_GED_AMBOS_PF_PJ +") ORDER BY A.NO_TIPO_DOCUMENTO_CLIENTE ASC", nativeQuery = true)
-	//List<TipoDocumentoCliente> opcionalTipoDocumentoAmbosPFPJ();
-	
 	@Query(value="SELECT A.NU_TIPO_DOCUMENTO_CLIENTE FROM AVL.AVLTB039_TIPO_DOCUMENTO_CLNTE A WHERE A.CO_CLASSE_DOCUMENTO_GED LIKE ?1", nativeQuery = true)
 	Long numeroTipoDocumentoCliente(String codGED);
 	
 	@Query(value="SELECT A.NU_TIPO_DOCUMENTO_CLIENTE FROM AVL.AVLTB039_TIPO_DOCUMENTO_CLNTE A WHERE A.NO_TIPO_DOCUMENTO_CLIENTE LIKE ?1", nativeQuery = true)
-	Long numeroTipoDocumentoByNomeDocumento(String nomeTipoDocumento);
+	List<Long> numeroTipoDocumentoByNomeDocumento(String nomeTipoDocumento);
 	
 	@Query(value="SELECT A.CO_CLASSE_DOCUMENTO_GED FROM AVL.AVLTB039_TIPO_DOCUMENTO_CLNTE A WHERE A.NU_TIPO_DOCUMENTO_CLIENTE = ?1", nativeQuery = true)
 	String categoriaDocumentoCliente(Long numeroTipoDocumento);
