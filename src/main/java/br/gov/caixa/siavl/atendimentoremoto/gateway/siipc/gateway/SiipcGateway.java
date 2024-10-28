@@ -3,7 +3,9 @@ package br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.gateway;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,6 @@ import org.springframework.web.client.RestClientResponseException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.constants.IdentificacaoPositivaGatewayMessages;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.CriaDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.RespondeDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.RespondeDesafioOutputDTO;
@@ -46,6 +46,9 @@ public class SiipcGateway {
 	MetodosUtils metodosUtils;
 
 	@Autowired
+	ValidateGateway validateGateway;
+
+	@Autowired
 	RestTemplateUtils restTemplateUtils;
 
 	@Autowired
@@ -60,14 +63,6 @@ public class SiipcGateway {
 
 	@Value("${env.apimanager.url}")
 	private String URL_BASE;
-
-	private static String CODIGO_422_0 = "0";
-	private static String CODIGO_422_1 = "1";
-	private static String CODIGO_422_2 = "2";
-	private static String CODIGO_422_3 = "3";
-	private static String CODIGO_422_4 = "4";
-	private static String CODIGO_422_5 = "5";
-	private static String CODIGO_422_6 = "6";
 
 	public HttpEntity<HashMap<String, String>> newRequestEntityDesafioValidar(String token,
 			HashMap<String, String> validaDesafioMap) {
@@ -119,7 +114,6 @@ public class SiipcGateway {
 
 			body = metodosUtils.readTree(String.valueOf(response.getBody()));
 
-			//String id = Objects.requireNonNull(body.path("id")).asText();
 			String canal = String.valueOf(Objects.requireNonNull(body.path("canal")).asText());
 			String tsAtualizacao = String.valueOf(Objects.requireNonNull(body.path("tsAtualizacao")).asText());
 			String status = String.valueOf(Objects.requireNonNull(body.path("status")).asText());
@@ -127,7 +121,7 @@ public class SiipcGateway {
 			LOG.info("Identificação Positiva - Desafio Validar - Resposta SIIPC "
 					+ metodosUtils.writeValueAsString(response));
 
-			String statusMessage = validateGatewayStatusDesafioCriar(
+			String statusMessage = validateGateway.validateGatewayStatusDesafioCriar(
 					Objects.requireNonNull(response.getStatusCodeValue()), StringUtils.EMPTY);
 
 			validaDesafioDTO = ValidaDesafioDTO.builder()
@@ -143,28 +137,15 @@ public class SiipcGateway {
 
 			String statusMessage = null;
 
-			try {
+			body = metodosUtils.readTree(e.getResponseBodyAsString());
 
-				body = metodosUtils.readTree(e.getResponseBodyAsString());
+			LOG.info("Identificação Positiva - Desafio Validar - Resposta SIIPC "
+					+ metodosUtils.writeValueAsString(body));
 
-				LOG.info("Identificação Positiva - Desafio Validar - Resposta SIIPC "
-						+ metodosUtils.writeValueAsString(body));
+			codigo422 = Objects.requireNonNull(body.path("codigo").asText());
 
-				codigo422 = Objects.requireNonNull(body.path("codigo").asText());
-
-				statusMessage = validateGatewayStatusDesafioCriar(Objects.requireNonNull(e.getRawStatusCode()),
-						codigo422);
-
-			} catch (Exception e1) {
-
-				validaDesafioDTO = ValidaDesafioDTO.builder()
-						.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-						.statusMessage(statusMessage).statusCreated(false)
-						.dataCreated(dataUtils.formataData(new Date())).build();
-
-				LOG.info("Identificação Positiva - Desafio Validar - Erro " + statusMessage);
-
-			}
+			statusMessage = validateGateway
+					.validateGatewayStatusDesafioCriar(Objects.requireNonNull(e.getRawStatusCode()), codigo422);
 
 			validaDesafioDTO = ValidaDesafioDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
@@ -196,9 +177,15 @@ public class SiipcGateway {
 		String codigo422 = null;
 
 		if (cpfSocio != null) {
-			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(protocolo);
-			atendimentoCliente.setCpfCliente(cpfSocio);
-			atendimentoClienteRepository.save(atendimentoCliente);
+			Optional<AtendimentoCliente> atendimentoClienteOpt = atendimentoClienteRepository
+					.findByProtocolo(protocolo);
+
+			if (atendimentoClienteOpt.isPresent()) {
+				AtendimentoCliente atendimentoCliente = atendimentoClienteOpt.get();
+				atendimentoCliente.setCpfCliente(cpfSocio);
+				atendimentoClienteRepository.save(atendimentoCliente);
+			}
+
 		}
 
 		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
@@ -212,7 +199,7 @@ public class SiipcGateway {
 			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC "
 					+ metodosUtils.writeValueAsString(response));
 
-			String statusMessage = validateGatewayStatusDesafioCriar(
+			String statusMessage = validateGateway.validateGatewayStatusDesafioCriar(
 					Objects.requireNonNull(response.getStatusCodeValue()), StringUtils.EMPTY);
 
 			criaDesafioOutputDTO = CriaDesafioOutputDTO.builder()
@@ -227,28 +214,15 @@ public class SiipcGateway {
 
 			String statusMessage = null;
 
-			try {
+			jsonNode = metodosUtils.readTree(e.getResponseBodyAsString());
 
-				jsonNode = metodosUtils.readTree(e.getResponseBodyAsString());
+			LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC "
+					+ metodosUtils.writeValueAsString(jsonNode));
 
-				LOG.info("Identificação Positiva - Desafio Criar - Resposta SIIPC "
-						+ metodosUtils.writeValueAsString(jsonNode));
+			codigo422 = Objects.requireNonNull(jsonNode.path("codigo").asText());
 
-				codigo422 = Objects.requireNonNull(jsonNode.path("codigo").asText());
-
-				statusMessage = validateGatewayStatusDesafioCriar(Objects.requireNonNull(e.getRawStatusCode()),
-						codigo422);
-
-			} catch (Exception e1) {
-
-				criaDesafioOutputDTO = CriaDesafioOutputDTO.builder()
-						.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-						.statusMessage(statusMessage).statusCreated(false)
-						.dataCreated(dataUtils.formataData(new Date())).build();
-
-				LOG.info("Identificação Positiva - Desafio Criar - Erro " + statusMessage);
-
-			}
+			statusMessage = validateGateway
+					.validateGatewayStatusDesafioCriar(Objects.requireNonNull(e.getRawStatusCode()), codigo422);
 
 			criaDesafioOutputDTO = CriaDesafioOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
@@ -278,8 +252,9 @@ public class SiipcGateway {
 		ResponseEntity<String> response = null;
 		JsonNode jsonNode;
 		String codigo422 = null;
-		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository
-				.getReferenceById(Long.parseLong(respondeDesafioInputDTO.getProtocolo()));
+		
+		Optional<AtendimentoCliente> atendimentoClienteOpt = atendimentoClienteRepository
+				.findByProtocolo(Long.parseLong(respondeDesafioInputDTO.getProtocolo()));
 
 		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
 
@@ -293,7 +268,7 @@ public class SiipcGateway {
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta SIIPC "
 					+ metodosUtils.writeValueAsString(response));
 
-			String statusMessage = validateGatewayStatusDesafioResponder(
+			String statusMessage = validateGateway.validateGatewayStatusDesafioResponder(
 					Objects.requireNonNull(response.getStatusCodeValue()), StringUtils.EMPTY);
 
 			respondeDesafioOutputDTO = RespondeDesafioOutputDTO.builder()
@@ -301,11 +276,14 @@ public class SiipcGateway {
 					.response(String.valueOf(Objects.requireNonNull(response.getBody()))).statusMessage(statusMessage)
 					.statusCreated(true).dataCreated(dataUtils.formataData(new Date())).build();
 
-			atendimentoCliente.setSituacaoIdPositiva(1L);
-			atendimentoCliente.setDescricaoIdentificacaoPositiva("SUCESSO");
-			atendimentoCliente.setDataIdentificacaoPositiva(dataUtils.formataDataBanco());
-			atendimentoCliente.setDataValidacaoPositiva(dataUtils.formataDataBanco());
-			atendimentoClienteRepository.save(atendimentoCliente);
+			if (atendimentoClienteOpt.isPresent()) {
+				AtendimentoCliente atendimentoCliente = atendimentoClienteOpt.get();
+				atendimentoCliente.setSituacaoIdPositiva(1L);
+				atendimentoCliente.setDescricaoIdentificacaoPositiva("SUCESSO");
+				atendimentoCliente.setDataIdentificacaoPositiva(dataUtils.formataDataBanco());
+				atendimentoCliente.setDataValidacaoPositiva(dataUtils.formataDataBanco());
+				atendimentoClienteRepository.save(atendimentoCliente);
+			}
 
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta View "
 					+ metodosUtils.writeValueAsString(respondeDesafioOutputDTO));
@@ -318,19 +296,22 @@ public class SiipcGateway {
 					+ metodosUtils.writeValueAsString(jsonNode));
 
 			codigo422 = Objects.requireNonNull(jsonNode.path("codigo").asText());
-			String statusMessage = validateGatewayStatusDesafioResponder(Objects.requireNonNull(e.getRawStatusCode()),
-					codigo422);
+			String statusMessage = validateGateway
+					.validateGatewayStatusDesafioResponder(Objects.requireNonNull(e.getRawStatusCode()), codigo422);
 
 			respondeDesafioOutputDTO = RespondeDesafioOutputDTO.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
 					.response(Objects.requireNonNull(e.getResponseBodyAsString())).statusMessage(statusMessage)
 					.statusCreated(false).dataCreated(dataUtils.formataData(new Date())).build();
 
-			atendimentoCliente.setSituacaoIdPositiva(2L);
-			atendimentoCliente.setDescricaoIdentificacaoPositiva("BLOQUEADO");
-			atendimentoCliente.setDataIdentificacaoPositiva(dataUtils.formataDataBanco());
-			atendimentoCliente.setDataValidacaoPositiva(dataUtils.formataDataBanco());
-			atendimentoClienteRepository.save(atendimentoCliente);
+			if (atendimentoClienteOpt.isPresent()) {
+				AtendimentoCliente atendimentoCliente = atendimentoClienteOpt.get();
+				atendimentoCliente.setSituacaoIdPositiva(2L);
+				atendimentoCliente.setDescricaoIdentificacaoPositiva("BLOQUEADO");
+				atendimentoCliente.setDataIdentificacaoPositiva(dataUtils.formataDataBanco());
+				atendimentoCliente.setDataValidacaoPositiva(dataUtils.formataDataBanco());
+				atendimentoClienteRepository.save(atendimentoCliente);
+			}
 
 			LOG.info("Identificação Positiva - Desafio Responder - Resposta View "
 					+ metodosUtils.writeValueAsString(respondeDesafioOutputDTO));
@@ -348,94 +329,4 @@ public class SiipcGateway {
 
 	}
 
-	public String validateGatewayStatusDesafioCriar(int statusCode, String codigo422) {
-
-		String statusMessage = null;
-
-		if (HttpStatus.CREATED.value() == statusCode) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_CRIAR_RETORNO_201;
-		} else if (HttpStatus.BAD_REQUEST.value() == statusCode) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_CRIAR_RETORNO_400;
-		} else if (HttpStatus.UNAUTHORIZED.value() == statusCode) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_CRIAR_RETORNO_401;
-		} else if (HttpStatus.NOT_FOUND.value() == statusCode) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_CRIAR_RETORNO_404;
-		} else if (HttpStatus.UNPROCESSABLE_ENTITY.value() == statusCode) {
-			statusMessage = validateGatewayStatusDesafioCriarCodigo422(codigo422);
-		} else if (HttpStatus.INTERNAL_SERVER_ERROR.value() == statusCode) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_CRIAR_RETORNO_500;
-		} else {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_CRIAR_RETORNO_DESCONHECIDO;
-		}
-
-		return statusMessage;
-	}
-
-	public String validateGatewayStatusDesafioCriarCodigo422(String codigo422) {
-
-		String statusMessage = null;
-
-		if (CODIGO_422_1.equalsIgnoreCase(codigo422)) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_CRIAR_RETORNO_422_1;
-		} else if (CODIGO_422_6.equalsIgnoreCase(codigo422)) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_CRIAR_RETORNO_422_6;
-		} else {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_CRIAR_RETORNO_422_DESCONHECIDO;
-		}
-
-		return statusMessage;
-
-	}
-
-	public String validateGatewayStatusDesafioResponder(int statusCode, String codigo422) {
-
-		String statusMessage = null;
-
-		if (HttpStatus.OK.value() == statusCode) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_200;
-		} else if (HttpStatus.BAD_REQUEST.value() == statusCode) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_400;
-		} else if (HttpStatus.UNAUTHORIZED.value() == statusCode) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_401;
-		} else if (HttpStatus.NOT_FOUND.value() == statusCode) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_404;
-		} else if (HttpStatus.UNPROCESSABLE_ENTITY.value() == statusCode) {
-			statusMessage = validateGatewayStatusDesafioResponderCodigo422(codigo422);
-		} else if (HttpStatus.INTERNAL_SERVER_ERROR.value() == statusCode) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_500;
-		} else {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_DESCONHECIDO;
-		}
-
-		return statusMessage;
-	}
-
-	public String validateGatewayStatusDesafioResponderCodigo422(String codigo422) {
-
-		String statusMessage = null;
-
-		if (CODIGO_422_0.equalsIgnoreCase(codigo422)) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_422_0;
-		} else if (CODIGO_422_1.equalsIgnoreCase(codigo422)) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_422_1;
-		} else if (CODIGO_422_2.equalsIgnoreCase(codigo422)) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_422_2;
-		} else if (CODIGO_422_3.equalsIgnoreCase(codigo422)) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_422_3;
-		} else if (CODIGO_422_4.equalsIgnoreCase(codigo422)) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_422_4
-					+ IdentificacaoPositivaGatewayMessages.CONSULTA_REALIZADA + dataUtils.formataData(new Date())
-					+ IdentificacaoPositivaGatewayMessages.PONTO;
-		} else if (CODIGO_422_5.equalsIgnoreCase(codigo422)) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_422_5
-					+ IdentificacaoPositivaGatewayMessages.CONSULTA_REALIZADA + dataUtils.formataData(new Date())
-					+ IdentificacaoPositivaGatewayMessages.PONTO;
-		} else if (CODIGO_422_6.equalsIgnoreCase(codigo422)) {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_422_6;
-		} else {
-			statusMessage = IdentificacaoPositivaGatewayMessages.DESAFIO_RESPONDER_RETORNO_422_DESCONHECIDO;
-		}
-
-		return statusMessage;
-	}
 }

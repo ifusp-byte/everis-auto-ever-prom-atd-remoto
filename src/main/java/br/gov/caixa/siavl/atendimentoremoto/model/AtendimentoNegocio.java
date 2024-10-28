@@ -32,11 +32,6 @@ public class AtendimentoNegocio implements Serializable {
 	@Column(name = "NU_NEGOCIO_AGENCIA_VIRTUAL")
 	private Long numeroNegocio;
 
-	/*
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "atendimentoNegocio")
-	private AtendimentoCliente atendimentoCliente;
-	*/
-
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "NU_NEGOCIO_AGENCIA_VIRTUAL", nullable = true, insertable = false, updatable = false)
 	private NegocioAgenciaVirtual negocioAgenciaVirtual;

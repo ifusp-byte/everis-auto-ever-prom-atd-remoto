@@ -18,11 +18,18 @@ class AtendimentoRemotoControllerProtocoloTest extends ControllerTest {
 
 	void geraProtocolo(String geraProtocoloInpuDtoFile) throws StreamReadException, DatabindException, IOException {
 		String BASE_URL = atdremotoUrl + "/protocolo";
+		
 		GeraProtocoloInputDTO geraProtocoloInputDTO = mapper.readValue(
 				new ClassPathResource("/geraProtocolo/"+geraProtocoloInpuDtoFile+".json").getFile(),
 				GeraProtocoloInputDTO.class);
-		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.POST,
-				newRequestEntity(geraProtocoloInputDTO), Object.class);
+		
+		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.POST, newRequestEntity(geraProtocoloInputDTO), Object.class);
+		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+	}
+	
+	void marcaDoi() throws StreamReadException, DatabindException, IOException {
+		String BASE_URL = atdremotoUrl + "/marca-doi/" + "10020030088";
+		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, newRequestEntity(), Object.class);
 		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 
