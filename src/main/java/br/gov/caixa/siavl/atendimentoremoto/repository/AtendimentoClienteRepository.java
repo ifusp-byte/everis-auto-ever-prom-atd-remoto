@@ -1,6 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,5 +21,11 @@ public interface AtendimentoClienteRepository extends JpaRepository<AtendimentoC
 			+ "D.numeroModeloNota = F.numeroModeloNota " + "AND " + "F.numeroAcao = G.numeroAcao " + "AND "
 			+ "E.numeroSituacaoNota IN (16, 17, 21, 22, 23, 24)" + "AND " + "D.numeroMatriculaCriacaoNota = ?1")
 	List<Object[]> findByMatriculaAtendente(Long numeroMatriculaCriacaoNota);
+
+	@Query("SELECT A FROM AtendimentoCliente A WHERE A.numeroProtocolo = ?1")
+	Optional<AtendimentoCliente> findByProtocolo(Long protocolo);
+	
+	@Query("SELECT A FROM AtendimentoCliente A WHERE A.numeroProtocolo = ?1")
+	Optional<List<AtendimentoCliente>> findByProtocoloLista(Long protocolo);
 
 }
