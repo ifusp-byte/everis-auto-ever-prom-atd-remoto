@@ -2,7 +2,6 @@ package br.gov.caixa.siavl.atendimentoremoto.controller;
 
 import java.io.IOException;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,6 @@ import com.fasterxml.jackson.databind.DatabindException;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 
-@Ignore
 @SuppressWarnings("all")
 class AtendimentoRemotoControllerTest extends ControllerTest {
 
@@ -25,21 +23,21 @@ class AtendimentoRemotoControllerTest extends ControllerTest {
 		setUpTest();
 	}
 
-	//@Test
+	@Test
 	void consultaModeloNotaTest() {
 		String BASE_URL = atdremotoUrl + "/modelo-nota/10020030088";
 		ResponseEntity<Object> response = restTemplate.getForEntity(BASE_URL, Object.class);
 		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
 
-	//@Test
+	@Test
 	void consultaModeloNotaMaisUtilizadaTest() {
 		String BASE_URL = atdremotoUrl + "/modelo-nota-mais-utilizada/10020030088";
 		ResponseEntity<Object> response = restTemplate.getForEntity(BASE_URL, Object.class);
 		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
 
-	//@Test
+	@Test
 	void consultaModeloNotaFavoritaTest() {
 		String BASE_URL = atdremotoUrl + "/modelo-nota-favorita/10020030088";
 		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, newRequestEntity(),
@@ -47,7 +45,7 @@ class AtendimentoRemotoControllerTest extends ControllerTest {
 		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
 
-	//@Test
+	@Test
 	void adicionaModeloNotaFavoritaTest() {
 		String BASE_URL = atdremotoUrl + "/modelo-nota-favorita/" + 8787;
 		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.POST, newRequestEntity(),
@@ -55,7 +53,7 @@ class AtendimentoRemotoControllerTest extends ControllerTest {
 		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
 
-	//@Test
+	@Test
 	void modeloNotaDinamicoTest() throws StreamReadException, DatabindException, IOException {
 
 		String BASE_URL_1 = atdremotoUrl + "/modelo-nota-dinamico/" + 8704;

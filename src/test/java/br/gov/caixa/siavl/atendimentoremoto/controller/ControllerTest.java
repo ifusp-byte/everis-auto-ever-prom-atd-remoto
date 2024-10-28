@@ -4,7 +4,6 @@ import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.TOKEN_VAL
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.BASE_URL;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.runner.RunWith;
@@ -25,7 +24,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 
-@Ignore
 @SuppressWarnings("all")
 @RequestMapping(BASE_URL)
 @RunWith(SpringRunner.class)
