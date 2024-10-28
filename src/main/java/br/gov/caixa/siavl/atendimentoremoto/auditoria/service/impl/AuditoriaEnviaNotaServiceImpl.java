@@ -53,7 +53,7 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 
 	public void auditar(String dataRegistroNota, String token, String cpfCnpj, String matriculaAtendente,
 			String statusRetornoSicli, String numeroProtocolo, String numeroContaAtendimento, String numeroNota,
-			String versaoSistema, String produto, String cpfSocio) {
+			String versaoSistema, String produto, String cpfSocio, String tipoAssinatura) {
 
 		String tipoPessoa = null;
 		String cpfConsulta = cpfCnpj.replace(".", "").replace("-", "").replace("/", "").trim();
@@ -83,6 +83,7 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 			anexos.add(anexo);
 		}
 
+		dsLogPlataformaDTO.setTipoAssinatura(tipoAssinatura);
 		dsLogPlataformaDTO.setAnexos(anexos);
 		dsLogPlataformaDTO.setCpfCnpj(cpfCnpj);
 		dsLogPlataformaDTO.setCpfSocio(cpfSocio);

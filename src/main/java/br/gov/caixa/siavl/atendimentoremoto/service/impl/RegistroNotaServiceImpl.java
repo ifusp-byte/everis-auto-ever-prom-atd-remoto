@@ -39,9 +39,13 @@ import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaRegistraN
 import br.gov.caixa.siavl.atendimentoremoto.dto.CamposNotaOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ConteudoCampoMultiploOutPutDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.NegociacaoOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
+import br.gov.caixa.siavl.atendimentoremoto.enums.EnviaNotaTipoAssinaturaEnum;
+import br.gov.caixa.siavl.atendimentoremoto.enums.TipoCampoDinamicoEnum;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncEnviaNotaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncEnviaNotaTokenInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncInputDTO;
@@ -67,6 +71,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepo
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.PendenciaAtendimentoNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RelatorioNotaNegociacaoRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.impl.NotaNegociacaoRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.service.RegistroNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.util.DataUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
@@ -117,6 +122,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	AtendimentoClienteRepository atendimentoClienteRepository;
 
 	@Autowired
+	NotaNegociacaoRepositoryImpl notaNegociacaoRepositoryImpl;
+
+	@Autowired
 	AuditoriaRegistraNotaService auditoriaRegistraNotaService;
 
 	@Autowired
@@ -164,13 +172,16 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		Long numeroUnidade = Long.parseLong(tokenUtils.getUnidadeFromToken(token));
 		Long numeroEquipe = null;
 		String cpfCnpj = null;
-		String matriculaAtendente = tokenUtils.getMatriculaFromToken(token).replaceAll(REGEX_REPLACE_LETRAS, StringUtils.EMPTY);
+		String matriculaAtendente = tokenUtils.getMatriculaFromToken(token).replaceAll(REGEX_REPLACE_LETRAS,
+				StringUtils.EMPTY);
 		boolean statusRetornoSicli = true;
 		String numeroProtocolo = registraNotaInputDto.getNumeroProtocolo();
-		String numeroContaAtendimento = registraNotaInputDto.getContaAtendimento().replace(".", "").replace("-", "").trim();
+		String numeroContaAtendimento = registraNotaInputDto.getContaAtendimento().replace(".", "").replace("-", "")
+				.trim();
 		String versaoSistema = registraNotaInputDto.getVersaoSistema();
 
-		String valorMeta = registraNotaInputDto.getValorMeta().replace(".", "").replace("R$", "").replaceAll("\u00A0", "").trim();
+		String valorMeta = registraNotaInputDto.getValorMeta().replace(".", "").replace("R$", "")
+				.replaceAll("\u00A0", "").trim();
 		valorMeta = valorMeta.replace(",", ".");
 
 		Long nuUnidade = Long.parseLong(numeroContaAtendimento.substring(0, 4));
@@ -182,29 +193,46 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		RegistraNotaOutputDto registraNotaOutputDto = new RegistraNotaOutputDto();
 
 		if (numeroEquipe == null) {
-			registraNotaOutputDto = RegistraNotaOutputDto.builder().statusNotaRegistrada(false).mensagem("A unidade não possui equipe vinculada.").build();
+			registraNotaOutputDto = RegistraNotaOutputDto.builder().statusNotaRegistrada(false)
+					.mensagem("A unidade não possui equipe vinculada.").build();
 		} else {
 			registraNotaOutputDto = vinculaDocumento(registraNotaOutputDto, numeroModeloNota);
 			ModeloNotaNegocio modeloNotaNegocio = modeloNotaRepository.prazoValidade(numeroModeloNota);
-			Date dataValidade = dataUtils.formataDataValidade(modeloNotaNegocio.getPrazoValidade(), modeloNotaNegocio.getHoraValidade());
-
-			NegocioAgenciaVirtual negocioAgenciaVirtual = new NegocioAgenciaVirtual();
-			negocioAgenciaVirtual.setDataCriacaoNegocio(new Date());
-			negocioAgenciaVirtual.setSituacaoNegocio("E".charAt(0));
-			negocioAgenciaVirtual = negocioAgenciaVirtualRepository.save(negocioAgenciaVirtual);
+			Date dataValidade = dataUtils.formataDataValidade(modeloNotaNegocio.getPrazoValidade(),
+					modeloNotaNegocio.getHoraValidade());
 
 			NotaNegociacao notaNegociacao = null;
 			RelatorioNotaNegociacao relatorioNotaNegociacao = null;
+			NegocioAgenciaVirtual negocioAgenciaVirtual = null;
+			AtendimentoNegocio atendimentoNegocio = null;
 
-			if (registraNotaInputDto.getNumeroNota() == null) {
+			if (registraNotaInputDto.getNumeroNota() == null
+					|| StringUtils.isBlank(registraNotaInputDto.getNumeroNota())) {
+
 				notaNegociacao = new NotaNegociacao();
 				relatorioNotaNegociacao = new RelatorioNotaNegociacao();
+
+				negocioAgenciaVirtual = new NegocioAgenciaVirtual();
+				negocioAgenciaVirtual.setDataCriacaoNegocio(new Date());
+				negocioAgenciaVirtual.setSituacaoNegocio("E".charAt(0));
+				negocioAgenciaVirtual = negocioAgenciaVirtualRepository.save(negocioAgenciaVirtual);
+
+				atendimentoNegocio = new AtendimentoNegocio();
+				atendimentoNegocioRepository.salvaAtendimentoNegocio(
+						Long.parseLong(registraNotaInputDto.getNumeroProtocolo()),
+						negocioAgenciaVirtual.getNumeroNegocio());
+
+				notaNegociacao.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
+
 			} else {
-				notaNegociacao = notaNegociacaoRepository.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroNota()));
-				relatorioNotaNegociacao = relatorioNotaNegociacaoRepository.findByNumeroNota(Long.parseLong(registraNotaInputDto.getNumeroNota()));
+				notaNegociacao = notaNegociacaoRepository
+						.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroNota()));
+				relatorioNotaNegociacao = relatorioNotaNegociacaoRepository
+						.findByNumeroNota(Long.parseLong(registraNotaInputDto.getNumeroNota()));
 			}
 
-			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
+			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository
+					.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
 
 			if (registraNotaInputDto.getCpfSocio() != null && !registraNotaInputDto.getCpfSocio().isBlank()) {
 				Long cpfSocio = Long.parseLong(documentoUtils.formataDocumento(registraNotaInputDto.getCpfSocio()));
@@ -213,7 +241,6 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				atendimentoCliente = atendimentoClienteRepository.save(atendimentoCliente);
 			}
 
-			notaNegociacao.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
 			notaNegociacao.setNumeroModeloNota(numeroModeloNota);
 			notaNegociacao.setDataCriacaoNota(dataUtils.formataDataBanco());
 			notaNegociacao.setDataModificacaoNota(dataUtils.formataDataBanco());
@@ -227,7 +254,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			notaNegociacao.setNumeroEquipe(numeroEquipe);
 
 			String qtdMetaInput = registraNotaInputDto.getQuantidadeMeta();
-			Long qtdMeta = qtdMetaInput == null || StringUtils.isBlank(qtdMetaInput) ? 0 : Long.parseLong(qtdMetaInput.replace(".", "").replace(",", "").trim());
+			Long qtdMeta = qtdMetaInput == null || StringUtils.isBlank(qtdMetaInput) ? 0
+					: Long.parseLong(qtdMetaInput.replace(".", "").replace(",", "").trim());
 			Optional.ofNullable(qtdMeta).ifPresent(notaNegociacao::setQtdItemNegociacao);
 
 			notaNegociacao.setValorSolicitadoNota(Double.parseDouble(valorMeta));
@@ -237,13 +265,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			notaNegociacao.setOrigemCadastroNota(ORIGEM_CADASTRO_NOTA_MFE);
 			notaNegociacao = notaNegociacaoRepository.save(notaNegociacao);
 
-			// Todo: Melhorar e a forma com que o springboot trabalha com o xml
-			AtualizarXML(registraNotaInputDto, numeroModeloNota, notaNegociacao.getNumeroNota());
-
-			AtendimentoNegocio atendimentoNegocio = new AtendimentoNegocio();
-			atendimentoNegocio.setNumeroProtocolo(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
-			atendimentoNegocio.setNumeroNegocio(negocioAgenciaVirtual.getNumeroNegocio());
-			atendimentoNegocio = atendimentoNegocioRepository.save(atendimentoNegocio);
+			atualizarXML(registraNotaInputDto, numeroModeloNota, notaNegociacao.getNumeroNota());
 
 			AtendimentoNota atendimentoNota = new AtendimentoNota();
 			atendimentoNota.setNumeroNota(notaNegociacao.getNumeroNota());
@@ -254,7 +276,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			atendimentoNota.setNumeroEquipe(numeroEquipe);
 			atendimentoNota.setUnidadeDesignada('A');
 			atendimentoNotaRepository.save(atendimentoNota);
-			
+
 			if (documentoUtils.retornaCpf(registraNotaInputDto.getCpfCnpj())) {
 				cpfCnpj = documentoUtils.formataDocumento(registraNotaInputDto.getCpfCnpj());
 				relatorioNotaNegociacao.setCpf(Long.parseLong(cpfCnpj));
@@ -303,7 +325,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	}
 
-	private void AtualizarXML(RegistraNotaInputDto registraNotaInputDto, Long numeroModeloNota, Long numeroNota) {
+	private void atualizarXML(RegistraNotaInputDto registraNotaInputDto, Long numeroModeloNota, Long numeroNota) {
 		// Começar aqui
 		// Mapear o objeto com as informações do banco
 		List<CamposNotaOutputDTO> camposNotas = new ArrayList<>();
@@ -316,6 +338,10 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			String texto = "";
 			if (valor != null && !valor.isNull()) {
 				texto = valor.asText();
+			}
+			String tipoCampo = String.valueOf(dinamico[8]);
+			if(tipoCampo.equals(TipoCampoDinamicoEnum.DATA.getDescricao()) && texto.contains("-") ){
+				texto =	DataUtils.formataDataLocalTexto(texto);
 			}
 
 			camposNota = CamposNotaOutputDTO.builder().id(String.valueOf(dinamico[0]))
@@ -369,7 +395,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	}
 
 	@Override
-	public Boolean enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto) {
+	public Object enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto) {
 
 		Boolean statusRetornoSicli = true;
 		String numeroContaAtendimento = enviaClienteInputDto.getNumeroConta().replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY).trim();
@@ -381,32 +407,38 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		Long nuProduto = Long.parseLong(numeroContaAtendimento.substring(4, 8));
 		Long coIdentificacao = Long.parseLong(numeroContaAtendimento.substring(8, numeroContaAtendimento.length()));
 		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository.getReferenceById(Long.parseLong(enviaClienteInputDto.getNumeroProtocolo()));
+		EnviaClienteOutputDto enviaClienteOutputDto = new EnviaClienteOutputDto(); 
 
-		if (Boolean.TRUE.equals(Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getAssinaturaToken()))))) {
-			if (Boolean.FALSE.equals(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getTokenValido())))) {
-				atendimentoCliente.setValidacaoTokenAtendimento(2L);
+		if (EnviaNotaTipoAssinaturaEnum.TOKEN_SMS.getDescricao().equalsIgnoreCase(enviaClienteInputDto.getTipoAssinatura())) {
+
+			if (Boolean.TRUE.equals(Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getAssinaturaToken()))))) {
+				if (Boolean.FALSE.equals(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getTokenValido())))) {
+					atendimentoCliente.setValidacaoTokenAtendimento(2L);
+					atendimentoCliente.setDataEnvioToken(dataUtils.formataDataBanco());
+					atendimentoClienteRepository.save(atendimentoCliente);
+
+					auditoriaTokenSms(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade,
+							nuProduto, coIdentificacao, matriculaAtendente, statusRetornoSicli, numeroProtocolo,
+							numeroContaAtendimento);
+					return false;
+				}
+
+				notaNegociacaoRepository.assinaNotaCliente(numeroNota);
+				relatorioNotaNegociacaoRepository.assinaNotaCliente(numeroNota);
+				atendimentoCliente.setValidacaoTokenAtendimento(1L);
 				atendimentoCliente.setDataEnvioToken(dataUtils.formataDataBanco());
 				atendimentoClienteRepository.save(atendimentoCliente);
 
-				auditoriaToken(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade, nuProduto,
-						coIdentificacao, matriculaAtendente, statusRetornoSicli, numeroProtocolo,
+				auditoriaTokenSms(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade,
+						nuProduto, coIdentificacao, matriculaAtendente, statusRetornoSicli, numeroProtocolo,
 						numeroContaAtendimento);
-				return false;
+				
+				enviaClienteOutputDto.setStatus(true);
+				enviaClienteOutputDto.setNotas(notas(Long.parseLong(numeroProtocolo)));
+				return enviaClienteOutputDto;
 			}
 
-			notaNegociacaoRepository.assinaNotaCliente(numeroNota);
-			relatorioNotaNegociacaoRepository.assinaNotaCliente(numeroNota);
-			atendimentoCliente.setValidacaoTokenAtendimento(1L);
-			atendimentoCliente.setDataEnvioToken(dataUtils.formataDataBanco());
-			atendimentoClienteRepository.save(atendimentoCliente);
-
-			auditoriaToken(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade, nuProduto,
-					coIdentificacao, matriculaAtendente, statusRetornoSicli, numeroProtocolo, numeroContaAtendimento);
-			return true;
 		}
-
-		notaNegociacaoRepository.enviaNotaCliente(numeroNota);
-		relatorioNotaNegociacaoRepository.enviaNotaCliente(numeroNota);
 
 		AssinaturaNota assinaturaNota = new AssinaturaNota();
 		assinaturaNota.setNumeroNota(numeroNota);
@@ -416,10 +448,30 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		assinaturaNotaRepository.save(assinaturaNota);
 		pendenciaAtendimentoNotaRepository.inserePendenciaAtendimento(numeroNota);
 
+		if (EnviaNotaTipoAssinaturaEnum.APP.getDescricao().equalsIgnoreCase(enviaClienteInputDto.getTipoAssinatura())) {
+
+			notaNegociacaoRepository.enviaNotaClienteApp(numeroNota);
+			relatorioNotaNegociacaoRepository.enviaNotaClienteApp(numeroNota);
+		}
+
+		if (EnviaNotaTipoAssinaturaEnum.TOKEN_PRODUTO.getDescricao().equalsIgnoreCase(enviaClienteInputDto.getTipoAssinatura())) {
+
+			notaNegociacaoRepository.enviaNotaClienteTokenProduto(numeroNota);
+			relatorioNotaNegociacaoRepository.enviaNotaClienteTokenProduto(numeroNota);
+
+		}
+		
 		auditoriaApp(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade, nuProduto,
 				coIdentificacao, matriculaAtendente, statusRetornoSicli, numeroProtocolo, numeroContaAtendimento);
+		
+		enviaClienteOutputDto.setStatus(true);
+		enviaClienteOutputDto.setNotas(notas(Long.parseLong(numeroProtocolo)));
+		return enviaClienteOutputDto;
+	}
 
-		return true;
+	public List<NotasByProtocoloOutputDTO> notas(Long numeroProtocolo) {
+		
+		return notaNegociacaoRepositoryImpl.notasByProtocolo(numeroProtocolo);
 	}
 
 	public RegistraNotaOutputDto vinculaDocumento(RegistraNotaOutputDto registraNotaOutputDto, Long numeroModeloNota) {
@@ -443,35 +495,24 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			AtendimentoCliente atendimentoCliente) {
 
 		AuditoriaPncRegistraNotaInputDTO auditoriaPncRegistraNotaInputDTO = new AuditoriaPncRegistraNotaInputDTO();
-		auditoriaPncRegistraNotaInputDTO = AuditoriaPncRegistraNotaInputDTO.builder()
-				.cpfCnpj(cpfCnpj)
-				.statusRetornoSicli(String.valueOf(statusRetornoSicli))
-				.numeroProtocolo(numeroProtocolo)
+		auditoriaPncRegistraNotaInputDTO = AuditoriaPncRegistraNotaInputDTO.builder().cpfCnpj(cpfCnpj)
+				.statusRetornoSicli(String.valueOf(statusRetornoSicli)).numeroProtocolo(numeroProtocolo)
 				.numeroNota(String.valueOf(notaNegociacao.getNumeroNota()))
-				.dataRegistroNota(String.valueOf(dataUtils.formataData(new Date())))
-				.versaoSistema(versaoSistema)
-				.produto(registraNotaInputDto.getProduto())
-				.cpfSocio(registraNotaInputDto.getCpfSocio())				
-				.nomeSocio(registraNotaInputDto.getNomeSocio())			
-				.build();
-		
-		String descricaoEnvioTransacao = Base64.getEncoder().encodeToString(metodosUtils.writeValueAsString(auditoriaPncRegistraNotaInputDTO).getBytes());
+				.dataRegistroNota(String.valueOf(dataUtils.formataData(new Date()))).versaoSistema(versaoSistema)
+				.produto(registraNotaInputDto.getProduto()).cpfSocio(registraNotaInputDto.getCpfSocio())
+				.nomeSocio(registraNotaInputDto.getNomeSocio()).build();
+
+		String descricaoEnvioTransacao = Base64.getEncoder()
+				.encodeToString(metodosUtils.writeValueAsString(auditoriaPncRegistraNotaInputDTO).getBytes());
 		String descricaoTransacao = metodosUtils.writeValueAsString(STEP2_REALIZAR_NEGOCIO);
-		
+
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
-		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder()
-				.descricaoEnvioTransacao(descricaoEnvioTransacao)
-				.descricaoTransacao(descricaoTransacao)
-				.ipTerminalUsuario(tokenUtils.getIpFromToken(token))
-				.nomeMfe(NOME_MFE_AVL_ATENDIMENTOREMOTO)
-				.numeroUnidadeLotacaoUsuario(50L)
-				.ambienteAplicacao(AMBIENTE_NACIONAL)
-				.tipoDocumento(tipoDocumento)
-				.numeroIdentificacaoCliente(cpfCnpjPnc)
-				.numeroUnidadeContaCliente(nuUnidade)
-				.numeroOperacaoProduto(nuProduto)
-				.numeroConta(coIdentificacao)
-				.build();
+		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder().descricaoEnvioTransacao(descricaoEnvioTransacao)
+				.descricaoTransacao(descricaoTransacao).ipTerminalUsuario(tokenUtils.getIpFromToken(token))
+				.nomeMfe(NOME_MFE_AVL_ATENDIMENTOREMOTO).numeroUnidadeLotacaoUsuario(50L)
+				.ambienteAplicacao(AMBIENTE_NACIONAL).tipoDocumento(tipoDocumento)
+				.numeroIdentificacaoCliente(cpfCnpjPnc).numeroUnidadeContaCliente(nuUnidade)
+				.numeroOperacaoProduto(nuProduto).numeroConta(coIdentificacao).build();
 
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
 		auditoriaRegistraNotaService.auditar(String.valueOf(dataUtils.formataData(new Date())), token, cpfCnpj,
@@ -481,7 +522,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	}
 
-	public void auditoriaToken(EnviaClienteInputDto enviaClienteInputDto, Long numeroNota, String token,
+	public void auditoriaTokenSms(EnviaClienteInputDto enviaClienteInputDto, Long numeroNota, String token,
 			String tipoDocumento, Long cpfCnpjPnc, Long nuUnidade, Long nuProduto, Long coIdentificacao,
 			String matriculaAtendente, Boolean statusRetornoSicli, String numeroProtocolo,
 			String numeroContaAtendimento) {
@@ -502,17 +543,56 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		}
 
 		AuditoriaPncEnviaNotaTokenInputDTO auditoriaPncEnviaNotaTokenInputDTO = new AuditoriaPncEnviaNotaTokenInputDTO();
-		auditoriaPncEnviaNotaTokenInputDTO = AuditoriaPncEnviaNotaTokenInputDTO.builder().situacaoNota(situacaoNota)
-				.numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo()).numeroNota(String.valueOf(numeroNota))
+		auditoriaPncEnviaNotaTokenInputDTO = AuditoriaPncEnviaNotaTokenInputDTO.builder()
+				.situacaoNota(situacaoNota)
+				.tipoAssinatura(enviaClienteInputDto.getTipoAssinatura())
+				.numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo())
+				.numeroNota(String.valueOf(numeroNota))
 				.versaoSistema(enviaClienteInputDto.getVersaoSistema())
 				.dataHoraTransacao(dataUtils.formataData(new Date()))
-				.assinaturaToken(Boolean.TRUE.equals(Objects.requireNonNull(
-						Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getAssinaturaToken())))) ? SIM : NAO)
-				.tokenValido(tokenValido).tokenValidoTelefone(enviaClienteInputDto.getTokenValidoTelefone()).build();
+				.assinaturaToken(Boolean.TRUE.equals(Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getAssinaturaToken())))) ? SIM : NAO)
+				.tokenValido(tokenValido)
+				.tokenValidoTelefone(enviaClienteInputDto.getTokenValidoTelefone())
+				.build();
 
-		String descricaoEnvioTransacao = Base64.getEncoder()
-				.encodeToString(metodosUtils.writeValueAsString(auditoriaPncEnviaNotaTokenInputDTO).getBytes());
+		String descricaoEnvioTransacao = Base64.getEncoder().encodeToString(metodosUtils.writeValueAsString(auditoriaPncEnviaNotaTokenInputDTO).getBytes());
 		String descricaoTransacao = metodosUtils.writeValueAsString(STEP3_COMPONENTE_TOKEN);
+
+		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
+		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder().descricaoEnvioTransacao(descricaoEnvioTransacao)
+				.descricaoTransacao(descricaoTransacao).ipTerminalUsuario(tokenUtils.getIpFromToken(token))
+				.nomeMfe(NOME_MFE_AVL_ATENDIMENTOREMOTO).numeroUnidadeLotacaoUsuario(50L)
+				.ambienteAplicacao(AMBIENTE_NACIONAL).tipoDocumento(tipoDocumento)
+				.numeroIdentificacaoCliente(cpfCnpjPnc).numeroUnidadeContaCliente(nuUnidade)
+				.numeroOperacaoProduto(nuProduto).numeroConta(coIdentificacao).build();
+
+		auditoriaEnviaNotaTokenService.auditar(String.valueOf(dataUtils.formataData(new Date())), token,
+				enviaClienteInputDto.getCpfCnpj(), matriculaAtendente, String.valueOf(statusRetornoSicli),
+				numeroProtocolo, numeroContaAtendimento, String.valueOf(numeroNota), ZERO_CHAR,
+				enviaClienteInputDto.getProduto().trim(), String.valueOf(enviaClienteInputDto.getCpfSocio()),
+				enviaClienteInputDto.getAssinaturaToken(), enviaClienteInputDto.getTokenValido(),
+				enviaClienteInputDto.getTokenValidoTelefone(), enviaClienteInputDto.getTipoAssinatura());
+		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
+
+	}
+
+	public void auditoriaApp(EnviaClienteInputDto enviaClienteInputDto, Long numeroNota, String token,
+			String tipoDocumento, Long cpfCnpjPnc, Long nuUnidade, Long nuProduto, Long coIdentificacao,
+			String matriculaAtendente, Boolean statusRetornoSicli, String numeroProtocolo,
+			String numeroContaAtendimento) {
+
+		AuditoriaPncEnviaNotaInputDTO auditoriaPncEnviaNotaInputDTO = new AuditoriaPncEnviaNotaInputDTO();
+		auditoriaPncEnviaNotaInputDTO = AuditoriaPncEnviaNotaInputDTO.builder()
+				.situacaoNota(SITUACAO_NOTA)
+				.tipoAssinatura(enviaClienteInputDto.getTipoAssinatura())
+				.numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo())
+				.numeroNota(String.valueOf(numeroNota))
+				.versaoSistema(enviaClienteInputDto.getVersaoSistema())
+				.dataHoraTransacao(dataUtils.formataData(new Date()))
+				.build();
+
+		String descricaoEnvioTransacao = Base64.getEncoder().encodeToString(metodosUtils.writeValueAsString(auditoriaPncEnviaNotaInputDTO).getBytes());
+		String descricaoTransacao = metodosUtils.writeValueAsString(STEP4_COMPROVANTE_ASSINAR_PELO_APP);
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
 		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder()
@@ -529,43 +609,10 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				.numeroConta(coIdentificacao)
 				.build();
 
-		auditoriaEnviaNotaTokenService.auditar(String.valueOf(dataUtils.formataData(new Date())), token,
-				enviaClienteInputDto.getCpfCnpj(), matriculaAtendente, String.valueOf(statusRetornoSicli),
-				numeroProtocolo, numeroContaAtendimento, String.valueOf(numeroNota), ZERO_CHAR,
-				enviaClienteInputDto.getProduto().trim(), String.valueOf(enviaClienteInputDto.getCpfSocio()),
-				enviaClienteInputDto.getAssinaturaToken(), enviaClienteInputDto.getTokenValido(),
-				enviaClienteInputDto.getTokenValidoTelefone());
-		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
-
-	}
-
-	public void auditoriaApp(EnviaClienteInputDto enviaClienteInputDto, Long numeroNota, String token,
-			String tipoDocumento, Long cpfCnpjPnc, Long nuUnidade, Long nuProduto, Long coIdentificacao,
-			String matriculaAtendente, Boolean statusRetornoSicli, String numeroProtocolo,
-			String numeroContaAtendimento) {
-
-		AuditoriaPncEnviaNotaInputDTO auditoriaPncEnviaNotaInputDTO = new AuditoriaPncEnviaNotaInputDTO();
-		auditoriaPncEnviaNotaInputDTO = AuditoriaPncEnviaNotaInputDTO.builder().situacaoNota(SITUACAO_NOTA)
-				.numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo()).numeroNota(String.valueOf(numeroNota))
-				.versaoSistema(enviaClienteInputDto.getVersaoSistema())
-				.dataHoraTransacao(dataUtils.formataData(new Date())).build();
-
-		String descricaoEnvioTransacao = Base64.getEncoder()
-				.encodeToString(metodosUtils.writeValueAsString(auditoriaPncEnviaNotaInputDTO).getBytes());
-		String descricaoTransacao = metodosUtils.writeValueAsString(STEP4_COMPROVANTE_ASSINAR_PELO_APP);
-
-		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
-		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder().descricaoEnvioTransacao(descricaoEnvioTransacao)
-				.descricaoTransacao(descricaoTransacao).ipTerminalUsuario(tokenUtils.getIpFromToken(token))
-				.nomeMfe(NOME_MFE_AVL_ATENDIMENTOREMOTO).numeroUnidadeLotacaoUsuario(50L)
-				.ambienteAplicacao(AMBIENTE_NACIONAL).tipoDocumento(tipoDocumento)
-				.numeroIdentificacaoCliente(cpfCnpjPnc).numeroUnidadeContaCliente(nuUnidade)
-				.numeroOperacaoProduto(nuProduto).numeroConta(coIdentificacao).build();
-
 		auditoriaEnviaNotaService.auditar(String.valueOf(dataUtils.formataData(new Date())), token,
 				enviaClienteInputDto.getCpfCnpj(), matriculaAtendente, String.valueOf(statusRetornoSicli),
 				numeroProtocolo, numeroContaAtendimento, String.valueOf(numeroNota), ZERO_CHAR,
-				enviaClienteInputDto.getProduto().trim(), String.valueOf(enviaClienteInputDto.getCpfSocio()));
+				enviaClienteInputDto.getProduto().trim(), String.valueOf(enviaClienteInputDto.getCpfSocio()), enviaClienteInputDto.getTipoAssinatura());
 		auditoriaPncGateway.auditoriaPncSalvar(token, auditoriaPncInputDTO);
 
 	}

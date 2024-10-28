@@ -24,6 +24,7 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.ExceptionOutputDto;
 @SuppressWarnings("all")
 @ControllerAdvice(assignableTypes = AtendimentoRemotoController.class)
 public class AtendimentoRemotoException {
+	
 
 	@ExceptionHandler(ConstraintViolationException.class)
 	public ResponseEntity<Object> handlerConstraintViolation(ConstraintViolationException e,

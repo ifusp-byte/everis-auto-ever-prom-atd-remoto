@@ -78,5 +78,17 @@ public class MetodosUtils {
 		data = String.valueOf(sdfOut.format(dateInput));
 		return data;
 	}
+	
+	public static JsonNode StringToJson(Object object) {
+
+		JsonNode value = null;
+
+		try {
+			value = mapper.readTree(String.valueOf(object));
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+		return value;
+	}
 
 }
