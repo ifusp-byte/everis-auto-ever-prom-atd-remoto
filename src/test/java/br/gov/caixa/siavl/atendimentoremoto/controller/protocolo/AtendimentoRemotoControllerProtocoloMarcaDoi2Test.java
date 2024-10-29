@@ -13,7 +13,7 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 
 @SuppressWarnings("all")
-class AtendimentoRemotoControllerProtocoloMarcaDoiNTest extends AtendimentoRemotoControllerProtocoloTest {
+class AtendimentoRemotoControllerProtocoloMarcaDoi2Test extends AtendimentoRemotoControllerProtocoloTest {
 
 	@BeforeEach
 	public void setUp() {

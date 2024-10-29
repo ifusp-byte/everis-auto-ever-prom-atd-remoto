@@ -1,7 +1,5 @@
 package br.gov.caixa.siavl.atendimentoremoto.controller.protocolo;
 
-import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.GERA_PROTOCOLO_PF;
-
 import java.io.IOException;
 
 import org.junit.jupiter.api.AfterEach;
@@ -13,12 +11,12 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 
 @SuppressWarnings("all")
-class AtendimentoRemotoControllerProtocoloMarcaDoiSTest extends AtendimentoRemotoControllerProtocoloTest {
+class AtendimentoRemotoControllerProtocoloMarcaDoi3Test extends AtendimentoRemotoControllerProtocoloTest {
 
 	@BeforeEach
 	public void setUp() {
 		setUpTest();
-		setupIntegracao(HttpStatus.OK.value(), "sucessoAuditoriaPnc.json", "sicliMarcaDoiS.json",
+		setupIntegracao(HttpStatus.BAD_REQUEST.value(), "erro.json", "erro.json",
 				"10020030088");
 	}
 	

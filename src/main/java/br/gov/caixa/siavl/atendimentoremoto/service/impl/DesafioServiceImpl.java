@@ -20,7 +20,7 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.ValidaDesafioOutpu
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.gateway.SiipcGateway;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.gateway.AuditoriaPncGateway;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.gateway.SipncGateway;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
@@ -49,7 +49,7 @@ public class DesafioServiceImpl implements DesafioService {
 	DocumentoUtils documentoUtils;
 
 	@Autowired
-	AuditoriaPncGateway sipncGateway;
+	SipncGateway sipncGateway;
 
 	@Autowired
 	AtendimentoClienteRepository atendimentoClienteRepository;

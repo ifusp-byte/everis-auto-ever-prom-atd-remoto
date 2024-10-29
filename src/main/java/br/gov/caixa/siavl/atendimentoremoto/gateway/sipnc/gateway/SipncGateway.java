@@ -22,9 +22,9 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
 @Service
 @SuppressWarnings("all")
-public class AuditoriaPncGateway {
+public class SipncGateway {
 
-	private static final Logger LOG = Logger.getLogger(AuditoriaPncGateway.class.getName());
+	private static final Logger LOG = Logger.getLogger(SipncGateway.class.getName());
 	private static String API_KEY = "apikey";
 
 	@Value("${env.apimanager.key}")

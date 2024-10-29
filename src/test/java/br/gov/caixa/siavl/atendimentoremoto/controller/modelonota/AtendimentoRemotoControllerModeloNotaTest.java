@@ -3,8 +3,6 @@ package br.gov.caixa.siavl.atendimentoremoto.controller.modelonota;
 import java.io.IOException;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -18,47 +16,35 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 @SuppressWarnings("all")
 class AtendimentoRemotoControllerModeloNotaTest extends ControllerTest {
 
-	@BeforeEach
-	public void beforeEach() {
-		setUpTest();
-	}
-
-	@Test
-	void consultaModeloNotaTest() {
+	void consultaModeloNota() {
 		String BASE_URL = atdremotoUrl + "/modelo-nota/10020030088";
 		ResponseEntity<Object> response = restTemplate.getForEntity(BASE_URL, Object.class);
 		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
 
-	@Test
-	void consultaModeloNotaMaisUtilizadaTest() {
+	void consultaModeloNotaMaisUtilizada() {
 		String BASE_URL = atdremotoUrl + "/modelo-nota-mais-utilizada/10020030088";
 		ResponseEntity<Object> response = restTemplate.getForEntity(BASE_URL, Object.class);
 		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
 
-	@Test
-	void consultaModeloNotaFavoritaTest() {
+	void consultaModeloNotaFavorita() {
 		String BASE_URL = atdremotoUrl + "/modelo-nota-favorita/10020030088";
 		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, newRequestEntity(),
 				Object.class);
 		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
 
-	@Test
-	void adicionaModeloNotaFavoritaTest() {
+	void adicionaModeloNotaFavorita() {
 		String BASE_URL = atdremotoUrl + "/modelo-nota-favorita/" + 8787;
 		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.POST, newRequestEntity(),
 				Object.class);
 		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
 
-	@Test
-	void modeloNotaDinamico1Test() throws StreamReadException, DatabindException, IOException {
+	void modeloNotaDinamico1() throws StreamReadException, DatabindException, IOException {
 
 		String BASE_URL_1 = atdremotoUrl + "/modelo-nota-dinamico/" + 8704;
-		String BASE_URL_2 = atdremotoUrl + "/modelo-nota-dinamico/" + 3123;
-		String BASE_URL_3 = atdremotoUrl + "/modelo-nota-dinamico/" + 3124;
 
 		ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO1 = mapper.readValue(
 				new ClassPathResource("/modeloNotaDinamico/1modeloNotaDinamicoInputDTO.json").getFile(),
@@ -71,8 +57,7 @@ class AtendimentoRemotoControllerModeloNotaTest extends ControllerTest {
 
 	}
 
-	@Test
-	void modeloNotaDinamico2Test() throws StreamReadException, DatabindException, IOException {
+	void modeloNotaDinamico2() throws StreamReadException, DatabindException, IOException {
 
 		String BASE_URL_2 = atdremotoUrl + "/modelo-nota-dinamico/" + 3123;
 
@@ -87,8 +72,7 @@ class AtendimentoRemotoControllerModeloNotaTest extends ControllerTest {
 
 	}
 
-	@Test
-	void modeloNotaDinamico3Test() throws StreamReadException, DatabindException, IOException {
+	void modeloNotaDinamico3() throws StreamReadException, DatabindException, IOException {
 
 		String BASE_URL_3 = atdremotoUrl + "/modelo-nota-dinamico/" + 3124;
 

@@ -50,7 +50,7 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncEnviaN
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncEnviaNotaTokenInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncRegistraNotaInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.gateway.AuditoriaPncGateway;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.gateway.SipncGateway;
 import br.gov.caixa.siavl.atendimentoremoto.model.AssinaturaNota;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoNegocio;
@@ -95,7 +95,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	DocumentoUtils documentoUtils;
 
 	@Autowired
-	AuditoriaPncGateway auditoriaPncGateway;
+	SipncGateway auditoriaPncGateway;
 
 	@Autowired
 	ModeloNotaRepository modeloNotaRepository;
