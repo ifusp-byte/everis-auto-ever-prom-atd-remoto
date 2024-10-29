@@ -10,11 +10,12 @@ import javax.swing.text.MaskFormatter;
 
 import org.springframework.stereotype.Component;
 
-import lombok.experimental.UtilityClass;
-
 @Component
 @SuppressWarnings("all")
 public class DocumentoUtils {
+
+	private static Long PUBLICO_ALVO_PF = 1L;
+	private static Long PUBLICO_ALVO_PJ = 2L;
 
 	public String formataCpf(Object object) {
 
@@ -57,7 +58,7 @@ public class DocumentoUtils {
 		}
 		return cnpj;
 	}
-	
+
 	public static String formataCpfFront(Object object) {
 
 		String cpfInput = null;
@@ -110,6 +111,16 @@ public class DocumentoUtils {
 
 	public String tipoPessoa(String cpfCnpj) {
 		return retornaCpf(cpfCnpj) ? PERSON_TYPE_PF : PERSON_TYPE_PJ;
+	}
+
+	public Long retornaPublicoAlvo(String cpfCnpj) {
+		Long publicoAlvo = null;
+		if (retornaCpf(cpfCnpj)) {
+			publicoAlvo = PUBLICO_ALVO_PJ;
+		} else {
+			publicoAlvo = PUBLICO_ALVO_PF;
+		}
+		return publicoAlvo;
 	}
 
 }

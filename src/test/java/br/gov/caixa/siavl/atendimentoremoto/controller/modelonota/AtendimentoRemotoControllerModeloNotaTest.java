@@ -1,4 +1,4 @@
-package br.gov.caixa.siavl.atendimentoremoto.controller;
+package br.gov.caixa.siavl.atendimentoremoto.controller.modelonota;
 
 import java.io.IOException;
 
@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.DatabindException;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 
 @SuppressWarnings("all")
-class AtendimentoRemotoControllerTest extends ControllerTest {
+class AtendimentoRemotoControllerModeloNotaTest extends ControllerTest {
 
 	@BeforeEach
 	public void beforeEach() {
@@ -54,35 +54,51 @@ class AtendimentoRemotoControllerTest extends ControllerTest {
 	}
 
 	@Test
-	void modeloNotaDinamicoTest() throws StreamReadException, DatabindException, IOException {
+	void modeloNotaDinamico1Test() throws StreamReadException, DatabindException, IOException {
 
 		String BASE_URL_1 = atdremotoUrl + "/modelo-nota-dinamico/" + 8704;
 		String BASE_URL_2 = atdremotoUrl + "/modelo-nota-dinamico/" + 3123;
 		String BASE_URL_3 = atdremotoUrl + "/modelo-nota-dinamico/" + 3124;
 
-		ModeloNotaDinamicoInputDTO odeloNotaDinamicoInputDTO1 = mapper.readValue(
+		ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO1 = mapper.readValue(
 				new ClassPathResource("/modeloNotaDinamico/1modeloNotaDinamicoInputDTO.json").getFile(),
 				ModeloNotaDinamicoInputDTO.class);
 
-		ModeloNotaDinamicoInputDTO odeloNotaDinamicoInputDTO2 = mapper.readValue(
+		ResponseEntity<Object> response1 = restTemplate.exchange(BASE_URL_1, HttpMethod.POST,
+				newRequestEntity(modeloNotaDinamicoInputDTO1), Object.class);
+
+		Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode());
+
+	}
+
+	@Test
+	void modeloNotaDinamico2Test() throws StreamReadException, DatabindException, IOException {
+
+		String BASE_URL_2 = atdremotoUrl + "/modelo-nota-dinamico/" + 3123;
+
+		ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO2 = mapper.readValue(
 				new ClassPathResource("/modeloNotaDinamico/2modeloNotaDinamicoInputDTO.json").getFile(),
 				ModeloNotaDinamicoInputDTO.class);
 
-		ModeloNotaDinamicoInputDTO odeloNotaDinamicoInputDTO3 = mapper.readValue(
+		ResponseEntity<Object> response2 = restTemplate.exchange(BASE_URL_2, HttpMethod.POST,
+				newRequestEntity(modeloNotaDinamicoInputDTO2), Object.class);
+
+		Assertions.assertEquals(HttpStatus.CREATED, response2.getStatusCode());
+
+	}
+
+	@Test
+	void modeloNotaDinamico3Test() throws StreamReadException, DatabindException, IOException {
+
+		String BASE_URL_3 = atdremotoUrl + "/modelo-nota-dinamico/" + 3124;
+
+		ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO3 = mapper.readValue(
 				new ClassPathResource("/modeloNotaDinamico/3modeloNotaDinamicoInputDTO.json").getFile(),
 				ModeloNotaDinamicoInputDTO.class);
 
-		ResponseEntity<Object> response1 = restTemplate.exchange(BASE_URL_1, HttpMethod.POST,
-				newRequestEntity(odeloNotaDinamicoInputDTO1), Object.class);
-
-		ResponseEntity<Object> response2 = restTemplate.exchange(BASE_URL_2, HttpMethod.POST,
-				newRequestEntity(odeloNotaDinamicoInputDTO2), Object.class);
-
 		ResponseEntity<Object> response3 = restTemplate.exchange(BASE_URL_3, HttpMethod.POST,
-				newRequestEntity(odeloNotaDinamicoInputDTO3), Object.class);
+				newRequestEntity(modeloNotaDinamicoInputDTO3), Object.class);
 
-		Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode());
-		Assertions.assertEquals(HttpStatus.CREATED, response2.getStatusCode());
 		Assertions.assertEquals(HttpStatus.CREATED, response3.getStatusCode());
 	}
 }

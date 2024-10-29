@@ -159,5 +159,29 @@ public class DataUtils {
     }
    return data;
   }
+  
+  public Date formataDataModelo(Object object) {
+
+		Date data = null;
+		Locale locale = new Locale("pt", "BR");
+		SimpleDateFormat sdfIn = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss'.0'", locale);
+		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
+
+		try {
+			data = sdfOut.parse(sdfOut.format(sdfIn.parse(String.valueOf(object))));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return data;
+	}
+
+	public String formataDataModelo(Date dateInput) {
+
+		String data = null;
+		Locale locale = new Locale("pt", "BR");
+		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
+		data = String.valueOf(sdfOut.format(dateInput));
+		return data;
+	}
 
 }
