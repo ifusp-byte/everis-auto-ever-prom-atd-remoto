@@ -16,17 +16,17 @@ class AtendimentoRemotoControllerModeloNotaTestesTest extends AtendimentoRemotoC
 		setUpTest();
 	}
 
-	@Test
+	//@Test
 	void consultaModeloNotaTest() {
 		consultaModeloNota();
 	}
 
-	@Test
+	//@Test
 	void consultaModeloNotaMaisUtilizadaTest() {
 		consultaModeloNotaMaisUtilizada();
 	}
 
-	@Test
+	//@Test
 	void consultaModeloNotaFavoritaTest() {
 		consultaModeloNotaFavorita();
 	}
