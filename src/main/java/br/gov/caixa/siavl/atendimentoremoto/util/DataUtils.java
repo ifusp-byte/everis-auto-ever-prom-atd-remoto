@@ -9,6 +9,7 @@ import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DATA_SIEC
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DATA_SIECM_ANEXO;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DATA_SIIPC;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.PT;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DATA_US;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -92,14 +93,11 @@ public class DataUtils {
 	}
 
 	public Boolean menorTrintaMinutos(Object dataInicial) {
-		return calculaDiferencaDataMinutos(dataInicial) < 30;
+		Long diferenca = calculaDiferencaDataMinutos(dataInicial); 
+		return diferenca > 30 && diferenca < 120 ;
 	}
 
 	public Long diferencaDataMinutos(LocalDateTime dataInicial, LocalDateTime dataFinal) {
-
-		System.err.println("DATA INICIAL: " + dataInicial);
-		System.err.println("DATA FINAL: " + dataFinal);
-		System.err.println("DIFERENCA MINUTOS: " + Duration.between(dataInicial, dataFinal).toMinutes());
 		return Duration.between(dataInicial, dataFinal).toMinutes();
 	}
 
@@ -146,6 +144,44 @@ public class DataUtils {
 			e.printStackTrace();
 		}
 		return diaMesAno + " às " + horaMinuto;
+	}
+
+  public static String formataDataLocalTexto(String data) {
+    
+    Locale locale = new Locale(PT, BR);
+    SimpleDateFormat sdfIn = new SimpleDateFormat(DATA_US, locale);
+    SimpleDateFormat sdfOut = new SimpleDateFormat(DATA_PADRAO_SIIPC_FRONT_1, locale);
+
+    try {
+      data = sdfOut.format(sdfIn.parse(data));
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+   return data;
+  }
+  
+  public Date formataDataModelo(Object object) {
+
+		Date data = null;
+		Locale locale = new Locale("pt", "BR");
+		SimpleDateFormat sdfIn = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss'.0'", locale);
+		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
+
+		try {
+			data = sdfOut.parse(sdfOut.format(sdfIn.parse(String.valueOf(object))));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return data;
+	}
+
+	public String formataDataModelo(Date dateInput) {
+
+		String data = null;
+		Locale locale = new Locale("pt", "BR");
+		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
+		data = String.valueOf(sdfOut.format(dateInput));
+		return data;
 	}
 
 }

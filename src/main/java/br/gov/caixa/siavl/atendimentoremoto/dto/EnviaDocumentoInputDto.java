@@ -28,7 +28,11 @@ public class EnviaDocumentoInputDto {
 	private List<Object> listaCamposDinamico;
 
 	private String arquivoContrato;
-	
+
 	private String numeroNota;
-	
+
+	private String nomeTipoDocumento;
+
+	private String tipoDocumento;
+
 }

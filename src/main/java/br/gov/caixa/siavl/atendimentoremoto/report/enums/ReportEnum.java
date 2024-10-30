@@ -1,7 +1,10 @@
 package br.gov.caixa.siavl.atendimentoremoto.report.enums;
 
 import static br.gov.caixa.siavl.atendimentoremoto.report.constants.ReportConstants.EXTENSION_JASPER;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.ReportConstants.EXTENSION_JPG;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.ReportConstants.LOGO_CAIXA_3;
 import static br.gov.caixa.siavl.atendimentoremoto.report.constants.ReportConstants.REOPORTS;
+import static br.gov.caixa.siavl.atendimentoremoto.report.constants.ReportConstants.REOPORTS_IMAGENS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,8 +16,8 @@ import wiremock.com.google.common.primitives.Ints;
 @SuppressWarnings("all")
 public enum ReportEnum {
 
-	ROTEIRO_STEP4(0, "roteiro-step4", REOPORTS + "roteiro-step4" + EXTENSION_JASPER);
-
+	ROTEIRO_STEP4(0, "roteiro-step4", REOPORTS + "roteiro-step4" + EXTENSION_JASPER),
+	LOGO_CAIXA(1, LOGO_CAIXA_3, REOPORTS_IMAGENS + LOGO_CAIXA_3 + EXTENSION_JPG);
 	private final int codigo;
 	private final String nome;
 	private final String relatorio;

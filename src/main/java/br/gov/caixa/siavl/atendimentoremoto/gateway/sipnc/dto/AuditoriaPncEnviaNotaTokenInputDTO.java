@@ -24,6 +24,9 @@ public class AuditoriaPncEnviaNotaTokenInputDTO {
 	private String situacaoNota;	
 	
 	@Valid
+	private String tipoAssinatura;
+	
+	@Valid
 	private String numeroProtocolo;
 	
 	@Valid

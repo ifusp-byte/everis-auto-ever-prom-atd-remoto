@@ -127,14 +127,15 @@ public class SiecmGateway {
 					newRequestEntityDocumentoIncluir(token, requestAnexarDocumento), String.class);
 
 			body = mapper.readTree(String.valueOf(response.getBody()));
-			String linkThumbnail = Objects.requireNonNull(body.path("documento").path("atributos").path("link"))
-					.asText();
+			String linkThumbnail = Objects.requireNonNull(body.path("documento").path("atributos").path("link")).asText();
 			String id = Objects.requireNonNull(body.path("documento").path("atributos").path("id")).asText();
 
 			siecmOutputDto = SiecmOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
 					.linkThumbnail(linkThumbnail).statusCreated(true).statusMessage("Documento gravado com sucesso")
 					.dataCreated(formataDataSiecm(new Date())).id(id).build();
+			
+			LOG.log(Level.INFO, response.getBody());
 
 		} catch (RestClientResponseException e) {
 			body = mapper.readTree(e.getResponseBodyAsString());

@@ -36,4 +36,6 @@ public class SiecmConstants {
 	public static final String SIAVL = "SIAVL";
 	
 	public static final String EMISSOR = "EMISSOR";
+	
+	public static final String NU_NOTA_NEGOCIACAO = "NU_NOTA_NEGOCIACAO";
 }

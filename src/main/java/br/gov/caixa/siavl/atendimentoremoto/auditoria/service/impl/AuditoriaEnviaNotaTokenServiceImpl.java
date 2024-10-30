@@ -52,7 +52,7 @@ public class AuditoriaEnviaNotaTokenServiceImpl implements AuditoriaEnviaNotaTok
 
 	public void auditar(String dataRegistroNota, String token, String cpfCnpj, String matriculaAtendente,
 			String statusRetornoSicli, String numeroProtocolo, String numeroContaAtendimento, String numeroNota,
-			String versaoSistema, String produto, String cpfSocio, String assinaturaToken, String tokenValido, String tokenValidoTelefone) {
+			String versaoSistema, String produto, String cpfSocio, String assinaturaToken, String tokenValido, String tokenValidoTelefone, String tipoAssinatura) {
 
 		String tipoPessoa = null;
 		String cpfConsulta = cpfCnpj.replace(".", "").replace("-", "").replace("/", "").trim();
@@ -66,6 +66,7 @@ public class AuditoriaEnviaNotaTokenServiceImpl implements AuditoriaEnviaNotaTok
 		LogPlataforma logPlataforma = new LogPlataforma();
 		AuditoriaEnvioNotaTokenDsLogPlataformaDTO dsLogPlataformaDTO = new AuditoriaEnvioNotaTokenDsLogPlataformaDTO();
 
+		dsLogPlataformaDTO.setTipoAssinatura(tipoAssinatura);
 		dsLogPlataformaDTO.setCpfCnpj(cpfCnpj);
 		dsLogPlataformaDTO.setCpfSocio(cpfSocio);
 		dsLogPlataformaDTO.setMatriculaAtendente(matriculaAtendente);

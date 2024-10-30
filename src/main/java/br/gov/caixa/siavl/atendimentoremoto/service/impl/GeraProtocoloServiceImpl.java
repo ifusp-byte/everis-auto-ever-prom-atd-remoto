@@ -35,7 +35,7 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContaAtendimentoOu
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway.SicliGateway;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncProtocoloInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.gateway.AuditoriaPncGateway;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.gateway.SipncGateway;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.repository.GeraProtocoloRespository;
 import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
@@ -64,7 +64,7 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 	DocumentoUtils documentoUtils;
 
 	@Autowired
-	AuditoriaPncGateway auditoriaPncGateway;
+	SipncGateway auditoriaPncGateway;
 
 	@Autowired
 	GeraProtocoloRespository geraProtocoloRespository;
@@ -130,7 +130,12 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		AtendimentoCliente atendimentoCliente = new AtendimentoCliente();
 		atendimentoCliente.setMatriculaAtendente(matriculaAtendente);
 		atendimentoCliente.setCanalAtendimento(canalAtendimento.charAt(0));
-		//atendimentoCliente.setNumeroCanalAtendimento(Long.parseLong(String.valueOf(GeraProtocoloTipoAtendimentoEnum.valueOf(canalAtendimento).getCodigo())));
+		
+		/**
+		 * este trecho de código deve ser comentado na branch de PRD
+		 */
+		atendimentoCliente.setNumeroCanalAtendimento(Long.parseLong(String.valueOf(GeraProtocoloTipoAtendimentoEnum.valueOf(canalAtendimento).getCodigo())));
+		
 		atendimentoCliente.setNumeroUnidade(numeroUnidade);
 		atendimentoCliente.setNomeCliente(documentoUtils.retornaCpf(cpfCnpjFormat) ? contaAtendimento.getNomeCliente() : contaAtendimento.getRazaoSocial());
 

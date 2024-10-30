@@ -1,4 +1,4 @@
-package br.gov.caixa.siavl.atendimentoremoto.controller;
+package br.gov.caixa.siavl.atendimentoremoto.controller.modelonota;
 
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.TOKEN_VALIDO;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.BASE_URL;
@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -27,6 +28,7 @@ import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 @SuppressWarnings("all")
 @RequestMapping(BASE_URL)
 @RunWith(SpringRunner.class)
+@AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

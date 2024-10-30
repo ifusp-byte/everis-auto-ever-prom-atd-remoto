@@ -4,6 +4,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +20,7 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.ValidaDesafioOutpu
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.gateway.SiipcGateway;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncInputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.gateway.AuditoriaPncGateway;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.gateway.SipncGateway;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoClienteRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
@@ -48,7 +49,7 @@ public class DesafioServiceImpl implements DesafioService {
 	DocumentoUtils documentoUtils;
 
 	@Autowired
-	AuditoriaPncGateway sipncGateway;
+	SipncGateway sipncGateway;
 
 	@Autowired
 	AtendimentoClienteRepository atendimentoClienteRepository;
@@ -60,6 +61,7 @@ public class DesafioServiceImpl implements DesafioService {
 	private static final String DOCUMENT_TYPE_CNPJ = "CNPJ";
 	private static final String IDENTIFICACAO_POSITIVA = "identificação_positiva";
 	private static final String CANAL_PNC = "pnc";
+	private static final String CANAL_INTERAXA = "06928340000163-1";
 	private static final String STATUS_SUCESSO = "SUCESSO";
 
 	static Logger logger = Logger.getLogger(DesafioServiceImpl.class.getName());
@@ -72,26 +74,48 @@ public class DesafioServiceImpl implements DesafioService {
 
 		ValidaDesafioDTO validaDesafioDTO = siipcGateway.desafioValidar(token, validaDesafioMap);
 		ValidaDesafioOutputDTO validaDesafioOutputDTO = new ValidaDesafioOutputDTO();
-		
-		validaDesafioOutputDTO.setTempoUltimoDesafio(String.valueOf(dataUtils.calculaDiferencaDataMinutos(validaDesafioDTO.getTsAtualizacao())) + " minutos atrás");
+
+		String tsAtualizacao = validaDesafioDTO.getTsAtualizacao();
+		Long tempoDesafioMinutos = tsAtualizacao != null && StringUtils.isNotBlank(tsAtualizacao)
+				? diferencaMinutos(tsAtualizacao)
+				: null;
+
+		validaDesafioOutputDTO.setTempoUltimoDesafio(String.valueOf(tempoDesafioMinutos) + " minutos atrás");
 		validaDesafioOutputDTO.setDataUltimoDesafio(validaDesafioDTO.getTsAtualizacao());
 		validaDesafioOutputDTO.setStatusUltimoDesafio(validaDesafioDTO.getStatus());
 		validaDesafioOutputDTO.setCanalUltimoDesafio(validaDesafioDTO.getCanal());
 
-		if (!CANAL_PNC.equalsIgnoreCase(validaDesafioDTO.getCanal())
-				&& STATUS_SUCESSO.equalsIgnoreCase(validaDesafioDTO.getStatus())
-				&& dataUtils.menorTrintaMinutos(validaDesafioDTO.getTsAtualizacao())) {
+		boolean validaTempoDesafio = false;
+		boolean validaIntervaloTempoDesafio = false;
 
-			validaDesafioOutputDTO.setDesafioExpirado(false);
-			validaDesafioOutputDTO.setMensagem("A identificação positiva foi realizada pelo bot do WhatsApp em "
-					+ dataUtils.formataDataSiipcFront(validaDesafioDTO.getTsAtualizacao()) + ". Clique no botão Prosseguir para continuar o atendimento.");
+		if (tempoDesafioMinutos != null) {
+			validaTempoDesafio = validaTempoDesafio(tempoDesafioMinutos);
+			validaIntervaloTempoDesafio = validaIntervaloTempoDesafio(tempoDesafioMinutos);
+		}
+
+		//if (!CANAL_PNC.equalsIgnoreCase(validaDesafioDTO.getCanal())
+		  if (CANAL_INTERAXA.equalsIgnoreCase(validaDesafioDTO.getCanal())
+				&& STATUS_SUCESSO.equalsIgnoreCase(validaDesafioDTO.getStatus())) {
+
+			if (validaTempoDesafio) {
+				validaDesafioOutputDTO.setDesafioExpirado(false);
+				validaDesafioOutputDTO.setMensagem("A identificação positiva foi realizada pelo bot do WhatsApp em "
+						+ dataUtils.formataDataSiipcFront(validaDesafioDTO.getTsAtualizacao())
+						+ ". Clique no botão Prosseguir para continuar o atendimento.");
+			}
+
+			if (validaIntervaloTempoDesafio) {
+				validaDesafioOutputDTO.setDesafioExpirado(true);
+				validaDesafioOutputDTO.setMensagem(
+						"Devido expiração do tempo de 30 minutos é preciso realizar uma nova Identificação Positiva.");
+			}
 
 			return validaDesafioOutputDTO;
 
 		}
 
 		validaDesafioOutputDTO.setDesafioExpirado(true);
-		validaDesafioOutputDTO.setMensagem("Devido expiração do tempo de 30 minutos é preciso realizar uma nova Identificação Positiva.");
+		validaDesafioOutputDTO.setMensagem(StringUtils.EMPTY);
 
 		return validaDesafioOutputDTO;
 	}
@@ -120,26 +144,35 @@ public class DesafioServiceImpl implements DesafioService {
 	public RespondeDesafioOutputDTO desafioResponder(String token, String idDesafio,
 			RespondeDesafioInputDTO respostaDesafio) {
 
-		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository
-				.getReferenceById(Long.parseLong(respostaDesafio.getProtocolo()));
+		Long cpfCliente = null;
+		Long cnpjCliente = null; 
+			
+		Optional<AtendimentoCliente> atendimentoClienteOpt = atendimentoClienteRepository
+				.findByProtocolo(Long.parseLong(respostaDesafio.getProtocolo()));
+
+		if (atendimentoClienteOpt.isPresent()) {
+			AtendimentoCliente atendimentoCliente = atendimentoClienteOpt.get();			
+			cpfCliente = atendimentoCliente.getCpfCliente();
+			cnpjCliente = atendimentoCliente.getCnpjCliente();
+		}
 
 		String tipoDocumento = null;
 		String tipoPessoa = null;
 		String cpfSocio = null;
 		Long cpfCnpjPnc = null;
 
-		if (StringUtils.isBlank(String.valueOf(atendimentoCliente.getCnpjCliente()))
-				|| atendimentoCliente.getCnpjCliente() == null) {
+		if (StringUtils.isBlank(String.valueOf(cnpjCliente))
+				|| cnpjCliente == null) {
 			tipoDocumento = DOCUMENT_TYPE_CPF;
 			tipoPessoa = PERSON_TYPE_PF;
 			cpfSocio = StringUtils.EMPTY;
-			cpfCnpjPnc = atendimentoCliente.getCpfCliente();
+			cpfCnpjPnc = cpfCliente;
 
 		} else {
 			tipoDocumento = DOCUMENT_TYPE_CNPJ;
 			tipoPessoa = PERSON_TYPE_PJ;
 			cpfSocio = respostaDesafio.getCpfSocio();
-			cpfCnpjPnc = atendimentoCliente.getCnpjCliente();
+			cpfCnpjPnc = cnpjCliente;
 		}
 
 		RespondeDesafioOutputDTO respondeDesafio = siipcGateway.desafioResponder(token, idDesafio, respostaDesafio);
@@ -176,4 +209,15 @@ public class DesafioServiceImpl implements DesafioService {
 
 	}
 
+	public Long diferencaMinutos(String tsAtualizacao) {
+		return dataUtils.calculaDiferencaDataMinutos(tsAtualizacao);
+	}
+
+	public Boolean validaTempoDesafio(Long tempoDesafioMinutos) {
+		return tempoDesafioMinutos <= 30L;
+	}
+
+	public Boolean validaIntervaloTempoDesafio(Long tempoDesafioMinutos) {
+		return tempoDesafioMinutos > 30L && tempoDesafioMinutos <= 120L;
+	}
 }

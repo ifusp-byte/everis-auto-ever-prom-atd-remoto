@@ -57,6 +57,9 @@ public class AuditoriaEnvioNotaDsLogPlataformaDTO {
 
 	@Valid
 	private String produto;
+	
+	@Valid
+	private String tipoAssinatura;
 
 	@Valid
 	private String possuiAnexo;

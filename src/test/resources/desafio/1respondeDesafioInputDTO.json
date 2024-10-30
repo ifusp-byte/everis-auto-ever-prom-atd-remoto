@@ -1,0 +1,21 @@
+{
+    "listaResposta": [
+        {
+            "id-pergunta": 518,
+            "id-resposta": 3,
+            "texto-resposta": "51"
+        },
+        {
+            "id-pergunta": 921,
+            "id-resposta": 4,
+            "texto-resposta": "DANIELA"
+        },
+        {
+            "id-pergunta": 926,
+            "id-resposta": 5,
+            "texto-resposta": "Nenhuma das alternativas"
+        }
+    ],
+    "protocolo": "231088",
+    "cpfSocio": "10020030088"
+}

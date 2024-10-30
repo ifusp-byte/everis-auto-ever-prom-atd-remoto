@@ -1,19 +1,13 @@
 package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import java.sql.Clob;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinamicoCamposOutputDTO;
@@ -22,7 +16,6 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaDinami
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoMenuNotaNumeroOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaOutputDto;
-import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway.SicliGateway;
 import br.gov.caixa.siavl.atendimentoremoto.model.FluxoAtendimento;
 import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocioFavorito;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoNegocioRepository;
@@ -35,7 +28,9 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RoteiroFechamentoNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.impl.ModeloNotaRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
+import br.gov.caixa.siavl.atendimentoremoto.util.DataUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
+import br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
@@ -43,7 +38,13 @@ import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	@Autowired
+	DataUtils dataUtils;
+
+	@Autowired
 	TokenUtils tokenUtils;
+	
+	@Autowired
+	MetodosUtils metodosUtils;
 
 	@Autowired
 	DocumentoUtils documentoUtils;
@@ -52,40 +53,34 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 	ModeloNotaRepository modeloNotaRepository;
 
 	@Autowired
-	ModeloNotaFavoritoRepository modeloNotaFavoritoRepository;
-
-	@Autowired
-	NegocioAgenciaVirtualRepository negocioAgenciaVirtualRepository;
-
-	@Autowired
-	AtendimentoNegocioRepository atendimentoNegocioRepository;
-
-	@Autowired
 	NotaNegociacaoRepository notaNegociacaoRepository;
+
+	@Autowired
+	ModeloNotaRepositoryImpl modeloNotaRepositoryImpl;
 
 	@Autowired
 	CampoModeloNotaRepository campoModeloNotaRepository;
 
 	@Autowired
-	SicliGateway sicliGateway;
+	FluxoAtendimentoRepository fluxoAtendimentoRepository;
+
+	@Autowired
+	ModeloNotaFavoritoRepository modeloNotaFavoritoRepository;
+
+	@Autowired
+	AtendimentoNegocioRepository atendimentoNegocioRepository;
+
+	@Autowired
+	NegocioAgenciaVirtualRepository negocioAgenciaVirtualRepository;
 
 	@Autowired
 	RoteiroFechamentoNotaRepository roteiroFechamentoNotaRepository;
 
-	@Autowired
-	FluxoAtendimentoRepository fluxoAtendimentoRepository;
-
-	@Autowired
-	ModeloNotaRepositoryImpl modeloNotaRepositoryImpl;
-
-	private static Long PUBLICO_ALVO_PF = 1L;
-	private static Long PUBLICO_ALVO_PJ = 2L;
-
-	private static ObjectMapper mapper = new ObjectMapper();
+	//private static ObjectMapper mapper = new ObjectMapper();
 
 	public List<ModeloNotaOutputDto> consultaModeloNota(String cpfCnpj) {
 		List<ModeloNotaOutputDto> modelosNota = new ArrayList<>();
-		List<Object[]> findModeloNota = modeloNotaFavoritoRepository.findModeloNota(retornaPublicoAlvo(cpfCnpj));
+		List<Object[]> findModeloNota = modeloNotaFavoritoRepository.findModeloNota(documentoUtils.retornaPublicoAlvo(cpfCnpj));
 		if (!findModeloNota.isEmpty()) {
 			findModeloNota.stream().forEach(modeloNota -> {
 				ModeloNotaOutputDto modeloNotaOutputDto = null;
@@ -104,7 +99,8 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	public List<ModeloNotaOutputDto> consultaModeloNotaMaisUtilizada(String cpfCnpj) {
 		List<ModeloNotaOutputDto> modelosNota = new ArrayList<>();
-		List<Object[]> findModeloNotaMaisUtilizada = modeloNotaRepositoryImpl.modeloNotaMaisUtilizada(retornaPublicoAlvo(cpfCnpj));
+		List<Object[]> findModeloNotaMaisUtilizada = modeloNotaRepositoryImpl
+				.modeloNotaMaisUtilizada(documentoUtils.retornaPublicoAlvo(cpfCnpj));
 		if (!findModeloNotaMaisUtilizada.isEmpty()) {
 			findModeloNotaMaisUtilizada.stream().forEach(modeloNota -> {
 				ModeloNotaOutputDto modeloNotaOutputDto = null;
@@ -124,7 +120,8 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		List<ModeloNotaOutputDto> modelosNotaFavorita = new ArrayList<>();
 		List<ModeloNotaOutputDto> modelosNotaFavorita2 = new ArrayList<>();
 		List<ModeloNotaOutputDto> modelosNotaFavoritaRetorno = new ArrayList<>();
-		List<Object[]> findModeloNotaFavorita = modeloNotaFavoritoRepository.findModeloNotaFavorita(matriculaAtendente, retornaPublicoAlvo(cpfCnpj));
+		List<Object[]> findModeloNotaFavorita = modeloNotaFavoritoRepository.findModeloNotaFavorita(matriculaAtendente,
+				documentoUtils.retornaPublicoAlvo(cpfCnpj));
 
 		if (!findModeloNotaFavorita.isEmpty()) {
 			findModeloNotaFavorita.stream().forEach(modeloNotaFavorita -> {
@@ -133,7 +130,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 						.numeroModeloNota(String.valueOf(modeloNotaFavorita[0]))
 						.numeroAcaoProduto(String.valueOf(modeloNotaFavorita[1]))
 						.descricaoAcaoProduto(String.valueOf(modeloNotaFavorita[2]))
-						.dataEscolhaFavorito(formataData(modeloNotaFavorita[3])).build();
+						.dataEscolhaFavorito(dataUtils.formataDataModelo(modeloNotaFavorita[3])).build();
 
 				Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository
 						.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
@@ -200,7 +197,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 		});
 
 		ModeloNotaDinamicoMenuNotaNumeroOutputDTO modeloNotaDinamicoMenuNotaNumeroOutputDTO = new ModeloNotaDinamicoMenuNotaNumeroOutputDTO();
-		modeloNotaDinamicoMenuNotaNumeroOutputDTO.setDataModificacao(formataData(new Date()));
+		modeloNotaDinamicoMenuNotaNumeroOutputDTO.setDataModificacao(dataUtils.formataDataModelo(new Date()));
 
 		List<ModeloNotaDinamicoMenuNotaDinamicoOutputDTO> dinamicos = new ArrayList<>();
 		modeloNotaFavoritoRepository.modeloNotaDinamico(numeroModeloNota).stream().forEach(dinamico -> {
@@ -235,7 +232,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 		ModeloNotaDinamicoOutputDTO modeloNotaDinamicoOutputDTO = new ModeloNotaDinamicoOutputDTO();
 		modeloNotaDinamicoOutputDTO.setMenuNotaNumero(modeloNotaDinamicoMenuNotaNumeroOutputDTO);
-		modeloNotaDinamicoOutputDTO.setMenuNotaDinamico(mapper.writeValueAsString(dinamicos));
+		modeloNotaDinamicoOutputDTO.setMenuNotaDinamico(metodosUtils.writeValueAsString(dinamicos));
 		modeloNotaDinamicoOutputDTO.setMenuNotaProduto(notaProdutoLista.get(0));
 
 		Optional<List<Clob>> roteiroListaConsulta = roteiroFechamentoNotaRepository.roteiro(numeroModeloNota);
@@ -252,58 +249,6 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	public Long matriculaCriacaoNota(String token) {
 		return Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", ""));
-	}
-
-	private Date formataData(Object object) {
-
-		Date data = null;
-		Locale locale = new Locale("pt", "BR");
-		SimpleDateFormat sdfIn = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss'.0'", locale);
-		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
-
-		try {
-			data = sdfOut.parse(sdfOut.format(sdfIn.parse(String.valueOf(object))));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return data;
-	}
-
-	private String formataData(Date dateInput) {
-
-		String data = null;
-		Locale locale = new Locale("pt", "BR");
-		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
-		data = String.valueOf(sdfOut.format(dateInput));
-		return data;
-	}
-
-	private Date formataDataBanco() {
-
-		Calendar time = Calendar.getInstance();
-		time.add(Calendar.HOUR, -3);
-		return time.getTime();
-	}
-
-	private Date formataDataValidade(int prazoValidade, String horaValidade) {
-
-		Calendar time = Calendar.getInstance();
-		time.add(Calendar.HOUR, -3);
-		time.add(Calendar.DATE, prazoValidade);
-		time.add(Calendar.HOUR, Integer.parseInt(horaValidade.substring(0, 1)));
-		time.add(Calendar.MINUTE, Integer.parseInt(horaValidade.substring(3, 4)));
-
-		return time.getTime();
-	}
-
-	public Long retornaPublicoAlvo(String cpfCnpj) {
-		Long publicoAlvo = null;
-		if (documentoUtils.retornaCpf(cpfCnpj)) {
-			publicoAlvo = PUBLICO_ALVO_PJ;
-		} else {
-			publicoAlvo = PUBLICO_ALVO_PF;
-		}
-		return publicoAlvo;
 	}
 
 }

@@ -46,6 +46,7 @@ public final class ConstantsUtils {
 	public static final String DATA_SIIPC = "yyyy-MM-dd HH:mm:ss";
 	public static final String DATA_BANCO = "yyyy-MM-dd HH:mm:ss'.0'";
 	public static final String DATA_PADRAO = "dd/MM/yyyy HH:mm:ss";
+	public static final String DATA_US = "yyyy-MM-dd";
 	
 	public static final String DATA_PADRAO_SIIPC_FRONT_1 = "dd/MM/yyyy";
 	public static final String DATA_PADRAO_SIIPC_FRONT_2 = "HH:mm";
