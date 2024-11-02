@@ -46,5 +46,14 @@ public class AuditoriaPncEnviaNotaInputDTO {
 	
 	@Valid
 	private String categoriaAnexo; 
+	
+	@Valid
+	private String tipoNota;
+
+	@Valid
+	private String cpfSocio;
+
+	@Valid
+	private String nomeSocio;
 
 }
