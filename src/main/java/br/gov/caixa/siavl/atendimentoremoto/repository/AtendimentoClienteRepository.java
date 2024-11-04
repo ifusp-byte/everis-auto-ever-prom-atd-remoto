@@ -27,5 +27,5 @@ public interface AtendimentoClienteRepository extends JpaRepository<AtendimentoC
 	
 	@Query("SELECT A FROM AtendimentoCliente A WHERE A.numeroProtocolo = ?1")
 	Optional<List<AtendimentoCliente>> findByProtocoloLista(Long protocolo);
-
+	
 }

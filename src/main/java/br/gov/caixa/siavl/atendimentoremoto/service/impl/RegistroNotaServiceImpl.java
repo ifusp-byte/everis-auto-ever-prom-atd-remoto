@@ -113,6 +113,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	AuditoriaEnviaNotaService auditoriaEnviaNotaService;
 
 	@Autowired
+	CampoModeloNotaRepository campoModeloNotaRepository;
+
+	@Autowired
 	EquipeAtendimentoRepository equipeAtendimentoRepository;
 
 	@Autowired
@@ -120,6 +123,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	@Autowired
 	AtendimentoClienteRepository atendimentoClienteRepository;
+
+	@Autowired
+	ModeloNotaFavoritoRepository modeloNotaFavoritoRepository;
 
 	@Autowired
 	NotaNegociacaoRepositoryImpl notaNegociacaoRepositoryImpl;
@@ -138,12 +144,6 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	@Autowired
 	PendenciaAtendimentoNotaRepository pendenciaAtendimentoNotaRepository;
-
-	@Autowired
-	ModeloNotaFavoritoRepository modeloNotaFavoritoRepository;
-
-	@Autowired
-	CampoModeloNotaRepository campoModeloNotaRepository;
 
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
@@ -233,14 +233,23 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 						.findByNumeroNota(Long.parseLong(registraNotaInputDto.getNumeroNota()));
 			}
 
-			AtendimentoCliente atendimentoCliente = atendimentoClienteRepository
-					.getReferenceById(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
+			Optional<AtendimentoCliente> atendimentoClienteOpt = atendimentoClienteRepository
+					.findByProtocolo(Long.parseLong(registraNotaInputDto.getNumeroProtocolo()));
+
+			AtendimentoCliente atendimentoCliente = null;
+
+			if (atendimentoClienteOpt.isPresent()) {
+				atendimentoCliente = atendimentoClienteOpt.get();
+			}
+
+			Long cpfCliente = null;
 
 			if (registraNotaInputDto.getCpfSocio() != null && !registraNotaInputDto.getCpfSocio().isBlank()) {
 				Long cpfSocio = Long.parseLong(documentoUtils.formataDocumento(registraNotaInputDto.getCpfSocio()));
 				relatorioNotaNegociacao.setCpf(cpfSocio);
 				atendimentoCliente.setCpfCliente(cpfSocio);
 				atendimentoCliente = atendimentoClienteRepository.save(atendimentoCliente);
+				cpfCliente = atendimentoCliente.getCpfCliente();
 			}
 
 			notaNegociacao.setNumeroModeloNota(numeroModeloNota);
@@ -319,7 +328,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 			auditoriaRegistraNota(cpfCnpj, matriculaAtendente, statusRetornoSicli, numeroProtocolo,
 					numeroContaAtendimento, notaNegociacao, versaoSistema, tipoPessoa, token, registraNotaInputDto,
-					tipoDocumento, cpfCnpjPnc, nuUnidade, nuProduto, coIdentificacao, atendimentoCliente);
+					tipoDocumento, cpfCnpjPnc, nuUnidade, nuProduto, coIdentificacao, cpfCliente);
 
 		}
 
@@ -328,11 +337,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	}
 
 	private void atualizarXML(RegistraNotaInputDto registraNotaInputDto, Long numeroModeloNota, Long numeroNota) {
-		// Começar aqui
-		// Mapear o objeto com as informações do banco
 		List<CamposNotaOutputDTO> camposNotas = new ArrayList<>();
 		JsonNode relatorio = registraNotaInputDto.getRelatorioNota();
-		// Busco os modelos dessa nota
 		modeloNotaFavoritoRepository.modeloNotaDinamico(numeroModeloNota).stream().forEach(dinamico -> {
 			CamposNotaOutputDTO camposNota = null;
 			String nomeCampo = String.valueOf(dinamico[3]);
@@ -374,22 +380,16 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 			NegociacaoOutputDTO notaNegociacaoXML = new NegociacaoOutputDTO();
 			notaNegociacaoXML.setCamposNota(camposNotas);
-			// Cria o contexto JAXB para a classe NotaNegociacao
 			JAXBContext jaxbContext = JAXBContext.newInstance(NegociacaoOutputDTO.class);
-			// Cria o Marshaller para a conversão
 			Marshaller marshaller = jaxbContext.createMarshaller();
-			// Formata o XML de saída
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			// Converte o objeto em XML e imprime no console
 			StringWriter sw = new StringWriter();
 			marshaller.marshal(notaNegociacaoXML, sw);
-			// Imprime o XML
 			String xmlContent = sw.toString();
 			String novoXml = xmlContent.replace("<ConteudoCampoMultiploOutPutDTO>", "<conteudoCampoMultiplo>")
 					.replace("<CamposNotaOutputDTO>", "<camposNota>")
 					.replace("<NegociacaoOutputDTO>", "<notaNegociacao><camposNota>")
 					.replace("</NegociacaoOutputDTO>", "</camposNota></notaNegociacao>");
-			// add o xml a model
 			notaNegociacaoRepository.updateXmlDataById(numeroNota, novoXml);
 		} catch (JAXBException e) {
 			e.printStackTrace();
@@ -413,8 +413,16 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		Long nuUnidade = Long.parseLong(numeroContaAtendimento.substring(0, 4));
 		Long nuProduto = Long.parseLong(numeroContaAtendimento.substring(4, 8));
 		Long coIdentificacao = Long.parseLong(numeroContaAtendimento.substring(8, numeroContaAtendimento.length()));
-		AtendimentoCliente atendimentoCliente = atendimentoClienteRepository
-				.getReferenceById(Long.parseLong(enviaClienteInputDto.getNumeroProtocolo()));
+		
+		Optional<AtendimentoCliente> atendimentoClienteOpt = atendimentoClienteRepository
+				.findByProtocolo(Long.parseLong(enviaClienteInputDto.getNumeroProtocolo()));
+
+		AtendimentoCliente atendimentoCliente = null;
+
+		if (atendimentoClienteOpt.isPresent()) {
+			atendimentoCliente = atendimentoClienteOpt.get();
+		}
+		
 		EnviaClienteOutputDto enviaClienteOutputDto = new EnviaClienteOutputDto();
 
 		if (EnviaNotaTipoAssinaturaEnum.TOKEN_SMS.getDescricao()
@@ -425,8 +433,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				if (Boolean.FALSE.equals(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getTokenValido())))) {
 					atendimentoCliente.setValidacaoTokenAtendimento(2L);
 					atendimentoCliente.setDataEnvioToken(dataUtils.formataDataBanco());
-					atendimentoClienteRepository.save(atendimentoCliente);
-
+					atendimentoClienteRepository.save(atendimentoCliente);					
+					
 					auditoriaTokenSms(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade,
 							nuProduto, coIdentificacao, matriculaAtendente, statusRetornoSicli, numeroProtocolo,
 							numeroContaAtendimento, tipoPessoa);
@@ -437,6 +445,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				relatorioNotaNegociacaoRepository.assinaNotaCliente(numeroNota);
 				atendimentoCliente.setValidacaoTokenAtendimento(1L);
 				atendimentoCliente.setDataEnvioToken(dataUtils.formataDataBanco());
+
 				atendimentoClienteRepository.save(atendimentoCliente);
 
 				auditoriaTokenSms(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade,
@@ -503,8 +512,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	public void auditoriaRegistraNota(String cpfCnpj, String matriculaAtendente, Boolean statusRetornoSicli,
 			String numeroProtocolo, String numeroContaAtendimento, NotaNegociacao notaNegociacao, String versaoSistema,
 			String tipoPessoa, String token, RegistraNotaInputDto registraNotaInputDto, String tipoDocumento,
-			Long cpfCnpjPnc, Long nuUnidade, Long nuProduto, Long coIdentificacao,
-			AtendimentoCliente atendimentoCliente) {
+			Long cpfCnpjPnc, Long nuUnidade, Long nuProduto, Long coIdentificacao, Long cpfCliente) {
 
 		AuditoriaPncRegistraNotaInputDTO auditoriaPncRegistraNotaInputDTO = new AuditoriaPncRegistraNotaInputDTO();
 		auditoriaPncRegistraNotaInputDTO = AuditoriaPncRegistraNotaInputDTO.builder().cpfCnpj(cpfCnpj)
@@ -530,7 +538,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		auditoriaRegistraNotaService.auditar(String.valueOf(dataUtils.formataData(new Date())), token, cpfCnpj,
 				matriculaAtendente, String.valueOf(statusRetornoSicli), numeroProtocolo, numeroContaAtendimento,
 				String.valueOf(notaNegociacao.getNumeroNota()), versaoSistema, registraNotaInputDto.getProduto(),
-				String.valueOf(atendimentoCliente.getCpfCliente()));
+				String.valueOf(cpfCliente));
 
 	}
 
