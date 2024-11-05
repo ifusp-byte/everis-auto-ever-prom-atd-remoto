@@ -20,11 +20,6 @@
       "description": "A description for 'url.sicli.conta'"
   },
   {
-      "name": "url.positivo.desafio",
-      "type": "java.lang.String",
-      "description": "A description for 'url.positivo.desafio'"
-  },
-  {
       "name": "url.sipnc.log",
       "type": "java.lang.String",
       "description": "A description for 'url.sipnc.log'"

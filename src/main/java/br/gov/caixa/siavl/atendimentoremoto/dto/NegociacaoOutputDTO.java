@@ -8,8 +8,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,13 +24,12 @@ import lombok.Setter;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "NegociacaoOutputDTO")
 public class NegociacaoOutputDTO {
-	
+
 	@Valid
 	@XmlElement(name = "camposNota")
 	private List<CamposNotaOutputDTO> camposNota;
-		
+
 	@Valid
 	@XmlElement(name = "qtItemNotaNegociacao")
 	private int qtItemNotaNegociacao;
 }
-

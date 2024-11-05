@@ -1,11 +1,8 @@
 package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,10 +10,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.dto.TipoDocumentoClienteOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstants;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.documentos.ClasseDocumento;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.SiecmCamposDinamico;
@@ -36,92 +31,124 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoNotaNegociacaoRe
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.TipoDocumentoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoService;
+import br.gov.caixa.siavl.atendimentoremoto.util.DataUtils;
+import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
+import br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
 @SuppressWarnings("all")
 public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
-	private static final Logger LOG = Logger.getLogger(AnexoDocumentoServiceImpl.class.getName());
-
-	private static String DEFAULT_IP = "127.0.0.1";
-	private static String DEFAULT_LOCAL_ARMAZENAMENTO = "OS_CAIXA";
-	private static String DEFAULT_LOCAL_GRAVACAO = "DOSSIE";
-	private static String DEFAULT_DOCUMENTO_TIPO = "pdf";
-	private static String DEFAULT_MIME_TYPE = "application/pdf";
+	@Autowired
+	DataUtils dataUtils;
 
 	@Autowired
 	TokenUtils tokenUtils;
 
 	@Autowired
+	MetodosUtils metodosUtils;
+
+	@Autowired
 	SiecmGateway siecmGateway;
 
 	@Autowired
-	TipoDocumentoRepository tipoDocumentoRepository;
-	
-	@Autowired
-	DocumentoClienteRepository documentoClienteRepository;
-	
-	@Autowired
-	DocumentoNotaNegociacaoRepository documentoNotaNegociacaoRepository;
-	
+	DocumentoUtils documentoUtils;
+
 	@Autowired
 	ModeloNotaRepository modeloNotaRepository;
 
-	private static ObjectMapper mapper = new ObjectMapper();
-	
+	@Autowired
+	TipoDocumentoRepository tipoDocumentoRepository;
+
+	@Autowired
+	DocumentoClienteRepository documentoClienteRepository;
+
+	@Autowired
+	DocumentoNotaNegociacaoRepository documentoNotaNegociacaoRepository;
+
+	private static final String DEFAULT_LOCAL_ARMAZENAMENTO = "OS_CAIXA";
+	private static final String DEFAULT_LOCAL_GRAVACAO = "DOSSIE";
+	private static final String DEFAULT_DOCUMENTO_OPCIONAL = "DOCUMENTO_OPCIONAL";
+	private static final String DEFAULT_DOCUMENTO_TIPO = "pdf";
+	private static final String DEFAULT_MIME_TYPE = "application/pdf";
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
 	private static final String PATTERN_MATRICULA = "[a-zA-Z]";
+	private static final String INCLUI_DOCUMENTO_OPCIONAL = " Requisicao - Incluir Documento Opcional Step2: ";
+	private static final String INCLUI_DOCUMENTO_OBRIGATORIO = " Requisicao - Incluir Documento Obrigatorio Step3: ";
+	private static final String DOCUMENTO_OPCIONAL = "OPCIONAL";
+	private static final String DOCUMENTO_OBRGATORIO = "OBRIGATORIO";
+	private static final String DEFAULT_NOME_OBRIGATORIO = "DOCUMENTO_OBRIGATORIO";
+	private static final String DEFAULT_NOME_OPCIONAL = "DOCUMENTO_OPCIONAL";
+	private static final String DEFAULT_CLASSE_OPCIONAL = "NOTA_NEGOCIACAO";
+
+	private static final Logger LOG = Logger.getLogger(AnexoDocumentoServiceImpl.class.getName());
 
 	@Override
 	public SiecmOutputDto enviaDocumento(String token, String cpfCnpj, EnviaDocumentoInputDto enviaDocumentoInputDto)
 			throws Exception {
 
 		SiecmOutputDto siecmOutputDto = null;
+		String mensagemDocumento = null;
 
-		String cpfCnpjSiecm = cpfCnpj.replace(".", "").replace("-", "").replace("/", "").trim();
-		String tipoPessoa;
-		
-		if (cpfCnpjSiecm.length() == 11) {
-			tipoPessoa = PERSON_TYPE_PF;
-		
-		} else {
-			tipoPessoa = PERSON_TYPE_PJ;
-		}
-		
+		String cpfCnpjSiecm = documentoUtils.formataDocumento(cpfCnpj);
+		String tipoPessoa = documentoUtils.tipoPessoa(cpfCnpj);
+
 		siecmGateway.dossieCriar(token, cpfCnpjSiecm);
 
 		SiecmDocumentosIncluirDadosRequisicaoInputDto siecmDocumentosIncluirDadosRequisicao = new SiecmDocumentosIncluirDadosRequisicaoInputDto();
+		SiecmDocumentosIncluirDestinoDocumentoInputDto siecmDocumentosIncluirDestinoDocumento = new SiecmDocumentosIncluirDestinoDocumentoInputDto();
+		SiecmDocumentosIncluirDocumentoAtributosCamposInputDto siecmDocumentosIncluirDocumentoAtributosCampos = new SiecmDocumentosIncluirDocumentoAtributosCamposInputDto();
+		
 		siecmDocumentosIncluirDadosRequisicao.setIpUsuarioFinal(tokenUtils.getIpFromToken(token));
 		siecmDocumentosIncluirDadosRequisicao.setLocalArmazenamento(DEFAULT_LOCAL_ARMAZENAMENTO);
 
-		SiecmDocumentosIncluirDestinoDocumentoInputDto siecmDocumentosIncluirDestinoDocumento = new SiecmDocumentosIncluirDestinoDocumentoInputDto();
 		siecmDocumentosIncluirDestinoDocumento.setIdDestino(cpfCnpjSiecm);
 		siecmDocumentosIncluirDestinoDocumento.setLocalGravacao(DEFAULT_LOCAL_GRAVACAO);
-		siecmDocumentosIncluirDestinoDocumento.setSubPasta(StringUtils.EMPTY);
+		siecmDocumentosIncluirDestinoDocumento.setSubPasta(SiecmConstants.NU_NOTA_NEGOCIACAO+"_"+enviaDocumentoInputDto.getNumeroNota());
 
-		SiecmDocumentosIncluirDocumentoAtributosCamposInputDto siecmDocumentosIncluirDocumentoAtributosCampos = new SiecmDocumentosIncluirDocumentoAtributosCamposInputDto();
-		siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(enviaDocumentoInputDto.getCodGED().trim());
+		if (DOCUMENTO_OPCIONAL.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
+			mensagemDocumento = INCLUI_DOCUMENTO_OPCIONAL;
+			siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(DEFAULT_CLASSE_OPCIONAL);
+		}
+
+		if (DOCUMENTO_OBRGATORIO.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
+			mensagemDocumento = INCLUI_DOCUMENTO_OBRIGATORIO;
+			siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(enviaDocumentoInputDto.getCodGED().trim());
+		}
+
 
 		List<Object> siecmCamposDinamicoObrigatorios = new ArrayList<>();
 		siecmCamposDinamicoObrigatorios
 				.add(new SiecmCamposDinamico(SiecmConstants.EMISSOR, SiecmConstants.SIAVL, SiecmConstants.STRING));
 		siecmCamposDinamicoObrigatorios.add(new SiecmCamposDinamico(SiecmConstants.DATA_EMISSAO,
-				formataDataSiecm(new Date()), SiecmConstants.DATE));
+				dataUtils.formataDataSiecm(new Date()), SiecmConstants.DATE));
 		siecmCamposDinamicoObrigatorios.add(new SiecmCamposDinamico(SiecmConstants.CLASSIFICACAO_SIGILO,
 				SiecmConstants.INTERNO_TODOS, SiecmConstants.STRING));
 		siecmCamposDinamicoObrigatorios.add(new SiecmCamposDinamico(SiecmConstants.RESPONSAVEL_CAPTURA,
 				tokenUtils.getMatriculaFromToken(token), SiecmConstants.STRING));
 		siecmCamposDinamicoObrigatorios.add(new SiecmCamposDinamico(SiecmConstants.STATUS, "0", SiecmConstants.STRING));
-		siecmCamposDinamicoObrigatorios.addAll(enviaDocumentoInputDto.getListaCamposDinamico());
+
+		if (DOCUMENTO_OBRGATORIO.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
+			siecmCamposDinamicoObrigatorios.addAll(enviaDocumentoInputDto.getListaCamposDinamico());
+		}
 
 		siecmDocumentosIncluirDocumentoAtributosCampos.setCampo(siecmCamposDinamicoObrigatorios);
 		siecmDocumentosIncluirDocumentoAtributosCampos.setTipo(DEFAULT_DOCUMENTO_TIPO);
 		siecmDocumentosIncluirDocumentoAtributosCampos.setMimeType(DEFAULT_MIME_TYPE);
 		siecmDocumentosIncluirDocumentoAtributosCampos.setGerarThumbnail(true);
-		siecmDocumentosIncluirDocumentoAtributosCampos
-				.setNome(formataData(new Date()) + "_" + enviaDocumentoInputDto.getCodGED().trim() + "."+DEFAULT_DOCUMENTO_TIPO);
+
+		if (DOCUMENTO_OBRGATORIO.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
+			siecmDocumentosIncluirDocumentoAtributosCampos.setNome(dataUtils.formataData(new Date()) + "_" +
+					DEFAULT_NOME_OBRIGATORIO +"-"+ enviaDocumentoInputDto.getCodGED().trim() + "." + DEFAULT_DOCUMENTO_TIPO);
+		}
+
+		if (DOCUMENTO_OPCIONAL.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
+			siecmDocumentosIncluirDocumentoAtributosCampos
+					.setNome(dataUtils.formataData(new Date()) + "_" + DEFAULT_NOME_OPCIONAL +"-"+ enviaDocumentoInputDto.getNomeTipoDocumento()
+							.trim().replaceAll("[^\\p{L}\\p{N}]+", StringUtils.EMPTY) + "." + DEFAULT_DOCUMENTO_TIPO);
+		}
 
 		SiecmDocumentosIncluirDocumentoAtributosInputDto siecmDocumentosIncluirDocumentoAtributos = new SiecmDocumentosIncluirDocumentoAtributosInputDto();
 		siecmDocumentosIncluirDocumentoAtributos.setBinario(enviaDocumentoInputDto.getArquivoContrato());
@@ -137,27 +164,21 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		siecmDocumentosIncluir.setDocumento(siecmDocumentosIncluirDocumentoAtributos);
 
 		String requestAnexarDocumento = null;
-
-		try {
-			requestAnexarDocumento = mapper.writeValueAsString(siecmDocumentosIncluir).replaceAll("\\u005C", "")
-					.replaceAll("\\n", "");
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
-
-		LOG.log(Level.INFO, "Nota: " +enviaDocumentoInputDto.getNumeroNota()+ " Requisicao - Incluir Documento: " + requestAnexarDocumento);
+		requestAnexarDocumento = metodosUtils.writeValueAsString(siecmDocumentosIncluir);
 
 		siecmOutputDto = siecmGateway.documentoIncluir(token, cpfCnpj, requestAnexarDocumento);
-				
-		Long numeroTipoDoc = tipoDocumentoRepository.numeroTipoDocumentoCliente(enviaDocumentoInputDto.getCodGED().trim()); 
-		
-		Date dtInclusaoDocumento = formataDataBanco();
-		
+
+		Long numeroTipoDoc = tipoDocumentoRepository
+				.numeroTipoDocumentoByNomeDocumento(enviaDocumentoInputDto.getNomeTipoDocumento()).get(0);
+
+		Date dtInclusaoDocumento = dataUtils.formataDataBanco();
+
 		DocumentoCliente documentoCliente = new DocumentoCliente();
 		documentoCliente.setTipoDocumentoCliente(numeroTipoDoc);
 		documentoCliente.setCpfCnpjCliente(Long.parseLong(cpfCnpjSiecm));
 		documentoCliente.setTipoPessoa(tipoPessoa);
-		documentoCliente.setMatriculaAtendente(Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll(PATTERN_MATRICULA, "")));
+		documentoCliente.setMatriculaAtendente(Long
+				.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll(PATTERN_MATRICULA, StringUtils.EMPTY)));
 		documentoCliente.setMimetypeAnexo(DEFAULT_MIME_TYPE);
 		documentoCliente.setExtensaoAnexo(DEFAULT_DOCUMENTO_TIPO);
 		documentoCliente.setNomeAnexo(siecmDocumentosIncluirDocumentoAtributosCampos.getNome());
@@ -165,8 +186,8 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		documentoCliente.setStcoDocumentoCliente(1L);
 		documentoCliente.setSituacaoDocumentoCliente(1L);
 		documentoCliente.setInclusaoDocumento(dtInclusaoDocumento);
-		documentoClienteRepository.save(documentoCliente);		
-		
+		documentoClienteRepository.save(documentoCliente);
+
 		DocumentoNotaNegociacao documentoNotaNegociacao = new DocumentoNotaNegociacao();
 		documentoNotaNegociacao.setTipoPessoa(tipoPessoa);
 		documentoNotaNegociacao.setNumeroNota(Long.parseLong(enviaDocumentoInputDto.getNumeroNota()));
@@ -174,20 +195,41 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		documentoNotaNegociacao.setTipoDocumentoCliente(numeroTipoDoc);
 		documentoNotaNegociacao.setInclusaoDocumento(dtInclusaoDocumento);
 		documentoNotaNegociacaoRepository.save(documentoNotaNegociacao);
-		
+		//mensagemDocumento = INCLUI_DOCUMENTO_OBRIGATORIO;
+
+		LOG.log(Level.INFO,
+				"Nota: " + enviaDocumentoInputDto.getNumeroNota() + mensagemDocumento + requestAnexarDocumento);
+
 		return siecmOutputDto;
 
 	}
 
 	@Override
 	public Object tipoDocumento(String cpfCnpj) throws Exception {
-		List<TipoDocumentoCliente> tpoDocumentoClienteLista = new ArrayList<>();
-		if (cpfCnpj.replace(".", "").replace("-", "").replace("/", "").trim().length() == 11) {
-			tpoDocumentoClienteLista = tipoDocumentoRepository.tipoDocumentoPF();
+
+		TipoDocumentoClienteOutputDTO tipoDocumentoClienteOutputDTO = new TipoDocumentoClienteOutputDTO();
+
+		List<TipoDocumentoCliente> documentosOpcionais = new ArrayList<>();
+		List<TipoDocumentoCliente> documentosObrigatorios = new ArrayList<>();
+
+		if (documentoUtils.retornaCpf(cpfCnpj)) {
+
+			documentosOpcionais.addAll(tipoDocumentoRepository.opcionalTipoDocumentoPF());
+			tipoDocumentoClienteOutputDTO.setDocumentosOpcionais(documentosOpcionais);
+
+			documentosObrigatorios.addAll(tipoDocumentoRepository.obrigatorioTipoDocumentoPF());
+			tipoDocumentoClienteOutputDTO.setDocumentosObrigatorios(documentosObrigatorios);
+
 		} else {
-			tpoDocumentoClienteLista = tipoDocumentoRepository.tipoDocumentoPJ();
+
+			documentosOpcionais.addAll(tipoDocumentoRepository.opcionalTipoDocumentoPJ());
+			tipoDocumentoClienteOutputDTO.setDocumentosOpcionais(documentosOpcionais);
+
+			documentosObrigatorios.addAll(tipoDocumentoRepository.obrigatorioTipoDocumentoPJ());
+			tipoDocumentoClienteOutputDTO.setDocumentosObrigatorios(documentosObrigatorios);
+
 		}
-		return tpoDocumentoClienteLista;
+		return tipoDocumentoClienteOutputDTO;
 	}
 
 	@Override
@@ -195,28 +237,4 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		return ClasseDocumento.valueOf(codGED);
 	}
 
-	private String formataData(Date dateInput) {
-
-		String data = null;
-		Locale locale = new Locale("pt", "BR");
-		SimpleDateFormat sdfOut = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss", locale);
-		data = String.valueOf(sdfOut.format(dateInput));
-		return data;
-	}
-
-	private String formataDataSiecm(Date dateInput) {
-
-		String data = null;
-		Locale locale = new Locale("pt", "BR");
-		SimpleDateFormat sdfOut = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", locale);
-		data = String.valueOf(sdfOut.format(dateInput));
-		return data;
-	}
-	
-	private Date formataDataBanco() {
-
-		Calendar time = Calendar.getInstance();
-		time.add(Calendar.HOUR, -3);
-		return time.getTime();
-	}
 }

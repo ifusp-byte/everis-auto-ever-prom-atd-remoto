@@ -64,5 +64,8 @@ public class AuditoriaEnvioNotaTokenDsLogPlataformaDTO {
 
 	@Valid
 	private String tokenValidoTelefone;
+	
+	@Valid
+	private String tipoAssinatura;
 
 }

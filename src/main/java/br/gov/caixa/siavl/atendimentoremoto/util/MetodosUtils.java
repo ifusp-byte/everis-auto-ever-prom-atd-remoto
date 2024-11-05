@@ -69,7 +69,7 @@ public class MetodosUtils {
 
 		return ResponseEntity.status(status).contentType(MediaType.APPLICATION_JSON).body(body);
 	}
-	
+
 	public String formataData(Date dateInput) {
 
 		String data = null;
@@ -77,6 +77,18 @@ public class MetodosUtils {
 		SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale);
 		data = String.valueOf(sdfOut.format(dateInput));
 		return data;
+	}
+	
+	public static JsonNode StringToJson(Object object) {
+
+		JsonNode value = null;
+
+		try {
+			value = mapper.readTree(String.valueOf(object));
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+		return value;
 	}
 
 }

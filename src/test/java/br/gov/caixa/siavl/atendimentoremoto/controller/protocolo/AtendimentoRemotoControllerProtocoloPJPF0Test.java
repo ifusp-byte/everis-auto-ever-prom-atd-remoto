@@ -31,5 +31,5 @@ class AtendimentoRemotoControllerProtocoloPJPF0Test extends AtendimentoRemotoCon
 	void geraProtocoloTestPJPF1Test() throws StreamReadException, DatabindException, IOException {
 		geraProtocolo(GERA_PROTOCOLO_PJ);
 	}
-
+	
 }

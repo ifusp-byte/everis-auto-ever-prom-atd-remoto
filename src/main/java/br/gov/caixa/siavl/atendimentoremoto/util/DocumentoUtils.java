@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("all")
 public class DocumentoUtils {
 
+	private static Long PUBLICO_ALVO_PF = 1L;
+	private static Long PUBLICO_ALVO_PJ = 2L;
+
 	public String formataCpf(Object object) {
 
 		String cpfInput = null;
@@ -56,16 +59,68 @@ public class DocumentoUtils {
 		return cnpj;
 	}
 
+	public static String formataCpfFront(Object object) {
+
+		String cpfInput = null;
+		String formatCpf = null;
+		String cpf = null;
+		MaskFormatter cpfMask = null;
+
+		if (object != null) {
+			cpfInput = String.valueOf(object).replace(".", "").replace("/", "").replace("/", "").replace("-", "");
+			formatCpf = "00000000000".substring(cpfInput.length()) + cpfInput;
+			try {
+				cpfMask = new MaskFormatter("###.###.###-##");
+				cpfMask.setValueContainsLiteralCharacters(false);
+				cpf = cpfMask.valueToString(formatCpf);
+			} catch (ParseException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return cpf;
+	}
+
+	public static String formataCnpjFront(Object object) {
+
+		String cnpjInput = null;
+		String formatCnpj = null;
+		String cnpj = null;
+		MaskFormatter cnpjMask = null;
+
+		if (object != null) {
+			cnpjInput = String.valueOf(object).replace(".", "").replace("/", "").replace("/", "").replace("-", "");
+			formatCnpj = "00000000000000".substring(cnpjInput.length()) + cnpjInput;
+			try {
+				cnpjMask = new MaskFormatter("##.###.###/####-##");
+				cnpjMask.setValueContainsLiteralCharacters(false);
+				cnpj = cnpjMask.valueToString(formatCnpj);
+			} catch (ParseException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return cnpj;
+	}
+
 	public String formataDocumento(String documento) {
 		return documento.replace(".", "").replace("-", "").replace("/", "").trim();
 	}
 
 	public boolean retornaCpf(String cpfCnpj) {
-		return cpfCnpj.replace(".", "").replace("-", "").replace("/", "").trim().length() == ONZE;
+		return formataDocumento(cpfCnpj).length() == ONZE;
 	}
 
 	public String tipoPessoa(String cpfCnpj) {
 		return retornaCpf(cpfCnpj) ? PERSON_TYPE_PF : PERSON_TYPE_PJ;
+	}
+
+	public Long retornaPublicoAlvo(String cpfCnpj) {
+		Long publicoAlvo = null;
+		if (retornaCpf(cpfCnpj)) {
+			publicoAlvo = PUBLICO_ALVO_PJ;
+		} else {
+			publicoAlvo = PUBLICO_ALVO_PF;
+		}
+		return publicoAlvo;
 	}
 
 }
