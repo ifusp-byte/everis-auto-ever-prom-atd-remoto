@@ -524,7 +524,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 		String descricaoEnvioTransacao = Base64.getEncoder()
 				.encodeToString(metodosUtils.writeValueAsString(auditoriaPncRegistraNotaInputDTO).getBytes());
-		String descricaoTransacao = metodosUtils.writeValueAsString(STEP2_REALIZAR_NEGOCIO);
+		String descricaoTransacao = metodosUtils.writeValueAsStringPnc(STEP2_REALIZAR_NEGOCIO);
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
 		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder().descricaoEnvioTransacao(descricaoEnvioTransacao)
@@ -575,7 +575,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 		String descricaoEnvioTransacao = Base64.getEncoder()
 				.encodeToString(metodosUtils.writeValueAsString(auditoriaPncEnviaNotaTokenInputDTO).getBytes());
-		String descricaoTransacao = metodosUtils.writeValueAsString(STEP3_COMPONENTE_TOKEN_SMS);
+		String descricaoTransacao = metodosUtils.writeValueAsStringPnc(STEP3_COMPONENTE_TOKEN_SMS);
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
 		auditoriaPncInputDTO = AuditoriaPncInputDTO.builder().descricaoEnvioTransacao(descricaoEnvioTransacao)
@@ -614,12 +614,12 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		String descricaoTransacao = StringUtils.EMPTY;
 
 		if (EnviaNotaTipoAssinaturaEnum.APP.getDescricao().equalsIgnoreCase(enviaClienteInputDto.getTipoAssinatura())) {
-			descricaoTransacao = metodosUtils.writeValueAsString(STEP3_COMPROVANTE_ASSINAR_PELO_APP);
+			descricaoTransacao = metodosUtils.writeValueAsStringPnc(STEP3_COMPROVANTE_ASSINAR_PELO_APP);
 		}
 
 		if (EnviaNotaTipoAssinaturaEnum.TOKEN_PRODUTO.getDescricao()
 				.equalsIgnoreCase(enviaClienteInputDto.getTipoAssinatura())) {
-			descricaoTransacao = metodosUtils.writeValueAsString(STEP3_COMPONENTE_TOKEN_PRODUTO);
+			descricaoTransacao = metodosUtils.writeValueAsStringPnc(STEP3_COMPONENTE_TOKEN_PRODUTO);
 		}
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
