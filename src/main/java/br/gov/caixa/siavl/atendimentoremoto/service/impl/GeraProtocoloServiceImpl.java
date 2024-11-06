@@ -169,7 +169,7 @@ public class GeraProtocoloServiceImpl implements GeraProtocoloService {
 		String descricaoEnvioTransacao = null;
 		String descricaoTransacao = null;
 
-		descricaoTransacao = mapper.writeValueAsStringPnc(TIPO_ATENDIMENTO);
+		descricaoTransacao = metodosUtils.writeValueAsStringPnc(TIPO_ATENDIMENTO);
 		descricaoEnvioTransacao = Base64.getEncoder().encodeToString(mapper.writeValueAsString(auditoriaPncProtocoloInputDTO).getBytes());
 
 		AuditoriaPncInputDTO auditoriaPncInputDTO = new AuditoriaPncInputDTO();
