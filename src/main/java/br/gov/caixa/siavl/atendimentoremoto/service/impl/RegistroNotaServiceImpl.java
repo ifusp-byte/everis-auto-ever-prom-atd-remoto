@@ -413,7 +413,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		Long nuUnidade = Long.parseLong(numeroContaAtendimento.substring(0, 4));
 		Long nuProduto = Long.parseLong(numeroContaAtendimento.substring(4, 8));
 		Long coIdentificacao = Long.parseLong(numeroContaAtendimento.substring(8, numeroContaAtendimento.length()));
-		
+
 		Optional<AtendimentoCliente> atendimentoClienteOpt = atendimentoClienteRepository
 				.findByProtocolo(Long.parseLong(enviaClienteInputDto.getNumeroProtocolo()));
 
@@ -422,7 +422,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		if (atendimentoClienteOpt.isPresent()) {
 			atendimentoCliente = atendimentoClienteOpt.get();
 		}
-		
+
 		EnviaClienteOutputDto enviaClienteOutputDto = new EnviaClienteOutputDto();
 
 		if (EnviaNotaTipoAssinaturaEnum.TOKEN_SMS.getDescricao()
@@ -433,8 +433,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 				if (Boolean.FALSE.equals(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getTokenValido())))) {
 					atendimentoCliente.setValidacaoTokenAtendimento(2L);
 					atendimentoCliente.setDataEnvioToken(dataUtils.formataDataBanco());
-					atendimentoClienteRepository.save(atendimentoCliente);					
-					
+					atendimentoClienteRepository.save(atendimentoCliente);
+
 					auditoriaTokenSms(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade,
 							nuProduto, coIdentificacao, matriculaAtendente, statusRetornoSicli, numeroProtocolo,
 							numeroContaAtendimento, tipoPessoa);
@@ -601,6 +601,9 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			String numeroContaAtendimento, String tipoPessoa) {
 
 		AuditoriaPncEnviaNotaInputDTO auditoriaPncEnviaNotaInputDTO = new AuditoriaPncEnviaNotaInputDTO();
+		auditoriaPncEnviaNotaInputDTO = (AuditoriaPncEnviaNotaInputDTO) documentoUtils.anexosAuditoria(null,
+				auditoriaPncEnviaNotaInputDTO, numeroNota);
+
 		auditoriaPncEnviaNotaInputDTO = AuditoriaPncEnviaNotaInputDTO.builder().situacaoNota(SITUACAO_NOTA)
 				.tipoAssinatura(enviaClienteInputDto.getTipoAssinatura()).tipoNota(tipoPessoa)
 				.cpfSocio(enviaClienteInputDto.getCpfSocio()).nomeSocio(enviaClienteInputDto.getNomeSocio())

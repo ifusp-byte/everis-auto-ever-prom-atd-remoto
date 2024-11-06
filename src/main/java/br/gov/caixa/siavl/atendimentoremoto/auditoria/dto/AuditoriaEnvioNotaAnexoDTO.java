@@ -15,7 +15,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class AuditoriaEnvioNotaDsLogPlataformaAnexoDTO {
+public class AuditoriaEnvioNotaAnexoDTO {
 
 	@Valid
 	private String nomeAnexo;
