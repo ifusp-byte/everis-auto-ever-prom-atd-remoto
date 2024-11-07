@@ -604,12 +604,15 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		auditoriaPncEnviaNotaInputDTO = (AuditoriaPncEnviaNotaInputDTO) documentoUtils.anexosAuditoria(null,
 				auditoriaPncEnviaNotaInputDTO, numeroNota);
 
-		auditoriaPncEnviaNotaInputDTO = AuditoriaPncEnviaNotaInputDTO.builder().situacaoNota(SITUACAO_NOTA)
-				.tipoAssinatura(enviaClienteInputDto.getTipoAssinatura()).tipoNota(tipoPessoa)
-				.cpfSocio(enviaClienteInputDto.getCpfSocio()).nomeSocio(enviaClienteInputDto.getNomeSocio())
-				.numeroProtocolo(enviaClienteInputDto.getNumeroProtocolo()).numeroNota(String.valueOf(numeroNota))
-				.versaoSistema(enviaClienteInputDto.getVersaoSistema())
-				.dataHoraTransacao(dataUtils.formataData(new Date())).build();
+		auditoriaPncEnviaNotaInputDTO.setSituacaoNota(SITUACAO_NOTA);
+		auditoriaPncEnviaNotaInputDTO.setTipoAssinatura(enviaClienteInputDto.getTipoAssinatura());
+		auditoriaPncEnviaNotaInputDTO.setTipoNota(tipoPessoa);
+		auditoriaPncEnviaNotaInputDTO.setCpfSocio(enviaClienteInputDto.getCpfSocio());
+		auditoriaPncEnviaNotaInputDTO.setNomeSocio(enviaClienteInputDto.getNomeSocio());
+		auditoriaPncEnviaNotaInputDTO.setNumeroProtocolo(enviaClienteInputDto.getNumeroProtocolo());
+		auditoriaPncEnviaNotaInputDTO.setNumeroNota(String.valueOf(numeroNota));
+		auditoriaPncEnviaNotaInputDTO.setVersaoSistema(enviaClienteInputDto.getVersaoSistema());
+		auditoriaPncEnviaNotaInputDTO.setDataHoraTransacao(dataUtils.formataData(new Date()));
 
 		String descricaoEnvioTransacao = Base64.getEncoder()
 				.encodeToString(metodosUtils.writeValueAsString(auditoriaPncEnviaNotaInputDTO).getBytes());
