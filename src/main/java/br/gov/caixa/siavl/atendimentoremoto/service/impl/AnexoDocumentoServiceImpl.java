@@ -147,7 +147,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		if (DOCUMENTO_OPCIONAL.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
 			siecmDocumentosIncluirDocumentoAtributosCampos
 					.setNome(dataUtils.formataData(new Date()) + "_" + DEFAULT_NOME_OPCIONAL +"-"+ enviaDocumentoInputDto.getNomeTipoDocumento()
-							.trim().replaceAll("[^\\p{L}\\p{N}]+", StringUtils.EMPTY) + "." + DEFAULT_DOCUMENTO_TIPO);
+							.trim().replaceAll("[^\\p{L}\\p{N}]+", StringUtils.EMPTY).toUpperCase() + "." + DEFAULT_DOCUMENTO_TIPO);
 		}
 
 		SiecmDocumentosIncluirDocumentoAtributosInputDto siecmDocumentosIncluirDocumentoAtributos = new SiecmDocumentosIncluirDocumentoAtributosInputDto();
