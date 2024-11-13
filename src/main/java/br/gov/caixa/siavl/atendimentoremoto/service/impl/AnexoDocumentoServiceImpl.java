@@ -140,17 +140,15 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		siecmDocumentosIncluirDocumentoAtributosCampos.setGerarThumbnail(true);
 
 		if (DOCUMENTO_OBRGATORIO.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
-			siecmDocumentosIncluirDocumentoAtributosCampos
-					.setNome(dataUtils.formataData(new Date()) + "_" + DEFAULT_NOME_OBRIGATORIO + "-" +
-							enviaDocumentoInputDto.getNumeroNota() + "_" + enviaDocumentoInputDto.getNomeAnexo()
-							+ "." + DEFAULT_DOCUMENTO_TIPO);
+			siecmDocumentosIncluirDocumentoAtributosCampos.setNome(dataUtils.formataData(new Date()) + "_"
+					+ enviaDocumentoInputDto.getNumeroNota() + "-" + DEFAULT_NOME_OBRIGATORIO + "_"
+					+ enviaDocumentoInputDto.getNomeAnexo() + "." + DEFAULT_DOCUMENTO_TIPO);
 		}
 
 		if (DOCUMENTO_OPCIONAL.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
-			siecmDocumentosIncluirDocumentoAtributosCampos
-					.setNome(dataUtils.formataData(new Date()) + "_" + DEFAULT_NOME_OPCIONAL + "-" + 
-							enviaDocumentoInputDto.getNumeroNota() + "_" + enviaDocumentoInputDto.getNomeAnexo()
-							+ "." + DEFAULT_DOCUMENTO_TIPO);
+			siecmDocumentosIncluirDocumentoAtributosCampos.setNome(dataUtils.formataData(new Date()) + "_"
+					+ enviaDocumentoInputDto.getNumeroNota() + "-" + DEFAULT_NOME_OPCIONAL + "_"
+					+ enviaDocumentoInputDto.getNomeAnexo() + "." + DEFAULT_DOCUMENTO_TIPO);
 		}
 
 		SiecmDocumentosIncluirDocumentoAtributosInputDto siecmDocumentosIncluirDocumentoAtributos = new SiecmDocumentosIncluirDocumentoAtributosInputDto();
@@ -170,7 +168,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		requestAnexarDocumento = metodosUtils.writeValueAsString(siecmDocumentosIncluir);
 
 		siecmOutputDto = siecmGateway.documentoIncluir(token, cpfCnpj, requestAnexarDocumento);
-		siecmOutputDto.setNomeAnexo(siecmDocumentosIncluirDocumentoAtributosCampos.getNome()); 
+		siecmOutputDto.setNomeAnexo(siecmDocumentosIncluirDocumentoAtributosCampos.getNome());
 		;
 		Long numeroTipoDoc = tipoDocumentoRepository
 				.numeroTipoDocumentoByNomeDocumento(enviaDocumentoInputDto.getNomeTipoDocumento()).get(0);
