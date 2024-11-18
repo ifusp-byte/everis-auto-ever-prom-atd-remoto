@@ -194,7 +194,7 @@ public class DesafioServiceImpl implements DesafioService {
 		String descricaoEnvioTransacao = null;
 		String descricaoTransacao = null;
 
-		descricaoTransacao = metodosUtils.writeValueAsString(IDENTIFICACAO_POSITIVA);
+		descricaoTransacao = metodosUtils.writeValueAsStringPnc(IDENTIFICACAO_POSITIVA);
 		descricaoEnvioTransacao = Base64.getEncoder()
 				.encodeToString(metodosUtils.writeValueAsString(auditoriaPncDesafioInputDTO).getBytes());
 

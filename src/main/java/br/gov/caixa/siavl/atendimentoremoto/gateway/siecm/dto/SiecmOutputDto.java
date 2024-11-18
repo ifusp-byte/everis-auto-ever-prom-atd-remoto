@@ -48,9 +48,13 @@ public class SiecmOutputDto {
 	@XmlElement(name = "linkThumbnail")
 	private String linkThumbnail;
 	
-	
 	@Valid
 	@XmlElement(name = "id")
 	private String id;
+	
+	@Valid
+	@XmlElement(name = "nomeAnexo")
+	private String nomeAnexo; 
+	
 
 }
