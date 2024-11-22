@@ -5,10 +5,18 @@ import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.PERSON_TY
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.PERSON_TYPE_PJ;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.text.MaskFormatter;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaEnvioNotaAnexoDTO;
+import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaEnvioNotaDsLogPlataformaDTO;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto.AuditoriaPncEnviaNotaInputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoClienteRepository;
 
 @Component
 @SuppressWarnings("all")
@@ -16,6 +24,9 @@ public class DocumentoUtils {
 
 	private static Long PUBLICO_ALVO_PF = 1L;
 	private static Long PUBLICO_ALVO_PJ = 2L;
+
+	@Autowired
+	DocumentoClienteRepository documentoClienteRepository;
 
 	public String formataCpf(Object object) {
 
@@ -121,6 +132,56 @@ public class DocumentoUtils {
 			publicoAlvo = PUBLICO_ALVO_PF;
 		}
 		return publicoAlvo;
+	}
+
+	public Object anexosAuditoria(AuditoriaEnvioNotaDsLogPlataformaDTO dsLogPlataformaDTO,
+			AuditoriaPncEnviaNotaInputDTO auditoriaPncEnviaNotaInputDTO, Long numeroNota) {
+
+		List<AuditoriaEnvioNotaAnexoDTO> anexos = new ArrayList<>();
+		List<Object[]> numeroNomeDocumento = documentoClienteRepository.findNomeDocumentoNomeAnexo(numeroNota);
+
+		if (auditoriaPncEnviaNotaInputDTO == null) {
+			if (!numeroNomeDocumento.isEmpty()) {
+				dsLogPlataformaDTO.setPossuiAnexo("sim");
+				numeroNomeDocumento.stream().forEach(documento -> {
+					AuditoriaEnvioNotaAnexoDTO anexo = new AuditoriaEnvioNotaAnexoDTO();
+					anexo.setCategoriaAnexo(String.valueOf(documento[0]));
+					anexo.setNomeAnexo(String.valueOf(documento[1]));
+					anexos.add(anexo);
+				});
+			} else {
+				dsLogPlataformaDTO.setPossuiAnexo("não");
+				AuditoriaEnvioNotaAnexoDTO anexo = new AuditoriaEnvioNotaAnexoDTO();
+				anexos.add(anexo);
+			}
+
+			dsLogPlataformaDTO.setAnexos(anexos);
+
+			return dsLogPlataformaDTO;
+		}
+
+		if (dsLogPlataformaDTO == null) {
+			if (!numeroNomeDocumento.isEmpty()) {
+				auditoriaPncEnviaNotaInputDTO.setPossuiAnexo("sim");
+				numeroNomeDocumento.stream().forEach(documento -> {
+					AuditoriaEnvioNotaAnexoDTO anexo = new AuditoriaEnvioNotaAnexoDTO();
+					anexo.setCategoriaAnexo(String.valueOf(documento[0]));
+					anexo.setNomeAnexo(String.valueOf(documento[1]));
+					anexos.add(anexo);
+				});
+			} else {
+				auditoriaPncEnviaNotaInputDTO.setPossuiAnexo("não");
+				AuditoriaEnvioNotaAnexoDTO anexo = new AuditoriaEnvioNotaAnexoDTO();
+				anexos.add(anexo);
+			}
+
+			auditoriaPncEnviaNotaInputDTO.setAnexos(anexos);
+
+			return auditoriaPncEnviaNotaInputDTO;
+		}
+
+		return null;
+
 	}
 
 }

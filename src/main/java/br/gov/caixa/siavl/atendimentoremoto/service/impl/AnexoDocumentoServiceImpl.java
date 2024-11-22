@@ -100,13 +100,14 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		SiecmDocumentosIncluirDadosRequisicaoInputDto siecmDocumentosIncluirDadosRequisicao = new SiecmDocumentosIncluirDadosRequisicaoInputDto();
 		SiecmDocumentosIncluirDestinoDocumentoInputDto siecmDocumentosIncluirDestinoDocumento = new SiecmDocumentosIncluirDestinoDocumentoInputDto();
 		SiecmDocumentosIncluirDocumentoAtributosCamposInputDto siecmDocumentosIncluirDocumentoAtributosCampos = new SiecmDocumentosIncluirDocumentoAtributosCamposInputDto();
-		
+
 		siecmDocumentosIncluirDadosRequisicao.setIpUsuarioFinal(tokenUtils.getIpFromToken(token));
 		siecmDocumentosIncluirDadosRequisicao.setLocalArmazenamento(DEFAULT_LOCAL_ARMAZENAMENTO);
 
 		siecmDocumentosIncluirDestinoDocumento.setIdDestino(cpfCnpjSiecm);
 		siecmDocumentosIncluirDestinoDocumento.setLocalGravacao(DEFAULT_LOCAL_GRAVACAO);
-		siecmDocumentosIncluirDestinoDocumento.setSubPasta(SiecmConstants.NU_NOTA_NEGOCIACAO+"_"+enviaDocumentoInputDto.getNumeroNota());
+		siecmDocumentosIncluirDestinoDocumento
+				.setSubPasta(SiecmConstants.NU_NOTA_NEGOCIACAO + "_" + enviaDocumentoInputDto.getNumeroNota());
 
 		if (DOCUMENTO_OPCIONAL.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
 			mensagemDocumento = INCLUI_DOCUMENTO_OPCIONAL;
@@ -117,7 +118,6 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 			mensagemDocumento = INCLUI_DOCUMENTO_OBRIGATORIO;
 			siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(enviaDocumentoInputDto.getCodGED().trim());
 		}
-
 
 		List<Object> siecmCamposDinamicoObrigatorios = new ArrayList<>();
 		siecmCamposDinamicoObrigatorios
@@ -140,14 +140,15 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		siecmDocumentosIncluirDocumentoAtributosCampos.setGerarThumbnail(true);
 
 		if (DOCUMENTO_OBRGATORIO.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
-			siecmDocumentosIncluirDocumentoAtributosCampos.setNome(dataUtils.formataData(new Date()) + "_" +
-					DEFAULT_NOME_OBRIGATORIO +"-"+ enviaDocumentoInputDto.getCodGED().trim() + "." + DEFAULT_DOCUMENTO_TIPO);
+			siecmDocumentosIncluirDocumentoAtributosCampos.setNome(dataUtils.formataData(new Date()) + "_"
+					+ enviaDocumentoInputDto.getNumeroNota() + "-" + DEFAULT_NOME_OBRIGATORIO + "_"
+					+ enviaDocumentoInputDto.getNomeAnexo() + "." + DEFAULT_DOCUMENTO_TIPO);
 		}
 
 		if (DOCUMENTO_OPCIONAL.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
-			siecmDocumentosIncluirDocumentoAtributosCampos
-					.setNome(dataUtils.formataData(new Date()) + "_" + DEFAULT_NOME_OPCIONAL +"-"+ enviaDocumentoInputDto.getNomeTipoDocumento()
-							.trim().replaceAll("[^\\p{L}\\p{N}]+", StringUtils.EMPTY) + "." + DEFAULT_DOCUMENTO_TIPO);
+			siecmDocumentosIncluirDocumentoAtributosCampos.setNome(dataUtils.formataData(new Date()) + "_"
+					+ enviaDocumentoInputDto.getNumeroNota() + "-" + DEFAULT_NOME_OPCIONAL + "_"
+					+ enviaDocumentoInputDto.getNomeAnexo() + "." + DEFAULT_DOCUMENTO_TIPO);
 		}
 
 		SiecmDocumentosIncluirDocumentoAtributosInputDto siecmDocumentosIncluirDocumentoAtributos = new SiecmDocumentosIncluirDocumentoAtributosInputDto();
@@ -167,7 +168,8 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		requestAnexarDocumento = metodosUtils.writeValueAsString(siecmDocumentosIncluir);
 
 		siecmOutputDto = siecmGateway.documentoIncluir(token, cpfCnpj, requestAnexarDocumento);
-
+		siecmOutputDto.setNomeAnexo(siecmDocumentosIncluirDocumentoAtributosCampos.getNome());
+		;
 		Long numeroTipoDoc = tipoDocumentoRepository
 				.numeroTipoDocumentoByNomeDocumento(enviaDocumentoInputDto.getNomeTipoDocumento()).get(0);
 
@@ -195,7 +197,6 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		documentoNotaNegociacao.setTipoDocumentoCliente(numeroTipoDoc);
 		documentoNotaNegociacao.setInclusaoDocumento(dtInclusaoDocumento);
 		documentoNotaNegociacaoRepository.save(documentoNotaNegociacao);
-		//mensagemDocumento = INCLUI_DOCUMENTO_OBRIGATORIO;
 
 		LOG.log(Level.INFO,
 				"Nota: " + enviaDocumentoInputDto.getNumeroNota() + mensagemDocumento + requestAnexarDocumento);

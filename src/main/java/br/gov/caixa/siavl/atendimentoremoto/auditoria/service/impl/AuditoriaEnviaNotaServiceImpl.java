@@ -3,10 +3,8 @@ package br.gov.caixa.siavl.atendimentoremoto.auditoria.service.impl;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import javax.sql.rowset.serial.SerialClob;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaEnvioNotaDsLogPlataformaAnexoDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaEnvioNotaDsLogPlataformaDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.model.LogPlataforma;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.repository.LogPlataformaRepository;
@@ -25,6 +22,7 @@ import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaEnviaNota
 import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoClienteRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoNotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.TipoDocumentoRepository;
+import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
@@ -33,6 +31,9 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 
 	@Autowired
 	TokenUtils tokenUtils;
+
+	@Autowired
+	DocumentoUtils documentoUtils;
 
 	@Autowired
 	LogPlataformaRepository logPlataformaRepository;
@@ -66,25 +67,11 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 
 		LogPlataforma logPlataforma = new LogPlataforma();
 		AuditoriaEnvioNotaDsLogPlataformaDTO dsLogPlataformaDTO = new AuditoriaEnvioNotaDsLogPlataformaDTO();
-		List<AuditoriaEnvioNotaDsLogPlataformaAnexoDTO> anexos = new ArrayList<>();
-		List<Object[]> numeroNomeDocumento = documentoClienteRepository.numeroNomeDocumento(Long.parseLong(numeroNota), Long.parseLong(cpfConsulta));
-		
-		if (!numeroNomeDocumento.isEmpty()) {
-			dsLogPlataformaDTO.setPossuiAnexo("sim");			
-			numeroNomeDocumento.stream().forEach(documento -> {
-				AuditoriaEnvioNotaDsLogPlataformaAnexoDTO anexo = new AuditoriaEnvioNotaDsLogPlataformaAnexoDTO(); 
-				anexo.setCategoriaAnexo(String.valueOf(documento[0]));
-				anexo.setNomeAnexo(String.valueOf(documento[1]));			
-				anexos.add(anexo);
-			});	
-		} else {
-			dsLogPlataformaDTO.setPossuiAnexo("não");	
-			AuditoriaEnvioNotaDsLogPlataformaAnexoDTO anexo = new AuditoriaEnvioNotaDsLogPlataformaAnexoDTO(); 
-			anexos.add(anexo);
-		}
+
+		dsLogPlataformaDTO = (AuditoriaEnvioNotaDsLogPlataformaDTO) documentoUtils.anexosAuditoria(dsLogPlataformaDTO,
+				null, Long.parseLong(numeroNota));
 
 		dsLogPlataformaDTO.setTipoAssinatura(tipoAssinatura);
-		dsLogPlataformaDTO.setAnexos(anexos);
 		dsLogPlataformaDTO.setCpfCnpj(cpfCnpj);
 		dsLogPlataformaDTO.setCpfSocio(cpfSocio);
 		dsLogPlataformaDTO.setMatriculaAtendente(matriculaAtendente);

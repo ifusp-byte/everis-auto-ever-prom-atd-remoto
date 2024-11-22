@@ -64,6 +64,6 @@ public class AuditoriaEnvioNotaDsLogPlataformaDTO {
 	@Valid
 	private String possuiAnexo;
 
-	private List<AuditoriaEnvioNotaDsLogPlataformaAnexoDTO> anexos;
+	private List<AuditoriaEnvioNotaAnexoDTO> anexos;
 
 }

@@ -34,5 +34,7 @@ public class EnviaDocumentoInputDto {
 	private String nomeTipoDocumento;
 
 	private String tipoDocumento;
+	
+	private String nomeAnexo; 
 
 }

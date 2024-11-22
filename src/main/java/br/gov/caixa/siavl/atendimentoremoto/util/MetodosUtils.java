@@ -35,6 +35,18 @@ public class MetodosUtils {
 		}
 		return value;
 	}
+	
+	public String writeValueAsStringPnc(Object object) {
+
+		String value = null;
+
+		try {
+			value = mapper.writeValueAsString(object).replaceAll("\\u005C", "").replaceAll("\\n", "").replaceAll("\\u0022", "");
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+		return value;
+	}
 
 	public JsonNode readTree(Object object) {
 

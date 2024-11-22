@@ -45,12 +45,6 @@ public class AtendimentoCliente implements Serializable {
 	@Column(name = "NU_CNPJ_CLIENTE")
 	private Long cnpjCliente;
 
-	/*
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "NU_PROTOCOLO_ATNTO_CLNTE", nullable = true, insertable = false, updatable = false)
-	private AtendimentoNegocio atendimentoNegocio;
-	*/
-
 	@Column(name = "IC_CANAL_ATENDIMENTO")
 	private char canalAtendimento;
 
@@ -84,9 +78,6 @@ public class AtendimentoCliente implements Serializable {
 	@Column(name = "DT_ENVIO_CHAVE_VALIDACAO_ATNTO")
 	private Date dataEnvioToken;
 
-	/**
-	 * este trecho de código deve ser comentado na branch de PRD
-	 */
 	@Column(name = "NU_CANAL_ATENDIMENTO")
 	private Long numeroCanalAtendimento;
 

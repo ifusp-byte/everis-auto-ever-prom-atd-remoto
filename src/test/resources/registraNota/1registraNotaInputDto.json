@@ -1,0 +1,17 @@
+{
+    "cpfCnpj": "65156900372",
+    "nomeCliente": "MARCELA CASAL NUNES",
+    "numeroProtocolo": "254750",
+    "contaAtendimento": "3314.0001.000000000025780-3",
+    "valorMeta": "R$ 87,89",
+    "produto": "CAIXA MULHER                            ",
+    "acaoProduto": "SEGURO VIDA MULHER",
+    "versaoSistema": "mfe_avl_atendimentoremoto",
+    "razaoSocial": "",
+    "cnpj": "",
+    "relatorioNota": {
+        "Valor (meta)": "R$ 87,89",
+        "BENEFICIARIO": "Terceiros",
+        "Bandeira 2": "American Express"
+    }
+}
