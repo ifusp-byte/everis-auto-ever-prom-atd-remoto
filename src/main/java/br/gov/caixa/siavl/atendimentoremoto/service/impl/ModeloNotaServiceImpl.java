@@ -18,6 +18,7 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.model.FluxoAtendimento;
 import br.gov.caixa.siavl.atendimentoremoto.model.ModeloNotaNegocioFavorito;
+import br.gov.caixa.siavl.atendimentoremoto.model.TipoNota;
 import br.gov.caixa.siavl.atendimentoremoto.repository.AtendimentoNegocioRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.CampoModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.FluxoAtendimentoRepository;
@@ -26,6 +27,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RoteiroFechamentoNotaRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.TipoNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.impl.ModeloNotaRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.util.DataUtils;
@@ -48,9 +50,12 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	@Autowired
 	DocumentoUtils documentoUtils;
+	
+	@Autowired
+	TipoNotaRepository tipoNotaRepository;
 
 	@Autowired
-	ModeloNotaRepository modeloNotaRepository;
+	ModeloNotaRepository modeloNotaRepository;	
 
 	@Autowired
 	NotaNegociacaoRepository notaNegociacaoRepository;
@@ -75,8 +80,10 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	@Autowired
 	RoteiroFechamentoNotaRepository roteiroFechamentoNotaRepository;
-
-	//private static ObjectMapper mapper = new ObjectMapper();
+	
+	public List<TipoNota> consultaTipoNota() {
+		return tipoNotaRepository.findAll();
+	}
 
 	public List<ModeloNotaOutputDto> consultaModeloNota(String cpfCnpj) {
 		List<ModeloNotaOutputDto> modelosNota = new ArrayList<>();
