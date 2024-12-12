@@ -19,6 +19,7 @@ import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoC
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.NOTA_SALVAR_NOTA;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.PROTOCOLO;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.RELATORIOS;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.TIPO_NOTA;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.AUTHORIZATION;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.BEARER_1;
 
@@ -221,6 +222,12 @@ public class AtendimentoRemotoController {
 	@PostMapping(RELATORIOS)
 	public Object relatorio(@RequestBody ReportInputDTO reportInputDTO) throws Exception {
 		return reportService.relatorio(reportInputDTO);
+	}
+	
+	@GetMapping(TIPO_NOTA)
+	public ResponseEntity<Object> consultaTipoNota() {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(modeloNotaService.consultaTipoNota());
 	}
 
 	public String getToken(String token) {

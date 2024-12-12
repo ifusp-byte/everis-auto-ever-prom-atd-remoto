@@ -15,6 +15,12 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 
 @SuppressWarnings("all")
 class AtendimentoRemotoControllerModeloNotaTest extends ControllerTest {
+	
+	void consultaTipoNota() {
+		String BASE_URL = atdremotoUrl + "/tipo-nota";
+		ResponseEntity<Object> response = restTemplate.getForEntity(BASE_URL, Object.class);
+		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+	}
 
 	void consultaModeloNota() {
 		String BASE_URL = atdremotoUrl + "/modelo-nota/10020030088";
