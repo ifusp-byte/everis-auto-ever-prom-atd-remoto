@@ -32,6 +32,14 @@ public class ModeloNotaOutputDto {
 	@Valid
 	@XmlElement(name = "descricaoAcaoProduto")
 	private String descricaoAcaoProduto;
+	
+	@Valid
+	@XmlElement(name = "numeroTipoNota")
+	private String numeroTipoNota;	
+	
+	@Valid
+	@XmlElement(name = "nomeTipoNota")
+	private String nomeTipoNota;
 
 	@Valid
 	@JsonIgnore
