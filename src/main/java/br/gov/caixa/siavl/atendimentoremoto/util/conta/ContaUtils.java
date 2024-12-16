@@ -107,7 +107,11 @@ public class ContaUtils {
 			Object nuProduto, Object coIdentificacao, List<ContasOutputDTO> contasAtendimento, String tipoPessoa) {
 
 		String contaFormatada = null;
-
+		
+		/**
+		 * este trecho de código foi descontinuado - Sprint 18 - IB 22484999
+		 */
+		/*
 		if (CONTA_SIDEC.equalsIgnoreCase(sgSistema)) {
 			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
 			if (identificacao.length() > SETE_NUMBER) {
@@ -128,11 +132,9 @@ public class ContaUtils {
 				}
 			}
 		}
+		*/
 
-		/**
-		 * este trecho de código foi descontinuado - Sprint 18 - IB 22484999
-		 */
-		/*
+		
 		if (CONTA_SID01.equalsIgnoreCase(sgSistema)) {
 			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
 			if (identificacao.length() > OITO_NUMBER) {
@@ -153,8 +155,7 @@ public class ContaUtils {
 				}
 			}
 		}
-		*/
-
+		
 		return contasAtendimento;
 
 	}
