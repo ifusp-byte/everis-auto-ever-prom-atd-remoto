@@ -25,7 +25,7 @@ public class ModeloNotaRepositoryImpl {
 		sb.append(" AND C.acaoProdutoAtivo = 1 ");
 		sb.append(" AND B.numeroModeloNota NOT IN (SELECT C.numeroModeloNota FROM FluxoAtendimento C) ");
 		sb.append(" AND B.publicoAlvo <> :publicoAlvo ");
-		sb.append(" GROUP  BY A.numeroModeloNota, C.numeroAcao, C.descricao ");
+		sb.append(" GROUP  BY A.numeroModeloNota, C.numeroAcao, C.descricao, D.numeroTipoNota, D.nomeTipoNota ");
 		sb.append(" ORDER  BY 1 DESC ");
 
 		TypedQuery<Object[]> query = em.createQuery(sb.toString(), Object[].class);
