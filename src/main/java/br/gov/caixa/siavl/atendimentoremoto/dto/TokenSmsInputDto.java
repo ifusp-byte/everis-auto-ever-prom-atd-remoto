@@ -26,15 +26,12 @@ public class TokenSmsInputDto {
 	private String numeroProtocolo;
 
 	@Valid
-	private String razaoSocial;
-
-	@Valid
-	private String assinaturaToken;
+	private String identificacaoToken;
 
 	@Valid
 	private String tokenValido;
 
 	@Valid
-	private String tokenValidoTelefone;
+	private String tokenTelefone;
 
 }
