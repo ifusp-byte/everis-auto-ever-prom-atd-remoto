@@ -5,6 +5,6 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.TokenSmsInputDto;
 @SuppressWarnings("all")
 public interface TokenSmsService {
 	
-	Object identificacaoTokenSms(TokenSmsInputDto tokenSmsInputDto);
+	Object identificacaoTokenSms(String token, TokenSmsInputDto tokenSmsInputDto);
 
 }

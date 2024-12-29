@@ -237,9 +237,9 @@ public class AtendimentoRemotoController {
 	}
 
 	@PostMapping(IDENTIFICACAO_TOKEN_SMS)
-	public Object identificacaoTokenSms(@RequestBody TokenSmsInputDto tokenSmsInputDto) throws Exception {
+	public Object identificacaoTokenSms(@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token, @RequestBody TokenSmsInputDto tokenSmsInputDto) throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
-				.body(tokenSmsService.identificacaoTokenSms(tokenSmsInputDto));
+				.body(tokenSmsService.identificacaoTokenSms(getToken(token), tokenSmsInputDto));
 	}
 
 	public String getToken(String token) {
