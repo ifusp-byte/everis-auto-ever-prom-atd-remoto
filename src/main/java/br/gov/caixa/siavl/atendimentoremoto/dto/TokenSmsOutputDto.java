@@ -24,6 +24,6 @@ import lombok.Setter;
 public class TokenSmsOutputDto {
 
 	private boolean status;
-	private List<NotasByProtocoloOutputDTO> notas;
+	private List<NotasByProtocoloTokenSmsOutputDTO> notas;
 
 }

@@ -10,7 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloTokenSmsOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.TokenSmsInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.TokenSmsOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.model.AssinaturaNota;
@@ -136,9 +136,8 @@ public class TokenSmsServiceImpl implements TokenSmsService {
 
 	}
 
-	public List<NotasByProtocoloOutputDTO> notas(Long numeroProtocolo) {
-
-		return notaNegociacaoRepositoryImpl.notasByProtocolo(numeroProtocolo);
+	public List<NotasByProtocoloTokenSmsOutputDTO> notas(Long numeroProtocolo) {
+		return notaNegociacaoRepositoryImpl.notasByProtocoloTokenSms(numeroProtocolo);
 	}
 
 }
