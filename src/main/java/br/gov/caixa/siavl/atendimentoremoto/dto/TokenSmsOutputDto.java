@@ -1,6 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.dto;
 
-import javax.validation.Valid;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -19,25 +20,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "TokenSmsInputDto")
-public class TokenSmsInputDto {
+@XmlRootElement(name = "TokenSmsOutputDto")
+public class TokenSmsOutputDto {
 
-	@Valid
-	private String numeroProtocolo;
-
-	@Valid
-	private String numeroNota;
-
-	@Valid
-	private String identificacaoToken;
-	
-	@Valid
-	private String assinaturaToken;
-
-	@Valid
-	private String tokenValido;
-
-	@Valid
-	private String tokenTelefone;
+	private boolean status;
+	private List<NotasByProtocoloOutputDTO> notas;
 
 }

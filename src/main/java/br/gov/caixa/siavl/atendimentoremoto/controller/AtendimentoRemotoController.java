@@ -9,7 +9,6 @@ import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoC
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_TIPO;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_TIPO_CAMPOS;
-import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.IDENTIFICACAO_TOKEN_SMS;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.MARCA_DOI;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.MODELO_NOTA;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.MODELO_NOTA_DINAMICO;
@@ -21,6 +20,7 @@ import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoC
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.PROTOCOLO;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.RELATORIOS;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.TIPO_NOTA;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.TOKEN_SMS;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.AUTHORIZATION;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.BEARER_1;
 
@@ -236,7 +236,7 @@ public class AtendimentoRemotoController {
 				.body(modeloNotaService.consultaTipoNota());
 	}
 
-	@PostMapping(IDENTIFICACAO_TOKEN_SMS)
+	@PostMapping(TOKEN_SMS)
 	public Object identificacaoTokenSms(@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token, @RequestBody TokenSmsInputDto tokenSmsInputDto) throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
 				.body(tokenSmsService.identificacaoTokenSms(getToken(token), tokenSmsInputDto));

@@ -13,7 +13,7 @@ public class AtendimentoRemotoControllerEndpoints {
 	public static final String DESAFIO_VALIDAR = "/desafio-validar/{cpf}";
 	public static final String DESAFIO_CRIAR = "/desafio-criar/{cpf}";
 	public static final String DESAFIO_RESPONDER = "/desafio-responder/{idDesafio}";
-	public static final String IDENTIFICACAO_TOKEN_SMS = "/identificacao-token-sms";
+	public static final String TOKEN_SMS = "/token-sms";
 	public static final String AUDITORIA_IDENTIFICACAO_POSITIVA = "/auditoria-identificacao-positiva";
 	public static final String MODELO_NOTA = "/modelo-nota/{cpfCnpj}";
 	public static final String MODELO_NOTA_FAVORITA = "/modelo-nota-favorita/{cpfCnpj}";

@@ -29,8 +29,8 @@ public class ComentarioAtendimento implements Serializable {
 
 	@Id
 	@Column(name = "NU_COMENTARIO_ATENDIMENTO")
-	@SequenceGenerator(name = "AVLSQ003_NU_COMENTARIO", sequenceName = "AVLSQ003_NU_COMENTARIO", allocationSize = 1, schema = "AVL")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AVLSQ003_NU_COMENTARIO")
+	@SequenceGenerator(name = "AVLSQ005_NU_CMTRO_ATENDIMENTO", sequenceName = "AVLSQ005_NU_CMTRO_ATENDIMENTO", allocationSize = 1, schema = "AVL")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AVLSQ005_NU_CMTRO_ATENDIMENTO")
 	private Long numeroComentario;
 
 	@Column(name = "DE_COMENTARIO_ATENDIMENTO")
