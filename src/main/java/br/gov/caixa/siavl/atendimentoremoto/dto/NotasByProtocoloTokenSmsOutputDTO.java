@@ -14,9 +14,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import br.gov.caixa.siavl.atendimentoremoto.enums.EnviaNotaTipoAssinaturaEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -110,7 +110,7 @@ public class NotasByProtocoloTokenSmsOutputDTO {
 		this.nomeSocio = relatorioNotaPath.path("nomeSocio").asText();
 		this.cpfSocio = relatorioNotaPath.path("cpfSocio").asText();
 		this.relatorioNota = relatorioNotaPath.path("relatorioNota");
-		this.tipoAssinatura = "IP+Token";
+		this.tipoAssinatura = EnviaNotaTipoAssinaturaEnum.TOKEN_SMS.getDescricao();
 	}
 
 	public JsonNode relatorioNota(Object relatorioNota) {

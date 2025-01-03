@@ -2,6 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.REGEX_REPLACE_LETRAS;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloTokenSmsOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.TokenSmsInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.TokenSmsOutputDto;
@@ -136,8 +138,13 @@ public class TokenSmsServiceImpl implements TokenSmsService {
 
 	}
 
-	public List<NotasByProtocoloTokenSmsOutputDTO> notas(Long numeroProtocolo) {
-		return notaNegociacaoRepositoryImpl.notasByProtocoloTokenSms(numeroProtocolo);
+	public List<Object> notas (Long numeroProtocolo) {
+		List<NotasByProtocoloOutputDTO> notas = notaNegociacaoRepositoryImpl.notasByProtocolo(numeroProtocolo);
+		List<NotasByProtocoloTokenSmsOutputDTO> notasTokenSms = notaNegociacaoRepositoryImpl.notasByProtocoloTokenSms(numeroProtocolo);
+		List<Object> listaNotas = new ArrayList<>();
+		listaNotas.addAll(notas);	
+		listaNotas.addAll(notasTokenSms);	
+		return listaNotas; 	
 	}
 
 }

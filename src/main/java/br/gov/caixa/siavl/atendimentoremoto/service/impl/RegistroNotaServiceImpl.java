@@ -42,6 +42,7 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.NegociacaoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloTokenSmsOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.enums.EnviaNotaTipoAssinaturaEnum;
@@ -489,10 +490,14 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		enviaClienteOutputDto.setNotas(notas(Long.parseLong(numeroProtocolo)));
 		return enviaClienteOutputDto;
 	}
-
-	public List<NotasByProtocoloOutputDTO> notas(Long numeroProtocolo) {
-
-		return notaNegociacaoRepositoryImpl.notasByProtocolo(numeroProtocolo);
+	
+	public List<Object> notas (Long numeroProtocolo) {
+		List<NotasByProtocoloOutputDTO> notas = notaNegociacaoRepositoryImpl.notasByProtocolo(numeroProtocolo);
+		List<NotasByProtocoloTokenSmsOutputDTO> notasTokenSms = notaNegociacaoRepositoryImpl.notasByProtocoloTokenSms(numeroProtocolo);
+		List<Object> listaNotas = new ArrayList<>();
+		listaNotas.addAll(notas);	
+		listaNotas.addAll(notasTokenSms);	
+		return listaNotas; 	
 	}
 
 	public RegistraNotaOutputDto vinculaDocumento(RegistraNotaOutputDto registraNotaOutputDto, Long numeroModeloNota) {

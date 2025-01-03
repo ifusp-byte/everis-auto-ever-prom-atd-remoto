@@ -24,6 +24,6 @@ import lombok.Setter;
 public class EnviaClienteOutputDto {
 
 	private boolean status;
-	private List<NotasByProtocoloOutputDTO> notas;
+	private List<Object> notas;
 
 }
