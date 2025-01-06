@@ -493,10 +493,10 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	
 	public List<Object> notas (Long numeroProtocolo) {
 		List<NotasByProtocoloOutputDTO> notas = notaNegociacaoRepositoryImpl.notasByProtocolo(numeroProtocolo);
-		List<NotasByProtocoloTokenSmsOutputDTO> notasTokenSms = notaNegociacaoRepositoryImpl.notasByProtocoloTokenSms(numeroProtocolo);
+		//List<NotasByProtocoloTokenSmsOutputDTO> notasTokenSms = notaNegociacaoRepositoryImpl.notasByProtocoloTokenSms(numeroProtocolo);
 		List<Object> listaNotas = new ArrayList<>();
 		listaNotas.addAll(notas);	
-		listaNotas.addAll(notasTokenSms);	
+		//listaNotas.addAll(notasTokenSms);	
 		return listaNotas; 	
 	}
 
