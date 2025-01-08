@@ -14,9 +14,9 @@ public class ModeloNotaRepositoryImpl {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(" SELECT COUNT(A.numeroModeloNota), A.numeroModeloNota, C.numeroAcao, C.descricao ");
-		sb.append(" FROM  NotaNegociacao A, ModeloNotaNegocio B, AcaoProduto C ");
-		sb.append(" WHERE A.numeroModeloNota = B.numeroModeloNota ");
+		sb.append(" SELECT COUNT(A.numeroModeloNota), A.numeroModeloNota, C.numeroAcao, C.descricao, D.numeroTipoNota, D.nomeTipoNota ");
+		sb.append(" FROM  NotaNegociacao A, ModeloNotaNegocio B, AcaoProduto C, TipoNota D ");
+		sb.append(" WHERE D.numeroTipoNota = B.numeroTipoNota AND A.numeroModeloNota = B.numeroModeloNota ");
 		sb.append(" AND B.numeroAcao = C.numeroAcao ");
 		sb.append(" AND A.dataCriacaoNota > CURRENT_DATE - 365 ");
 		sb.append(" AND B.modeloNotaAtivo = 1 ");
@@ -25,7 +25,7 @@ public class ModeloNotaRepositoryImpl {
 		sb.append(" AND C.acaoProdutoAtivo = 1 ");
 		sb.append(" AND B.numeroModeloNota NOT IN (SELECT C.numeroModeloNota FROM FluxoAtendimento C) ");
 		sb.append(" AND B.publicoAlvo <> :publicoAlvo ");
-		sb.append(" GROUP  BY A.numeroModeloNota, C.numeroAcao, C.descricao ");
+		sb.append(" GROUP  BY A.numeroModeloNota, C.numeroAcao, C.descricao, D.numeroTipoNota, D.nomeTipoNota ");
 		sb.append(" ORDER  BY 1 DESC ");
 
 		TypedQuery<Object[]> query = em.createQuery(sb.toString(), Object[].class);

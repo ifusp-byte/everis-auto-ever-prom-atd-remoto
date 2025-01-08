@@ -33,6 +33,18 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContasOutputDTO;
 @SuppressWarnings("all")
 public class ContaUtils {
 
+	/**
+	 * este trecho de código foi descontinnuado 
+	 * @param dtInicio
+	 * @param sgSistema
+	 * @param nuUnidade
+	 * @param nuProduto
+	 * @param coIdentificacao
+	 * @param contasAtendimento
+	 * @param tipoPessoa
+	 * @return
+	 */
+	/*
 	public String formataContaTotalOld(String dtInicio, String sgSistema, Object nuUnidade, Object nuProduto,
 			Object coIdentificacao) {
 
@@ -89,12 +101,17 @@ public class ContaUtils {
 		return contaFormatada;
 
 	}
+	*/
 
 	public List<ContasOutputDTO> formataContaTotalLista(String dtInicio, String sgSistema, Object nuUnidade,
 			Object nuProduto, Object coIdentificacao, List<ContasOutputDTO> contasAtendimento, String tipoPessoa) {
 
 		String contaFormatada = null;
-
+		
+		/**
+		 * este trecho de código foi descontinuado - Sprint 18 - IB 22484999
+		 */
+		/*
 		if (CONTA_SIDEC.equalsIgnoreCase(sgSistema)) {
 			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
 			if (identificacao.length() > SETE_NUMBER) {
@@ -115,7 +132,9 @@ public class ContaUtils {
 				}
 			}
 		}
+		*/
 
+		
 		if (CONTA_SID01.equalsIgnoreCase(sgSistema)) {
 			String identificacao = String.valueOf(coIdentificacao).replace(PONTO, StringUtils.EMPTY).replace(TRACO, StringUtils.EMPTY);
 			if (identificacao.length() > OITO_NUMBER) {
@@ -136,7 +155,7 @@ public class ContaUtils {
 				}
 			}
 		}
-
+		
 		return contasAtendimento;
 
 	}

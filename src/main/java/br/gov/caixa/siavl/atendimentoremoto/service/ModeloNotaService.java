@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaOutputDto;
+import br.gov.caixa.siavl.atendimentoremoto.model.TipoNota;
 
 @SuppressWarnings("all")
 public interface ModeloNotaService {
@@ -17,5 +18,7 @@ public interface ModeloNotaService {
 	List<ModeloNotaOutputDto> consultaModeloNotaMaisUtilizada(String cpfCnpj);
 	
 	Object modeloNotaDinamico (String token, Long numeroModeloNota, ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO) throws Exception;
+	
+	List<TipoNota> consultaTipoNota();
 
 }

@@ -19,6 +19,8 @@ import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoC
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.NOTA_SALVAR_NOTA;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.PROTOCOLO;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.RELATORIOS;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.TIPO_NOTA;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.TOKEN_SMS;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.AUTHORIZATION;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.BEARER_1;
 
@@ -47,6 +49,7 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.dto.TokenSmsInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.gateway.SicliGateway;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.CriaDesafioInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.CriaDesafioOutputDTO;
@@ -59,6 +62,7 @@ import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
 import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.RegistroNotaService;
+import br.gov.caixa.siavl.atendimentoremoto.service.TokenSmsService;
 
 @Validated
 @RestController
@@ -75,6 +79,9 @@ public class AtendimentoRemotoController {
 
 	@Autowired
 	DesafioService desafioService;
+
+	@Autowired
+	TokenSmsService tokenSmsService;
 
 	@Autowired
 	ModeloNotaService modeloNotaService;
@@ -221,6 +228,18 @@ public class AtendimentoRemotoController {
 	@PostMapping(RELATORIOS)
 	public Object relatorio(@RequestBody ReportInputDTO reportInputDTO) throws Exception {
 		return reportService.relatorio(reportInputDTO);
+	}
+	
+	@GetMapping(TIPO_NOTA)
+	public ResponseEntity<Object> consultaTipoNota() {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(modeloNotaService.consultaTipoNota());
+	}
+
+	@PostMapping(TOKEN_SMS)
+	public Object identificacaoTokenSms(@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token, @RequestBody TokenSmsInputDto tokenSmsInputDto) throws Exception {
+		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
+				.body(tokenSmsService.identificacaoTokenSms(getToken(token), tokenSmsInputDto));
 	}
 
 	public String getToken(String token) {

@@ -15,8 +15,13 @@ class AtendimentoRemotoControllerModeloNotaTestesTest extends AtendimentoRemotoC
 	public void beforeEach() {
 		setUpTest();
 	}
+		
+	@Test
+	void consultaTipoNotaTest() {
+		consultaTipoNota();
+	}
 
-	//@Test
+	@Test
 	void consultaModeloNotaTest() {
 		consultaModeloNota();
 	}
@@ -26,7 +31,7 @@ class AtendimentoRemotoControllerModeloNotaTestesTest extends AtendimentoRemotoC
 		consultaModeloNotaMaisUtilizada();
 	}
 
-	//@Test
+	@Test
 	void consultaModeloNotaFavoritaTest() {
 		consultaModeloNotaFavorita();
 	}

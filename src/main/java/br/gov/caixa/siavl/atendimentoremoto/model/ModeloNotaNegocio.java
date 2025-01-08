@@ -49,5 +49,8 @@ public class ModeloNotaNegocio implements Serializable {
 	
 	@Column(name = "IC_PUBLICO_ALVO_MODELO_NOTA")
 	private Long publicoAlvo;
+		
+	@Column(name = "NU_TIPO_ATENDIMENTO")
+	private Long numeroTipoNota;
 
 }
