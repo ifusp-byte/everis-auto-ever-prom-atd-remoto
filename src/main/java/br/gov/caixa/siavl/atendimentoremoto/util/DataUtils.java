@@ -47,8 +47,8 @@ public class DataUtils {
 		Calendar time = Calendar.getInstance();
 		//time.add(Calendar.HOUR, -3);
 		time.add(Calendar.DATE, prazoValidade);
-		time.add(Calendar.HOUR, Integer.parseInt(horaValidade.substring(0, 1)));
-		time.add(Calendar.MINUTE, Integer.parseInt(horaValidade.substring(3, 4)));
+		time.set(Calendar.HOUR_OF_DAY, Integer.parseInt(horaValidade.substring(0, 1)));
+		time.set(Calendar.MINUTE, Integer.parseInt(horaValidade.substring(3, 4)));
 
 		return time.getTime();
 	}
