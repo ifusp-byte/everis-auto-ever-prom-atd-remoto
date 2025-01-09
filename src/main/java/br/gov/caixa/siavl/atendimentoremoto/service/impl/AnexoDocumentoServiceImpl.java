@@ -10,10 +10,12 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.gov.caixa.siavl.atendimentoremoto.dto.ConsultaDocumentoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.TipoDocumentoClienteOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstants;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.documentos.ClasseDocumento;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.DocumentoConsultarInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.SiecmCamposDinamico;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.SiecmDocumentosIncluirDadosRequisicaoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.SiecmDocumentosIncluirDestinoDocumentoInputDto;
@@ -200,6 +202,26 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 		LOG.log(Level.INFO,
 				"Nota: " + enviaDocumentoInputDto.getNumeroNota() + mensagemDocumento + requestAnexarDocumento);
+
+		return siecmOutputDto;
+
+	}
+
+	@Override
+	public SiecmOutputDto consultaDocumento(String token, String cpfCnpj,
+			ConsultaDocumentoInputDto consultaDocumentoInputDto) throws Exception {
+
+		SiecmOutputDto siecmOutputDto = null;
+
+		SiecmDocumentosIncluirDadosRequisicaoInputDto dadosRequisicao = new SiecmDocumentosIncluirDadosRequisicaoInputDto();
+		dadosRequisicao.setIpUsuarioFinal(tokenUtils.getIpFromToken(token));
+		dadosRequisicao.setLocalArmazenamento(DEFAULT_LOCAL_ARMAZENAMENTO);
+
+		DocumentoConsultarInputDto documentoConsultarInputDto = new DocumentoConsultarInputDto();
+		documentoConsultarInputDto.setDadosRequisicaoInputDto(dadosRequisicao);
+		documentoConsultarInputDto.setId(consultaDocumentoInputDto.getCodGedAnexo());
+
+		siecmOutputDto = siecmGateway.documentoConsultar(token, cpfCnpj, documentoConsultarInputDto);
 
 		return siecmOutputDto;
 

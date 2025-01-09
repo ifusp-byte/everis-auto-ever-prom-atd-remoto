@@ -44,6 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaIdentificacaoPositivaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaIdentificacaoPositivaService;
+import br.gov.caixa.siavl.atendimentoremoto.dto.ConsultaDocumentoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
@@ -203,6 +204,16 @@ public class AtendimentoRemotoController {
 			throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(anexoDocumentoService.enviaDocumento(getToken(token), cpfCnpj, enviaDocumentoInputDto));
+	}
+	
+	
+	@GetMapping(DOCUMENTO)
+	public ResponseEntity<Object> enviaDocumento(
+			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
+			@Valid @PathVariable String cpfCnpj, @RequestBody ConsultaDocumentoInputDto consultaDocumentoInputDto)
+			throws Exception {
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(anexoDocumentoService.consultaDocumento(getToken(token), cpfCnpj, consultaDocumentoInputDto));
 	}
 
 	@GetMapping(DOCUMENTO_TIPO)
