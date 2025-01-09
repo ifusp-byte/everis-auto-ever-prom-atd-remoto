@@ -16,7 +16,9 @@ import java.sql.Clob;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -42,7 +44,6 @@ import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.NegociacaoOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloOutputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloTokenSmsOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.RegistraNotaOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.enums.EnviaNotaTipoAssinaturaEnum;
@@ -491,13 +492,26 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		return enviaClienteOutputDto;
 	}
 	
-	public List<Object> notas (Long numeroProtocolo) {
+	public List<Object> notas(Long numeroProtocolo) {
 		List<NotasByProtocoloOutputDTO> notas = notaNegociacaoRepositoryImpl.notasByProtocolo(numeroProtocolo);
-		//List<NotasByProtocoloTokenSmsOutputDTO> notasTokenSms = notaNegociacaoRepositoryImpl.notasByProtocoloTokenSms(numeroProtocolo);
-		List<Object> listaNotas = new ArrayList<>();
-		listaNotas.addAll(notas);	
-		//listaNotas.addAll(notasTokenSms);	
-		return listaNotas; 	
+		List<NotasByProtocoloOutputDTO> notasTokenSms = notaNegociacaoRepositoryImpl.notasByProtocoloTokenSms(numeroProtocolo);
+		List<NotasByProtocoloOutputDTO> notasLista = new ArrayList<>();
+		notasLista.addAll(notas);
+		notasLista.addAll(notasTokenSms);
+
+		Map<String, NotasByProtocoloOutputDTO> mapaPorGrupo = new HashMap<String, NotasByProtocoloOutputDTO>();
+
+		for (NotasByProtocoloOutputDTO notaByProtocolo : notasLista) {
+
+			String chaveMapa = notaByProtocolo.getNumeroNota();
+
+			if (!mapaPorGrupo.containsKey(chaveMapa)) {
+
+				mapaPorGrupo.put(chaveMapa, notaByProtocolo);
+			}
+		}
+
+		return new ArrayList<>(mapaPorGrupo.values());
 	}
 
 	public RegistraNotaOutputDto vinculaDocumento(RegistraNotaOutputDto registraNotaOutputDto, Long numeroModeloNota) {
