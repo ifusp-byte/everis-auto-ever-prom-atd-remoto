@@ -43,12 +43,14 @@ public class DataUtils {
 	}
 
 	public Date formataDataValidade(int prazoValidade, String horaValidade) {
-
+		
 		Calendar time = Calendar.getInstance();
-		//time.add(Calendar.HOUR, -3);
 		time.add(Calendar.DATE, prazoValidade);
-		time.set(Calendar.HOUR_OF_DAY, Integer.parseInt(horaValidade.substring(0, 1)));
-		time.set(Calendar.MINUTE, Integer.parseInt(horaValidade.substring(3, 4)));
+		time.set(Calendar.HOUR_OF_DAY, Integer.parseInt(horaValidade.substring(0, 2)));
+		time.set(Calendar.MINUTE, Integer.parseInt(horaValidade.substring(3, 5)));
+		time.set(Calendar.SECOND, 0);
+		time.set(Calendar.MILLISECOND, 0);
+		time.add(Calendar.HOUR, -3);
 
 		return time.getTime();
 	}
