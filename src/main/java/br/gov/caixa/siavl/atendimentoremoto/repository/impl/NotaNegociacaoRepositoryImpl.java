@@ -7,7 +7,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloOutputDTO;
-import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloTokenSmsOutputDTO;
 
 public class NotaNegociacaoRepositoryImpl {
 
@@ -62,11 +61,11 @@ public class NotaNegociacaoRepositoryImpl {
 	}
 	
 	
-	public List<NotasByProtocoloTokenSmsOutputDTO> notasByProtocoloTokenSms(Long numeroProtocolo) {
+	public List<NotasByProtocoloOutputDTO> notasByProtocoloTokenSms(Long numeroProtocolo) {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(" SELECT NEW  br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloTokenSmsOutputDTO ( ");
+		sb.append(" SELECT NEW  br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloOutputDTO ( ");
 		sb.append(" D.numeroNota ");
 		sb.append(" , A.nomeCliente ");
 		sb.append(" , A.cpfCliente ");
@@ -97,7 +96,7 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" ORDER BY D.numeroNota DESC ");
 
 
-		TypedQuery<NotasByProtocoloTokenSmsOutputDTO> query = em.createQuery(sb.toString(), NotasByProtocoloTokenSmsOutputDTO.class);
+		TypedQuery<NotasByProtocoloOutputDTO> query = em.createQuery(sb.toString(), NotasByProtocoloOutputDTO.class);
 		query.setParameter("numeroProtocolo", numeroProtocolo);
 
 		return query.getResultList();

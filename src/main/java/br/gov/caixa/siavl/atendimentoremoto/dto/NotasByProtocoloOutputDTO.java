@@ -113,6 +113,26 @@ public class NotasByProtocoloOutputDTO {
 		this.relatorioNota = relatorioNotaPath.path("relatorioNota");
 		this.tipoAssinatura = logPlataformaPath.path("tipoAssinatura").asText(); 
 	}
+	
+	public NotasByProtocoloOutputDTO(Long numeroNota, String nomeCliente, Long cpf, Long cnpj, String produto,
+			String situacaoNota, Object relatorioNota, Long numeroModeloNota) {
+		this.numeroNota = String.valueOf(numeroNota);
+		this.nomeCliente = nomeCliente;
+		this.cpfCnpj = cnpj == null ? formataCpfFront(cpf) : formataCnpjFront(cnpj);
+		this.produto = produto;
+		this.situacaoNota = situacaoNota;
+		this.numeroModeloNota = String.valueOf(numeroModeloNota);
+
+		JsonNode relatorioNotaPath = relatorioNota(relatorioNota);
+
+		this.valorMeta = relatorioNotaPath.path("relatorioNota").path("Valor (meta)").asText();
+		this.contaAtendimento = relatorioNotaPath.path("contaAtendimento").asText();
+		this.razaoSocial = relatorioNotaPath.path("razaoSocial").asText();
+		this.cnpj = relatorioNotaPath.path("cnpj").asText();
+		this.nomeSocio = relatorioNotaPath.path("nomeSocio").asText();
+		this.cpfSocio = relatorioNotaPath.path("cpfSocio").asText();
+		this.relatorioNota = relatorioNotaPath.path("relatorioNota");
+	}
 
 	public JsonNode relatorioNota(Object relatorioNota) {
 
