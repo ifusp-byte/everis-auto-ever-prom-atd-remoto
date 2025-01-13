@@ -162,8 +162,7 @@ public class SiecmGateway {
 
 	}
 
-	public SiecmOutputDto documentoConsultar(@Valid String token, String cpfCnpj,
-			DocumentoConsultarInputDto documentoConsultarInputDto) throws Exception {
+	public SiecmOutputDto documentoConsultar(@Valid String token, DocumentoConsultarInputDto documentoConsultarInputDto) throws Exception {
 
 		SiecmOutputDto siecmOutputDto = new SiecmOutputDto();
 		ResponseEntity<String> response = null;

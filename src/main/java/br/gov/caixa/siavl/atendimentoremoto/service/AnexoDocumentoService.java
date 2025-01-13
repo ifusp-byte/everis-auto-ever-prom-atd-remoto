@@ -8,7 +8,7 @@ public interface AnexoDocumentoService {
 
 	Object enviaDocumento(String token, String cpfCnpj, EnviaDocumentoInputDto enviaDocumentoInputDto) throws Exception;
 	
-	Object consultaDocumento(String token, String cpfCnpj, ConsultaDocumentoInputDto consultaDocumentoInputDto) throws Exception;
+	Object consultaDocumento(String token, String codGedAnexo) throws Exception;
 	
 	Object tipoDocumento(String cpfCnpj) throws Exception;
 	

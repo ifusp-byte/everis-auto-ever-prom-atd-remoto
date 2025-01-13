@@ -208,8 +208,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 	}
 
 	@Override
-	public SiecmOutputDto consultaDocumento(String token, String cpfCnpj,
-			ConsultaDocumentoInputDto consultaDocumentoInputDto) throws Exception {
+	public SiecmOutputDto consultaDocumento(String token, String codGedAnexo) throws Exception {
 
 		SiecmOutputDto siecmOutputDto = null;
 
@@ -219,9 +218,9 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 		DocumentoConsultarInputDto documentoConsultarInputDto = new DocumentoConsultarInputDto();
 		documentoConsultarInputDto.setDadosRequisicaoInputDto(dadosRequisicao);
-		documentoConsultarInputDto.setId(consultaDocumentoInputDto.getCodGedAnexo());
+		documentoConsultarInputDto.setId(codGedAnexo);
 
-		siecmOutputDto = siecmGateway.documentoConsultar(token, cpfCnpj, documentoConsultarInputDto);
+		siecmOutputDto = siecmGateway.documentoConsultar(token, documentoConsultarInputDto);
 
 		return siecmOutputDto;
 

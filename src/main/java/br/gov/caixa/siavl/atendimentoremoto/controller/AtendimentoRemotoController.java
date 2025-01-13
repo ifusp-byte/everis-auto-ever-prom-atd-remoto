@@ -210,10 +210,10 @@ public class AtendimentoRemotoController {
 	@GetMapping(DOCUMENTO)
 	public ResponseEntity<Object> enviaDocumento(
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
-			@Valid @PathVariable String cpfCnpj, @RequestBody ConsultaDocumentoInputDto consultaDocumentoInputDto)
+			@Valid @PathVariable String codGedAnexo)
 			throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(anexoDocumentoService.consultaDocumento(getToken(token), cpfCnpj, consultaDocumentoInputDto));
+				.body(anexoDocumentoService.consultaDocumento(getToken(token), codGedAnexo));
 	}
 
 	@GetMapping(DOCUMENTO_TIPO)
