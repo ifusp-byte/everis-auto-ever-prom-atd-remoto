@@ -6,7 +6,8 @@ import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoC
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DESAFIO_CRIAR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DESAFIO_RESPONDER;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DESAFIO_VALIDAR;
-import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_CONSULTAR;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_INCLUIR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_TIPO;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_TIPO_CAMPOS;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.MARCA_DOI;
@@ -44,7 +45,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaIdentificacaoPositivaInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.service.AuditoriaIdentificacaoPositivaService;
-import br.gov.caixa.siavl.atendimentoremoto.dto.ConsultaDocumentoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaClienteInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.GeraProtocoloInputDTO;
@@ -197,7 +197,7 @@ public class AtendimentoRemotoController {
 				.body(registroNotaService.enviaCliente(getToken(token), numeroNota, enviaClienteInputDto));
 	}
 
-	@PostMapping(DOCUMENTO)
+	@PostMapping(DOCUMENTO_INCLUIR)
 	public ResponseEntity<Object> enviaDocumento(
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable String cpfCnpj, @RequestBody EnviaDocumentoInputDto enviaDocumentoInputDto)
@@ -207,7 +207,7 @@ public class AtendimentoRemotoController {
 	}
 	
 	
-	@GetMapping(DOCUMENTO)
+	@GetMapping(DOCUMENTO_CONSULTAR)
 	public ResponseEntity<Object> enviaDocumento(
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable String codGedAnexo)
