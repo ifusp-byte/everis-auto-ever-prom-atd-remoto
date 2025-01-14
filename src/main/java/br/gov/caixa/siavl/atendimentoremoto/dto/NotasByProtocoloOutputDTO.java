@@ -91,9 +91,13 @@ public class NotasByProtocoloOutputDTO {
 	@XmlElement(name = "tipoAssinatura")
 	private String tipoAssinatura;
 	
+	@Valid
+	@XmlElement(name = "codGED")
+	private String codGED;
+	
 	
 	public NotasByProtocoloOutputDTO(Long numeroNota, String nomeCliente, Long cpf, Long cnpj, String produto,
-			String situacaoNota, Object relatorioNota, Long numeroModeloNota, Object jsonLogPlataforma) {
+			String situacaoNota, Object relatorioNota, Long numeroModeloNota, Object jsonLogPlataforma, String codGED) {
 		this.numeroNota = String.valueOf(numeroNota);
 		this.nomeCliente = nomeCliente;
 		this.cpfCnpj = cnpj == null ? formataCpfFront(cpf) : formataCnpjFront(cnpj);
@@ -112,10 +116,11 @@ public class NotasByProtocoloOutputDTO {
 		this.cpfSocio = relatorioNotaPath.path("cpfSocio").asText();
 		this.relatorioNota = relatorioNotaPath.path("relatorioNota");
 		this.tipoAssinatura = logPlataformaPath.path("tipoAssinatura").asText(); 
+		this.codGED = codGED;
 	}
 	
 	public NotasByProtocoloOutputDTO(Long numeroNota, String nomeCliente, Long cpf, Long cnpj, String produto,
-			String situacaoNota, Object relatorioNota, Long numeroModeloNota) {
+			String situacaoNota, Object relatorioNota, Long numeroModeloNota, String codGED) {
 		this.numeroNota = String.valueOf(numeroNota);
 		this.nomeCliente = nomeCliente;
 		this.cpfCnpj = cnpj == null ? formataCpfFront(cpf) : formataCnpjFront(cnpj);
@@ -132,6 +137,7 @@ public class NotasByProtocoloOutputDTO {
 		this.nomeSocio = relatorioNotaPath.path("nomeSocio").asText();
 		this.cpfSocio = relatorioNotaPath.path("cpfSocio").asText();
 		this.relatorioNota = relatorioNotaPath.path("relatorioNota");
+		this.codGED = codGED;
 	}
 
 	public JsonNode relatorioNota(Object relatorioNota) {
