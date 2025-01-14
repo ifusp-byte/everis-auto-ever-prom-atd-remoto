@@ -33,14 +33,13 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" AtendimentoCliente A ");
 		sb.append(" , AtendimentoNegocio B ");
 		sb.append(" , NegocioAgenciaVirtual C ");
-		sb.append(" , NotaNegociacao D ");
+		sb.append(" , NotaNegociacao D LEFT JOIN DocumentoNotaNegociacao N ");
 		sb.append(" , SituacaoNotaNegociacao E ");
 		sb.append(" , ModeloNotaNegocio F ");
 		sb.append(" , AcaoProduto G ");
 		sb.append(" , RelatorioNotaNegociacao H ");
 		sb.append(" , LogPlataforma L ");		
 		sb.append(" , DocumentoCliente M ");	
-		sb.append(" , DocumentoNotaNegociacao N ");	
 		sb.append(" WHERE ");
 		sb.append(" A.numeroProtocolo = B.numeroProtocolo ");
 		sb.append(" AND B.numeroNegocio = C.numeroNegocio ");
@@ -52,7 +51,6 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" AND D.numeroNota = L.numeroNota ");
 		sb.append(" AND H.numeroNota = L.numeroNota ");		
 		sb.append(" AND (L.transacaoSistema = 299 OR L.transacaoSistema = 304 ) ");
-		sb.append(" AND N.numeroNota = D.numeroNota ");
 		sb.append(" AND M.tipoPessoa = N.tipoPessoa ");
 		sb.append(" AND M.inclusaoDocumento = N.inclusaoDocumento ");
 		sb.append(" AND M.tipoDocumentoCliente = N.tipoDocumentoCliente ");
@@ -88,13 +86,12 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" AtendimentoCliente A ");
 		sb.append(" , AtendimentoNegocio B ");
 		sb.append(" , NegocioAgenciaVirtual C ");
-		sb.append(" , NotaNegociacao D ");
+		sb.append(" , NotaNegociacao D LEFT JOIN DocumentoNotaNegociacao N ");
 		sb.append(" , SituacaoNotaNegociacao E ");
 		sb.append(" , ModeloNotaNegocio F ");
 		sb.append(" , AcaoProduto G ");
 		sb.append(" , RelatorioNotaNegociacao H ");	
 		sb.append(" , DocumentoCliente M ");	
-		sb.append(" , DocumentoNotaNegociacao N ");	
 		sb.append(" WHERE ");
 		sb.append(" A.numeroProtocolo = B.numeroProtocolo ");
 		sb.append(" AND B.numeroNegocio = C.numeroNegocio ");
@@ -103,7 +100,6 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" AND D.numeroSituacaoNota = E.numeroSituacaoNota ");
 		sb.append(" AND D.numeroModeloNota = F.numeroModeloNota ");
 		sb.append(" AND F.numeroAcao = G.numeroAcao ");
-		sb.append(" AND N.numeroNota = D.numeroNota ");
 		sb.append(" AND M.tipoPessoa = N.tipoPessoa ");
 		sb.append(" AND M.inclusaoDocumento = N.inclusaoDocumento ");
 		sb.append(" AND M.tipoDocumentoCliente = N.tipoDocumentoCliente ");
