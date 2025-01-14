@@ -44,6 +44,7 @@ class ControllerTest {
 
 	public static final String CONSUTA_SIECM_DOSSIE = "/dossie";
 	public static final String CONSUTA_SIECM_DOCUMENTO_INCLUIR = "/documentos/incluir";
+	public static final String CONSUTA_SIECM_DOCUMENTO_CONSULTAR = "/documentos/consultar";
 	static WireMockServer wireMockServer;
 
 	@LocalServerPort
@@ -83,6 +84,11 @@ class ControllerTest {
 						.withBodyFile(siecmDossieBodyRetorno)));
 
 		stubFor(WireMock.post(urlPathMatching(CONSUTA_SIECM_DOCUMENTO_INCLUIR))
+				.willReturn(aResponse().withStatus(statusDocumentoIncluir)
+						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+						.withBodyFile(siecmDocumentoIncluirBodyRetorno)));
+		
+		stubFor(WireMock.get(urlPathMatching(CONSUTA_SIECM_DOCUMENTO_CONSULTAR))
 				.willReturn(aResponse().withStatus(statusDocumentoIncluir)
 						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 						.withBodyFile(siecmDocumentoIncluirBodyRetorno)));

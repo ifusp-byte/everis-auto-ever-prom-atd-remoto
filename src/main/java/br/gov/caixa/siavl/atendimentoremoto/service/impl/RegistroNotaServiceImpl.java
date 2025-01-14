@@ -31,6 +31,8 @@ import javax.xml.bind.Marshaller;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -399,6 +401,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Object enviaCliente(String token, Long numeroNota, EnviaClienteInputDto enviaClienteInputDto) {
 
 		Boolean statusRetornoSicli = true;
@@ -433,10 +436,8 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 			if (Boolean.TRUE.equals(Objects
 					.requireNonNull(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getAssinaturaToken()))))) {
 				if (Boolean.FALSE.equals(Boolean.parseBoolean(String.valueOf(enviaClienteInputDto.getTokenValido())))) {
-					atendimentoCliente.setValidacaoTokenAtendimento(2L);
-					atendimentoCliente.setDataEnvioToken(dataUtils.formataDataBanco());
-					atendimentoClienteRepository.save(atendimentoCliente);
-
+					atendimentoClienteRepository.atualizaStatusTokenSms(2L, dataUtils.formataDataBanco(), atendimentoCliente.getNumeroProtocolo());
+					
 					auditoriaTokenSms(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade,
 							nuProduto, coIdentificacao, matriculaAtendente, statusRetornoSicli, numeroProtocolo,
 							numeroContaAtendimento, tipoPessoa);
@@ -445,10 +446,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 				notaNegociacaoRepository.assinaNotaCliente(numeroNota);
 				relatorioNotaNegociacaoRepository.assinaNotaCliente(numeroNota);
-				atendimentoCliente.setValidacaoTokenAtendimento(1L);
-				atendimentoCliente.setDataEnvioToken(dataUtils.formataDataBanco());
-
-				atendimentoClienteRepository.save(atendimentoCliente);
+				atendimentoClienteRepository.atualizaStatusTokenSms(1L, dataUtils.formataDataBanco(), atendimentoCliente.getNumeroProtocolo());
 
 				auditoriaTokenSms(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade,
 						nuProduto, coIdentificacao, matriculaAtendente, statusRetornoSicli, numeroProtocolo,
@@ -470,17 +468,13 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 		pendenciaAtendimentoNotaRepository.inserePendenciaAtendimento(numeroNota);
 
 		if (EnviaNotaTipoAssinaturaEnum.APP.getDescricao().equalsIgnoreCase(enviaClienteInputDto.getTipoAssinatura())) {
-
 			notaNegociacaoRepository.enviaNotaClienteApp(numeroNota);
 			relatorioNotaNegociacaoRepository.enviaNotaClienteApp(numeroNota);
 		}
 
-		if (EnviaNotaTipoAssinaturaEnum.TOKEN_PRODUTO.getDescricao()
-				.equalsIgnoreCase(enviaClienteInputDto.getTipoAssinatura())) {
-
+		if (EnviaNotaTipoAssinaturaEnum.TOKEN_PRODUTO.getDescricao().equalsIgnoreCase(enviaClienteInputDto.getTipoAssinatura())) {
 			notaNegociacaoRepository.enviaNotaClienteTokenProduto(numeroNota);
 			relatorioNotaNegociacaoRepository.enviaNotaClienteTokenProduto(numeroNota);
-
 		}
 
 		auditoriaAppTokenProduto(enviaClienteInputDto, numeroNota, token, tipoDocumento, cpfCnpjPnc, nuUnidade,

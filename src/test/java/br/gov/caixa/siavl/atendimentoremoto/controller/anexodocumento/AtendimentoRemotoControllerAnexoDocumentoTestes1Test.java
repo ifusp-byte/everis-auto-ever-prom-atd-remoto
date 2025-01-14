@@ -1,5 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.controller.anexodocumento;
 
+import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.ANEXA_DOCUMENTO_ACEITE;
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.ANEXA_DOCUMENTO_OBRIGATORIO;
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.ANEXA_DOCUMENTO_OPCIONAL;
 
@@ -36,6 +37,11 @@ class AtendimentoRemotoControllerAnexoDocumentoTestes1Test extends AtendimentoRe
 	@Test
 	void anexoDocumentoObrigatorioTest() throws StreamReadException, DatabindException, IOException {
 		anexoDocumento(ANEXA_DOCUMENTO_OBRIGATORIO);
+	}
+	
+	@Test
+	void anexoDocumentoAceiteTest() throws StreamReadException, DatabindException, IOException {
+		anexoDocumento(ANEXA_DOCUMENTO_ACEITE);
 	}
 	
 	@Test

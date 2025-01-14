@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloOutputDTO;
 
+@SuppressWarnings("all")
 public class NotaNegociacaoRepositoryImpl {
 
 	@PersistenceContext

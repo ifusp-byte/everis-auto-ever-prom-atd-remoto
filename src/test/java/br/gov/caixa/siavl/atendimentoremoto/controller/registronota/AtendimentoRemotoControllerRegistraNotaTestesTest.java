@@ -42,7 +42,7 @@ class AtendimentoRemotoControllerRegistraNotaTestesTest extends AtendimentoRemot
 		enviaNotaPJ2();
 	}
 	
-	//@Test
+	@Test
 	void enviaNotaPJ3Test() throws StreamReadException, DatabindException, IOException {
 		enviaNotaPJ3();
 	}
