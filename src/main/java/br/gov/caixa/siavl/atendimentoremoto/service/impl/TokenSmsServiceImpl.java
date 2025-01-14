@@ -120,8 +120,8 @@ public class TokenSmsServiceImpl implements TokenSmsService {
 			AssinaturaNota assinaturaNota = new AssinaturaNota();
 			assinaturaNota.setNumeroNota(numeroNota);
 			assinaturaNota.setCpfClienteAssinante(atendimentoCliente.getCpfCliente());
-			assinaturaNota.setTipoAssinatura((char) '1');
-			assinaturaNota.setOrigemAssinatura((char) '1');
+			assinaturaNota.setTipoAssinatura((char) '4');
+			assinaturaNota.setOrigemAssinatura((char) '6');
 			assinaturaNotaRepository.save(assinaturaNota);
 			pendenciaAtendimentoNotaRepository.inserePendenciaAtendimento(numeroNota);
 
