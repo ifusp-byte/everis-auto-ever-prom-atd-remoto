@@ -9,6 +9,7 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.lang.StringUtils;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.dto.ResultadoUnicoDTO;
 
 @SuppressWarnings("all")
 public class NotaNegociacaoRepositoryImpl {
@@ -117,7 +118,7 @@ public class NotaNegociacaoRepositoryImpl {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(" SELECT M.codGED ");
+		sb.append(" SELECT NEW br.gov.caixa.siavl.atendimentoremoto.dto.ResultadoUnicoDTO (M.codGED) ");
 		sb.append(" FROM ");
 		sb.append(" NotaNegociacao D ");
 		sb.append(" , DocumentoCliente M ");
@@ -131,11 +132,11 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" AND M.nomeAnexo LIKE '%ACEITE%' ");
 		sb.append(" AND D.numeroNota = :numeroNota ");
 
-		TypedQuery<String> anexoAceite = em.createQuery(sb.toString(), String.class);
+		TypedQuery<ResultadoUnicoDTO> anexoAceite = em.createQuery(sb.toString(), ResultadoUnicoDTO.class);
 		anexoAceite.setParameter("numeroNota", numeroNota);
-
-		String anexo = anexoAceite.getSingleResult();
-		return anexo != null ? anexo : StringUtils.EMPTY;
+		
+		String anexo = String.valueOf(!anexoAceite.getResultList().isEmpty() ? anexoAceite.getResultList().get(0).getResultado() : StringUtils.EMPTY);
+		return anexo; 
 
 	}
 
