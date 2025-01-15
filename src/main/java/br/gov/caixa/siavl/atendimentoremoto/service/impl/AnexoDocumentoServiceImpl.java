@@ -230,7 +230,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		dadosRequisicao.setLocalArmazenamento(DEFAULT_LOCAL_ARMAZENAMENTO);
 
 		DocumentoConsultarInputDto documentoConsultarInputDto = new DocumentoConsultarInputDto();
-		documentoConsultarInputDto.setDadosRequisicaoInputDto(dadosRequisicao);
+		documentoConsultarInputDto.setDadosRequisicao(dadosRequisicao);
 		documentoConsultarInputDto.setId(codGedAnexo);
 
 		siecmOutputDto = siecmGateway.documentoConsultar(token, documentoConsultarInputDto);

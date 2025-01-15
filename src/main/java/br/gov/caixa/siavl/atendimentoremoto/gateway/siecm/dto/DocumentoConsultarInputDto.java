@@ -19,6 +19,6 @@ import lombok.Setter;
 @XmlRootElement(name = "DocumentoConsultarInputDto")
 public class DocumentoConsultarInputDto {
 
-	private SiecmDocumentosIncluirDadosRequisicaoInputDto dadosRequisicaoInputDto; 	
+	private SiecmDocumentosIncluirDadosRequisicaoInputDto dadosRequisicao; 	
 	private String id;
 }

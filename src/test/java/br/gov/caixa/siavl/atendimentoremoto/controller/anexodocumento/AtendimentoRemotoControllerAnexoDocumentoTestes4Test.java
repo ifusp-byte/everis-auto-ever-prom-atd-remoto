@@ -11,13 +11,13 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 
 @SuppressWarnings("all")
-class AtendimentoRemotoControllerAnexoDocumentoTestes3Test extends AtendimentoRemotoControllerAnexoDocumentoTest {
+class AtendimentoRemotoControllerAnexoDocumentoTestes4Test extends AtendimentoRemotoControllerAnexoDocumentoTest {
 
 	@BeforeEach
 	public void setUp() {
 		setUpTest();
-		setupIntegracao(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.value(), "erroDossieSiecm.json",
-				"siecmDocumentoIncluirErro.json", "siecmDocumentoConsultarErro.json");
+		setupIntegracao(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.value(), HttpStatus.OK.value(), "erroDossieSiecm.json",
+				"siecmDocumentoIncluirErro.json", "siecmDocumentoConsultarSucesso.json");
 	}
 
 	@AfterEach

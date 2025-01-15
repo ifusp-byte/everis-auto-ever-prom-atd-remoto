@@ -24,6 +24,7 @@ import org.springframework.web.client.RestClientResponseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.DocumentoConsultarInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.DossieDadosRequisicaoInputDto;
@@ -81,9 +82,17 @@ public class SiecmGateway {
 		return new HttpEntity<>(requestAnexarDocumento, newHttpHeaders(token));
 	}
 
-	public HttpEntity<DocumentoConsultarInputDto> newRequestEntityDocumentoConsultar(String token,
+	public HttpEntity<String> newRequestEntityDocumentoConsultar(String token,
 			DocumentoConsultarInputDto documentoConsultarInputDto) {
-		return new HttpEntity<>(documentoConsultarInputDto, newHttpHeaders(token));
+		
+		String request = null;
+		try {
+			request = mapper.writeValueAsString(documentoConsultarInputDto).replaceAll("\\u005C", "").replaceAll("\\n", "");
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+		return new HttpEntity<>(request, newHttpHeaders(token));
+		
 	}
 
 	public SiecmOutputDto dossieCriar(@Valid String token, String cpfCnpj) throws Exception {
@@ -167,6 +176,7 @@ public class SiecmGateway {
 		SiecmOutputDto siecmOutputDto = new SiecmOutputDto();
 		ResponseEntity<String> response = null;
 		JsonNode body;
+		ArrayNode dadosDocumentoLocalizado;
 		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
 
 		try {
@@ -175,8 +185,11 @@ public class SiecmGateway {
 					newRequestEntityDocumentoConsultar(token, documentoConsultarInputDto), String.class);
 
 			body = mapper.readTree(String.valueOf(response.getBody()));
-			String linkThumbnail = Objects.requireNonNull(body.path("dadosDocumentoLocalizado").path("link")).asText();
-			String id = Objects.requireNonNull(body.path("dadosDocumentoLocalizado").path("atributos").path("id")).asText();
+			dadosDocumentoLocalizado = (ArrayNode) body.get("dadosDocumentoLocalizado");
+
+			String linkThumbnail = Objects.requireNonNull(dadosDocumentoLocalizado.get(0).path("link")).asText();
+			String id = Objects.requireNonNull(dadosDocumentoLocalizado.get(0).path("atributos").path("id")).asText();
+			String nomeAnexo = Objects.requireNonNull(dadosDocumentoLocalizado.get(0).path("atributos").path("nome")).asText();
 
 			siecmOutputDto = SiecmOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
@@ -185,6 +198,7 @@ public class SiecmGateway {
 					.statusMessage("Documento localizado com sucesso")
 					.dataCreated(formataDataSiecm(new Date()))
 					.id(id)
+					.nomeAnexo(nomeAnexo)
 					.build();
 
 			LOG.log(Level.INFO, response.getBody());

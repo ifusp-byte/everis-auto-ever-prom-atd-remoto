@@ -18,8 +18,8 @@ class AtendimentoRemotoControllerAnexoDocumentoTestes2Test extends AtendimentoRe
 	@BeforeEach
 	public void setUp() {
 		setUpTest();
-		setupIntegracao(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.value(), "erroDossieSiecm.json",
-				"siecmDocumentoIncluirErro.json");
+		setupIntegracao(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.value(), "erroDossieSiecm.json",
+				"siecmDocumentoIncluirErro.json", "siecmDocumentoConsultarErro.json");
 	}
 
 	@AfterEach

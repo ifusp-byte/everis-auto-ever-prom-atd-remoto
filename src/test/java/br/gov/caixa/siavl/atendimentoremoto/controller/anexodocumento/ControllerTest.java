@@ -72,8 +72,8 @@ class ControllerTest {
 		tearDownIntegracao();
 	}
 
-	public void setupIntegracao(int statusDossie, int statusDocumentoIncluir, String siecmDossieBodyRetorno,
-			String siecmDocumentoIncluirBodyRetorno) {
+	public void setupIntegracao(int statusDossie, int statusDocumentoIncluir, int statusDocumentoConsultar, String siecmDossieBodyRetorno,
+			String siecmDocumentoIncluirBodyRetorno, String siecmDocumentoConsultarBodyRetorno) {
 		wireMockServer = new WireMockServer(wireMockConfig().dynamicPort().port(6060).bindAddress("localhost"));
 		wireMockServer.start();
 		WireMock.configureFor("localhost", wireMockServer.port());
@@ -89,9 +89,9 @@ class ControllerTest {
 						.withBodyFile(siecmDocumentoIncluirBodyRetorno)));
 		
 		stubFor(WireMock.get(urlPathMatching(CONSUTA_SIECM_DOCUMENTO_CONSULTAR))
-				.willReturn(aResponse().withStatus(statusDocumentoIncluir)
+				.willReturn(aResponse().withStatus(statusDocumentoConsultar)
 						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-						.withBodyFile(siecmDocumentoIncluirBodyRetorno)));
+						.withBodyFile(siecmDocumentoConsultarBodyRetorno)));
 
 	}
 
