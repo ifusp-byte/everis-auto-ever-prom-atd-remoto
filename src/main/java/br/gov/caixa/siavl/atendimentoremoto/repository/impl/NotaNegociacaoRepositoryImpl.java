@@ -117,7 +117,7 @@ public class NotaNegociacaoRepositoryImpl {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(" M.codGED ");
+		sb.append(" SELECT M.codGED ");
 		sb.append(" FROM ");
 		sb.append(" NotaNegociacao D ");
 		sb.append(" , DocumentoCliente M ");

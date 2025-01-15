@@ -7,9 +7,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoFGTS implements Serializable {
-	DATA_REFERENCIA("DATA_REFERENCIA", "Data de Referência", "DATE", true, 12, "", true, TipoMascara.DATE, null),
-	NUMERO_PIS_PASEP("NUMERO_PIS_PASEP", "Número PIS/PASEP", "STRING", true, 60, "", true, null, null);
+	DATA_REFERENCIA(new ClasseDocumentoAtributos("DATA_REFERENCIA", "Data de Referência", "DATE", true, 12, "", true, TipoMascara.DATE, null)),
+	NUMERO_PIS_PASEP(new ClasseDocumentoAtributos("NUMERO_PIS_PASEP", "Número PIS/PASEP", "STRING", true, 60, "", true, null, null));
 
+	ClasseDocumentoFGTS(ClasseDocumentoAtributos classeDocumentoAtributos) {
+		// TODO Auto-generated constructor stub
+	}
+
+	/*
 	private String classeDocumento;
 	private String nomeCampo;
 	private String tipoCampo;
@@ -72,4 +77,5 @@ public enum ClasseDocumentoFGTS implements Serializable {
 	public String[] getSelectValues() {
 		return selectValues;
 	}
+	*/
 }

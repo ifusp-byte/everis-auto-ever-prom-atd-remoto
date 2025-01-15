@@ -10,13 +10,18 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstan
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoIR implements Serializable {
 
-	ANO_CALENDARIO("ANO_CALENDARIO", "Ano-calendário", SiecmConstants.STRING, true, 4, "", true, TipoMascara.NUMERICO, null),
-	ANO_EXERCICIO("ANO_EXERCICIO", "Ano de Exercício", SiecmConstants.STRING, true, 4, "", true, TipoMascara.NUMERICO, null),
-	EMISSOR("EMISSOR", "Emissor", SiecmConstants.STRING, true, 100, "", true, null, null),
-	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", SiecmConstants.STRING, true, 59, "", true, TipoMascara.CPFCNPJ, null),
-	NUMERO_RECIBO("NUMERO_RECIBO", "Número do Recibo", SiecmConstants.STRING, true, 12, "", true, null, null),
-	TIPO("TIPO", "Tipo", SiecmConstants.STRING, true, 1, "", true, null, SiecmConstants.IMPOSTO_RENDA);
+	ANO_CALENDARIO(new ClasseDocumentoAtributos("ANO_CALENDARIO", "Ano-calendário", SiecmConstants.STRING, true, 4, "", true, TipoMascara.NUMERICO, null)),
+	ANO_EXERCICIO(new ClasseDocumentoAtributos("ANO_EXERCICIO", "Ano de Exercício", SiecmConstants.STRING, true, 4, "", true, TipoMascara.NUMERICO, null)),
+	EMISSOR(new ClasseDocumentoAtributos("EMISSOR", "Emissor", SiecmConstants.STRING, true, 100, "", true, null, null)),
+	IDENTIFICADOR_CLIENTE(new ClasseDocumentoAtributos("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", SiecmConstants.STRING, true, 59, "", true, TipoMascara.CPFCNPJ, null)),
+	NUMERO_RECIBO(new ClasseDocumentoAtributos("NUMERO_RECIBO", "Número do Recibo", SiecmConstants.STRING, true, 12, "", true, null, null)),
+	TIPO(new ClasseDocumentoAtributos("TIPO", "Tipo", SiecmConstants.STRING, true, 1, "", true, null, SiecmConstants.IMPOSTO_RENDA));
 
+	ClasseDocumentoIR(ClasseDocumentoAtributos classeDocumentoAtributos) {
+		// TODO Auto-generated constructor stub
+	}
+
+	/*
 	private String classeDocumento;
 	private String nomeCampo;
 	private String tipoCampo;
@@ -75,4 +80,5 @@ public enum ClasseDocumentoIR implements Serializable {
 	public String[] getSelectValues() {
 		return selectValues;
 	}
+	*/
 }

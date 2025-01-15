@@ -10,10 +10,17 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstan
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoConcessionaria implements Serializable {
 
-	DATA_REFERENCIA("DATA_REFERENCIA", "Data de Referência", "DATE", true, 12, "", TipoMascara.DATE, true, null),
-	ENDERECO("ENDERECO", "Endereço", SiecmConstants.STRING, true, 200, "", null, true, null),
-	CEP("CEP", "CEP", SiecmConstants.STRING, true, 10, "", TipoMascara.CEP, true, null);
+	DATA_REFERENCIA(new ClasseDocumentoAtributos("DATA_REFERENCIA", "Data de Referência", "DATE", true, 12, "", true, TipoMascara.DATE, null)),
+	ENDERECO(new ClasseDocumentoAtributos("ENDERECO", "Endereço", SiecmConstants.STRING, true, 200, "", true, null, null)),
+	CEP(new ClasseDocumentoAtributos("CEP", "CEP", SiecmConstants.STRING, true, 10, "", true, TipoMascara.CEP, null));
 
+	ClasseDocumentoConcessionaria(ClasseDocumentoAtributos classeDocumentoAtributos) {
+		// TODO Auto-generated constructor stub
+	}
+
+
+
+	/*
 	private String classeDocumento;
 	private String nomeCampo;
 	private String tipoCampo;
@@ -74,4 +81,5 @@ public enum ClasseDocumentoConcessionaria implements Serializable {
 	public String[] getSelectValues() {
 		return selectValues;
 	}
+	*/
 }

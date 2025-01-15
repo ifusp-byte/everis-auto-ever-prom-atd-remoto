@@ -8,8 +8,15 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoCNH implements Serializable {
 
-	DATA_VALIDADE("DATA_VALIDADE", "Data de Validade", "DATE", true, 12, "", TipoMascara.DATE, true, null);
+	DATA_VALIDADE(new ClasseDocumentoAtributos("DATA_VALIDADE", "Data de Validade", "DATE", true, 12, "", true, TipoMascara.DATE, null));
 
+
+
+	ClasseDocumentoCNH(ClasseDocumentoAtributos classeDocumentoAtributos) {
+		// TODO Auto-generated constructor stub
+	}
+
+	/*
 	private String classeDocumento;
 	private String nomeCampo;
 	private String tipoCampo;
@@ -68,4 +75,5 @@ public enum ClasseDocumentoCNH implements Serializable {
 	public String[] getSelectValues() {
 		return selectValues;
 	}
+	*/
 }

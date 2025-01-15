@@ -5,8 +5,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoFaturamentoDossiePJ {
-	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CNPJ", "STRING", true, 59, "", true, TipoMascara.CNPJ, null);
+	IDENTIFICADOR_CLIENTE(new ClasseDocumentoAtributos("IDENTIFICADOR_CLIENTE", "CNPJ", "STRING", true, 59, "", true, TipoMascara.CNPJ, null));
 
+	ClasseDocumentoFaturamentoDossiePJ(ClasseDocumentoAtributos classeDocumentoAtributos) {
+		// TODO Auto-generated constructor stub
+	}
+
+	/*
 	private String classeDocumento;
 	private String nomeCampo;
 	private String tipoCampo;
@@ -66,4 +71,5 @@ public enum ClasseDocumentoFaturamentoDossiePJ {
 	public String[] getSelectValues() {
 		return selectValues;
 	}
+	*/
 }

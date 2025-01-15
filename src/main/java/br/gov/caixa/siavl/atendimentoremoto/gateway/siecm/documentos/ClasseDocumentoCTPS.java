@@ -7,9 +7,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoCTPS implements Serializable {
-	EMISSOR("EMISSOR", "Emissor", "STRING", true, 100, "Ministério do Trabalho", true, null, null),
-	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", "STRING", true, 59, "", true, TipoMascara.CPFCNPJ, null);
+	EMISSOR(new ClasseDocumentoAtributos("EMISSOR", "Emissor", "STRING", true, 100, "Ministério do Trabalho", true, null, null)),
+	IDENTIFICADOR_CLIENTE(new ClasseDocumentoAtributos("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", "STRING", true, 59, "", true, TipoMascara.CPFCNPJ, null));
 
+	ClasseDocumentoCTPS(ClasseDocumentoAtributos classeDocumentoAtributos) {
+		// TODO Auto-generated constructor stub
+	}
+
+	/*
 	private String classeDocumento;
 	private String nomeCampo;
 	private String tipoCampo;
@@ -64,4 +69,5 @@ public enum ClasseDocumentoCTPS implements Serializable {
 	public TipoMascara getTipoMascara() {
 		return tipoMascara;
 	}
+	*/
 }

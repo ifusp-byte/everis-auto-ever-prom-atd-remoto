@@ -8,12 +8,16 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoDemonstrativoPagamento implements Serializable {
 
-	DATA_REFERENCIA("DATA_REFERENCIA", "Data de Referência", "DATE", true, 12, "", TipoMascara.DATE, true, null),
-	VALOR_RENDA_BRUTA("VALOR_RENDA_BRUTA", "Valor Renda Bruta", "STRING", true, 17, "", TipoMascara.MONETARIO, true,
-			null),
-	VALOR_RENDA_LIQUIDA("VALOR_RENDA_LIQUIDA", "Valor Renda Líquida", "STRING", true, 17, "", TipoMascara.MONETARIO,
-			true, null);
+	DATA_REFERENCIA(new ClasseDocumentoAtributos("DATA_REFERENCIA", "Data de Referência", "DATE", true, 12, "", true, TipoMascara.DATE, null)),
+	VALOR_RENDA_BRUTA(new ClasseDocumentoAtributos("VALOR_RENDA_BRUTA", "Valor Renda Bruta", "STRING", true, 17, "", true, TipoMascara.MONETARIO,
+			null)),
+	VALOR_RENDA_LIQUIDA(new ClasseDocumentoAtributos("VALOR_RENDA_LIQUIDA", "Valor Renda Líquida", "STRING", true, 17, "", true, TipoMascara.MONETARIO, null));
 
+			ClasseDocumentoDemonstrativoPagamento(ClasseDocumentoAtributos classeDocumentoAtributos) {
+				// TODO Auto-generated constructor stub
+			}
+
+	/*
 	private String classeDocumento;
 	private String nomeCampo;
 	private String tipoCampo;
@@ -74,4 +78,5 @@ public enum ClasseDocumentoDemonstrativoPagamento implements Serializable {
 	public String[] getSelectValues() {
 		return selectValues;
 	}
+	*/
 }

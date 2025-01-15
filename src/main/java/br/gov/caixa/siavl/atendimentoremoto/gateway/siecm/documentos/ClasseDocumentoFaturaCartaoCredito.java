@@ -9,14 +9,19 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstan
 @SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoFaturaCartaoCredito implements Serializable {
-	NOME_TITULAR("NOME_TITULAR", "Nome do Titular", SiecmConstants.STRING, true, 60, "", true, TipoMascara.TEXTO, null),
-	ENDERECO_TITULAR("ENDERECO_TITULAR", "Endereço", SiecmConstants.STRING, true, 60, "", true, null, null),
-	CEP("CEP", "CEP", SiecmConstants.STRING, true, 10, "", true, TipoMascara.CEP, null),
-	BAIRRO("BAIRRO", "Bairro", SiecmConstants.STRING, true, 64, "", true, null, null),
-	CIDADE("CIDADE", "Cidade", SiecmConstants.STRING, true, 40, "", true, null, null),
-	UF("UF", "UF", SiecmConstants.STRING, true, 20, "", true, TipoMascara.UF, SiecmConstants.ESTADOS),
-	DATA_FATURA("DATA_FATURA", "Data da Fatura", "DATE", true, 12, "", true, TipoMascara.DATE, null);
+	NOME_TITULAR(new ClasseDocumentoAtributos("NOME_TITULAR", "Nome do Titular", SiecmConstants.STRING, true, 60, "", true, TipoMascara.TEXTO, null)),
+	ENDERECO_TITULAR(new ClasseDocumentoAtributos("ENDERECO_TITULAR", "Endereço", SiecmConstants.STRING, true, 60, "", true, null, null)),
+	CEP(new ClasseDocumentoAtributos("CEP", "CEP", SiecmConstants.STRING, true, 10, "", true, TipoMascara.CEP, null)),
+	BAIRRO(new ClasseDocumentoAtributos("BAIRRO", "Bairro", SiecmConstants.STRING, true, 64, "", true, null, null)),
+	CIDADE(new ClasseDocumentoAtributos("CIDADE", "Cidade", SiecmConstants.STRING, true, 40, "", true, null, null)),
+	UF(new ClasseDocumentoAtributos("UF", "UF", SiecmConstants.STRING, true, 20, "", true, TipoMascara.UF, SiecmConstants.ESTADOS)),
+	DATA_FATURA(new ClasseDocumentoAtributos("DATA_FATURA", "Data da Fatura", "DATE", true, 12, "", true, TipoMascara.DATE, null));
 
+	ClasseDocumentoFaturaCartaoCredito(ClasseDocumentoAtributos classeDocumentoAtributos) {
+		// TODO Auto-generated constructor stub
+	}
+
+	/*
 	private String classeDocumento;
 	private String nomeCampo;
 	private String tipoCampo;
@@ -76,4 +81,5 @@ public enum ClasseDocumentoFaturaCartaoCredito implements Serializable {
 	public String[] getSelectValues() {
 		return selectValues;
 	}
+	*/
 }

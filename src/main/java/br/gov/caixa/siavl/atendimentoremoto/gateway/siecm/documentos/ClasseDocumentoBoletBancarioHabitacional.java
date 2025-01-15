@@ -11,14 +11,19 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstan
 @SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoBoletBancarioHabitacional implements Serializable {
-	NOME_SACADO("NOME_SACADO", "Nome do Sacado", SiecmConstants.STRING, true, 60, StringUtils.EMPTY, true, TipoMascara.TEXTO, null),
-	ENDERECO_SACADO("ENDERECO_SACADO", "Endereço", SiecmConstants.STRING, true, 60, StringUtils.EMPTY, true, null, null),
-	CEP("CEP", "CEP", SiecmConstants.STRING, true, 10, StringUtils.EMPTY, true, TipoMascara.CEP, null),
-	BAIRRO("BAIRRO", "Bairro", SiecmConstants.STRING, true, 64, StringUtils.EMPTY, true, null, null),
-	CIDADE("CIDADE", "Cidade", SiecmConstants.STRING, true, 40, StringUtils.EMPTY, true, null, null),
-	UF("UF", "UF", "STRING", true, 20, StringUtils.EMPTY, true, TipoMascara.UF, SiecmConstants.ESTADOS),
-	NOME_CEDENTE("NOME_CEDENTE", "Nome do Cedente", SiecmConstants.STRING, true, 60, StringUtils.EMPTY, true, TipoMascara.TEXTO, null);
+	NOME_SACADO(new ClasseDocumentoAtributos("NOME_SACADO", "Nome do Sacado", SiecmConstants.STRING, true, 60, StringUtils.EMPTY, true, TipoMascara.TEXTO, null)),
+	ENDERECO_SACADO(new ClasseDocumentoAtributos("ENDERECO_SACADO", "Endereço", SiecmConstants.STRING, true, 60, StringUtils.EMPTY, true, null, null)),
+	CEP(new ClasseDocumentoAtributos("CEP", "CEP", SiecmConstants.STRING, true, 10, StringUtils.EMPTY, true, TipoMascara.CEP, null)),
+	BAIRRO(new ClasseDocumentoAtributos("BAIRRO", "Bairro", SiecmConstants.STRING, true, 64, StringUtils.EMPTY, true, null, null)),
+	CIDADE(new ClasseDocumentoAtributos("CIDADE", "Cidade", SiecmConstants.STRING, true, 40, StringUtils.EMPTY, true, null, null)),
+	UF(new ClasseDocumentoAtributos("UF", "UF", "STRING", true, 20, StringUtils.EMPTY, true, TipoMascara.UF, SiecmConstants.ESTADOS)),
+	NOME_CEDENTE(new ClasseDocumentoAtributos("NOME_CEDENTE", "Nome do Cedente", SiecmConstants.STRING, true, 60, StringUtils.EMPTY, true, TipoMascara.TEXTO, null));
 
+	ClasseDocumentoBoletBancarioHabitacional(ClasseDocumentoAtributos classeDocumentoAtributos) {
+		// TODO Auto-generated constructor stub
+	}
+
+	/*
 	private String classeDocumento;
 	private String nomeCampo;
 	private String tipoCampo;
@@ -78,4 +83,5 @@ public enum ClasseDocumentoBoletBancarioHabitacional implements Serializable {
 	public String[] getSelectValues() {
 		return selectValues;
 	}
+	*/
 }

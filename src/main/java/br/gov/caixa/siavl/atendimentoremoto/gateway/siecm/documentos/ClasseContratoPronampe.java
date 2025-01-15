@@ -9,10 +9,15 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstan
 @SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseContratoPronampe implements Serializable {
-	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", SiecmConstants.CPF_CNPJ, SiecmConstants.STRING, true, 59, "", true, TipoMascara.CPFCNPJ, null),
-	NUMERO_CONTRATO("NUMERO_CONTRATO", "Número do contrato", SiecmConstants.STRING, true, 22, "", true, TipoMascara.NUMERO_CONTRATO,
-			null);
+	IDENTIFICADOR_CLIENTE(new ClasseDocumentoAtributos("IDENTIFICADOR_CLIENTE", SiecmConstants.CPF_CNPJ, SiecmConstants.STRING, true, 59, "", true, TipoMascara.CPFCNPJ, null)),
+	NUMERO_CONTRATO(new ClasseDocumentoAtributos("NUMERO_CONTRATO", "Número do contrato", SiecmConstants.STRING, true, 22, "", true, TipoMascara.NUMERO_CONTRATO,
+			null));
 
+			ClasseContratoPronampe(ClasseDocumentoAtributos classeDocumentoAtributos) {
+				// TODO Auto-generated constructor stub
+			}
+
+	/*
 	private String classeDocumento;
 	private String nomeCampo;
 	private String tipoCampo;
@@ -71,4 +76,5 @@ public enum ClasseContratoPronampe implements Serializable {
 	public String[] getSelectValues() {
 		return selectValues;
 	}
+	*/
 }

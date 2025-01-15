@@ -9,12 +9,17 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstan
 @SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoCarteiraIdentidadeMilitar implements Serializable {
-	ORGAO_EMISSOR("ORGAO_EMISSOR", "Orgão Emissor", SiecmConstants.STRING, true, 100, "", true, null, null),
-	NUMERO_REGISTRO("NUMERO_REGISTRO", "Número de Registro", SiecmConstants.STRING, true, 100, "", true, null, null),
-	UF_EXPEDICAO("UF_EXPEDICAO", "UF de Expedição", SiecmConstants.STRING, true, 2, "", true, TipoMascara.UF, SiecmConstants.ESTADOS),
-	DATA_EXPEDICAO("DATA_EXPEDICAO", "Data de Expedição", "DATE", true, 12, "", true, TipoMascara.DATE, null),
-	DATA_VALIDADE("DATA_VALIDADE", "Data de Validade", "DATE", true, 12, "", true, TipoMascara.DATE, null);
+	ORGAO_EMISSOR(new ClasseDocumentoAtributos("ORGAO_EMISSOR", "Orgão Emissor", SiecmConstants.STRING, true, 100, "", true, null, null)),
+	NUMERO_REGISTRO(new ClasseDocumentoAtributos("NUMERO_REGISTRO", "Número de Registro", SiecmConstants.STRING, true, 100, "", true, null, null)),
+	UF_EXPEDICAO(new ClasseDocumentoAtributos("UF_EXPEDICAO", "UF de Expedição", SiecmConstants.STRING, true, 2, "", true, TipoMascara.UF, SiecmConstants.ESTADOS)),
+	DATA_EXPEDICAO(new ClasseDocumentoAtributos("DATA_EXPEDICAO", "Data de Expedição", "DATE", true, 12, "", true, TipoMascara.DATE, null)),
+	DATA_VALIDADE(new ClasseDocumentoAtributos("DATA_VALIDADE", "Data de Validade", "DATE", true, 12, "", true, TipoMascara.DATE, null));
 
+	ClasseDocumentoCarteiraIdentidadeMilitar(ClasseDocumentoAtributos classeDocumentoAtributos) {
+		// TODO Auto-generated constructor stub
+	}
+
+	/*
 	private String classeDocumento;
 	private String nomeCampo;
 	private String tipoCampo;
@@ -74,4 +79,5 @@ public enum ClasseDocumentoCarteiraIdentidadeMilitar implements Serializable {
 	public String[] getSelectValues() {
 		return selectValues;
 	}
+	*/
 }

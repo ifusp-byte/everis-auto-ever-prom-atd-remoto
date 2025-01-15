@@ -7,9 +7,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseGiroCaixaInstantaneoMultiplo implements Serializable {
-	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", "STRING", true, 14, "", true, TipoMascara.CNPJ, null),
-	NUMERO_CONTA("NUMERO_CONTA", "Número Conta", "STRING", true, 24, "", true, TipoMascara.NUMERO_CONTA, null);
+	IDENTIFICADOR_CLIENTE(new ClasseDocumentoAtributos("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", "STRING", true, 14, "", true, TipoMascara.CNPJ, null)),
+	NUMERO_CONTA(new ClasseDocumentoAtributos("NUMERO_CONTA", "Número Conta", "STRING", true, 24, "", true, TipoMascara.NUMERO_CONTA, null));
 
+	ClasseGiroCaixaInstantaneoMultiplo(ClasseDocumentoAtributos classeDocumentoAtributos) {
+		// TODO Auto-generated constructor stub
+	}
+
+	/*
 	private String classeDocumento;
 	private String nomeCampo;
 	private String tipoCampo;
@@ -69,4 +74,5 @@ public enum ClasseGiroCaixaInstantaneoMultiplo implements Serializable {
 	public String[] getSelectValues() {
 		return selectValues;
 	}
+	*/
 }

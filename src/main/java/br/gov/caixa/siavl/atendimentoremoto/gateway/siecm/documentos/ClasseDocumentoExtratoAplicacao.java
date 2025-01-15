@@ -10,11 +10,16 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstan
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoExtratoAplicacao implements Serializable {
 
-	AGENCIA("AGENCIA", "Agência", SiecmConstants.STRING, true, 4, "", true, null, null),
-	CONTA("CONTA", "Conta", SiecmConstants.STRING, true, 9, "", true, null, null),
-	NOME_APLICACAO("NOME_APLICACAO", "Nome da Aplicação", SiecmConstants.STRING, true, 60, "", true, null, null),
-	PERIODO("PERIODO", "Período", SiecmConstants.STRING, true, 20, "", true, null, null);
+	AGENCIA(new ClasseDocumentoAtributos("AGENCIA", "Agência", SiecmConstants.STRING, true, 4, "", true, null, null)),
+	CONTA(new ClasseDocumentoAtributos("CONTA", "Conta", SiecmConstants.STRING, true, 9, "", true, null, null)),
+	NOME_APLICACAO(new ClasseDocumentoAtributos("NOME_APLICACAO", "Nome da Aplicação", SiecmConstants.STRING, true, 60, "", true, null, null)),
+	PERIODO(new ClasseDocumentoAtributos("PERIODO", "Período", SiecmConstants.STRING, true, 20, "", true, null, null));
 
+	ClasseDocumentoExtratoAplicacao(ClasseDocumentoAtributos classeDocumentoAtributos) {
+		// TODO Auto-generated constructor stub
+	}
+
+	/*
 	private String classeDocumento;
 	private String nomeCampo;
 	private String tipoCampo;
@@ -74,4 +79,5 @@ public enum ClasseDocumentoExtratoAplicacao implements Serializable {
 	public String[] getSelectValues() {
 		return selectValues;
 	}
+	*/
 }
