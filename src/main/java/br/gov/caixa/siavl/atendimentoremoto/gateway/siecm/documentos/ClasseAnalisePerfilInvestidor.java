@@ -9,11 +9,15 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstan
 @SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseAnalisePerfilInvestidor implements Serializable {
-	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", SiecmConstants.CPF, SiecmConstants.STRING, true, 14, "", true,
-			TipoMascara.CPF, null),
-	NUMERO_CONTA("NUMERO_CONTA", "Número Conta", SiecmConstants.STRING, true, 24, "", true, TipoMascara.NUMERO_CONTA,
-			null);
+	IDENTIFICADOR_CLIENTE(new ClasseDocumentoAtributos("IDENTIFICADOR_CLIENTE", SiecmConstants.CPF, SiecmConstants.STRING, true, 14, "", true,
+			TipoMascara.CPF, null)),
+	NUMERO_CONTA(new ClasseDocumentoAtributos("NUMERO_CONTA", "Número Conta", SiecmConstants.STRING, true, 24, "", true, TipoMascara.NUMERO_CONTA,
+			null));
+	
+	ClasseAnalisePerfilInvestidor(ClasseDocumentoAtributos classeDocumentoAtributos) {
+	}
 
+	/*
 	private String classeDocumento;
 	private String nomeCampo;
 	private String tipoCampo;
@@ -36,6 +40,9 @@ public enum ClasseAnalisePerfilInvestidor implements Serializable {
 		this.tipoMascara = tipoMascara;
 		this.selectValues = selectValues;
 	}
+	
+
+
 
 	public String getClasseDocumento() {
 		return classeDocumento;
@@ -72,5 +79,6 @@ public enum ClasseAnalisePerfilInvestidor implements Serializable {
 	public String[] getSelectValues() {
 		return selectValues;
 	}
+	*/
 
 }

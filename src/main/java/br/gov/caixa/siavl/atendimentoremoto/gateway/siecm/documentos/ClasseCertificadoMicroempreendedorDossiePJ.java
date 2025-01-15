@@ -7,8 +7,13 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstan
 @SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseCertificadoMicroempreendedorDossiePJ {
-	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", SiecmConstants.CNPJ, SiecmConstants.STRING, true, 59, "", true, TipoMascara.CNPJ, null);
+	IDENTIFICADOR_CLIENTE(new ClasseDocumentoAtributos("IDENTIFICADOR_CLIENTE", SiecmConstants.CNPJ, SiecmConstants.STRING, true, 59, "", true, TipoMascara.CNPJ, null));
 
+	ClasseCertificadoMicroempreendedorDossiePJ(ClasseDocumentoAtributos classeDocumentoAtributos) {
+		// TODO Auto-generated constructor stub
+	}
+
+	/*
 	private String classeDocumento;
 	private String nomeCampo;
 	private String tipoCampo;
@@ -68,4 +73,5 @@ public enum ClasseCertificadoMicroempreendedorDossiePJ {
 	public String[] getSelectValues() {
 		return selectValues;
 	}
+	*/
 }

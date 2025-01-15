@@ -26,7 +26,7 @@ class AtendimentoRemotoControllerAnexoDocumentoTestes3Test extends AtendimentoRe
 	}
 
 	@Test
-	void consultaDocumentoTest() throws StreamReadException, DatabindException, IOException {
+	void consultaDocumentoErroTest() throws StreamReadException, DatabindException, IOException {
 		consultaDocumento();
 	}
 
