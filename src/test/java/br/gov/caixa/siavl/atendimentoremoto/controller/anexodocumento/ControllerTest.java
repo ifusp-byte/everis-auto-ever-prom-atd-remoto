@@ -88,7 +88,7 @@ class ControllerTest {
 						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 						.withBodyFile(siecmDocumentoIncluirBodyRetorno)));
 		
-		stubFor(WireMock.get(urlPathMatching(CONSUTA_SIECM_DOCUMENTO_CONSULTAR))
+		stubFor(WireMock.post(urlPathMatching(CONSUTA_SIECM_DOCUMENTO_CONSULTAR))
 				.willReturn(aResponse().withStatus(statusDocumentoConsultar)
 						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 						.withBodyFile(siecmDocumentoConsultarBodyRetorno)));
