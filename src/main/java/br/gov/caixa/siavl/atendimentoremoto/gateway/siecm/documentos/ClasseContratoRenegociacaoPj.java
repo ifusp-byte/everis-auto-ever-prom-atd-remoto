@@ -9,72 +9,18 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstan
 @SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseContratoRenegociacaoPj implements Serializable {
-	IDENTIFICADOR_CLIENTE(new ClasseDocumentoAtributos("IDENTIFICADOR_CLIENTE", SiecmConstants.CPF_CNPJ, SiecmConstants.STRING, true, 14, "", true, TipoMascara.CNPJ, null)),
-	NUMERO_CONTRATO(new ClasseDocumentoAtributos("NUMERO_CONTRATO", "Número do contrato", SiecmConstants.STRING, true, 22, "", true, TipoMascara.NUMERO_CONTRATO,
-			null));
+	IDENTIFICADOR_CLIENTE(new ClasseDocumentoAtributos("IDENTIFICADOR_CLIENTE", SiecmConstants.CPF_CNPJ,
+			SiecmConstants.STRING, true, 14, "", true, TipoMascara.CNPJ, null)),
+	NUMERO_CONTRATO(new ClasseDocumentoAtributos("NUMERO_CONTRATO", "Número do contrato", SiecmConstants.STRING, true,
+			22, "", true, TipoMascara.NUMERO_CONTRATO, null));
 
-			ClasseContratoRenegociacaoPj(ClasseDocumentoAtributos classeDocumentoAtributos) {
-				// TODO Auto-generated constructor stub
-			}
+	private ClasseDocumentoAtributos atributos;
 
-	/*
-	private String classeDocumento;
-	private String nomeCampo;
-	private String tipoCampo;
-	private Boolean campoObrigatorio;
-	private Integer tamanhoMaximo;
-	private String valor;
-	private Boolean habilitado;
-	private TipoMascara tipoMascara;
-	private String[] selectValues;
-
-	ClasseContratoRenegociacaoPj(String classeDocumento, String nomeCampo, String tipoCampo, Boolean campoObrigatorio,
-			Integer tamanhoMaximo, String valor, Boolean habilitado, TipoMascara tipoMascara, String[] selectValues) {
-		this.classeDocumento = classeDocumento;
-		this.nomeCampo = nomeCampo;
-		this.tipoCampo = tipoCampo;
-		this.campoObrigatorio = campoObrigatorio;
-		this.tamanhoMaximo = tamanhoMaximo;
-		this.valor = valor;
-		this.habilitado = habilitado;
-		this.tipoMascara = tipoMascara;
-		this.selectValues = selectValues;
+	ClasseContratoRenegociacaoPj(ClasseDocumentoAtributos atributos) {
+		this.atributos = atributos;
 	}
 
-	public String getClasseDocumento() {
-		return classeDocumento;
+	public ClasseDocumentoAtributos getAtributos() {
+		return atributos;
 	}
-
-	public String getNomeCampo() {
-		return nomeCampo;
-	}
-
-	public String getTipoCampo() {
-		return tipoCampo;
-	}
-
-	public Boolean getCampoObrigatorio() {
-		return campoObrigatorio;
-	}
-
-	public Integer getTamanhoMaximo() {
-		return tamanhoMaximo;
-	}
-
-	public String getValor() {
-		return valor;
-	}
-
-	public Boolean getHabilitado() {
-		return habilitado;
-	}
-
-	public TipoMascara getTipoMascara() {
-		return tipoMascara;
-	}
-
-	public String[] getSelectValues() {
-		return selectValues;
-	}
-	*/
 }

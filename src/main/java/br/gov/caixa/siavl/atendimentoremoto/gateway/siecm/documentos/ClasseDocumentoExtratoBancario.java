@@ -7,73 +7,17 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoExtratoBancario implements Serializable {
-
-	DATA_REFERENCIA(new ClasseDocumentoAtributos("DATA_REFERENCIA", "Data de Referência", "DATE", true, 12, "", true, TipoMascara.DATE, null)),
+	DATA_REFERENCIA(new ClasseDocumentoAtributos("DATA_REFERENCIA", "Data de Referência", "DATE", true, 12, "", true,
+			TipoMascara.DATE, null)),
 	EMISSOR(new ClasseDocumentoAtributos("EMISSOR", "Emissor", "STRING", true, 100, "", true, null, null));
 
-	ClasseDocumentoExtratoBancario(ClasseDocumentoAtributos classeDocumentoAtributos) {
-		// TODO Auto-generated constructor stub
+	private ClasseDocumentoAtributos atributos;
+
+	ClasseDocumentoExtratoBancario(ClasseDocumentoAtributos atributos) {
+		this.atributos = atributos;
 	}
 
-	/*
-	private String classeDocumento;
-	private String nomeCampo;
-	private String tipoCampo;
-	private Boolean campoObrigatorio;
-	private Integer tamanhoMaximo;
-	private String valor;
-	private Boolean habilitado;
-	private TipoMascara tipoMascara;
-	private String[] selectValues;
-
-	private ClasseDocumentoExtratoBancario(String classeDocumento, String nomeCampo, String tipoCampo,
-			boolean campoObrigatorio, Integer tamanhoMaximo, String valor, TipoMascara tipoMascara, Boolean habilitado,
-			String[] selectValues) {
-		this.classeDocumento = classeDocumento;
-		this.nomeCampo = nomeCampo;
-		this.tipoCampo = tipoCampo;
-		this.campoObrigatorio = campoObrigatorio;
-		this.tamanhoMaximo = tamanhoMaximo;
-		this.valor = valor;
-		this.tipoMascara = tipoMascara;
-		this.habilitado = habilitado;
-		this.selectValues = selectValues;
+	public ClasseDocumentoAtributos getAtributos() {
+		return atributos;
 	}
-
-	public String getClasseDocumento() {
-		return classeDocumento;
-	}
-
-	public String getNomeCampo() {
-		return nomeCampo;
-	}
-
-	public String getTipoCampo() {
-		return tipoCampo;
-	}
-
-	public Boolean getCampoObrigatorio() {
-		return campoObrigatorio;
-	}
-
-	public Integer getTamanhoMaximo() {
-		return tamanhoMaximo;
-	}
-
-	public String getValor() {
-		return valor;
-	}
-
-	public Boolean getHabilitado() {
-		return habilitado;
-	}
-
-	public TipoMascara getTipoMascara() {
-		return tipoMascara;
-	}
-
-	public String[] getSelectValues() {
-		return selectValues;
-	}
-	*/
 }
