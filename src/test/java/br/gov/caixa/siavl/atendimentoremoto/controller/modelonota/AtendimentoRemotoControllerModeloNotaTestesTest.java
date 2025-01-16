@@ -26,7 +26,7 @@ class AtendimentoRemotoControllerModeloNotaTestesTest extends AtendimentoRemotoC
 		consultaModeloNota();
 	}
 
-	//@Test
+	@Test
 	void consultaModeloNotaMaisUtilizadaTest() {
 		consultaModeloNotaMaisUtilizada();
 	}
