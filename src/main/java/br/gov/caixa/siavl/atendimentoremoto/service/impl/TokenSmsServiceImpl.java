@@ -89,9 +89,8 @@ public class TokenSmsServiceImpl implements TokenSmsService {
 				.requireNonNull(Boolean.parseBoolean(String.valueOf(tokenSmsInputDto.getIdentificacaoToken()))))) {
 			if (Boolean.FALSE.equals(Boolean.parseBoolean(String.valueOf(tokenSmsInputDto.getTokenValido())))) {
 
-				atendimentoCliente.setValidacaoTokenAtendimento(2L);
-				atendimentoCliente.setDataEnvioToken(dataUtils.formataDataBanco());
-				atendimentoClienteRepository.save(atendimentoCliente);
+				atendimentoClienteRepository.atualizaStatusTokenSms(2L, dataUtils.formataDataBanco(),
+						atendimentoCliente.getNumeroProtocolo());
 
 				comentarioAtendimento.setDescricaoComentario(
 						"Identificação Token Sms. Token Sms não validado para o número de telefone: "
@@ -101,9 +100,8 @@ public class TokenSmsServiceImpl implements TokenSmsService {
 				return false;
 			}
 
-			atendimentoCliente.setValidacaoTokenAtendimento(1L);
-			atendimentoCliente.setDataEnvioToken(dataUtils.formataDataBanco());
-			atendimentoClienteRepository.save(atendimentoCliente);
+			atendimentoClienteRepository.atualizaStatusTokenSms(1L, dataUtils.formataDataBanco(),
+					atendimentoCliente.getNumeroProtocolo());
 
 			comentarioAtendimento
 					.setDescricaoComentario("Identificação Token Sms. Token Sms validado para o número de telefone: "
@@ -141,7 +139,8 @@ public class TokenSmsServiceImpl implements TokenSmsService {
 
 	public List<Object> notas(Long numeroProtocolo) {
 		List<NotasByProtocoloOutputDTO> notas = notaNegociacaoRepositoryImpl.notasByProtocolo(numeroProtocolo);
-		List<NotasByProtocoloOutputDTO> notasTokenSms = notaNegociacaoRepositoryImpl.notasByProtocoloTokenSms(numeroProtocolo);
+		List<NotasByProtocoloOutputDTO> notasTokenSms = notaNegociacaoRepositoryImpl
+				.notasByProtocoloTokenSms(numeroProtocolo);
 		List<NotasByProtocoloOutputDTO> notasLista = new ArrayList<>();
 		notasLista.addAll(notas);
 		notasLista.addAll(notasTokenSms);
