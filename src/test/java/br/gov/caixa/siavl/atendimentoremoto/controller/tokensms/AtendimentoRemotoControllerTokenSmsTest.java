@@ -19,24 +19,30 @@ class AtendimentoRemotoControllerTokenSmsTest extends ControllerTest {
 	void identificacaoTokenSms() throws StreamReadException, DatabindException, IOException {
 		String BASE_URL = atdremotoUrl + "/token-sms";
 
-		TokenSmsInputDto registraNotaInputDto1 = mapper.readValue(
+		TokenSmsInputDto tokenSmsInputDto1 = mapper.readValue(
 				new ClassPathResource("/tokensms/1tokenSmsInputDto.json").getFile(), TokenSmsInputDto.class);
 		ResponseEntity<Object> response1 = restTemplate.exchange(BASE_URL, HttpMethod.POST,
-				newRequestEntity(registraNotaInputDto1), Object.class);
+				newRequestEntity(tokenSmsInputDto1), Object.class);
 
-		TokenSmsInputDto registraNotaInputDto2 = mapper.readValue(
+		TokenSmsInputDto tokenSmsInputDto2 = mapper.readValue(
 				new ClassPathResource("/tokensms/2tokenSmsInputDto.json").getFile(), TokenSmsInputDto.class);
 		ResponseEntity<Object> response2 = restTemplate.exchange(BASE_URL, HttpMethod.POST,
-				newRequestEntity(registraNotaInputDto2), Object.class);
+				newRequestEntity(tokenSmsInputDto2), Object.class);
 
-		TokenSmsInputDto registraNotaInputDto3 = mapper.readValue(
+		TokenSmsInputDto tokenSmsInputDto3 = mapper.readValue(
 				new ClassPathResource("/tokensms/3tokenSmsInputDto.json").getFile(), TokenSmsInputDto.class);
 		ResponseEntity<Object> response3 = restTemplate.exchange(BASE_URL, HttpMethod.POST,
-				newRequestEntity(registraNotaInputDto3), Object.class);
+				newRequestEntity(tokenSmsInputDto3), Object.class);
+		
+		TokenSmsInputDto tokenSmsInputDto4 = mapper.readValue(
+				new ClassPathResource("/tokensms/4tokenSmsInputDto.json").getFile(), TokenSmsInputDto.class);
+		ResponseEntity<Object> response4 = restTemplate.exchange(BASE_URL, HttpMethod.POST,
+				newRequestEntity(tokenSmsInputDto4), Object.class);
 
 		Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode());
 		Assertions.assertEquals(HttpStatus.CREATED, response2.getStatusCode());
 		Assertions.assertEquals(HttpStatus.CREATED, response3.getStatusCode());
+		Assertions.assertEquals(HttpStatus.CREATED, response4.getStatusCode());
 	}
 
 }

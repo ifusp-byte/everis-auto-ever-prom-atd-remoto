@@ -1,5 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.controller.report;
 
+import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.RELATORIO;
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.RELATORIO_PF;
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.RELATORIO_PJ;
 
@@ -20,13 +21,17 @@ class AtendimentoRemotoControllerReportTestesTest extends AtendimentoRemotoContr
 	}
 
 	@Test
-	void relatorioTestPJTest() throws StreamReadException, DatabindException, IOException {
-		relatorio(RELATORIO_PJ);
-	}
-	
-	@Test
-	void relatorioTestPFTest() throws StreamReadException, DatabindException, IOException {
-		relatorio(RELATORIO_PF);
+	void relatorioPFTest() throws StreamReadException, DatabindException, IOException {
+		relatorioPFPJ(RELATORIO_PF);
 	}
 
+	@Test
+	void relatorioPJTest() throws StreamReadException, DatabindException, IOException {
+		relatorioPFPJ(RELATORIO_PJ);
+	}
+
+	@Test
+	void relatorioTest() throws StreamReadException, DatabindException, IOException {
+		relatorio(RELATORIO);
+	}
 }

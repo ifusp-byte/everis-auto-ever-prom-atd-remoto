@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -70,20 +71,26 @@ public class TokenSmsServiceImpl implements TokenSmsService {
 
 		Long matriculaAtendente = Long
 				.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll(REGEX_REPLACE_LETRAS, StringUtils.EMPTY));
-
-		Optional<AtendimentoCliente> atendimentoClienteOpt = atendimentoClienteRepository
-				.findByProtocolo(Long.parseLong(tokenSmsInputDto.getNumeroProtocolo()));
-
+		
+		Long numeroProtocolo = NumberUtils.isParsable(tokenSmsInputDto.getNumeroProtocolo())
+				? Long.parseLong(tokenSmsInputDto.getNumeroProtocolo())
+				: null;
+		
 		AtendimentoCliente atendimentoCliente = null;
-
-		if (atendimentoClienteOpt.isPresent()) {
-			atendimentoCliente = atendimentoClienteOpt.get();
-		}
-
 		ComentarioAtendimento comentarioAtendimento = new ComentarioAtendimento();
-		comentarioAtendimento.setMatriculaAtendente(matriculaAtendente);
-		comentarioAtendimento.setDataComentario(dataUtils.formataDataBanco());
-		comentarioAtendimento.setNumeroProtocolo(Long.parseLong(tokenSmsInputDto.getNumeroProtocolo()));
+
+		if (numeroProtocolo != null) {
+
+			Optional<AtendimentoCliente> atendimentoClienteOpt = atendimentoClienteRepository
+					.findByProtocolo(numeroProtocolo);
+
+			atendimentoCliente = atendimentoClienteOpt.get();
+
+			comentarioAtendimento.setMatriculaAtendente(matriculaAtendente);
+			comentarioAtendimento.setDataComentario(dataUtils.formataDataBanco());
+			comentarioAtendimento.setNumeroProtocolo(numeroProtocolo);
+
+		}
 
 		if (Boolean.TRUE.equals(Objects
 				.requireNonNull(Boolean.parseBoolean(String.valueOf(tokenSmsInputDto.getIdentificacaoToken()))))) {
@@ -107,13 +114,14 @@ public class TokenSmsServiceImpl implements TokenSmsService {
 					.setDescricaoComentario("Identificação Token Sms. Token Sms validado para o número de telefone: "
 							+ tokenSmsInputDto.getTokenTelefone());
 			comentarioAtendimentoRepository.save(comentarioAtendimento);
+
+			return true;
 		}
 
 		if (Boolean.TRUE.equals(
 				Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(tokenSmsInputDto.getAssinaturaToken()))))) {
 
 			Long numeroNota = Long.parseLong(tokenSmsInputDto.getNumeroNota());
-			Long numeroProtocolo = Long.parseLong(tokenSmsInputDto.getNumeroProtocolo());
 
 			AssinaturaNota assinaturaNota = new AssinaturaNota();
 			assinaturaNota.setNumeroNota(numeroNota);
@@ -133,7 +141,7 @@ public class TokenSmsServiceImpl implements TokenSmsService {
 
 		}
 
-		return true;
+		return false;
 
 	}
 

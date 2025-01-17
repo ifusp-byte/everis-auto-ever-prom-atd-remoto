@@ -70,8 +70,8 @@ class AtendimentoRemotoControllerDesafioTestes1Test extends AtendimentoRemotoCon
 			public Boolean answer(InvocationOnMock invocation) throws Throwable {
 				invocation.callRealMethod();
 				invocation.getArgument(0);
-				Long tempoDesafioMinutos = 50L;
-				return true;
+				Long tempoDesafioMinutos = 20L;
+				return false;
 			}
 		}).when(desafioServiceImpl).validaIntervaloTempoDesafio(anyLong());
 		desafioValidar();
