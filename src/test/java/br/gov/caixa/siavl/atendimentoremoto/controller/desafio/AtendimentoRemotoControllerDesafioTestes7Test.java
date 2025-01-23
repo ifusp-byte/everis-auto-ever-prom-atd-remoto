@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -25,6 +26,7 @@ class AtendimentoRemotoControllerDesafioTestes7Test extends AtendimentoRemotoCon
 	}
 
 	@Test
+	@Tag("desafio")
 	void desafioResponderErroSiipcTest() throws StreamReadException, DatabindException, IOException {
 		desafioResponderPF();
 	}

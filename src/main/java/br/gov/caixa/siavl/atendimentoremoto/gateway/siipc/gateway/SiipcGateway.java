@@ -40,15 +40,18 @@ import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 public class SiipcGateway {
 
 	@Autowired
+	public
 	DataUtils dataUtils;
 
 	@Autowired
+	public
 	MetodosUtils metodosUtils;
 
 	@Autowired
 	ValidateGateway validateGateway;
 
 	@Autowired
+	public
 	RestTemplateUtils restTemplateUtils;
 
 	@Autowired

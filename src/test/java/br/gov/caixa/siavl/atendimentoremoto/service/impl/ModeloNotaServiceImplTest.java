@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -100,6 +101,7 @@ class ModeloNotaServiceImplTest {
 	}
 
 	@Test
+	@Tag("modeloNota")
 	void modeloNotaServiceImpl1Test() {
 		String cpfCnpj = "12345678901";
 		List<Object[]> mockModeloNota = new ArrayList<>();
@@ -116,6 +118,7 @@ class ModeloNotaServiceImplTest {
 	}
 
 	@Test
+	@Tag("modeloNota")
 	void modeloNotaServiceImpl2Test() {
 		String cpfCnpj = "12345678901";
 		when(documentoUtils.retornaPublicoAlvo(anyString())).thenReturn(123L);
@@ -128,6 +131,7 @@ class ModeloNotaServiceImplTest {
 	}
 
 	@Test
+	@Tag("modeloNota")
 	void modeloNotaServiceImpl3Test() {
 		String cpfCnpj = "12345678901";
 		List<Object[]> mockModeloNotaMaisUtilizada = new ArrayList<>();
@@ -142,6 +146,7 @@ class ModeloNotaServiceImplTest {
 	}
 
 	@Test
+	@Tag("modeloNota")
 	void modeloNotaServiceImpl4Test() {
 		Long numeroModeloNota = 12345L;
 		when(tokenUtils.getMatriculaFromToken(anyString())).thenReturn("12345");
@@ -152,6 +157,7 @@ class ModeloNotaServiceImplTest {
 	}
 
 	@Test
+	@Tag("modeloNota")
 	void modeloNotaServiceImpl5Test() throws Exception {
 		Long numeroModeloNota = 123L;
 		ModeloNotaDinamicoInputDTO inputDTO = new ModeloNotaDinamicoInputDTO();
@@ -167,44 +173,30 @@ class ModeloNotaServiceImplTest {
 	}
 
 	@Test
+	@Tag("modeloNota")
 	void modeloNotaServiceImpl6Test() {
 		List<Object[]> favoritosRepo = new ArrayList<>();
 		favoritosRepo.add(new Object[] { "1", "A123", "Produto X", new Date(1L), "Tipo1", "NomeTipo1" });
 		when(documentoUtils.retornaPublicoAlvo(anyString())).thenReturn(123L);
 		when(fluxoAtendimentoRepository.possuiFluxo(anyLong())).thenReturn(Optional.empty());
-		when(modeloNotaFavoritoRepository.findModeloNotaFavorita(anyLong(), anyLong())).thenReturn(favoritosRepo);		
+		when(modeloNotaFavoritoRepository.findModeloNotaFavorita(anyLong(), anyLong())).thenReturn(favoritosRepo);
 		List<ModeloNotaOutputDto> favoritos = new ArrayList<>();
-		favoritos.add(ModeloNotaOutputDto.builder()
-		        .numeroModeloNota("1")
-		        .numeroAcaoProduto("456")
-		        .descricaoAcaoProduto("Descricao 1")
-		        .dataEscolhaFavorito(new Date(1L))
-		        .numeroTipoNota("789")
-		        .nomeTipoNota("Tipo A")
-		        .build());
-		favoritos.add(ModeloNotaOutputDto.builder()
-		        .numeroModeloNota("124")
-		        .numeroAcaoProduto("457")
-		        .descricaoAcaoProduto("Descricao 2")
-		        .dataEscolhaFavorito(new Date(1L))
-		        .numeroTipoNota("790")
-		        .nomeTipoNota("Tipo B")	        
-		        .build());
-		favoritos.add(ModeloNotaOutputDto.builder()
-		        .numeroModeloNota("124")
-		        .numeroAcaoProduto("457")
-		        .descricaoAcaoProduto("Descricao 2")
-		        .dataEscolhaFavorito(new Date(1L))
-		        .numeroTipoNota("791")
-		        .nomeTipoNota("Tipo B")
-		        .build());
+		favoritos.add(ModeloNotaOutputDto.builder().numeroModeloNota("1").numeroAcaoProduto("456")
+				.descricaoAcaoProduto("Descricao 1").dataEscolhaFavorito(new Date(1L)).numeroTipoNota("789")
+				.nomeTipoNota("Tipo A").build());
+		favoritos.add(ModeloNotaOutputDto.builder().numeroModeloNota("124").numeroAcaoProduto("457")
+				.descricaoAcaoProduto("Descricao 2").dataEscolhaFavorito(new Date(1L)).numeroTipoNota("790")
+				.nomeTipoNota("Tipo B").build());
+		favoritos.add(ModeloNotaOutputDto.builder().numeroModeloNota("124").numeroAcaoProduto("457")
+				.descricaoAcaoProduto("Descricao 2").dataEscolhaFavorito(new Date(1L)).numeroTipoNota("791")
+				.nomeTipoNota("Tipo B").build());
 		doAnswer(new Answer<List<ModeloNotaOutputDto>>() {
 			@Override
 			public List<ModeloNotaOutputDto> answer(InvocationOnMock invocation) throws Throwable {
 				invocation.callRealMethod();
-				Object arg1 = invocation.getArgument(0); 
-				Object arg2 = invocation.getArgument(1); 
-				return favoritos; 
+				Object arg1 = invocation.getArgument(0);
+				Object arg2 = invocation.getArgument(1);
+				return favoritos;
 			}
 		}).when(modeloNotaServiceSpy).consultaModeloNotaFavorita(TOKEN_VALIDO, "AB123456");
 		List<ModeloNotaOutputDto> result = modeloNotaServiceSpy.consultaModeloNotaFavorita(TOKEN_VALIDO, "AB123456");
@@ -216,28 +208,24 @@ class ModeloNotaServiceImplTest {
 	}
 
 	@Test
+	@Tag("modeloNota")
 	void modeloNotaServiceImpl7Test() {
 		List<Object[]> favoritosRepo = new ArrayList<>();
-		favoritosRepo.add(new Object[] { "1", "A123", "Produto X", new Date(1L), "Tipo1", "NomeTipo1" });	
+		favoritosRepo.add(new Object[] { "1", "A123", "Produto X", new Date(1L), "Tipo1", "NomeTipo1" });
 		when(documentoUtils.retornaPublicoAlvo(anyString())).thenReturn(123L);
 		when(fluxoAtendimentoRepository.possuiFluxo(anyLong())).thenReturn(Optional.empty());
-		when(modeloNotaFavoritoRepository.findModeloNotaFavorita(anyLong(), anyLong())).thenReturn(favoritosRepo);	
+		when(modeloNotaFavoritoRepository.findModeloNotaFavorita(anyLong(), anyLong())).thenReturn(favoritosRepo);
 		List<ModeloNotaOutputDto> favoritos = new ArrayList<>();
-		favoritos.add(ModeloNotaOutputDto.builder()
-		        .numeroModeloNota("123")
-		        .numeroAcaoProduto("456")
-		        .descricaoAcaoProduto("Descricao 1")
-		        .dataEscolhaFavorito(new Date(1L))
-		        .numeroTipoNota("789")
-		        .nomeTipoNota("Tipo A")
-		        .build());
+		favoritos.add(ModeloNotaOutputDto.builder().numeroModeloNota("123").numeroAcaoProduto("456")
+				.descricaoAcaoProduto("Descricao 1").dataEscolhaFavorito(new Date(1L)).numeroTipoNota("789")
+				.nomeTipoNota("Tipo A").build());
 		doAnswer(new Answer<List<ModeloNotaOutputDto>>() {
 			@Override
 			public List<ModeloNotaOutputDto> answer(InvocationOnMock invocation) throws Throwable {
 				invocation.callRealMethod();
-				Object arg1 = invocation.getArgument(0); 
-				Object arg2 = invocation.getArgument(1); 
-				return favoritos; 
+				Object arg1 = invocation.getArgument(0);
+				Object arg2 = invocation.getArgument(1);
+				return favoritos;
 			}
 		}).when(modeloNotaServiceSpy).consultaModeloNotaFavorita(TOKEN_VALIDO, "AB123456");
 		List<ModeloNotaOutputDto> result = modeloNotaServiceSpy.consultaModeloNotaFavorita(TOKEN_VALIDO, "AB123456");
@@ -246,6 +234,7 @@ class ModeloNotaServiceImplTest {
 	}
 
 	@Test
+	@Tag("modeloNota")
 	void modeloNotaServiceImpl8Test() {
 		List<Object[]> favoritos = new ArrayList<>();
 		favoritos.add(new Object[] { "1", "A123", "Produto X", new Date(1L), "Tipo1", "NomeTipo1" });
@@ -257,6 +246,7 @@ class ModeloNotaServiceImplTest {
 	}
 
 	@Test
+	@Tag("modeloNota")
 	void modeloNotaServiceImpl9Test() {
 		Object[] dadosFavoritos = { "1", "A123", "Produto", new Date(1L), "Tipo", "NomeTipo" };
 		List<Object[]> favoritos = new ArrayList<>();
@@ -266,9 +256,9 @@ class ModeloNotaServiceImplTest {
 		List<ModeloNotaOutputDto> result = modeloNotaServiceSpy.consultaModeloNotaFavorita(TOKEN_VALIDO, "AB123456");
 		assertTrue(result.isEmpty());
 	}
-	
-	
+
 	@Test
+	@Tag("modeloNota")
 	void modeloNotaServiceImpl10Test() {
 		String cpfCnpj = "12345678901";
 		List<Object[]> mockModeloNotaMaisUtilizada = new ArrayList<>();
