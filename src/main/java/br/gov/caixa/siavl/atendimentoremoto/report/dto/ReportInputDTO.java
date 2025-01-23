@@ -24,7 +24,7 @@ import lombok.Setter;
 public class ReportInputDTO {
 
 	@Valid
-	@XmlElement(name = "numeroNota")
+	@XmlElement(name = "nomeRelatorio")
 	private Object nomeRelatorio;
 
 	@Valid

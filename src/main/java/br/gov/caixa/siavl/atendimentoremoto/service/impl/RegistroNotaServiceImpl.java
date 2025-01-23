@@ -340,7 +340,7 @@ public class RegistroNotaServiceImpl implements RegistroNotaService {
 
 	}
 
-	private void atualizarXML(RegistraNotaInputDto registraNotaInputDto, Long numeroModeloNota, Long numeroNota) {
+	public void atualizarXML(RegistraNotaInputDto registraNotaInputDto, Long numeroModeloNota, Long numeroNota) {
 		List<CamposNotaOutputDTO> camposNotas = new ArrayList<>();
 		JsonNode relatorio = registraNotaInputDto.getRelatorioNota();
 		modeloNotaFavoritoRepository.modeloNotaDinamico(numeroModeloNota).stream().forEach(dinamico -> {

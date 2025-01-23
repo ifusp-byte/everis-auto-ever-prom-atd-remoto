@@ -25,6 +25,7 @@ class AtendimentoRemotoControllerTokenSmsTestesTest extends AtendimentoRemotoCon
 
 	@Test
 	void identificacaoTokenSmsTest() throws StreamReadException, DatabindException, IOException {
+		mockNotasByProtocolo();
 		identificacaoTokenSms();
 	}
 
