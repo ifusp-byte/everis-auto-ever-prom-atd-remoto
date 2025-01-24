@@ -7,65 +7,18 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoNegociacaoCDB implements Serializable {
-	IDENTIFICADOR_CLIENTE("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", "STRING", true, 59, "", true, TipoMascara.CPFCNPJ, null),
-	NUMERO_NOTA("NUMERO_NOTA", "Número da Nota", "STRING", true, 14, "", true, TipoMascara.NUMERICO, null);
+	IDENTIFICADOR_CLIENTE(new ClasseDocumentoAtributos("IDENTIFICADOR_CLIENTE", "CPF/CNPJ", "STRING", true, 59, "",
+			true, TipoMascara.CPFCNPJ, null)),
+	NUMERO_NOTA(new ClasseDocumentoAtributos("NUMERO_NOTA", "Número da Nota", "STRING", true, 14, "", true,
+			TipoMascara.NUMERICO, null));
 
-	private String classeDocumento;
-	private String nomeCampo;
-	private String tipoCampo;
-	private Boolean campoObrigatorio;
-	private Integer tamanhoMaximo;
-	private String valor;
-	private Boolean habilitado;
-	private TipoMascara tipoMascara;
-	private String[] selectValues;
+	private ClasseDocumentoAtributos atributos;
 
-	ClasseDocumentoNegociacaoCDB(String classeDocumento, String nomeCampo, String tipoCampo, Boolean campoObrigatorio,
-			Integer tamanhoMaximo, String valor, Boolean habilitado, TipoMascara tipoMascara, String[] selectValues) {
-		this.classeDocumento = classeDocumento;
-		this.nomeCampo = nomeCampo;
-		this.tipoCampo = tipoCampo;
-		this.campoObrigatorio = campoObrigatorio;
-		this.tamanhoMaximo = tamanhoMaximo;
-		this.valor = valor;
-		this.habilitado = habilitado;
-		this.tipoMascara = tipoMascara;
-		this.selectValues = selectValues;
+	ClasseDocumentoNegociacaoCDB(ClasseDocumentoAtributos atributos) {
+		this.atributos = atributos;
 	}
 
-	public String getClasseDocumento() {
-		return classeDocumento;
-	}
-
-	public String getNomeCampo() {
-		return nomeCampo;
-	}
-
-	public String getTipoCampo() {
-		return tipoCampo;
-	}
-
-	public Boolean getCampoObrigatorio() {
-		return campoObrigatorio;
-	}
-
-	public Integer getTamanhoMaximo() {
-		return tamanhoMaximo;
-	}
-
-	public String getValor() {
-		return valor;
-	}
-
-	public Boolean getHabilitado() {
-		return habilitado;
-	}
-
-	public TipoMascara getTipoMascara() {
-		return tipoMascara;
-	}
-
-	public String[] getSelectValues() {
-		return selectValues;
+	public ClasseDocumentoAtributos getAtributos() {
+		return atributos;
 	}
 }

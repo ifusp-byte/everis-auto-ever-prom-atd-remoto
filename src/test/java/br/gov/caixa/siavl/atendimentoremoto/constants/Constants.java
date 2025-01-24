@@ -28,8 +28,10 @@ public final class Constants {
 	
 	public static final String RELATORIO_PF = "1reportInputDTO";
 	public static final String RELATORIO_PJ = "2reportInputDTO";
+	public static final String RELATORIO = "3reportInputDTO";
 	
 	public static final String ANEXA_DOCUMENTO_OPCIONAL = "1anexoDocumentoInputDTO"; 
 	public static final String ANEXA_DOCUMENTO_OBRIGATORIO = "2anexoDocumentoInputDTO"; 
+	public static final String ANEXA_DOCUMENTO_ACEITE = "3anexoDocumentoInputDTO"; 
 
 }

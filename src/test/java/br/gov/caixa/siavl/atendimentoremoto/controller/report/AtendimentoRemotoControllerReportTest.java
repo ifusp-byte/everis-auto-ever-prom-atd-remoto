@@ -15,6 +15,25 @@ import br.gov.caixa.siavl.atendimentoremoto.report.dto.ReportInputDTO;
 @SuppressWarnings("all")
 class AtendimentoRemotoControllerReportTest extends ControllerTest {
 
+	void relatorioPFPJ(String relatorioInpuDtoFile) throws StreamReadException, DatabindException, IOException {
+
+		String BASE_URL = atdremotoUrl + "/relatorios";
+		ReportInputDTO reportInputDTO = mapper.readValue(
+				new ClassPathResource("/relatorio/" + relatorioInpuDtoFile + ".json").getFile(), ReportInputDTO.class);
+
+		try {
+
+			ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.POST,
+					newRequestEntity(reportInputDTO), Object.class);
+
+		} catch (Exception e) {
+
+			Assertions.assertTrue(e.getMessage().toString().contains("application/octet-stream"));
+
+		}
+
+	}
+
 	void relatorio(String relatorioInpuDtoFile) throws StreamReadException, DatabindException, IOException {
 
 		String BASE_URL = atdremotoUrl + "/relatorios";
@@ -27,9 +46,9 @@ class AtendimentoRemotoControllerReportTest extends ControllerTest {
 					newRequestEntity(reportInputDTO), Object.class);
 
 		} catch (Exception e) {
-			
-			Assertions.assertTrue(e.getMessage().toString().contains("application/octet-stream"));
-			
+
+			Assertions.assertFalse(e.getMessage().toString().contains("application/octet-stream"));
+
 		}
 
 	}

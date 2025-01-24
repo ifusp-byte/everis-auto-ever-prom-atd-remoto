@@ -7,71 +7,20 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @SuppressWarnings("all")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ClasseDocumentoDemonstrativoPagamento implements Serializable {
+	DATA_REFERENCIA(new ClasseDocumentoAtributos("DATA_REFERENCIA", "Data de Referência", "DATE", true, 12, "", true,
+			TipoMascara.DATE, null)),
+	VALOR_RENDA_BRUTA(new ClasseDocumentoAtributos("VALOR_RENDA_BRUTA", "Valor Renda Bruta", "STRING", true, 17, "",
+			true, TipoMascara.MONETARIO, null)),
+	VALOR_RENDA_LIQUIDA(new ClasseDocumentoAtributos("VALOR_RENDA_LIQUIDA", "Valor Renda Líquida", "STRING", true, 17,
+			"", true, TipoMascara.MONETARIO, null));
 
-	DATA_REFERENCIA("DATA_REFERENCIA", "Data de Referência", "DATE", true, 12, "", TipoMascara.DATE, true, null),
-	VALOR_RENDA_BRUTA("VALOR_RENDA_BRUTA", "Valor Renda Bruta", "STRING", true, 17, "", TipoMascara.MONETARIO, true,
-			null),
-	VALOR_RENDA_LIQUIDA("VALOR_RENDA_LIQUIDA", "Valor Renda Líquida", "STRING", true, 17, "", TipoMascara.MONETARIO,
-			true, null);
+	private ClasseDocumentoAtributos atributos;
 
-	private String classeDocumento;
-	private String nomeCampo;
-	private String tipoCampo;
-	private Boolean campoObrigatorio;
-	private Integer tamanhoMaximo;
-	private String valor;
-	private Boolean habilitado;
-	private TipoMascara tipoMascara;
-	private String[] selectValues;
-
-	ClasseDocumentoDemonstrativoPagamento(String classeDocumento, String nomeCampo, String tipoCampo,
-			boolean campoObrigatorio, Integer tamanhoMaximo, String valor, TipoMascara tipoMascara, Boolean habilitado,
-			String[] selectValues) {
-		this.classeDocumento = classeDocumento;
-		this.nomeCampo = nomeCampo;
-		this.tipoCampo = tipoCampo;
-		this.campoObrigatorio = campoObrigatorio;
-		this.tamanhoMaximo = tamanhoMaximo;
-		this.valor = valor;
-		this.tipoMascara = tipoMascara;
-		this.habilitado = habilitado;
-		this.selectValues = selectValues;
-
+	ClasseDocumentoDemonstrativoPagamento(ClasseDocumentoAtributos atributos) {
+		this.atributos = atributos;
 	}
 
-	public String getClasseDocumento() {
-		return classeDocumento;
-	}
-
-	public String getNomeCampo() {
-		return nomeCampo;
-	}
-
-	public String getTipoCampo() {
-		return tipoCampo;
-	}
-
-	public Boolean getCampoObrigatorio() {
-		return campoObrigatorio;
-	}
-
-	public Integer getTamanhoMaximo() {
-		return tamanhoMaximo;
-	}
-
-	public String getValor() {
-		return valor;
-	}
-
-	public Boolean getHabilitado() {
-		return habilitado;
-	}
-
-	public TipoMascara getTipoMascara() {
-		return tipoMascara;
-	}
-
-	public String[] getSelectValues() {
-		return selectValues;
+	public ClasseDocumentoAtributos getAtributos() {
+		return atributos;
 	}
 }

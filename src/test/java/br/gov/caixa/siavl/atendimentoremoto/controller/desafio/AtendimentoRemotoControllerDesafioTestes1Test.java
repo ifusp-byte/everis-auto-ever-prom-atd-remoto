@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -36,6 +37,7 @@ class AtendimentoRemotoControllerDesafioTestes1Test extends AtendimentoRemotoCon
 	}
 
 	@Test
+	@Tag("desafio")
 	void desafioValidar1Test() throws StreamReadException, DatabindException, IOException {
 		doAnswer(new Answer<Boolean>() {
 			@Override
@@ -50,6 +52,7 @@ class AtendimentoRemotoControllerDesafioTestes1Test extends AtendimentoRemotoCon
 	}
 	
 	@Test
+	@Tag("desafio")
 	void desafioValidar2Test() throws StreamReadException, DatabindException, IOException {
 		doAnswer(new Answer<Boolean>() {
 			@Override
@@ -64,20 +67,22 @@ class AtendimentoRemotoControllerDesafioTestes1Test extends AtendimentoRemotoCon
 	}
 	
 	@Test
+	@Tag("desafio")
 	void desafioValidar3Test() throws StreamReadException, DatabindException, IOException {
 		doAnswer(new Answer<Boolean>() {
 			@Override
 			public Boolean answer(InvocationOnMock invocation) throws Throwable {
 				invocation.callRealMethod();
 				invocation.getArgument(0);
-				Long tempoDesafioMinutos = 50L;
-				return true;
+				Long tempoDesafioMinutos = 20L;
+				return false;
 			}
 		}).when(desafioServiceImpl).validaIntervaloTempoDesafio(anyLong());
 		desafioValidar();
 	}
 	
 	@Test
+	@Tag("desafio")
 	void desafioValidar4Test() throws StreamReadException, DatabindException, IOException {
 		doAnswer(new Answer<Boolean>() {
 			@Override
@@ -92,6 +97,7 @@ class AtendimentoRemotoControllerDesafioTestes1Test extends AtendimentoRemotoCon
 	}
 	
 	@Test
+	@Tag("desafio")
 	void desafioValidar5Test() throws StreamReadException, DatabindException, IOException {
 		doAnswer(new Answer<Boolean>() {
 			@Override

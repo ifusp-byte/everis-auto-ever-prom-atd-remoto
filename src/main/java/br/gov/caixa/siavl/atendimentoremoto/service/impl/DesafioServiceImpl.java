@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -93,8 +94,8 @@ public class DesafioServiceImpl implements DesafioService {
 			validaIntervaloTempoDesafio = validaIntervaloTempoDesafio(tempoDesafioMinutos);
 		}
 
-		//if (!CANAL_PNC.equalsIgnoreCase(validaDesafioDTO.getCanal())
-		  if (CANAL_INTERAXA.equalsIgnoreCase(validaDesafioDTO.getCanal())
+		// if (!CANAL_PNC.equalsIgnoreCase(validaDesafioDTO.getCanal())
+		if (CANAL_INTERAXA.equalsIgnoreCase(validaDesafioDTO.getCanal())
 				&& STATUS_SUCESSO.equalsIgnoreCase(validaDesafioDTO.getStatus())) {
 
 			if (validaTempoDesafio) {
@@ -145,15 +146,22 @@ public class DesafioServiceImpl implements DesafioService {
 			RespondeDesafioInputDTO respostaDesafio) {
 
 		Long cpfCliente = null;
-		Long cnpjCliente = null; 
-			
-		Optional<AtendimentoCliente> atendimentoClienteOpt = atendimentoClienteRepository
-				.findByProtocolo(Long.parseLong(respostaDesafio.getProtocolo()));
+		Long cnpjCliente = null;
+		AtendimentoCliente atendimentoCliente = null;
 
-		if (atendimentoClienteOpt.isPresent()) {
-			AtendimentoCliente atendimentoCliente = atendimentoClienteOpt.get();			
+		Long numeroProtocolo = NumberUtils.isParsable(respostaDesafio.getProtocolo())
+				? Long.parseLong(respostaDesafio.getProtocolo())
+				: null;
+
+		if (numeroProtocolo != null) {
+
+			Optional<AtendimentoCliente> atendimentoClienteOpt = atendimentoClienteRepository
+					.findByProtocolo(numeroProtocolo);
+
+			atendimentoCliente = atendimentoClienteOpt.get();
 			cpfCliente = atendimentoCliente.getCpfCliente();
 			cnpjCliente = atendimentoCliente.getCnpjCliente();
+
 		}
 
 		String tipoDocumento = null;
@@ -161,8 +169,7 @@ public class DesafioServiceImpl implements DesafioService {
 		String cpfSocio = null;
 		Long cpfCnpjPnc = null;
 
-		if (StringUtils.isBlank(String.valueOf(cnpjCliente))
-				|| cnpjCliente == null) {
+		if (StringUtils.isBlank(String.valueOf(cnpjCliente)) || cnpjCliente == null) {
 			tipoDocumento = DOCUMENT_TYPE_CPF;
 			tipoPessoa = PERSON_TYPE_PF;
 			cpfSocio = StringUtils.EMPTY;

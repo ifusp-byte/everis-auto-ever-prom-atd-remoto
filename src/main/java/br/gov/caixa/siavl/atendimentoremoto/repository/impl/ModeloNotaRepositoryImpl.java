@@ -5,6 +5,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+@SuppressWarnings("all")
 public class ModeloNotaRepositoryImpl {
 
 	@PersistenceContext

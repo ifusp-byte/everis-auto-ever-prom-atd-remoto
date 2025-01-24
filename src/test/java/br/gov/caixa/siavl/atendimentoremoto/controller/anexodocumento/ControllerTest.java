@@ -44,6 +44,7 @@ class ControllerTest {
 
 	public static final String CONSUTA_SIECM_DOSSIE = "/dossie";
 	public static final String CONSUTA_SIECM_DOCUMENTO_INCLUIR = "/documentos/incluir";
+	public static final String CONSUTA_SIECM_DOCUMENTO_CONSULTAR = "/documentos/consultar";
 	static WireMockServer wireMockServer;
 
 	@LocalServerPort
@@ -71,8 +72,8 @@ class ControllerTest {
 		tearDownIntegracao();
 	}
 
-	public void setupIntegracao(int statusDossie, int statusDocumentoIncluir, String siecmDossieBodyRetorno,
-			String siecmDocumentoIncluirBodyRetorno) {
+	public void setupIntegracao(int statusDossie, int statusDocumentoIncluir, int statusDocumentoConsultar, String siecmDossieBodyRetorno,
+			String siecmDocumentoIncluirBodyRetorno, String siecmDocumentoConsultarBodyRetorno) {
 		wireMockServer = new WireMockServer(wireMockConfig().dynamicPort().port(6060).bindAddress("localhost"));
 		wireMockServer.start();
 		WireMock.configureFor("localhost", wireMockServer.port());
@@ -86,6 +87,11 @@ class ControllerTest {
 				.willReturn(aResponse().withStatus(statusDocumentoIncluir)
 						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 						.withBodyFile(siecmDocumentoIncluirBodyRetorno)));
+		
+		stubFor(WireMock.post(urlPathMatching(CONSUTA_SIECM_DOCUMENTO_CONSULTAR))
+				.willReturn(aResponse().withStatus(statusDocumentoConsultar)
+						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+						.withBodyFile(siecmDocumentoConsultarBodyRetorno)));
 
 	}
 

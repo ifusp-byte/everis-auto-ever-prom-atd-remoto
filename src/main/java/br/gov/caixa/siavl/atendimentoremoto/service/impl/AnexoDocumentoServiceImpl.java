@@ -10,10 +10,12 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.gov.caixa.siavl.atendimentoremoto.dto.ConsultaDocumentoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.TipoDocumentoClienteOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstants;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.documentos.ClasseDocumento;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.DocumentoConsultarInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.SiecmCamposDinamico;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.SiecmDocumentosIncluirDadosRequisicaoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.SiecmDocumentosIncluirDestinoDocumentoInputDto;
@@ -75,12 +77,15 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 	private static final String PERSON_TYPE_PF = "PF";
 	private static final String PERSON_TYPE_PJ = "PJ";
 	private static final String PATTERN_MATRICULA = "[a-zA-Z]";
+	private static final String INCLUI_DOCUMENTO_ACEITE = " Requisicao - Incluir Documento Aceite: ";
 	private static final String INCLUI_DOCUMENTO_OPCIONAL = " Requisicao - Incluir Documento Opcional Step2: ";
 	private static final String INCLUI_DOCUMENTO_OBRIGATORIO = " Requisicao - Incluir Documento Obrigatorio Step3: ";
 	private static final String DOCUMENTO_OPCIONAL = "OPCIONAL";
 	private static final String DOCUMENTO_OBRGATORIO = "OBRIGATORIO";
+	private static final String DOCUMENTO_ACEITE = "ACEITE";
 	private static final String DEFAULT_NOME_OBRIGATORIO = "DOCUMENTO_OBRIGATORIO";
 	private static final String DEFAULT_NOME_OPCIONAL = "DOCUMENTO_OPCIONAL";
+	private static final String DEFAULT_NOME_ACEITE = "DOCUMENTO_ACEITE";
 	private static final String DEFAULT_CLASSE_OPCIONAL = "NOTA_NEGOCIACAO";
 
 	private static final Logger LOG = Logger.getLogger(AnexoDocumentoServiceImpl.class.getName());
@@ -111,6 +116,11 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 		if (DOCUMENTO_OPCIONAL.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
 			mensagemDocumento = INCLUI_DOCUMENTO_OPCIONAL;
+			siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(DEFAULT_CLASSE_OPCIONAL);
+		}
+		
+		if (DOCUMENTO_ACEITE.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
+			mensagemDocumento = INCLUI_DOCUMENTO_ACEITE;
 			siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(DEFAULT_CLASSE_OPCIONAL);
 		}
 
@@ -150,6 +160,12 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 					+ enviaDocumentoInputDto.getNumeroNota() + "-" + DEFAULT_NOME_OPCIONAL + "_"
 					+ enviaDocumentoInputDto.getNomeAnexo() + "." + DEFAULT_DOCUMENTO_TIPO);
 		}
+		
+		if (DOCUMENTO_ACEITE.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
+			siecmDocumentosIncluirDocumentoAtributosCampos.setNome(dataUtils.formataData(new Date()) + "_"
+					+ enviaDocumentoInputDto.getNumeroNota() + "-" + DEFAULT_NOME_ACEITE + "_"
+					+ enviaDocumentoInputDto.getNomeAnexo() + "." + DEFAULT_DOCUMENTO_TIPO);
+		}
 
 		SiecmDocumentosIncluirDocumentoAtributosInputDto siecmDocumentosIncluirDocumentoAtributos = new SiecmDocumentosIncluirDocumentoAtributosInputDto();
 		siecmDocumentosIncluirDocumentoAtributos.setBinario(enviaDocumentoInputDto.getArquivoContrato());
@@ -179,8 +195,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		documentoCliente.setTipoDocumentoCliente(numeroTipoDoc);
 		documentoCliente.setCpfCnpjCliente(Long.parseLong(cpfCnpjSiecm));
 		documentoCliente.setTipoPessoa(tipoPessoa);
-		documentoCliente.setMatriculaAtendente(Long
-				.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll(PATTERN_MATRICULA, StringUtils.EMPTY)));
+		documentoCliente.setMatriculaAtendente(Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll(PATTERN_MATRICULA, StringUtils.EMPTY)));
 		documentoCliente.setMimetypeAnexo(DEFAULT_MIME_TYPE);
 		documentoCliente.setExtensaoAnexo(DEFAULT_DOCUMENTO_TIPO);
 		documentoCliente.setNomeAnexo(siecmDocumentosIncluirDocumentoAtributosCampos.getNome());
@@ -200,6 +215,25 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 		LOG.log(Level.INFO,
 				"Nota: " + enviaDocumentoInputDto.getNumeroNota() + mensagemDocumento + requestAnexarDocumento);
+
+		return siecmOutputDto;
+
+	}
+
+	@Override
+	public SiecmOutputDto consultaDocumento(String token, String codGedAnexo) throws Exception {
+
+		SiecmOutputDto siecmOutputDto = null;
+
+		SiecmDocumentosIncluirDadosRequisicaoInputDto dadosRequisicao = new SiecmDocumentosIncluirDadosRequisicaoInputDto();
+		dadosRequisicao.setIpUsuarioFinal(tokenUtils.getIpFromToken(token));
+		dadosRequisicao.setLocalArmazenamento(DEFAULT_LOCAL_ARMAZENAMENTO);
+
+		DocumentoConsultarInputDto documentoConsultarInputDto = new DocumentoConsultarInputDto();
+		documentoConsultarInputDto.setDadosRequisicao(dadosRequisicao);
+		documentoConsultarInputDto.setId(codGedAnexo);
+
+		siecmOutputDto = siecmGateway.documentoConsultar(token, documentoConsultarInputDto);
 
 		return siecmOutputDto;
 

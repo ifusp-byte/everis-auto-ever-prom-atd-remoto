@@ -6,7 +6,8 @@ import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoC
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DESAFIO_CRIAR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DESAFIO_RESPONDER;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DESAFIO_VALIDAR;
-import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_CONSULTAR;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_INCLUIR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_TIPO;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_TIPO_CAMPOS;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.MARCA_DOI;
@@ -196,13 +197,23 @@ public class AtendimentoRemotoController {
 				.body(registroNotaService.enviaCliente(getToken(token), numeroNota, enviaClienteInputDto));
 	}
 
-	@PostMapping(DOCUMENTO)
+	@PostMapping(DOCUMENTO_INCLUIR)
 	public ResponseEntity<Object> enviaDocumento(
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable String cpfCnpj, @RequestBody EnviaDocumentoInputDto enviaDocumentoInputDto)
 			throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(anexoDocumentoService.enviaDocumento(getToken(token), cpfCnpj, enviaDocumentoInputDto));
+	}
+	
+	
+	@GetMapping(DOCUMENTO_CONSULTAR)
+	public ResponseEntity<Object> enviaDocumento(
+			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
+			@Valid @PathVariable String codGedAnexo)
+			throws Exception {
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(anexoDocumentoService.consultaDocumento(getToken(token), codGedAnexo));
 	}
 
 	@GetMapping(DOCUMENTO_TIPO)

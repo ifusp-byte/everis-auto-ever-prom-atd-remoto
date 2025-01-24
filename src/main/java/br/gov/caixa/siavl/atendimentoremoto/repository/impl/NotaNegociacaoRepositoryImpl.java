@@ -6,8 +6,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloOutputDTO;
+import org.apache.commons.lang.StringUtils;
 
+import br.gov.caixa.siavl.atendimentoremoto.dto.NotasByProtocoloOutputDTO;
+import br.gov.caixa.siavl.atendimentoremoto.dto.ResultadoUnicoDTO;
+
+@SuppressWarnings("all")
 public class NotaNegociacaoRepositoryImpl {
 
 	@PersistenceContext
@@ -37,7 +41,7 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" , ModeloNotaNegocio F ");
 		sb.append(" , AcaoProduto G ");
 		sb.append(" , RelatorioNotaNegociacao H ");
-		sb.append(" , LogPlataforma L ");		
+		sb.append(" , LogPlataforma L ");
 		sb.append(" WHERE ");
 		sb.append(" A.numeroProtocolo = B.numeroProtocolo ");
 		sb.append(" AND B.numeroNegocio = C.numeroNegocio ");
@@ -47,20 +51,23 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" AND D.numeroModeloNota = F.numeroModeloNota ");
 		sb.append(" AND F.numeroAcao = G.numeroAcao ");
 		sb.append(" AND D.numeroNota = L.numeroNota ");
-		sb.append(" AND H.numeroNota = L.numeroNota ");		
+		sb.append(" AND H.numeroNota = L.numeroNota ");
 		sb.append(" AND (L.transacaoSistema = 299 OR L.transacaoSistema = 304 ) ");
 		sb.append(" AND A.numeroProtocolo = :numeroProtocolo ");
 		sb.append(" ORDER BY D.numeroNota DESC ");
 
-
 		TypedQuery<NotasByProtocoloOutputDTO> query = em.createQuery(sb.toString(), NotasByProtocoloOutputDTO.class);
 		query.setParameter("numeroProtocolo", numeroProtocolo);
 
-		return query.getResultList();
+		List<NotasByProtocoloOutputDTO> notasByProtocolo = query.getResultList();
 
+		if (!notasByProtocolo.isEmpty()) {
+			notasByProtocolo.forEach(nota -> nota.setCodGED(anexoAceite(Long.parseLong(nota.getNumeroNota()))));
+		}
+
+		return notasByProtocolo;
 	}
-	
-	
+
 	public List<NotasByProtocoloOutputDTO> notasByProtocoloTokenSms(Long numeroProtocolo) {
 
 		StringBuilder sb = new StringBuilder();
@@ -83,7 +90,7 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" , SituacaoNotaNegociacao E ");
 		sb.append(" , ModeloNotaNegocio F ");
 		sb.append(" , AcaoProduto G ");
-		sb.append(" , RelatorioNotaNegociacao H ");	
+		sb.append(" , RelatorioNotaNegociacao H ");
 		sb.append(" WHERE ");
 		sb.append(" A.numeroProtocolo = B.numeroProtocolo ");
 		sb.append(" AND B.numeroNegocio = C.numeroNegocio ");
@@ -95,11 +102,41 @@ public class NotaNegociacaoRepositoryImpl {
 		sb.append(" AND A.numeroProtocolo = :numeroProtocolo ");
 		sb.append(" ORDER BY D.numeroNota DESC ");
 
-
 		TypedQuery<NotasByProtocoloOutputDTO> query = em.createQuery(sb.toString(), NotasByProtocoloOutputDTO.class);
 		query.setParameter("numeroProtocolo", numeroProtocolo);
 
-		return query.getResultList();
+		List<NotasByProtocoloOutputDTO> notasByProtocolo = query.getResultList();
+
+		if (!notasByProtocolo.isEmpty()) {
+			notasByProtocolo.forEach(nota -> nota.setCodGED(anexoAceite(Long.parseLong(nota.getNumeroNota()))));
+		}
+
+		return notasByProtocolo;
+	}
+
+	public String anexoAceite(Long numeroNota) {
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(" SELECT NEW br.gov.caixa.siavl.atendimentoremoto.dto.ResultadoUnicoDTO (M.codGED) ");
+		sb.append(" FROM ");
+		sb.append(" NotaNegociacao D ");
+		sb.append(" , DocumentoCliente M ");
+		sb.append(" , DocumentoNotaNegociacao N ");
+		sb.append(" WHERE ");
+		sb.append(" D.numeroNota = N.numeroNota ");
+		sb.append(" AND M.tipoPessoa = N.tipoPessoa ");
+		sb.append(" AND M.inclusaoDocumento = N.inclusaoDocumento ");
+		sb.append(" AND M.tipoDocumentoCliente = N.tipoDocumentoCliente ");
+		sb.append(" AND M.cpfCnpjCliente = N.cpfCnpjCliente ");
+		sb.append(" AND M.nomeAnexo LIKE '%ACEITE%' ");
+		sb.append(" AND D.numeroNota = :numeroNota ");
+
+		TypedQuery<ResultadoUnicoDTO> anexoAceite = em.createQuery(sb.toString(), ResultadoUnicoDTO.class);
+		anexoAceite.setParameter("numeroNota", numeroNota);
+		
+		String anexo = String.valueOf(!anexoAceite.getResultList().isEmpty() ? anexoAceite.getResultList().get(0).getResultado() : StringUtils.EMPTY);
+		return anexo; 
 
 	}
 

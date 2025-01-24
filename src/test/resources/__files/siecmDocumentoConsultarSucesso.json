@@ -1,0 +1,59 @@
+{
+    "codigoRetorno": 0,
+    "mensagem": "OPERACAO REALIZADA COM SUCESSO",
+    "quantidade": 1,
+    "dadosDocumentoLocalizado": [
+        {
+            "link": "http://siecm.des.caixa/siecm-web/ECM/getDocumento/false/6fd0de7d6474117c50cee701280fb5f2b49531910dedd2c43233a90bfc7835aea33938791ff72fe811aba44511fd947b1cc23f43eece599ad7c476788573280c8486b49c3a0c517ce8efaa79c3cc627128a53715ff07ada3719eb73cd110ea/14/01/2025_09:27:38_846491-DOCUMENTO_OPCIONAL_NVDA-TOOLTIP.PDF",
+            "atributos": {
+                "classe": "NOTA_NEGOCIACAO",
+                "id": "A0C86494-0000-CA11-AC4E-FA7EA5CF49BD",
+                "tipo": "PDF",
+                "mimeType": "application/pdf",
+                "nome": "14/01/2025 09:27:38_846491-DOCUMENTO_OPCIONAL_nvda-tooltip.pdf",
+                "campo": [
+                    {
+                        "nome": "STATUS",
+                        "valor": "0",
+                        "tipo": "STRING"
+                    },
+                    {
+                        "nome": "CLASSIFICACAO_SIGILO",
+                        "valor": "#INTERNO_TODOS",
+                        "tipo": "STRING"
+                    },
+                    {
+                        "nome": "EMISSOR",
+                        "valor": "SIAVL",
+                        "tipo": "STRING"
+                    },
+                    {
+                        "nome": "IDENTIFICADOR_CLIENTE",
+                        "valor": "",
+                        "tipo": "STRING"
+                    },
+                    {
+                        "nome": "DATA_EMISSAO",
+                        "valor": "14-01-2025 09:27:38",
+                        "tipo": "DATE"
+                    },
+                    {
+                        "nome": "DATA_VALIDADE",
+                        "valor": "",
+                        "tipo": "DATE"
+                    },
+                    {
+                        "nome": "RESPONSAVEL_CAPTURA",
+                        "valor": "c891844",
+                        "tipo": "STRING"
+                    },
+                    {
+                        "nome": "NU_NOTA_NEGOCIACAO",
+                        "valor": "",
+                        "tipo": "STRING"
+                    }
+                ]
+            }
+        }
+    ]
+}
