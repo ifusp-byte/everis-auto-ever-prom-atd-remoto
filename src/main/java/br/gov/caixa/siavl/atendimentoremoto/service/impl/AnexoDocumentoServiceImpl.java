@@ -10,7 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.gov.caixa.siavl.atendimentoremoto.dto.ConsultaDocumentoInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.dto.DocumentoByNotaDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.TipoDocumentoClienteOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstants;
@@ -32,6 +32,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoClienteRepositor
 import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoNotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.TipoDocumentoRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.impl.DocumentoClienteRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoService;
 import br.gov.caixa.siavl.atendimentoremoto.util.DataUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
@@ -65,6 +66,9 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 	@Autowired
 	DocumentoClienteRepository documentoClienteRepository;
+	
+	@Autowired
+	DocumentoClienteRepositoryImpl documentoClienteRepositoryImpl;
 
 	@Autowired
 	DocumentoNotaNegociacaoRepository documentoNotaNegociacaoRepository;
@@ -237,6 +241,11 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 		return siecmOutputDto;
 
+	}
+	
+	@Override
+	public List<DocumentoByNotaDTO> documentoNota (Long numeroNota) throws Exception {
+		return documentoClienteRepositoryImpl.documentosByNota(numeroNota);		
 	}
 
 	@Override
