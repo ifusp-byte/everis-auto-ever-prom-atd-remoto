@@ -13,5 +13,7 @@ public interface AnexoDocumentoService {
 	Object tipoDocumento(String cpfCnpj) throws Exception;
 	
 	Object tipoDocumentoCampos(String codGED) throws Exception;
+	
+	Object documentoNota (Long numeroNota) throws Exception;
 
 }
