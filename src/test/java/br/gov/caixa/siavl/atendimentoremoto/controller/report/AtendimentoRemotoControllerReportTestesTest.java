@@ -7,6 +7,7 @@ import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.RELATORIO
 import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
@@ -21,16 +22,19 @@ class AtendimentoRemotoControllerReportTestesTest extends AtendimentoRemotoContr
 	}
 
 	@Test
+	@Tag("report")
 	void relatorioPFTest() throws StreamReadException, DatabindException, IOException {
 		relatorioPFPJ(RELATORIO_PF);
 	}
 
 	@Test
+	@Tag("report")
 	void relatorioPJTest() throws StreamReadException, DatabindException, IOException {
 		relatorioPFPJ(RELATORIO_PJ);
 	}
 
 	@Test
+	@Tag("report")
 	void relatorioTest() throws StreamReadException, DatabindException, IOException {
 		relatorio(RELATORIO);
 	}

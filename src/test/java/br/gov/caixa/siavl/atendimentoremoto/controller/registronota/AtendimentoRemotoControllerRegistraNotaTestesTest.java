@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
@@ -24,46 +25,34 @@ class AtendimentoRemotoControllerRegistraNotaTestesTest extends AtendimentoRemot
 	}
 
 	@Test
+	@Tag("registraNota")
 	void registraNotaPFTest() throws StreamReadException, DatabindException, IOException {
 		registraNotaPF();
 	}
 
 	@Test
+	@Tag("registraNota")
 	void registraNotaPJTest() throws StreamReadException, DatabindException, IOException {
 		registraNotaPJ();
 	}
 
 	@Test
+	@Tag("registraNota")
 	void enviaNotaPJ1Test() throws StreamReadException, DatabindException, IOException {
 		enviaNotaPJ1();
 	}
 
 	@Test
+	@Tag("registraNota")
 	void enviaNotaPJ2Test() throws StreamReadException, DatabindException, IOException {
 		enviaNotaPJ2();
 	}
 
 	@Test
+	@Tag("registraNota")
 	void enviaNotaPJ3Test() throws StreamReadException, DatabindException, IOException {
 		mockNotasByProtocolo();
 		enviaNotaPJ3();
 	}
-
-	/*
-	@Test
-	void atualizaXml1Test() throws Exception {
-		atualizaXml1Test();
-	}
-
-	@Test
-	void atualizaXml2Test() throws Exception {
-		atualizaXml2Test();
-	}
-
-	@Test
-	void atualizaXml3Test() throws Exception {
-		atualizaXml3Test();
-	}
-	*/
 
 }
