@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -26,6 +27,7 @@ class AtendimentoRemotoControllerAnexoDocumentoTestes3Test extends AtendimentoRe
 	}
 
 	@Test
+	@Tag("anexoDocumento")
 	void consultaDocumentoErroTest() throws StreamReadException, DatabindException, IOException {
 		consultaDocumento();
 	}

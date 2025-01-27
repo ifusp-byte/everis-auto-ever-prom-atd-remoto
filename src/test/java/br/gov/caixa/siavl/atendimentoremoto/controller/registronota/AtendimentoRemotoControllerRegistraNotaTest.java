@@ -21,6 +21,7 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -133,6 +134,7 @@ class AtendimentoRemotoControllerRegistraNotaTest extends ControllerTest {
 	}
 
 	@Test
+	@Tag("registraNota")
 	void atualizaXml1Test() throws Exception {
 		Long numeroModeloNota = 1L;
 		Long numeroNota = 1L;
@@ -153,6 +155,7 @@ class AtendimentoRemotoControllerRegistraNotaTest extends ControllerTest {
 	}
 
 	@Test
+	@Tag("registraNota")
 	void atualizaXml2Test() throws Exception {
 		Long numeroModeloNota = 1L;
 		Long numeroNota = 1L;
@@ -174,6 +177,7 @@ class AtendimentoRemotoControllerRegistraNotaTest extends ControllerTest {
 	}
 
 	@Test
+	@Tag("registraNota")
 	void atualizaXml3Test() throws Exception {
 		Long numeroModeloNota = 1L;
 		Long numeroNota = 1L;

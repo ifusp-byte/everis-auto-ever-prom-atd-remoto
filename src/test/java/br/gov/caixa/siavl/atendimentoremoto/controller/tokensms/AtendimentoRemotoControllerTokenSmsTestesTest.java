@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
@@ -24,6 +25,7 @@ class AtendimentoRemotoControllerTokenSmsTestesTest extends AtendimentoRemotoCon
 	}
 
 	@Test
+	@Tag("tokenSms")
 	void identificacaoTokenSmsTest() throws StreamReadException, DatabindException, IOException {
 		mockNotasByProtocolo();
 		identificacaoTokenSms();
