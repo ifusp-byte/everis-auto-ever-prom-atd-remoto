@@ -38,7 +38,7 @@ public class DocumentoClienteRepositoryImpl {
 		sb.append(" ON TB34.NU_NOTA_NEGOCIACAO = TB19.NU_NOTA_NEGOCIACAO ");
 		sb.append(" WHERE TB19.IC_SISTEMA_CADASTRO_NOTA = 'P' ");
 		sb.append(" AND TB19.NU_NOTA_NEGOCIACAO = :numeroNota ");
-		sb.append(" ORDER BY TB19.NU_NOTA_NEGOCIACAO DESC  ");
+		sb.append(" ORDER BY TB33.TS_INCLUSAO_DOCUMENTO DESC  ");
 
 		List<Object[]> documentosByNota = em.createNativeQuery(sb.toString()).setParameter("numeroNota", numeroNota)
 				.getResultList();
