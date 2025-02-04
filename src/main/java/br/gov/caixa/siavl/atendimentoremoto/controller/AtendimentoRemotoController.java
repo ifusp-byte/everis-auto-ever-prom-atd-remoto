@@ -8,6 +8,7 @@ import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoC
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DESAFIO_VALIDAR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTOS_NOTA;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_CONSULTAR;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_EXCLUIR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_INCLUIR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_TIPO;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_TIPO_CAMPOS;
@@ -35,6 +36,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -146,7 +148,7 @@ public class AtendimentoRemotoController {
 	@GetMapping(MODELO_NOTA_FAVORITA)
 	public ResponseEntity<Object> consultaModeloNotaFavorita(@Valid @PathVariable String cpfCnpj,
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token) {
-		return ResponseEntity.status(HttpStatus.CREATED)
+		return ResponseEntity.status(HttpStatus.OK)
 				.body(modeloNotaService.consultaModeloNotaFavorita(getToken(token), cpfCnpj));
 	}
 
@@ -154,14 +156,13 @@ public class AtendimentoRemotoController {
 	public ResponseEntity<Object> adicionaModeloNotaFavorita(
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable Long numeroModeloNota) {
-		return ResponseEntity.status(HttpStatus.CREATED)
+		return ResponseEntity.status(HttpStatus.OK)
 				.body(modeloNotaService.adicionaModeloNotaFavorita(getToken(token), numeroModeloNota));
 	}
 
 	@GetMapping(MODELO_NOTA_MAIS_UTILIZADA)
 	public ResponseEntity<Object> consultaModeloMaisUtilizada(@Valid @PathVariable String cpfCnpj) {
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(modeloNotaService.consultaModeloNotaMaisUtilizada(cpfCnpj));
+		return ResponseEntity.status(HttpStatus.OK).body(modeloNotaService.consultaModeloNotaMaisUtilizada(cpfCnpj));
 	}
 
 	@PostMapping(MODELO_NOTA_DINAMICO)
@@ -169,7 +170,7 @@ public class AtendimentoRemotoController {
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable Long numeroModeloNota,
 			@Valid @RequestBody ModeloNotaDinamicoInputDTO modeloNotaDinamicoInputDTO) throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(
 				modeloNotaService.modeloNotaDinamico(getToken(token), numeroModeloNota, modeloNotaDinamicoInputDTO));
 	}
 
@@ -177,7 +178,7 @@ public class AtendimentoRemotoController {
 	public ResponseEntity<Object> contaAtendimento(
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable String cpfCnpj) throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
 				.body(sicliGateway.contaAtendimento(getToken(token), cpfCnpj, true));
 	}
 
@@ -186,7 +187,7 @@ public class AtendimentoRemotoController {
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @RequestBody RegistraNotaInputDto registraNotaInputDto, @Valid @PathVariable Long numeroModeloNota)
 			throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED)
+		return ResponseEntity.status(HttpStatus.OK)
 				.body(registroNotaService.registraNota(getToken(token), registraNotaInputDto, numeroModeloNota));
 	}
 
@@ -194,7 +195,7 @@ public class AtendimentoRemotoController {
 	public ResponseEntity<Object> contrataNota(
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable Long numeroNota, @Valid @RequestBody EnviaClienteInputDto enviaClienteInputDto) {
-		return ResponseEntity.status(HttpStatus.CREATED)
+		return ResponseEntity.status(HttpStatus.OK)
 				.body(registroNotaService.enviaCliente(getToken(token), numeroNota, enviaClienteInputDto));
 	}
 
@@ -203,36 +204,41 @@ public class AtendimentoRemotoController {
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable String cpfCnpj, @RequestBody EnviaDocumentoInputDto enviaDocumentoInputDto)
 			throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED)
+		return ResponseEntity.status(HttpStatus.OK)
 				.body(anexoDocumentoService.enviaDocumento(getToken(token), cpfCnpj, enviaDocumentoInputDto));
 	}
-	
-	
-	@GetMapping(DOCUMENTO_CONSULTAR)
-	public ResponseEntity<Object> enviaDocumento(
+
+	@DeleteMapping(DOCUMENTO_EXCLUIR)
+	public ResponseEntity<Object> excluiDocumento(
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
-			@Valid @PathVariable String codGedAnexo)
-			throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED)
+			@Valid @PathVariable Long numeroNota, @PathVariable String codGedAnexo) throws Exception {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(anexoDocumentoService.excluiDocumento(getToken(token), numeroNota, codGedAnexo));
+	}
+
+	@GetMapping(DOCUMENTO_CONSULTAR)
+	public ResponseEntity<Object> consultaDocumento(
+			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
+			@Valid @PathVariable String codGedAnexo) throws Exception {
+		return ResponseEntity.status(HttpStatus.OK)
 				.body(anexoDocumentoService.consultaDocumento(getToken(token), codGedAnexo));
 	}
 
 	@GetMapping(DOCUMENTO_TIPO)
 	public ResponseEntity<Object> tipoDocumento(@Valid @PathVariable String cpfCnpj) throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
 				.body(anexoDocumentoService.tipoDocumento(cpfCnpj));
 	}
 
 	@GetMapping(DOCUMENTO_TIPO_CAMPOS)
 	public ResponseEntity<Object> tipoDocumentoCampos(@Valid @PathVariable String codGED) throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
 				.body(anexoDocumentoService.tipoDocumentoCampos(codGED));
 	}
-	
-	
+
 	@GetMapping(DOCUMENTOS_NOTA)
 	public ResponseEntity<Object> documentoNota(@Valid @PathVariable Long numeroNota) throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
 				.body(anexoDocumentoService.documentoNota(numeroNota));
 	}
 
@@ -248,16 +254,16 @@ public class AtendimentoRemotoController {
 	public Object relatorio(@RequestBody ReportInputDTO reportInputDTO) throws Exception {
 		return reportService.relatorio(reportInputDTO);
 	}
-	
+
 	@GetMapping(TIPO_NOTA)
 	public ResponseEntity<Object> consultaTipoNota() {
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(modeloNotaService.consultaTipoNota());
+		return ResponseEntity.status(HttpStatus.OK).body(modeloNotaService.consultaTipoNota());
 	}
 
 	@PostMapping(TOKEN_SMS)
-	public Object identificacaoTokenSms(@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token, @RequestBody TokenSmsInputDto tokenSmsInputDto) throws Exception {
-		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
+	public Object identificacaoTokenSms(@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
+			@RequestBody TokenSmsInputDto tokenSmsInputDto) throws Exception {
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
 				.body(tokenSmsService.identificacaoTokenSms(getToken(token), tokenSmsInputDto));
 	}
 
