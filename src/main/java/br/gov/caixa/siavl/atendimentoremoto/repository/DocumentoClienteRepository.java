@@ -4,7 +4,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +24,8 @@ public interface DocumentoClienteRepository extends JpaRepository<DocumentoClien
 
 	Optional<DocumentoCliente> findByCodGED(String codGED);
 
+	@Modifying
+	@Transactional
 	@Query(value = "DELETE FROM DocumentoCliente A WHERE A.inclusaoDocumento = ?1 AND A.tipoPessoa = ?2 AND A.cpfCnpjCliente = ?3 AND A.tipoDocumentoCliente = ?4 AND A.codGED = ?5")
 	void excluiDocumento(Date inclusaoDocumento, String tipoPessoa, Long cpfCnpjCliente, Long tipoDocumentoCliente,
 			String codGED);
