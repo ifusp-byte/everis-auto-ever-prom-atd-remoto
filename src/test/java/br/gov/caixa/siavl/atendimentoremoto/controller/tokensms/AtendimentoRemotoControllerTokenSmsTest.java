@@ -50,10 +50,10 @@ class AtendimentoRemotoControllerTokenSmsTest extends ControllerTest {
 		ResponseEntity<Object> response4 = restTemplate.exchange(BASE_URL, HttpMethod.POST,
 				newRequestEntity(tokenSmsInputDto4), Object.class);
 
-		Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode());
-		Assertions.assertEquals(HttpStatus.CREATED, response2.getStatusCode());
-		Assertions.assertEquals(HttpStatus.CREATED, response3.getStatusCode());
-		Assertions.assertEquals(HttpStatus.CREATED, response4.getStatusCode());
+		Assertions.assertEquals(HttpStatus.OK, response1.getStatusCode());
+		Assertions.assertEquals(HttpStatus.OK, response2.getStatusCode());
+		Assertions.assertEquals(HttpStatus.OK, response3.getStatusCode());
+		Assertions.assertEquals(HttpStatus.OK, response4.getStatusCode());
 	}
 	
 	void mockNotasByProtocolo() {

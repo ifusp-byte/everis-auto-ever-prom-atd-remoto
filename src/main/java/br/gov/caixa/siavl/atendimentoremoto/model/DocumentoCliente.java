@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity(name = "DocumentoCliente")
 @Table(name = "AVLTB033_DOCUMENTO_CLIENTE", schema = "AVL")
 public class DocumentoCliente {
-	
+
 	@Id
 	@Column(name = "TS_INCLUSAO_DOCUMENTO")
 	private Date inclusaoDocumento;
@@ -62,7 +62,7 @@ public class DocumentoCliente {
 
 	@Column(name = "CO_EXTENSAO_ANEXO")
 	private String extensaoAnexo;
-	
+
 	@Column(name = "VR_ARQUIVO_RECEBIDO")
 	private Blob arquivoRecebido;
 
