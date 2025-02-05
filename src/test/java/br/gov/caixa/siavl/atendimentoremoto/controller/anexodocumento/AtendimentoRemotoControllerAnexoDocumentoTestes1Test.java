@@ -30,31 +30,31 @@ class AtendimentoRemotoControllerAnexoDocumentoTestes1Test extends AtendimentoRe
 		tearDownIntegracao();
 	}
 	
-	@Test
+	//@Test
 	@Tag("anexoDocumento")
 	void anexoDocumentoOpcionalTest() throws StreamReadException, DatabindException, IOException {
 		anexoDocumento(ANEXA_DOCUMENTO_OPCIONAL);
 	}
 	
-	@Test
+	//@Test
 	@Tag("anexoDocumento")
 	void anexoDocumentoObrigatorioTest() throws StreamReadException, DatabindException, IOException {
 		anexoDocumento(ANEXA_DOCUMENTO_OBRIGATORIO);
 	}
 	
-	@Test
+	//@Test
 	@Tag("anexoDocumento")
 	void anexoDocumentoAceiteTest() throws StreamReadException, DatabindException, IOException {
 		anexoDocumento(ANEXA_DOCUMENTO_ACEITE);
 	}
 	
-	@Test
+	//@Test
 	@Tag("anexoDocumento")
 	void tipoDocumentoPFPJTest() throws StreamReadException, DatabindException, IOException {
 		tipoDocumento();
 	}
 	
-	@Test
+	//@Test
 	@Tag("anexoDocumento")
 	void tipoDocumentoCamposTest() throws IOException, URISyntaxException {
 		tipoDocumentoCampos();

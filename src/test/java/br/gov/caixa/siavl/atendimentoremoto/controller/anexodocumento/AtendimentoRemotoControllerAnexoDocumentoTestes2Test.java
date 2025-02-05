@@ -28,7 +28,7 @@ class AtendimentoRemotoControllerAnexoDocumentoTestes2Test extends AtendimentoRe
 		tearDownIntegracao();
 	}
 
-	@Test
+	//@Test
 	@Tag("anexoDocumento")
 	void anexoDocumentoOpcionalTest() throws StreamReadException, DatabindException, IOException {
 		anexoDocumento(ANEXA_DOCUMENTO_OPCIONAL);

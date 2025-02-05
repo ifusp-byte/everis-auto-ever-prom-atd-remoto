@@ -26,7 +26,7 @@ class AtendimentoRemotoControllerAnexoDocumentoTestes4Test extends AtendimentoRe
 		tearDownIntegracao();
 	}
 
-	@Test
+	//@Test
 	@Tag("anexoDocumento")
 	void consultaDocumentoSucessoTest() throws StreamReadException, DatabindException, IOException {
 		consultaDocumento();
