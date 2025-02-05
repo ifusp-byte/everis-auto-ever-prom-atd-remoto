@@ -221,11 +221,8 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 		LOG.log(Level.INFO,
 				"Nota: " + enviaDocumentoInputDto.getNumeroNota() + mensagemDocumento + requestAnexarDocumento);
-		
-		
-		throw new Exception("Erro Interno da Aplicação. Validação RN05 IB 22641650.");
 
-		//return siecmOutputDto;
+		return siecmOutputDto;
 
 	}
 
