@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.apache.commons.lang.StringUtils;
+
 import br.gov.caixa.siavl.atendimentoremoto.dto.DocumentoByNotaDTO;
 import br.gov.caixa.siavl.atendimentoremoto.enums.TipoDocumentoAnexoEnum;
 
@@ -66,10 +68,22 @@ public class DocumentoClienteRepositoryImpl {
 					documentoByNota.setCategoriaDocumento(TipoDocumentoAnexoEnum.OBRIGATORIO.getDescricao());
 				}
 
+				documentoByNota.setNomeAnexoFormatado(formataNomeDocumento(documentoByNota.getNomeAnexo(),
+						String.valueOf(numeroNota), documentoByNota.getCategoriaDocumento()));
+
 				documentos.add(documentoByNota);
 			});
 		}
 
 		return documentos;
+	}
+
+	private static String formataNomeDocumento(String nomeAnexo, String numeroNota, String categoria) {
+		String nomeAnexoFormatado = StringUtils.EMPTY;
+		if (nomeAnexo != null) {
+			nomeAnexoFormatado = nomeAnexo.replaceAll("_" + numeroNota + "-DOCUMENTO_" + categoria + "_",
+					" ");
+		}
+		return nomeAnexoFormatado;
 	}
 }
