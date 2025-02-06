@@ -47,5 +47,9 @@ public class DocumentoByNotaDTO {
 	@Valid
 	@XmlElement(name = "categoriaDocumento")
 	private String categoriaDocumento;
+	
+	@Valid
+	@XmlElement(name = "nomeAnexoFormatado")
+	private String nomeAnexoFormatado;
 
 }
