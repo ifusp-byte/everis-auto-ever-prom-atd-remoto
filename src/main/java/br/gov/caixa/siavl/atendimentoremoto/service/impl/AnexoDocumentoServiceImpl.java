@@ -3,6 +3,7 @@ package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,7 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.gov.caixa.siavl.atendimentoremoto.dto.ConsultaDocumentoInputDto;
+import br.gov.caixa.siavl.atendimentoremoto.dto.DocumentoByNotaDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.dto.TipoDocumentoClienteOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.constants.SiecmConstants;
@@ -32,6 +33,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoClienteRepositor
 import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoNotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.TipoDocumentoRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.impl.DocumentoClienteRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoService;
 import br.gov.caixa.siavl.atendimentoremoto.util.DataUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
@@ -65,6 +67,9 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 	@Autowired
 	DocumentoClienteRepository documentoClienteRepository;
+
+	@Autowired
+	DocumentoClienteRepositoryImpl documentoClienteRepositoryImpl;
 
 	@Autowired
 	DocumentoNotaNegociacaoRepository documentoNotaNegociacaoRepository;
@@ -118,7 +123,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 			mensagemDocumento = INCLUI_DOCUMENTO_OPCIONAL;
 			siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(DEFAULT_CLASSE_OPCIONAL);
 		}
-		
+
 		if (DOCUMENTO_ACEITE.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
 			mensagemDocumento = INCLUI_DOCUMENTO_ACEITE;
 			siecmDocumentosIncluirDocumentoAtributosCampos.setClasse(DEFAULT_CLASSE_OPCIONAL);
@@ -160,7 +165,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 					+ enviaDocumentoInputDto.getNumeroNota() + "-" + DEFAULT_NOME_OPCIONAL + "_"
 					+ enviaDocumentoInputDto.getNomeAnexo() + "." + DEFAULT_DOCUMENTO_TIPO);
 		}
-		
+
 		if (DOCUMENTO_ACEITE.equalsIgnoreCase(enviaDocumentoInputDto.getTipoDocumento())) {
 			siecmDocumentosIncluirDocumentoAtributosCampos.setNome(dataUtils.formataData(new Date()) + "_"
 					+ enviaDocumentoInputDto.getNumeroNota() + "-" + DEFAULT_NOME_ACEITE + "_"
@@ -195,7 +200,8 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 		documentoCliente.setTipoDocumentoCliente(numeroTipoDoc);
 		documentoCliente.setCpfCnpjCliente(Long.parseLong(cpfCnpjSiecm));
 		documentoCliente.setTipoPessoa(tipoPessoa);
-		documentoCliente.setMatriculaAtendente(Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll(PATTERN_MATRICULA, StringUtils.EMPTY)));
+		documentoCliente.setMatriculaAtendente(Long
+				.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll(PATTERN_MATRICULA, StringUtils.EMPTY)));
 		documentoCliente.setMimetypeAnexo(DEFAULT_MIME_TYPE);
 		documentoCliente.setExtensaoAnexo(DEFAULT_DOCUMENTO_TIPO);
 		documentoCliente.setNomeAnexo(siecmDocumentosIncluirDocumentoAtributosCampos.getNome());
@@ -237,6 +243,36 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 
 		return siecmOutputDto;
 
+	}
+
+	@Override
+	public Boolean excluiDocumento(String token, Long numeroNota, String codGedAnexo) throws Exception {
+
+		Optional<DocumentoCliente> documentoClienteOpt = documentoClienteRepository.findByCodGED(codGedAnexo);
+
+		if (documentoClienteOpt.isPresent()) {
+
+			DocumentoCliente documentoCliente = documentoClienteOpt.get();
+
+			documentoNotaNegociacaoRepository.excluiDocumento(documentoCliente.getTipoPessoa(), numeroNota,
+					documentoCliente.getCpfCnpjCliente(), documentoCliente.getTipoDocumentoCliente(),
+					documentoCliente.getInclusaoDocumento());
+
+			documentoClienteRepository.excluiDocumento(documentoCliente.getInclusaoDocumento(),
+					documentoCliente.getTipoPessoa(), documentoCliente.getCpfCnpjCliente(),
+					documentoCliente.getTipoDocumentoCliente(), documentoCliente.getCodGED());
+
+			return true;
+
+		}
+
+		return false;
+
+	}
+
+	@Override
+	public List<DocumentoByNotaDTO> documentoNota(Long numeroNota) throws Exception {
+		return documentoClienteRepositoryImpl.documentosByNota(numeroNota);
 	}
 
 	@Override

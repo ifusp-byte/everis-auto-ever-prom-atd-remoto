@@ -69,7 +69,7 @@ class AtendimentoRemotoControllerRegistraNotaTest extends ControllerTest {
 				RegistraNotaInputDto.class);
 		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.POST,
 				newRequestEntity(registraNotaInputDto), Object.class);
-		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 
 	void registraNotaPJ() throws StreamReadException, DatabindException, IOException {
@@ -79,7 +79,7 @@ class AtendimentoRemotoControllerRegistraNotaTest extends ControllerTest {
 				RegistraNotaInputDto.class);
 		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.POST,
 				newRequestEntity(registraNotaInputDto), Object.class);
-		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 
 	void enviaNotaPJ1() throws StreamReadException, DatabindException, IOException {
@@ -91,7 +91,7 @@ class AtendimentoRemotoControllerRegistraNotaTest extends ControllerTest {
 		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.PUT,
 				newRequestEntity(enviaClienteInputDto), Object.class);
 
-		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 
 	}
 
@@ -104,7 +104,7 @@ class AtendimentoRemotoControllerRegistraNotaTest extends ControllerTest {
 		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.PUT,
 				newRequestEntity(enviaClienteInputDto), Object.class);
 
-		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 
 	void enviaNotaPJ3() throws StreamReadException, DatabindException, IOException {
@@ -116,7 +116,7 @@ class AtendimentoRemotoControllerRegistraNotaTest extends ControllerTest {
 		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.PUT,
 				newRequestEntity(enviaClienteInputDto), Object.class);
 
-		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 
 	void mockNotasByProtocolo() {

@@ -24,13 +24,13 @@ class AtendimentoRemotoControllerAnexoDocumentoTest extends ControllerTest {
 		String BASE_URL = atdremotoUrl + "/documento/" + "10020030088";
 		EnviaDocumentoInputDto enviaDocumentoInputDto = mapper.readValue(new ClassPathResource("/anexoDocumento/" + anexoDocumentoInputDtoFile + ".json").getFile(), EnviaDocumentoInputDto.class);
 		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.POST, newRequestEntity(enviaDocumentoInputDto), Object.class);
-		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 
 	void consultaDocumento() throws StreamReadException, DatabindException, IOException {
 		String BASE_URL = atdremotoUrl + "/documento/" + "A0C86494-0000-CA11-AC4E-FA7EA5CF49BD";
 		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, newRequestEntity(), Object.class);
-		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 
 	void tipoDocumento() throws StreamReadException, DatabindException, IOException {
@@ -38,15 +38,15 @@ class AtendimentoRemotoControllerAnexoDocumentoTest extends ControllerTest {
 		String BASE_URL_2 = atdremotoUrl + "/documento/tipo/" + "13003498000198";
 		ResponseEntity<Object> response1 = restTemplate.exchange(BASE_URL_1, HttpMethod.GET, newRequestEntity(), Object.class);
 		ResponseEntity<Object> response2 = restTemplate.exchange(BASE_URL_2, HttpMethod.GET, newRequestEntity(), Object.class);
-		Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode());
-		Assertions.assertEquals(HttpStatus.CREATED, response2.getStatusCode());
+		Assertions.assertEquals(HttpStatus.OK, response1.getStatusCode());
+		Assertions.assertEquals(HttpStatus.OK, response2.getStatusCode());
 	}
 
 	void tipoDocumentoCampos() throws IOException, URISyntaxException {
 		Arrays.asList(CLASSE_DOCUMENTOS).stream().forEach(documento -> {
 			String BASE_URL = atdremotoUrl + "/documento/tipo/campos/" + documento;
 			ResponseEntity<Object> response = restTemplate.getForEntity(BASE_URL, Object.class);
-			Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+			Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 		});
 	}
 
