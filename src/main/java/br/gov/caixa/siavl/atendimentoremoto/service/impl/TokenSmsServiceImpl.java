@@ -71,11 +71,11 @@ public class TokenSmsServiceImpl implements TokenSmsService {
 
 		Long matriculaAtendente = Long
 				.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll(REGEX_REPLACE_LETRAS, StringUtils.EMPTY));
-		
+
 		Long numeroProtocolo = NumberUtils.isParsable(tokenSmsInputDto.getNumeroProtocolo())
 				? Long.parseLong(tokenSmsInputDto.getNumeroProtocolo())
 				: null;
-		
+
 		AtendimentoCliente atendimentoCliente = null;
 		ComentarioAtendimento comentarioAtendimento = new ComentarioAtendimento();
 
@@ -96,8 +96,7 @@ public class TokenSmsServiceImpl implements TokenSmsService {
 				.requireNonNull(Boolean.parseBoolean(String.valueOf(tokenSmsInputDto.getIdentificacaoToken()))))) {
 			if (Boolean.FALSE.equals(Boolean.parseBoolean(String.valueOf(tokenSmsInputDto.getTokenValido())))) {
 
-				atendimentoClienteRepository.atualizaStatusTokenSms(2L, dataUtils.formataDataBanco(),
-						atendimentoCliente.getNumeroProtocolo());
+				atendimentoClienteRepository.atualizaStatusTokenSms(2L, dataUtils.formataDataBanco(), numeroProtocolo);
 
 				comentarioAtendimento.setDescricaoComentario(
 						"Identificação Token Sms. Token Sms não validado para o número de telefone: "
@@ -107,8 +106,7 @@ public class TokenSmsServiceImpl implements TokenSmsService {
 				return false;
 			}
 
-			atendimentoClienteRepository.atualizaStatusTokenSms(1L, dataUtils.formataDataBanco(),
-					atendimentoCliente.getNumeroProtocolo());
+			atendimentoClienteRepository.atualizaStatusTokenSms(1L, dataUtils.formataDataBanco(), numeroProtocolo);
 
 			comentarioAtendimento
 					.setDescricaoComentario("Identificação Token Sms. Token Sms validado para o número de telefone: "
@@ -120,6 +118,12 @@ public class TokenSmsServiceImpl implements TokenSmsService {
 
 		if (Boolean.TRUE.equals(
 				Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(tokenSmsInputDto.getAssinaturaToken()))))) {
+
+			if (Boolean.FALSE.equals(Boolean.parseBoolean(String.valueOf(tokenSmsInputDto.getTokenValido())))) {
+				atendimentoClienteRepository.atualizaStatusTokenSms(2L, dataUtils.formataDataBanco(), numeroProtocolo);
+
+				return false;
+			}
 
 			Long numeroNota = Long.parseLong(tokenSmsInputDto.getNumeroNota());
 
