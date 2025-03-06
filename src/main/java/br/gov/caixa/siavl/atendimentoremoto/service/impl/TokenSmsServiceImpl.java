@@ -120,8 +120,13 @@ public class TokenSmsServiceImpl implements TokenSmsService {
 				Objects.requireNonNull(Boolean.parseBoolean(String.valueOf(tokenSmsInputDto.getAssinaturaToken()))))) {
 
 			if (Boolean.FALSE.equals(Boolean.parseBoolean(String.valueOf(tokenSmsInputDto.getTokenValido())))) {
-				atendimentoClienteRepository.atualizaStatusTokenSms(2L, dataUtils.formataDataBanco(), numeroProtocolo);
 
+				comentarioAtendimento.setDescricaoComentario(
+						"Assinatura Token Sms. Token Sms não validado para o número de telefone: "
+								+ tokenSmsInputDto.getTokenTelefone());
+				comentarioAtendimentoRepository.save(comentarioAtendimento);
+
+				atendimentoClienteRepository.atualizaStatusTokenSms(2L, dataUtils.formataDataBanco(), numeroProtocolo);
 				return false;
 			}
 
@@ -141,6 +146,12 @@ public class TokenSmsServiceImpl implements TokenSmsService {
 			TokenSmsOutputDto tokenSmsOutputDto = new TokenSmsOutputDto();
 			tokenSmsOutputDto.setStatus(true);
 			tokenSmsOutputDto.setNotas(notas(numeroProtocolo));
+
+			comentarioAtendimento
+					.setDescricaoComentario("Assinatura Token Sms. Token Sms validado para o número de telefone: "
+							+ tokenSmsInputDto.getTokenTelefone());
+			comentarioAtendimentoRepository.save(comentarioAtendimento);
+
 			return tokenSmsOutputDto;
 
 		}
