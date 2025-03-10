@@ -101,7 +101,7 @@ public class SimtrGateway {
 					simtrDocumento.setTipologia(
 							nodeDocumentos.path("tipo_documento").path("codigo_tipologia").asText().trim());
 					simtrDocumento.setAcordeonMfe(TipologiaEnum
-							.valueOf(nodeDocumentos.path("tipo_documento").path("codigo_tipologia").asText().trim())
+							.valueOf("T"+nodeDocumentos.path("tipo_documento").path("codigo_tipologia").asText().trim())
 							.getDescricao());
 					simtrDocumento.setNome(nodeDocumentos.path("tipo_documento").path("nome").asText().trim());
 					simtrDocumento.setAtivo(nodeDocumentos.path("tipo_documento").path("ativo").asText().trim());
