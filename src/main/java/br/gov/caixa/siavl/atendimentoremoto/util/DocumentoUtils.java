@@ -115,6 +115,16 @@ public class DocumentoUtils {
 	public String formataDocumento(String documento) {
 		return documento.replace(".", "").replace("-", "").replace("/", "").trim();
 	}
+	
+	
+	public static String formataCpfCnpj(String documento) {
+		return documento.replace(".", "").replace("-", "").replace("/", "").trim();
+	}
+	
+	public static boolean isCpf(String cpfCnpj) {
+		return formataCpfCnpj(cpfCnpj).length() == ONZE;
+	}
+	
 
 	public boolean retornaCpf(String cpfCnpj) {
 		return formataDocumento(cpfCnpj).length() == ONZE;

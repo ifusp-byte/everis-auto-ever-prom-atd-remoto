@@ -3,7 +3,7 @@ package br.gov.caixa.siavl.atendimentoremoto.service;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
 
 @SuppressWarnings("all")
-public interface AnexoDocumentoService {
+public interface AnexoDocumentoSiecmService {
 
 	Object enviaDocumento(String token, String cpfCnpj, EnviaDocumentoInputDto enviaDocumentoInputDto) throws Exception;
 
