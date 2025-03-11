@@ -36,15 +36,15 @@ public class SimtrOutputDto {
 	private boolean statusCreated;
 
 	@Valid
-	@XmlElement(name = "documentos")
-	private List<SimtrDocumentoDto> documentos;
-
-	@Valid
 	@XmlElement(name = "tipoPessoa")
 	private String tipoPessoa;
 
 	@Valid
 	@XmlElement(name = "idDossie")
 	private String idDossie;
+
+	@Valid
+	@XmlElement(name = "documentos")
+	private List<SimtrDocumentoDto> documentos;
 
 }

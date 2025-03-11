@@ -4,15 +4,14 @@ import static br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils.formataCp
 import static br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils.isCpf;
 import static br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils.StringToJson;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,8 +45,8 @@ public class SimtrGateway {
 	@Value("${env.url.simtr}")
 	private String URL_SIMTR;
 
-	private static String SIMTR_URL_BASE_DOCUMENTOS_CPF = "negocio/v1/dossie-cliente/cpf/";
-	private static String SIMTR_URL_BASE_DOCUMENTOS_CNPJ = "negocio/v1/dossie-cliente/cnpj/";
+	private static String SIMTR_URL_BASE_DOCUMENTOS_CPF = "/negocio/v1/dossie-cliente/cpf/";
+	private static String SIMTR_URL_BASE_DOCUMENTOS_CNPJ = "/negocio/v1/dossie-cliente/cnpj/";
 
 	@Autowired
 	RestTemplateUtils restTemplateUtils;
@@ -71,7 +70,8 @@ public class SimtrGateway {
 		JsonNode body;
 		ArrayNode documentos;
 
-		String url = isCpf(cpfCnpj) ? SIMTR_URL_BASE_DOCUMENTOS_CPF : SIMTR_URL_BASE_DOCUMENTOS_CNPJ;
+		String url = isCpf(cpfCnpj) ? URL_SIMTR + SIMTR_URL_BASE_DOCUMENTOS_CPF
+				: URL_SIMTR + SIMTR_URL_BASE_DOCUMENTOS_CNPJ;
 
 		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
 
@@ -100,16 +100,15 @@ public class SimtrGateway {
 					simtrDocumento.setId(nodeDocumentos.path("id").asText().trim());
 					simtrDocumento.setTipologia(
 							nodeDocumentos.path("tipo_documento").path("codigo_tipologia").asText().trim());
-					simtrDocumento.setAcordeonMfe(TipologiaEnum
-							.valueOf("T"+nodeDocumentos.path("tipo_documento").path("codigo_tipologia").asText().trim())
-							.getDescricao());
+					simtrDocumento.setAcordeonMfe(tipologiaDocumento(
+							nodeDocumentos.path("tipo_documento").path("codigo_tipologia").asText().trim()));
 					simtrDocumento.setNome(nodeDocumentos.path("tipo_documento").path("nome").asText().trim());
 					simtrDocumento.setAtivo(nodeDocumentos.path("tipo_documento").path("ativo").asText().trim());
 					simtrDocumento.setSituacaoDocumento(
-							nodeDocumentos.path("tipo_documento").path("situacao_documento").asText().trim());
+							nodeDocumentos.path("situacao_documento").asText().trim());
 					simtrDocumento.setDataHoraCaptura(
-							nodeDocumentos.path("tipo_documento").path("data_hora_captura").asText().trim());
-					simtrDocumento.setMimeType(nodeDocumentos.path("tipo_documento").path("mime_type").asText().trim());
+							nodeDocumentos.path("data_hora_captura").asText().trim());
+					simtrDocumento.setMimeType(nodeDocumentos.path("mime_type").asText().trim());
 
 					simtrDocumentos.add(simtrDocumento);
 
@@ -123,23 +122,29 @@ public class SimtrGateway {
 
 		} catch (RestClientResponseException e) {
 
-			body = StringToJson(e.getResponseBodyAsString());
-
 			simtrOutputDto = SimtrOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.statusMessage("Erro na consulta. Tente novamente mais tarde.").statusCreated(false)
-					.documentos(new ArrayList<>()).tipoPessoa(StringUtils.EMPTY).idDossie(StringUtils.EMPTY).build();
+					.statusMessage("Erro na consulta. Tente novamente mais tarde." + e.getMessage())
+					.statusCreated(false).documentos(new ArrayList<>()).tipoPessoa(StringUtils.EMPTY)
+					.idDossie(StringUtils.EMPTY).build();
 
 		} finally {
 
-			try {
-				restTemplateDto.getHttpClient().close();
-			} catch (IOException e) {
-				LOG.log(Level.SEVERE, "Erro. Não foi possível fechar a conexão com o socket.");
-			}
-
-			return simtrOutputDto;
+			restTemplateDto.getHttpClient().close();
 		}
+
+		return simtrOutputDto;
+	}
+
+	public String tipologiaDocumento(String tipologiaDocumento) {
+
+		String tipologia = "Desconhecido";
+
+		if (ArrayUtils.contains(TipologiaEnum.codigos(), tipologiaDocumento)) {
+			tipologia = TipologiaEnum.valueOf("T" + tipologiaDocumento).getDescricao();
+		}
+
+		return tipologia;
 	}
 
 }
