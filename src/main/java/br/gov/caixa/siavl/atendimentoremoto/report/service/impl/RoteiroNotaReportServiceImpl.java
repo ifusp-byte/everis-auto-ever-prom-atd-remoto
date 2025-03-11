@@ -1,6 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.report.service.impl;
 
 import static br.gov.caixa.siavl.atendimentoremoto.report.constants.RoteiroNotaReportConstants.CPF_CNPJ;
+import static br.gov.caixa.siavl.atendimentoremoto.util.DataUtils.formataDataLocalTexto;
 
 import java.sql.Clob;
 import java.sql.SQLException;
@@ -12,7 +13,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,6 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.RoteiroFechamentoNotaRepo
 import br.gov.caixa.siavl.atendimentoremoto.repository.impl.CampoModeloNotaRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils;
-import static br.gov.caixa.siavl.atendimentoremoto.util.DataUtils.formataDataLocalTexto;
 
 @Service
 @SuppressWarnings("all")

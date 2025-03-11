@@ -28,9 +28,7 @@ import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoC
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.AUTHORIZATION;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.BEARER_1;
 
-import javax.validation.Valid;
-
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -69,6 +67,7 @@ import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.RegistroNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.service.TokenSmsService;
+import jakarta.validation.Valid;
 
 @Validated
 @RestController

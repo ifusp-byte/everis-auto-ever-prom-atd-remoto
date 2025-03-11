@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-import javax.validation.Valid;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +31,7 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.simtr.dto.SimtrOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.simtr.enums.TipologiaEnum;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
+import jakarta.validation.Valid;
 
 @Service
 @Validated

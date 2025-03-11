@@ -1,7 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.auditoria.dto;
 
-import javax.validation.Valid;
-
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +18,7 @@ public class AuditoriaIdentificacaoPositivaDsLogPlataformaDTO {
 
 	@Valid
 	private String cpfCnpj;
-	
+
 	@Valid
 	private String cpfSocio;
 

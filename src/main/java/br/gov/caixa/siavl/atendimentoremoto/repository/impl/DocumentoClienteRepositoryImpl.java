@@ -3,13 +3,12 @@ package br.gov.caixa.siavl.atendimentoremoto.repository.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.DocumentoByNotaDTO;
 import br.gov.caixa.siavl.atendimentoremoto.enums.TipoDocumentoAnexoEnum;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @SuppressWarnings("all")
 public class DocumentoClienteRepositoryImpl {

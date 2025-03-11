@@ -39,8 +39,8 @@ import br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
 
-@SuppressWarnings("all")
 @SpringBootTest
+@SuppressWarnings("all")
 class SiipcGatewayTest {
 
 	@Mock

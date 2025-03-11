@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import wiremock.com.google.common.primitives.Ints;
+import dev.mccue.guava.primitives.Ints;
 
 @SuppressWarnings("all")
 public enum ContaSID01PFEnum {
@@ -33,7 +33,8 @@ public enum ContaSID01PFEnum {
 
 	public static int[] codigos() {
 		List<Integer> codigos = new ArrayList<>();
-		Arrays.stream(ContaSID01PFEnum.values()).forEach(c -> codigos.add(Integer.parseInt(String.valueOf(c.getCodigo()))));
+		Arrays.stream(ContaSID01PFEnum.values())
+				.forEach(c -> codigos.add(Integer.parseInt(String.valueOf(c.getCodigo()))));
 		return Ints.toArray(codigos);
 	}
 

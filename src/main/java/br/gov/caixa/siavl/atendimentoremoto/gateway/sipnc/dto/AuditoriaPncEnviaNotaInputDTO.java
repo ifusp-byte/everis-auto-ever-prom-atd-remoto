@@ -2,12 +2,11 @@ package br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.dto;
 
 import java.util.List;
 
-import javax.validation.Valid;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import br.gov.caixa.siavl.atendimentoremoto.auditoria.dto.AuditoriaEnvioNotaAnexoDTO;
+import jakarta.validation.Valid;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,30 +21,30 @@ import lombok.Setter;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "AuditoriaPncEnviaNotaInputDTO")
 public class AuditoriaPncEnviaNotaInputDTO {
-	
+
 	@Valid
-	private String situacaoNota;	
-	
+	private String situacaoNota;
+
 	@Valid
 	private String tipoAssinatura;
-	
+
 	@Valid
 	private String numeroProtocolo;
-	
+
 	@Valid
 	private String numeroNota;
-	
+
 	@Valid
 	private String versaoSistema;
-	
+
 	@Valid
-	private String dataHoraTransacao; 
-	
+	private String dataHoraTransacao;
+
 	@Valid
 	private String possuiAnexo;
-	
+
 	private List<AuditoriaEnvioNotaAnexoDTO> anexos;
-	
+
 	@Valid
 	private String tipoNota;
 

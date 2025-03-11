@@ -1,30 +1,23 @@
 package br.gov.caixa.siavl.atendimentoremoto.util.conta;
 
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.CONTA_SIART;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.CONTA_SID01;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.CONTA_SIDEC;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.CONTA_SIIFX;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.OITO_NUMBER;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.PERSON_TYPE_PF;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.PERSON_TYPE_PJ;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.PONTO;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.QUATRO_NUMBER;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.REPLACE_CONTA_1;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.REPLACE_CONTA_2;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.REPLACE_IDENTIFICACAO;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.SETE_NUMBER;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.TRACO;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.UM_NUMBER;
 import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_CHAR;
-import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.ZERO_NUMBER;
 
 import java.text.ParseException;
 import java.util.List;
 
 import javax.swing.text.MaskFormatter;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContasOutputDTO;

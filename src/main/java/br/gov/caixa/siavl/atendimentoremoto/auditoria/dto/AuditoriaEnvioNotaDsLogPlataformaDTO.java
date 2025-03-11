@@ -2,8 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.auditoria.dto;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -57,7 +56,7 @@ public class AuditoriaEnvioNotaDsLogPlataformaDTO {
 
 	@Valid
 	private String produto;
-	
+
 	@Valid
 	private String tipoAssinatura;
 

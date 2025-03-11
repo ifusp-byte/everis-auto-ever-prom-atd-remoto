@@ -10,17 +10,17 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,8 +33,8 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 
 @SuppressWarnings("all")
 @RequestMapping(BASE_URL)
-@RunWith(SpringRunner.class)
 @AutoConfigureWireMock(port = 0)
+@ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -72,8 +72,9 @@ class ControllerTest {
 		tearDownIntegracao();
 	}
 
-	public void setupIntegracao(int statusDossie, int statusDocumentoIncluir, int statusDocumentoConsultar, String siecmDossieBodyRetorno,
-			String siecmDocumentoIncluirBodyRetorno, String siecmDocumentoConsultarBodyRetorno) {
+	public void setupIntegracao(int statusDossie, int statusDocumentoIncluir, int statusDocumentoConsultar,
+			String siecmDossieBodyRetorno, String siecmDocumentoIncluirBodyRetorno,
+			String siecmDocumentoConsultarBodyRetorno) {
 		wireMockServer = new WireMockServer(wireMockConfig().dynamicPort().port(6060).bindAddress("localhost"));
 		wireMockServer.start();
 		WireMock.configureFor("localhost", wireMockServer.port());
@@ -87,7 +88,7 @@ class ControllerTest {
 				.willReturn(aResponse().withStatus(statusDocumentoIncluir)
 						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 						.withBodyFile(siecmDocumentoIncluirBodyRetorno)));
-		
+
 		stubFor(WireMock.post(urlPathMatching(CONSUTA_SIECM_DOCUMENTO_CONSULTAR))
 				.willReturn(aResponse().withStatus(statusDocumentoConsultar)
 						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -102,7 +103,7 @@ class ControllerTest {
 	public HttpEntity<?> newRequestEntity(Object object) {
 		return new HttpEntity<Object>(object, newHttpHeaders());
 	}
-	
+
 	public HttpEntity<?> newRequestEntity() {
 		return new HttpEntity<String>(newHttpHeaders());
 	}

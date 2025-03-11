@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import wiremock.com.google.common.primitives.Ints;
+import dev.mccue.guava.primitives.Ints;
 
 public enum TipoDocumentoAnexoEnum {
 

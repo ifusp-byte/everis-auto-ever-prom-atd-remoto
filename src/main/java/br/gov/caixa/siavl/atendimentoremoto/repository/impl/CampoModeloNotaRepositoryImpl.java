@@ -2,11 +2,10 @@ package br.gov.caixa.siavl.atendimentoremoto.repository.impl;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
 import br.gov.caixa.siavl.atendimentoremoto.report.dto.RoteiroNotaCampoDinamicoDTO;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
 @SuppressWarnings("all")
 public class CampoModeloNotaRepositoryImpl {

@@ -7,9 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolationException;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +17,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoController;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ExceptionOutputDto;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 
 @SuppressWarnings("all")
 @ControllerAdvice(assignableTypes = AtendimentoRemotoController.class)

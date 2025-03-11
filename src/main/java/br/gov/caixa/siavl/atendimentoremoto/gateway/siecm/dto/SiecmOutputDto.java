@@ -1,13 +1,12 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto;
 
-import javax.validation.Valid;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import com.fasterxml.jackson.annotation.JsonRawValue;
 
+import jakarta.validation.Valid;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,18 +42,17 @@ public class SiecmOutputDto {
 	@Valid
 	@XmlElement(name = "dataCreated")
 	private String dataCreated;
-	
+
 	@Valid
 	@XmlElement(name = "linkThumbnail")
 	private String linkThumbnail;
-	
+
 	@Valid
 	@XmlElement(name = "id")
 	private String id;
-	
+
 	@Valid
 	@XmlElement(name = "nomeAnexo")
-	private String nomeAnexo; 
-	
+	private String nomeAnexo;
 
 }

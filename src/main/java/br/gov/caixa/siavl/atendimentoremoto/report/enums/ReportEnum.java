@@ -11,13 +11,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import br.gov.caixa.siavl.atendimentoremoto.enums.GeraProtocoloTipoAtendimentoEnum;
-import wiremock.com.google.common.primitives.Ints;
+import dev.mccue.guava.primitives.Ints;
 
 @SuppressWarnings("all")
 public enum ReportEnum {
 
 	ROTEIRO_STEP4(0, "roteiro-step4", REOPORTS + "roteiro-step4" + EXTENSION_JASPER),
 	LOGO_CAIXA(1, LOGO_CAIXA_3, REOPORTS_IMAGENS + LOGO_CAIXA_3 + EXTENSION_JPG);
+
 	private final int codigo;
 	private final String nome;
 	private final String relatorio;
@@ -25,7 +26,7 @@ public enum ReportEnum {
 	ReportEnum(int codigo, String nome, String relatorio) {
 		this.codigo = codigo;
 		this.nome = nome;
-		this.relatorio = relatorio; 
+		this.relatorio = relatorio;
 	}
 
 	public int getCodigo() {
@@ -42,7 +43,8 @@ public enum ReportEnum {
 
 	public static int[] codigos() {
 		List<Integer> codigos = new ArrayList<>();
-		Arrays.stream(GeraProtocoloTipoAtendimentoEnum.values()).forEach(c -> codigos.add(Integer.parseInt(String.valueOf(c.getCodigo()))));
+		Arrays.stream(GeraProtocoloTipoAtendimentoEnum.values())
+				.forEach(c -> codigos.add(Integer.parseInt(String.valueOf(c.getCodigo()))));
 		return Ints.toArray(codigos);
 	}
 

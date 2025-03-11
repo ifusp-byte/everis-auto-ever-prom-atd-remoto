@@ -4,17 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import wiremock.com.google.common.primitives.Ints;
+import dev.mccue.guava.primitives.Ints;
 
 @SuppressWarnings("all")
 public enum GeraProtocoloTipoAtendimentoEnum {
 
-	W(5, "WhatsApp"), 
-	T(6, "Telefone"), 
-	E(7, "E-mail"), 
-	C(8, "Webchat"),
-	F(9, "Videoconferência"), 
-	P(10, "Presencial");
+	W(5, "WhatsApp"), T(6, "Telefone"), E(7, "E-mail"), C(8, "Webchat"), F(9, "Videoconferência"), P(10, "Presencial");
 
 	private final int codigo;
 	private final String descricao;
@@ -31,11 +26,11 @@ public enum GeraProtocoloTipoAtendimentoEnum {
 	public String getDescricao() {
 		return descricao;
 	}
-	
 
 	public static int[] codigos() {
 		List<Integer> codigos = new ArrayList<>();
-		Arrays.stream(GeraProtocoloTipoAtendimentoEnum.values()).forEach(c -> codigos.add(Integer.parseInt(String.valueOf(c.getCodigo()))));
+		Arrays.stream(GeraProtocoloTipoAtendimentoEnum.values())
+				.forEach(c -> codigos.add(Integer.parseInt(String.valueOf(c.getCodigo()))));
 		return Ints.toArray(codigos);
 	}
 

@@ -24,11 +24,8 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import javax.sql.rowset.serial.SerialClob;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -81,6 +78,9 @@ import br.gov.caixa.siavl.atendimentoremoto.util.DataUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 
 @Service
 @SuppressWarnings("all")

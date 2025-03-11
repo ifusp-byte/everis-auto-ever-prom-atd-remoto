@@ -1,12 +1,11 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import com.fasterxml.jackson.annotation.JsonRawValue;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,10 +30,10 @@ public class CriaDesafioOutputDTO {
 
 	@XmlElement(name = "statusMessage")
 	private String statusMessage;
-	
+
 	@XmlElement(name = "statusCreated")
-	private boolean statusCreated; 
-	
+	private boolean statusCreated;
+
 	@XmlElement(name = "dataCreated")
 	private String dataCreated;
 

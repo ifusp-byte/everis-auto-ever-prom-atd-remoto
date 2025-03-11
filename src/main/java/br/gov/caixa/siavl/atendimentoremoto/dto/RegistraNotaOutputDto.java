@@ -1,10 +1,9 @@
 package br.gov.caixa.siavl.atendimentoremoto.dto;
 
-import javax.validation.Valid;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
+import jakarta.validation.Valid;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,16 +20,16 @@ import lombok.Setter;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "RegistraNotaOutputDto")
 public class RegistraNotaOutputDto {
-	
+
 	@Valid
 	private Boolean statusNotaRegistrada;
-	
+
 	@Valid
 	private String mensagem;
-	
+
 	@Valid
 	private String numeroNota;
-	
+
 	@Valid
 	private boolean vinculaDocumento;
 

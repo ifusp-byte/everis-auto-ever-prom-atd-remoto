@@ -18,40 +18,25 @@ import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 @SuppressWarnings("all")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private TokenUtils tokenUtils;
+	@Autowired
+	private TokenUtils tokenUtils;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .cors().and()
-                .authorizeRequests()
-                .antMatchers(
-                		"/v1/atendimento-remoto/**",
-                        "/actuator/**",
-                        "/v2/api-docs",
-                        "/configuration/ui/",
-                        "/swagger-resources/**",
-                        "/configuration/security/",
-                        "/webjars/**",
-                        "/swagger-ui/**",
-                        "/swagger-config/**",
-                        "/atendimentoremoto-contract/**",
-                        "/public/**",
-                        "/atendimentoremoto-contract.html",
-                        "/atendimentoremoto-contract")
-                .permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .addFilterBefore(new JwtAuthenticationFilter(authenticationManagerBean(), tokenUtils),
-                        UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-    }
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.csrf().disable().cors().and().authorizeRequests()
+				.antMatchers("/v1/atendimento-remoto/**", "/actuator/**", "/v2/api-docs", "/configuration/ui/",
+						"/swagger-resources/**", "/configuration/security/", "/webjars/**", "/swagger-ui/**",
+						"/swagger-config/**", "/atendimentoremoto-contract/**", "/public/**",
+						"/atendimentoremoto-contract.html", "/atendimentoremoto-contract")
+				.permitAll().anyRequest().authenticated().and()
+				.addFilterBefore(new JwtAuthenticationFilter(authenticationManagerBean(), tokenUtils),
+						UsernamePasswordAuthenticationFilter.class)
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+	}
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
 }

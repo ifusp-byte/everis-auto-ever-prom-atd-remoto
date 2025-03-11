@@ -3,13 +3,10 @@ package br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.gateway;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,25 +31,23 @@ import br.gov.caixa.siavl.atendimentoremoto.util.DataUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
+import jakarta.validation.Valid;
 
 @Service
 @SuppressWarnings("all")
 public class SiipcGateway {
 
 	@Autowired
-	public
-	DataUtils dataUtils;
+	public DataUtils dataUtils;
 
 	@Autowired
-	public
-	MetodosUtils metodosUtils;
+	public MetodosUtils metodosUtils;
 
 	@Autowired
 	ValidateGateway validateGateway;
 
 	@Autowired
-	public
-	RestTemplateUtils restTemplateUtils;
+	public RestTemplateUtils restTemplateUtils;
 
 	@Autowired
 	AtendimentoClienteRepository atendimentoClienteRepository;
@@ -255,7 +250,7 @@ public class SiipcGateway {
 		ResponseEntity<String> response = null;
 		JsonNode jsonNode;
 		String codigo422 = null;
-		
+
 		Optional<AtendimentoCliente> atendimentoClienteOpt = atendimentoClienteRepository
 				.findByProtocolo(Long.parseLong(respondeDesafioInputDTO.getProtocolo()));
 

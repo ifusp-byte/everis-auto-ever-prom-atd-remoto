@@ -1,9 +1,8 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +18,6 @@ import lombok.Setter;
 @XmlRootElement(name = "DocumentoConsultarInputDto")
 public class DocumentoConsultarInputDto {
 
-	private SiecmDocumentosIncluirDadosRequisicaoInputDto dadosRequisicao; 	
+	private SiecmDocumentosIncluirDadosRequisicaoInputDto dadosRequisicao;
 	private String id;
 }

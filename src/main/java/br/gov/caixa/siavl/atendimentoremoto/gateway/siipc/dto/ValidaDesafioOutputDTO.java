@@ -1,10 +1,9 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,13 +27,13 @@ public class ValidaDesafioOutputDTO {
 
 	@XmlElement(name = "dataUltimoDesafio")
 	private String dataUltimoDesafio;
-	
+
 	@XmlElement(name = "statusUltimoDesafio")
 	private String statusUltimoDesafio;
-	
+
 	@XmlElement(name = "canalUltimoDesafio")
 	private String canalUltimoDesafio;
-	
+
 	@XmlElement(name = "tempoUltimoDesafio")
 	private String tempoUltimoDesafio;
 

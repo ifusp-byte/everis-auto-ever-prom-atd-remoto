@@ -1,8 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.auditoria.dto;
 
-import javax.validation.Valid;
-
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sicli.dto.ContaAtendimentoOutputDTO;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,25 +16,25 @@ import lombok.Setter;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class AuditoriaRegistraNotaSicliDsLogPlataformaDTO {
-	
+
 	@Valid
 	ContaAtendimentoOutputDTO contaAtendimento;
-	
+
 	@Valid
 	private String cpfCnpj;
-	
+
 	@Valid
 	private String matriculaAtendente;
-	
+
 	@Valid
 	private String dataChamadaSicli;
-	
+
 	@Valid
 	private String versaoSistema;
-	
+
 	@Valid
 	private String ipUsuario;
-	
+
 	@Valid
 	private String tipoPessoa;
 

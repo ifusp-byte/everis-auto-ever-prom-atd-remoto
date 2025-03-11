@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -43,6 +41,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaFavoritoReposit
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.impl.NotaNegociacaoRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.service.impl.RegistroNotaServiceImpl;
+import jakarta.xml.bind.JAXBException;
 
 @SuppressWarnings("all")
 class AtendimentoRemotoControllerRegistraNotaTest extends ControllerTest {
@@ -141,8 +140,10 @@ class AtendimentoRemotoControllerRegistraNotaTest extends ControllerTest {
 		RegistraNotaInputDto registraNotaInputDto = mock(RegistraNotaInputDto.class);
 		JsonNode relatorioNota = mock(JsonNode.class);
 		when(registraNotaInputDto.getRelatorioNota()).thenReturn(relatorioNota);
-		Object[] dinamico1 = { 1, 2, 3, "campo1", "1", "1", "1", "espaco", "DATA", "String", "descricao", "255", "255", "255" };
-		Object[] dinamico2 = { 4, 5, 6, "campo2", "0", "1", "0", "espaco", "TEXTO", "String", "descricao2", "255", "255", "255" };
+		Object[] dinamico1 = { 1, 2, 3, "campo1", "1", "1", "1", "espaco", "DATA", "String", "descricao", "255", "255",
+				"255" };
+		Object[] dinamico2 = { 4, 5, 6, "campo2", "0", "1", "0", "espaco", "TEXTO", "String", "descricao2", "255",
+				"255", "255" };
 		List<Object[]> modeloNota = Arrays.asList(dinamico1, dinamico2);
 		when(modeloNotaFavoritoRepository.modeloNotaDinamico(numeroModeloNota)).thenReturn(modeloNota);
 		Object[] campo1 = { 1, "descricao1" };
@@ -163,8 +164,10 @@ class AtendimentoRemotoControllerRegistraNotaTest extends ControllerTest {
 		JsonNode relatorioNota = mock(JsonNode.class);
 		when(registraNotaInputDto.getRelatorioNota()).thenReturn(relatorioNota);
 		when(relatorioNota.get(anyString())).thenReturn(null);
-		Object[] dinamico1 = { 1, 2, 3, "campo1", "1", "1", "1", "espaco", "DATA", "String", "descricao", "255", "255", "255" };
-		Object[] dinamico2 = { 4, 5, 6, "campo2", "0", "1", "0", "espaco", "TEXTO", "String", "descricao2", "255", "255", "255" };
+		Object[] dinamico1 = { 1, 2, 3, "campo1", "1", "1", "1", "espaco", "DATA", "String", "descricao", "255", "255",
+				"255" };
+		Object[] dinamico2 = { 4, 5, 6, "campo2", "0", "1", "0", "espaco", "TEXTO", "String", "descricao2", "255",
+				"255", "255" };
 		List<Object[]> modeloNota = Arrays.asList(dinamico1, dinamico2);
 		when(modeloNotaFavoritoRepository.modeloNotaDinamico(numeroModeloNota)).thenReturn(modeloNota);
 		Object[] campo1 = { 1, "descricao1" };
@@ -184,15 +187,18 @@ class AtendimentoRemotoControllerRegistraNotaTest extends ControllerTest {
 		RegistraNotaInputDto registraNotaInputDto = mock(RegistraNotaInputDto.class);
 		JsonNode relatorioNota = mock(JsonNode.class);
 		when(registraNotaInputDto.getRelatorioNota()).thenReturn(relatorioNota);
-		Object[] dinamico1 = { 1, 2, 3, "campo1", "1", "1", "1", "espaco", "DATA", "String", "descricao", "255", "255", "255" };
-		Object[] dinamico2 = { 4, 5, 6, "campo2", "0", "1", "0", "espaco", "TEXTO", "String", "descricao2", "255", "255", "255" };
+		Object[] dinamico1 = { 1, 2, 3, "campo1", "1", "1", "1", "espaco", "DATA", "String", "descricao", "255", "255",
+				"255" };
+		Object[] dinamico2 = { 4, 5, 6, "campo2", "0", "1", "0", "espaco", "TEXTO", "String", "descricao2", "255",
+				"255", "255" };
 		List<Object[]> modeloNota = Arrays.asList(dinamico1, dinamico2);
 		when(modeloNotaFavoritoRepository.modeloNotaDinamico(numeroModeloNota)).thenReturn(modeloNota);
 		Object[] campo1 = { 1, "descricao1" };
 		Object[] campo2 = { 2, "descricao2" };
 		List<Object[]> campos = Arrays.asList(campo1, campo2);
 		when(campoModeloNotaRepository.modeloNotaDinamicoCampos(anyLong())).thenReturn(campos);
-		doThrow(new RuntimeException(new JAXBException("Erro no JAXB"))).when(notaNegociacaoRepository).updateXmlDataById(anyLong(), anyString());
+		doThrow(new RuntimeException(new JAXBException("Erro no JAXB"))).when(notaNegociacaoRepository)
+				.updateXmlDataById(anyLong(), anyString());
 
 		try {
 			service.atualizarXML(registraNotaInputDto, numeroModeloNota, numeroNota);

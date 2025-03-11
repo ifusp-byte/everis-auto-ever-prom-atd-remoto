@@ -8,8 +8,6 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.validation.Valid;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +30,7 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.DossieInputDto;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siecm.dto.SiecmOutputDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
+import jakarta.validation.Valid;
 
 @Service
 @Validated
@@ -84,15 +83,16 @@ public class SiecmGateway {
 
 	public HttpEntity<String> newRequestEntityDocumentoConsultar(String token,
 			DocumentoConsultarInputDto documentoConsultarInputDto) {
-		
+
 		String request = null;
 		try {
-			request = mapper.writeValueAsString(documentoConsultarInputDto).replaceAll("\\u005C", "").replaceAll("\\n", "");
+			request = mapper.writeValueAsString(documentoConsultarInputDto).replaceAll("\\u005C", "").replaceAll("\\n",
+					"");
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
 		return new HttpEntity<>(request, newHttpHeaders(token));
-		
+
 	}
 
 	public SiecmOutputDto dossieCriar(@Valid String token, String cpfCnpj) throws Exception {
@@ -171,7 +171,8 @@ public class SiecmGateway {
 
 	}
 
-	public SiecmOutputDto documentoConsultar(@Valid String token, DocumentoConsultarInputDto documentoConsultarInputDto) throws Exception {
+	public SiecmOutputDto documentoConsultar(@Valid String token, DocumentoConsultarInputDto documentoConsultarInputDto)
+			throws Exception {
 
 		SiecmOutputDto siecmOutputDto = new SiecmOutputDto();
 		ResponseEntity<String> response = null;
@@ -189,23 +190,20 @@ public class SiecmGateway {
 
 			String linkThumbnail = Objects.requireNonNull(dadosDocumentoLocalizado.get(0).path("link")).asText();
 			String id = Objects.requireNonNull(dadosDocumentoLocalizado.get(0).path("atributos").path("id")).asText();
-			String nomeAnexo = Objects.requireNonNull(dadosDocumentoLocalizado.get(0).path("atributos").path("nome")).asText();
+			String nomeAnexo = Objects.requireNonNull(dadosDocumentoLocalizado.get(0).path("atributos").path("nome"))
+					.asText();
 
 			siecmOutputDto = SiecmOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
-					.linkThumbnail(linkThumbnail)
-					.statusCreated(true)
-					.statusMessage("Documento localizado com sucesso")
-					.dataCreated(formataDataSiecm(new Date()))
-					.id(id)
-					.nomeAnexo(nomeAnexo)
-					.build();
+					.linkThumbnail(linkThumbnail).statusCreated(true).statusMessage("Documento localizado com sucesso")
+					.dataCreated(formataDataSiecm(new Date())).id(id).nomeAnexo(nomeAnexo).build();
 
 			LOG.log(Level.INFO, response.getBody());
 
 		} catch (RestClientResponseException e) {
 			body = mapper.readTree(e.getResponseBodyAsString());
-			siecmOutputDto = SiecmOutputDto.builder().statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode()))).build();
+			siecmOutputDto = SiecmOutputDto.builder()
+					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode()))).build();
 		} finally {
 
 			try {
