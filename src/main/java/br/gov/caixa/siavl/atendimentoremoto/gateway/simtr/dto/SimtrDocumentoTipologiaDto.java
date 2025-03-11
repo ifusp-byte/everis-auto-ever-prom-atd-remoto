@@ -1,5 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway.simtr.dto;
 
+import java.util.List;
+
 import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -18,31 +20,23 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "SimtrOutputDto")
-public class SimtrOutputDto {
+@XmlRootElement(name = "SimtrDocumentoTipologiaDto")
+public class SimtrDocumentoTipologiaDto {
 
 	@Valid
-	@XmlElement(name = "statusCode")
-	private String statusCode;
+	@XmlElement(name = "identidade")
+	private List<SimtrDocumentoDto> identidade;
 
 	@Valid
-	@XmlElement(name = "statusMessage")
-	private String statusMessage;
+	@XmlElement(name = "endereco")
+	private List<SimtrDocumentoDto> endereco;
 
 	@Valid
-	@XmlElement(name = "statusCreated")
-	private boolean statusCreated;
+	@XmlElement(name = "renda")
+	private List<SimtrDocumentoDto> renda;
 
 	@Valid
-	@XmlElement(name = "tipoPessoa")
-	private String tipoPessoa;
-
-	@Valid
-	@XmlElement(name = "idDossie")
-	private String idDossie;
-
-	@Valid
-	@XmlElement(name = "documentos")
-	private SimtrDocumentoTipologiaDto documentos;
+	@XmlElement(name = "desconhecido")
+	private List<SimtrDocumentoDto> desconhecido;
 
 }
