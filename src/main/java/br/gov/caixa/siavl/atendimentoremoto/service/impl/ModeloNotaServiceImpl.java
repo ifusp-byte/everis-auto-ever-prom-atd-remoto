@@ -27,6 +27,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RoteiroFechamentoNotaRepository;
+import br.gov.caixa.siavl.atendimentoremoto.repository.TipoContratacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.TipoNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.impl.ModeloNotaRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
@@ -44,18 +45,18 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	@Autowired
 	TokenUtils tokenUtils;
-	
+
 	@Autowired
 	MetodosUtils metodosUtils;
 
 	@Autowired
 	DocumentoUtils documentoUtils;
-	
+
 	@Autowired
 	TipoNotaRepository tipoNotaRepository;
 
 	@Autowired
-	ModeloNotaRepository modeloNotaRepository;	
+	ModeloNotaRepository modeloNotaRepository;
 
 	@Autowired
 	NotaNegociacaoRepository notaNegociacaoRepository;
@@ -65,6 +66,9 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	@Autowired
 	CampoModeloNotaRepository campoModeloNotaRepository;
+
+	@Autowired
+	TipoContratacaoRepository tipoContratacaoRepository;
 
 	@Autowired
 	FluxoAtendimentoRepository fluxoAtendimentoRepository;
@@ -80,14 +84,15 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 	@Autowired
 	RoteiroFechamentoNotaRepository roteiroFechamentoNotaRepository;
-	
+
 	public List<TipoNota> consultaTipoNota() {
 		return tipoNotaRepository.findAll();
 	}
 
 	public List<ModeloNotaOutputDto> consultaModeloNota(String cpfCnpj) {
 		List<ModeloNotaOutputDto> modelosNota = new ArrayList<>();
-		List<Object[]> findModeloNota = modeloNotaFavoritoRepository.findModeloNota(documentoUtils.retornaPublicoAlvo(cpfCnpj));
+		List<Object[]> findModeloNota = modeloNotaFavoritoRepository
+				.findModeloNota(documentoUtils.retornaPublicoAlvo(cpfCnpj));
 		if (!findModeloNota.isEmpty()) {
 			findModeloNota.stream().forEach(modeloNota -> {
 				ModeloNotaOutputDto modeloNotaOutputDto = null;
@@ -95,8 +100,8 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 						.numeroModeloNota(String.valueOf(modeloNota[0]))
 						.numeroAcaoProduto(String.valueOf(modeloNota[1]))
 						.descricaoAcaoProduto(String.valueOf(modeloNota[2]))
-						.numeroTipoNota(String.valueOf(modeloNota[3]))
-						.nomeTipoNota(String.valueOf(modeloNota[4]))
+						.numeroTipoNota(String.valueOf(modeloNota[3])).nomeTipoNota(String.valueOf(modeloNota[4]))
+						.tipoAutenticacao(tipoContratacaoRepository.tipoContratacao(Long.valueOf(String.valueOf(modeloNota[0]))))
 						.build();
 				Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository
 						.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
@@ -121,6 +126,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 						.descricaoAcaoProduto(String.valueOf(modeloNota[3]))
 						.numeroTipoNota(String.valueOf(modeloNota[4]))
 						.nomeTipoNota(String.valueOf(modeloNota[5]))
+						.tipoAutenticacao(tipoContratacaoRepository.tipoContratacao(Long.valueOf(String.valueOf(modeloNota[1]))))
 						.build();
 				modelosNota.add(modeloNotaOutputDto);
 			});
@@ -148,6 +154,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 						.dataEscolhaFavorito(dataUtils.formataDataModelo(modeloNotaFavorita[3]))
 						.numeroTipoNota(String.valueOf(modeloNotaFavorita[4]))
 						.nomeTipoNota(String.valueOf(modeloNotaFavorita[5]))
+						.tipoAutenticacao(tipoContratacaoRepository.tipoContratacao(Long.valueOf(String.valueOf(modeloNotaFavorita[0]))))
 						.build();
 
 				Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository
@@ -222,13 +229,20 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 
 			ModeloNotaDinamicoMenuNotaDinamicoOutputDTO modeloDinamico = null;
 			modeloDinamico = ModeloNotaDinamicoMenuNotaDinamicoOutputDTO.builder()
-					.idModeloNota(String.valueOf(dinamico[0])).idCampoModeloNota(String.valueOf(dinamico[1]))
-					.numeroOrdemCampo(String.valueOf(dinamico[2])).nomeCampoModeloNota(String.valueOf(dinamico[3]))
-					.campoDefinido(String.valueOf(dinamico[4])).campoEditavel(String.valueOf(dinamico[5]))
-					.campoObrigatorio(String.valueOf(dinamico[6])).espacoReservado(String.valueOf(dinamico[7]))
-					.tipoDadoCampo(String.valueOf(dinamico[8])).tipoEntradaCampo(String.valueOf(dinamico[9]))
-					.descricaoCampo(String.valueOf(dinamico[10])).quantidadeCaracterCampo(String.valueOf(dinamico[11]))
-					.valorInicialCampo(String.valueOf(dinamico[12])).mascaraCampo(String.valueOf(dinamico[13])).build();
+					.idModeloNota(String.valueOf(dinamico[0]))
+					.idCampoModeloNota(String.valueOf(dinamico[1]))
+					.numeroOrdemCampo(String.valueOf(dinamico[2]))
+					.nomeCampoModeloNota(String.valueOf(dinamico[3]))
+					.campoDefinido(String.valueOf(dinamico[4]))
+					.campoEditavel(String.valueOf(dinamico[5]))
+					.campoObrigatorio(String.valueOf(dinamico[6]))
+					.espacoReservado(String.valueOf(dinamico[7]))
+					.tipoDadoCampo(String.valueOf(dinamico[8]))
+					.tipoEntradaCampo(String.valueOf(dinamico[9]))
+					.descricaoCampo(String.valueOf(dinamico[10]))
+					.quantidadeCaracterCampo(String.valueOf(dinamico[11]))
+					.valorInicialCampo(String.valueOf(dinamico[12]))
+					.mascaraCampo(String.valueOf(dinamico[13])).build();
 			dinamicos.add(modeloDinamico);
 		});
 
