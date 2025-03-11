@@ -29,7 +29,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import br.gov.caixa.siavl.atendimentoremoto.gateway.simtr.dto.SimtrDocumentoDto;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.simtr.dto.SimtrDocumentoTipologiaDto;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.simtr.dto.SimtrOutputDto;
+import br.gov.caixa.siavl.atendimentoremoto.gateway.simtr.enums.TipologiaDocumentoEnum;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.simtr.enums.TipologiaEnum;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateDto;
 import br.gov.caixa.siavl.atendimentoremoto.util.RestTemplateUtils;
@@ -66,6 +68,7 @@ public class SimtrGateway {
 	public SimtrOutputDto documentosCpfCnpjConsultar(@Valid String token, @Valid String cpfCnpj) throws Exception {
 
 		SimtrOutputDto simtrOutputDto = new SimtrOutputDto();
+		SimtrDocumentoTipologiaDto simtrDocumentoTipologia = new SimtrDocumentoTipologiaDto();
 		ResponseEntity<String> response = null;
 		JsonNode body;
 		ArrayNode documentos;
@@ -91,7 +94,10 @@ public class SimtrGateway {
 			String statusMessage = documentos.isEmpty() ? "Não foram localizados documentos."
 					: documentos.size() + " documentos localizados.";
 
-			List<SimtrDocumentoDto> simtrDocumentos = new ArrayList<>();
+			List<SimtrDocumentoDto> identidadeLista = new ArrayList<>();
+			List<SimtrDocumentoDto> enderecoLista = new ArrayList<>();
+			List<SimtrDocumentoDto> rendaLista = new ArrayList<>();
+			List<SimtrDocumentoDto> desconhecidoLista = new ArrayList<>();
 
 			if (!documentos.isEmpty()) {
 				for (JsonNode nodeDocumentos : documentos) {
@@ -104,28 +110,48 @@ public class SimtrGateway {
 							nodeDocumentos.path("tipo_documento").path("codigo_tipologia").asText().trim()));
 					simtrDocumento.setNome(nodeDocumentos.path("tipo_documento").path("nome").asText().trim());
 					simtrDocumento.setAtivo(nodeDocumentos.path("tipo_documento").path("ativo").asText().trim());
-					simtrDocumento.setSituacaoDocumento(
-							nodeDocumentos.path("situacao_documento").asText().trim());
-					simtrDocumento.setDataHoraCaptura(
-							nodeDocumentos.path("data_hora_captura").asText().trim());
+					simtrDocumento.setSituacaoDocumento(nodeDocumentos.path("situacao_documento").asText().trim());
+					simtrDocumento.setDataHoraCaptura(nodeDocumentos.path("data_hora_captura").asText().trim());
 					simtrDocumento.setMimeType(nodeDocumentos.path("mime_type").asText().trim());
 
-					simtrDocumentos.add(simtrDocumento);
+					if (TipologiaDocumentoEnum.IDENTIDADE.getDescricao()
+							.equalsIgnoreCase(simtrDocumento.getTipologia())) {
+						identidadeLista.add(simtrDocumento);
+					}
+
+					if (TipologiaDocumentoEnum.RENDA.getDescricao().equalsIgnoreCase(simtrDocumento.getTipologia())) {
+						rendaLista.add(simtrDocumento);
+					}
+
+					if (TipologiaDocumentoEnum.ENDERECO.getDescricao()
+							.equalsIgnoreCase(simtrDocumento.getTipologia())) {
+						enderecoLista.add(simtrDocumento);
+					}
+
+					if (TipologiaDocumentoEnum.DESCONHECIDO.getDescricao()
+							.equalsIgnoreCase(simtrDocumento.getTipologia())) {
+						desconhecidoLista.add(simtrDocumento);
+					}
 
 				}
+
+				simtrDocumentoTipologia.setIdentidade(identidadeLista);
+				simtrDocumentoTipologia.setEndereco(enderecoLista);
+				simtrDocumentoTipologia.setRenda(rendaLista);
+				simtrDocumentoTipologia.setDesconhecido(desconhecidoLista);
 			}
 
 			simtrOutputDto = SimtrOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
 					.statusCreated(true).statusMessage("Consulta realizada com sucesso." + statusMessage)
-					.documentos(simtrDocumentos).tipoPessoa(tipoPessoa).idDossie(idDossie).build();
+					.documentos(simtrDocumentoTipologia).tipoPessoa(tipoPessoa).idDossie(idDossie).build();
 
 		} catch (RestClientResponseException e) {
 
 			simtrOutputDto = SimtrOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
 					.statusMessage("Erro na consulta. Tente novamente mais tarde." + e.getMessage())
-					.statusCreated(false).documentos(new ArrayList<>()).tipoPessoa(StringUtils.EMPTY)
+					.statusCreated(false).documentos(simtrDocumentoTipologia).tipoPessoa(StringUtils.EMPTY)
 					.idDossie(StringUtils.EMPTY).build();
 
 		} finally {
