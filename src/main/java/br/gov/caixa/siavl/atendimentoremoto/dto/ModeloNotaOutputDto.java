@@ -1,6 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -43,7 +44,7 @@ public class ModeloNotaOutputDto {
 
 	@Valid
 	@XmlElement(name = "tipoAutenticacao")
-	private String tipoAutenticacao;
+	private List<String> tipoAutenticacao;
 
 	@Valid
 	@JsonIgnore
