@@ -26,6 +26,7 @@ public class AtendimentoRemotoControllerEndpoints {
 	public static final String DOCUMENTO_INCLUIR = "/documento/{cpfCnpj}";
 	public static final String DOCUMENTO_EXCLUIR = "/documento/{numeroNota}/{codGedAnexo}";
 	public static final String DOCUMENTO_CONSULTAR = "/documento/{codGedAnexo}";
+	public static final String DOCUMENTOS_SIMTR_LISTAR = "/documentos/{cpfCnpj}";
 	public static final String DOCUMENTO_TIPO = "/documento/tipo/{cpfCnpj}";
 	public static final String DOCUMENTOS_NOTA = "/documento/nota/{numeroNota}";
 	public static final String DOCUMENTO_TIPO_CAMPOS = "/documento/tipo/campos/{codGED}";

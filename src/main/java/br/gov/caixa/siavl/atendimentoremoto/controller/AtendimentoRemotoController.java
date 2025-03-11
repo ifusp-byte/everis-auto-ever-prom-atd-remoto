@@ -7,6 +7,7 @@ import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoC
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DESAFIO_RESPONDER;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DESAFIO_VALIDAR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTOS_NOTA;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTOS_SIMTR_LISTAR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_CONSULTAR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_EXCLUIR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_INCLUIR;
@@ -61,7 +62,8 @@ import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.RespondeDesafioInp
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.RespondeDesafioOutputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.report.dto.ReportInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.report.service.ReportService;
-import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoService;
+import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoSiecmService;
+import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoSimtrService;
 import br.gov.caixa.siavl.atendimentoremoto.service.DesafioService;
 import br.gov.caixa.siavl.atendimentoremoto.service.GeraProtocoloService;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
@@ -97,7 +99,10 @@ public class AtendimentoRemotoController {
 	GeraProtocoloService geraProtocoloService;
 
 	@Autowired
-	AnexoDocumentoService anexoDocumentoService;
+	AnexoDocumentoSiecmService anexoDocumentoSiecmService;
+
+	@Autowired
+	AnexoDocumentoSimtrService anexoDocumentoSimtrService;
 
 	@Autowired
 	AuditoriaIdentificacaoPositivaService auditoriaIdentificacaoPositivaService;
@@ -205,7 +210,7 @@ public class AtendimentoRemotoController {
 			@Valid @PathVariable String cpfCnpj, @RequestBody EnviaDocumentoInputDto enviaDocumentoInputDto)
 			throws Exception {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(anexoDocumentoService.enviaDocumento(getToken(token), cpfCnpj, enviaDocumentoInputDto));
+				.body(anexoDocumentoSiecmService.enviaDocumento(getToken(token), cpfCnpj, enviaDocumentoInputDto));
 	}
 
 	@DeleteMapping(DOCUMENTO_EXCLUIR)
@@ -213,7 +218,7 @@ public class AtendimentoRemotoController {
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable Long numeroNota, @PathVariable String codGedAnexo) throws Exception {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(anexoDocumentoService.excluiDocumento(getToken(token), numeroNota, codGedAnexo));
+				.body(anexoDocumentoSiecmService.excluiDocumento(getToken(token), numeroNota, codGedAnexo));
 	}
 
 	@GetMapping(DOCUMENTO_CONSULTAR)
@@ -221,25 +226,25 @@ public class AtendimentoRemotoController {
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable String codGedAnexo) throws Exception {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(anexoDocumentoService.consultaDocumento(getToken(token), codGedAnexo));
+				.body(anexoDocumentoSiecmService.consultaDocumento(getToken(token), codGedAnexo));
 	}
 
 	@GetMapping(DOCUMENTO_TIPO)
 	public ResponseEntity<Object> tipoDocumento(@Valid @PathVariable String cpfCnpj) throws Exception {
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-				.body(anexoDocumentoService.tipoDocumento(cpfCnpj));
+				.body(anexoDocumentoSiecmService.tipoDocumento(cpfCnpj));
 	}
 
 	@GetMapping(DOCUMENTO_TIPO_CAMPOS)
 	public ResponseEntity<Object> tipoDocumentoCampos(@Valid @PathVariable String codGED) throws Exception {
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-				.body(anexoDocumentoService.tipoDocumentoCampos(codGED));
+				.body(anexoDocumentoSiecmService.tipoDocumentoCampos(codGED));
 	}
 
 	@GetMapping(DOCUMENTOS_NOTA)
 	public ResponseEntity<Object> documentoNota(@Valid @PathVariable Long numeroNota) throws Exception {
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-				.body(anexoDocumentoService.documentoNota(numeroNota));
+				.body(anexoDocumentoSiecmService.documentoNota(numeroNota));
 	}
 
 	@GetMapping(MARCA_DOI)
@@ -265,6 +270,14 @@ public class AtendimentoRemotoController {
 			@RequestBody TokenSmsInputDto tokenSmsInputDto) throws Exception {
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
 				.body(tokenSmsService.identificacaoTokenSms(getToken(token), tokenSmsInputDto));
+	}
+
+	@GetMapping(DOCUMENTOS_SIMTR_LISTAR)
+	public ResponseEntity<Object> listaDocumentosSimtr(
+			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
+			@Valid @PathVariable String cpfCnpj) throws Exception {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(anexoDocumentoSimtrService.documentos(getToken(token), cpfCnpj));
 	}
 
 	public String getToken(String token) {

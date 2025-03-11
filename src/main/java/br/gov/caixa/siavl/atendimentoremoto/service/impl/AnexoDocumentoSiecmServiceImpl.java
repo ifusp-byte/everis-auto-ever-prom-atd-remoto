@@ -34,7 +34,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.DocumentoNotaNegociacaoRe
 import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.TipoDocumentoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.impl.DocumentoClienteRepositoryImpl;
-import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoService;
+import br.gov.caixa.siavl.atendimentoremoto.service.AnexoDocumentoSiecmService;
 import br.gov.caixa.siavl.atendimentoremoto.util.DataUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils;
@@ -42,7 +42,7 @@ import br.gov.caixa.siavl.atendimentoremoto.util.TokenUtils;
 
 @Service
 @SuppressWarnings("all")
-public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
+public class AnexoDocumentoSiecmServiceImpl implements AnexoDocumentoSiecmService {
 
 	@Autowired
 	DataUtils dataUtils;
@@ -93,7 +93,7 @@ public class AnexoDocumentoServiceImpl implements AnexoDocumentoService {
 	private static final String DEFAULT_NOME_ACEITE = "DOCUMENTO_ACEITE";
 	private static final String DEFAULT_CLASSE_OPCIONAL = "NOTA_NEGOCIACAO";
 
-	private static final Logger LOG = Logger.getLogger(AnexoDocumentoServiceImpl.class.getName());
+	private static final Logger LOG = Logger.getLogger(AnexoDocumentoSiecmServiceImpl.class.getName());
 
 	@Override
 	public SiecmOutputDto enviaDocumento(String token, String cpfCnpj, EnviaDocumentoInputDto enviaDocumentoInputDto)
