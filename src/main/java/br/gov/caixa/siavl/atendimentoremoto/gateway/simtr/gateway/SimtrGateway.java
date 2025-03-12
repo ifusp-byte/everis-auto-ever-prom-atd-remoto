@@ -49,6 +49,8 @@ public class SimtrGateway {
 
 	private static String SIMTR_URL_BASE_DOCUMENTOS_CPF = "/negocio/v1/dossie-cliente/cpf/";
 	private static String SIMTR_URL_BASE_DOCUMENTOS_CNPJ = "/negocio/v1/dossie-cliente/cnpj/";
+	private static String SIMTR_URL_BASE_DOCUMENTO_ID = "/negocio/v2/documento/";
+	private static String SIMTR_URL_BASE_DOCUMENTO_ID_FLAG_BINARIO = "?binario=true";
 
 	@Autowired
 	RestTemplateUtils restTemplateUtils;
@@ -115,21 +117,21 @@ public class SimtrGateway {
 					simtrDocumento.setMimeType(nodeDocumentos.path("mime_type").asText().trim());
 
 					if (TipologiaDocumentoEnum.IDENTIDADE.getDescricao()
-							.equalsIgnoreCase(simtrDocumento.getTipologia())) {
+							.equalsIgnoreCase(simtrDocumento.getAcordeonMfe())) {
 						identidadeLista.add(simtrDocumento);
 					}
 
-					if (TipologiaDocumentoEnum.RENDA.getDescricao().equalsIgnoreCase(simtrDocumento.getTipologia())) {
+					if (TipologiaDocumentoEnum.RENDA.getDescricao().equalsIgnoreCase(simtrDocumento.getAcordeonMfe())) {
 						rendaLista.add(simtrDocumento);
 					}
 
 					if (TipologiaDocumentoEnum.ENDERECO.getDescricao()
-							.equalsIgnoreCase(simtrDocumento.getTipologia())) {
+							.equalsIgnoreCase(simtrDocumento.getAcordeonMfe())) {
 						enderecoLista.add(simtrDocumento);
 					}
 
 					if (TipologiaDocumentoEnum.DESCONHECIDO.getDescricao()
-							.equalsIgnoreCase(simtrDocumento.getTipologia())) {
+							.equalsIgnoreCase(simtrDocumento.getAcordeonMfe())) {
 						desconhecidoLista.add(simtrDocumento);
 					}
 
@@ -153,6 +155,61 @@ public class SimtrGateway {
 					.statusMessage("Erro na consulta. Tente novamente mais tarde." + e.getMessage())
 					.statusCreated(false).documentos(simtrDocumentoTipologia).tipoPessoa(StringUtils.EMPTY)
 					.idDossie(StringUtils.EMPTY).build();
+
+		} finally {
+
+			restTemplateDto.getHttpClient().close();
+		}
+
+		return simtrOutputDto;
+	}
+
+	public SimtrOutputDto documentoByIdConsultar(@Valid String token, @Valid String idDocumento) throws Exception {
+
+		SimtrOutputDto simtrOutputDto = new SimtrOutputDto();
+		ResponseEntity<String> response = null;
+		JsonNode body;
+		String binario = StringUtils.EMPTY;
+		String extensao = StringUtils.EMPTY;
+		String mimeType = StringUtils.EMPTY;
+		String tipologia = StringUtils.EMPTY;
+		String url = URL_SIMTR + SIMTR_URL_BASE_DOCUMENTO_ID + idDocumento + SIMTR_URL_BASE_DOCUMENTO_ID_FLAG_BINARIO;
+
+		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
+
+		try {
+
+			String uri = url;
+			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
+
+			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,
+					newRequestEntityDocumentosConsultar(token), String.class);
+
+			body = StringToJson(String.valueOf(response.getBody()));
+
+			binario = Objects.requireNonNull(body.path("binario")).asText().trim();
+			extensao = Objects.requireNonNull(body.path("mime_type")).asText().trim();
+			mimeType = Objects.requireNonNull(body.path("mimetype")).asText().trim();
+			tipologia = Objects.requireNonNull(body.path("tipo_documento").path("codigo_tipologia")).asText().trim();
+
+			String statusMessage = binario == null ? "Documento não localizado." : "Documento localizado.";
+
+			simtrOutputDto = SimtrOutputDto.builder()
+					.statusCode(String.valueOf(Objects.requireNonNull(response.getStatusCodeValue())))
+					.statusCreated(true).statusMessage("Consulta realizada com sucesso." + statusMessage)
+					.binario(binario != null ? binario : StringUtils.EMPTY)
+					.mimeType(mimeType != null ? mimeType : StringUtils.EMPTY)
+					.extensao(extensao != null ? extensao : StringUtils.EMPTY)
+					.tipologia(tipologia).build();
+
+		} catch (RestClientResponseException e) {
+
+			simtrOutputDto = SimtrOutputDto.builder()
+					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
+					.statusMessage("Erro na consulta. Tente novamente mais tarde." + e.getMessage())
+					.statusCreated(false).binario(StringUtils.EMPTY).mimeType(StringUtils.EMPTY)
+					.extensao(StringUtils.EMPTY)
+					.tipologia(StringUtils.EMPTY).build();
 
 		} finally {
 

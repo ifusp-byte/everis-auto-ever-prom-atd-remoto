@@ -7,6 +7,7 @@ import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoC
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DESAFIO_RESPONDER;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DESAFIO_VALIDAR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTOS_NOTA;
+import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTOS_SIMTR_CONSULTAR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTOS_SIMTR_LISTAR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_CONSULTAR;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.DOCUMENTO_EXCLUIR;
@@ -278,6 +279,12 @@ public class AtendimentoRemotoController {
 			@Valid @PathVariable String cpfCnpj) throws Exception {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(anexoDocumentoSimtrService.documentos(getToken(token), cpfCnpj));
+	}
+
+	@GetMapping(DOCUMENTOS_SIMTR_CONSULTAR)
+	public Object documentoConsultarSimtr(@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
+			@Valid @PathVariable String idDocumento) throws Exception {
+		return anexoDocumentoSimtrService.documentoConsulta(getToken(token), idDocumento);
 	}
 
 	public String getToken(String token) {

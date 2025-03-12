@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,5 +45,25 @@ public class SimtrOutputDto {
 	@Valid
 	@XmlElement(name = "documentos")
 	private SimtrDocumentoTipologiaDto documentos;
+
+	@Valid
+	@Hidden
+	@XmlElement(name = "binario")
+	private String binario;
+
+	@Valid
+	@Hidden
+	@XmlElement(name = "mimeType")
+	private String mimeType;
+
+	@Valid
+	@Hidden
+	@XmlElement(name = "extensao")
+	private String extensao;
+
+	@Valid
+	@Hidden
+	@XmlElement(name = "tipologia")
+	private String tipologia;
 
 }
