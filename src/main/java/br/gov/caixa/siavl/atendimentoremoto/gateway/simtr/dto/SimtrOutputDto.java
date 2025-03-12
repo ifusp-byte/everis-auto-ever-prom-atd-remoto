@@ -1,7 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway.simtr.dto;
 
-import java.util.List;
-
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -44,6 +43,26 @@ public class SimtrOutputDto {
 
 	@Valid
 	@XmlElement(name = "documentos")
-	private List<SimtrDocumentoDto> documentos;
+	private SimtrDocumentoTipologiaDto documentos;
+
+	@Valid
+	@Hidden
+	@XmlElement(name = "binario")
+	private String binario;
+
+	@Valid
+	@Hidden
+	@XmlElement(name = "mimeType")
+	private String mimeType;
+
+	@Valid
+	@Hidden
+	@XmlElement(name = "extensao")
+	private String extensao;
+
+	@Valid
+	@Hidden
+	@XmlElement(name = "tipologia")
+	private String tipologia;
 
 }
