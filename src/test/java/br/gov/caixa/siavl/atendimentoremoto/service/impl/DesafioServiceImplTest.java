@@ -1,20 +1,25 @@
 package br.gov.caixa.siavl.atendimentoremoto.service.impl;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import br.gov.caixa.siavl.atendimentoremoto.config.SecurityConfig;
+import br.gov.caixa.siavl.atendimentoremoto.filter.JwtAuthenticationFilter;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.gateway.SiipcGateway;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.gateway.SipncGateway;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
@@ -31,27 +36,39 @@ class DesafioServiceImplTest {
 	private DesafioServiceImpl desafioService;
 
 	@Mock
-	private SiipcGateway siipcGateway;
+	private AtendimentoClienteRepository atendimentoClienteRepository;
+
+	@MockitoBean
+	AuthenticationConfiguration AuthenticationConfiguration;
+
+	@MockitoBean
+	JwtAuthenticationFilter JwtAuthenticationFilter;
+
+	@Mock
+	private AtendimentoCliente atendimentoCliente;
 
 	@Mock
 	private DocumentoUtils documentoUtils;
 
 	@Mock
-	private DataUtils dataUtils;
-
-	@Mock
-	private TokenUtils tokenUtils;
+	private SiipcGateway siipcGateway;
 
 	@Mock
 	private SipncGateway sipncGateway;
 
 	@Mock
-	private AtendimentoClienteRepository atendimentoClienteRepository;
+	private TokenUtils tokenUtils;
+
+	@MockitoBean
+	SecurityConfig SecurityConfig;
 
 	@Mock
-	private AtendimentoCliente atendimentoCliente;
+	private DataUtils dataUtils;
 
-	@Before
+	@MockitoBean
+	HttpSecurity HttpSecurity;
+
+	@Before(value = "")
 	public void setUp() {
 		MockitoAnnotations.openMocks(this);
 	}

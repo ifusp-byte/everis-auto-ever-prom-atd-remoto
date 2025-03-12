@@ -15,8 +15,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
@@ -25,6 +28,9 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
+
+import br.gov.caixa.siavl.atendimentoremoto.config.SecurityConfig;
+import br.gov.caixa.siavl.atendimentoremoto.filter.JwtAuthenticationFilter;
 
 @SuppressWarnings("all")
 @RequestMapping(BASE_URL)
@@ -36,6 +42,18 @@ import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 @TestPropertySource(properties = { "env.url.ged.api=http://localhost:6065" })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class ControllerTest {
+	
+	@MockitoBean
+	AuthenticationConfiguration AuthenticationConfiguration;
+
+	@MockitoBean
+	JwtAuthenticationFilter JwtAuthenticationFilter;
+
+	@MockitoBean
+	SecurityConfig SecurityConfig;
+
+	@MockitoBean
+	HttpSecurity HttpSecurity;
 
 	@LocalServerPort
 	public int port;

@@ -1,7 +1,7 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway;
 
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.TOKEN_VALIDO;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -25,11 +25,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import br.gov.caixa.siavl.atendimentoremoto.config.SecurityConfig;
+import br.gov.caixa.siavl.atendimentoremoto.filter.JwtAuthenticationFilter;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.ValidaDesafioDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.gateway.SiipcGateway;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.gateway.ValidateGateway;
@@ -55,11 +60,23 @@ class SiipcGatewayTest {
 	@Mock
 	private ValidateGateway validateGateway;
 
-	@MockBean
+	@MockitoBean
 	private RestTemplateDto restTemplateDto;
 
 	@Mock
 	private RestTemplateUtils restTemplateUtils;
+
+	@MockitoBean
+	AuthenticationConfiguration AuthenticationConfiguration;
+
+	@MockitoBean
+	JwtAuthenticationFilter JwtAuthenticationFilter;
+
+	@MockitoBean
+	SecurityConfig SecurityConfig;
+
+	@MockitoBean
+	HttpSecurity HttpSecurity;
 
 	@Mock
 	AtendimentoClienteRepository mockAtendimentoClienteRepository;

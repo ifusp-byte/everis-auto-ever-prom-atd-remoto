@@ -30,6 +30,7 @@ import org.mockito.stubbing.Answer;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoInputDTO;
 import br.gov.caixa.siavl.atendimentoremoto.dto.ModeloNotaDinamicoOutputDTO;
@@ -58,7 +59,7 @@ class ModeloNotaServiceImplTest {
 	@Mock
 	private TokenUtils tokenUtils;
 
-	@MockBean
+	@MockitoBean
 	private TokenUtils tokenUtilsBean;
 
 	@Mock

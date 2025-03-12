@@ -3,7 +3,6 @@ package br.gov.caixa.siavl.atendimentoremoto.filter;
 import java.io.IOException;
 import java.util.Collections;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,45 +17,44 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-@SuppressWarnings("all")
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
-    @Autowired
-    private TokenUtils tokenUtils;
+	private final TokenUtils tokenUtils;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, TokenUtils tokenUtils) {
-        super(authenticationManager);
-        this.tokenUtils = tokenUtils;
-    }
+	public JwtAuthenticationFilter(AuthenticationManager authenticationManager, TokenUtils tokenUtils) {
+		super(authenticationManager);
+		this.tokenUtils = tokenUtils;
+	}
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
 
-        String header = request.getHeader("Authorization");
+		String header = request.getHeader("Authorization");
 
-        if (header == null || !header.startsWith("Bearer ")) {
-            chain.doFilter(request, response);
+		if (header == null || !header.startsWith("Bearer ")) {
+			chain.doFilter(request, response);
+			return;
+		}
 
-            return;
-        }
+		String token = header.replace("Bearer ", "");
 
-        String token = header.replace("Bearer ", "");
+		// Verifica a validade do certificado/token
+		if (!tokenUtils.certificadoValido(token)) {
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(
+					"{ \"error\": \"Acesso negado: Para acessar a Plataforma.CAIXA utilize o Certificado Digital.\" }");
+			return;
+		}
 
-        if (!tokenUtils.certificadoValido(token)) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(
-                    "{ \"error\": \"Acesso negado: Para acessar a Plataforma.CAIXA utilize o Certificado Digital.\" }");
-            return;
-        }
+		// Extrai o username do token
+		String username = tokenUtils.getMatriculaFromToken(token);
+		Authentication authentication = new UsernamePasswordAuthenticationToken(username, null,
+				Collections.emptyList());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String username = tokenUtils.getMatriculaFromToken(token);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(username, null,
-                Collections.emptyList());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        chain.doFilter(request, response);
-    }
+		chain.doFilter(request, response);
+	}
 }
