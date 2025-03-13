@@ -278,13 +278,13 @@ public class AtendimentoRemotoController {
 			@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable String cpfCnpj) throws Exception {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(anexoDocumentoSimtrService.documentos(getToken(token), cpfCnpj));
+				.body(anexoDocumentoSimtrService.documentos(cpfCnpj));
 	}
 
 	@GetMapping(DOCUMENTOS_SIMTR_CONSULTAR)
 	public Object documentoConsultarSimtr(@Valid @RequestHeader(value = AUTHORIZATION, required = true) String token,
 			@Valid @PathVariable String idDocumento) throws Exception {
-		return anexoDocumentoSimtrService.documentoConsulta(getToken(token), idDocumento);
+		return anexoDocumentoSimtrService.documentoConsulta(idDocumento);
 	}
 
 	public String getToken(String token) {
