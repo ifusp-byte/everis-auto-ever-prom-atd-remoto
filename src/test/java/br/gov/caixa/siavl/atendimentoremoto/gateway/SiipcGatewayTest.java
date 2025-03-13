@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -22,19 +22,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import br.gov.caixa.siavl.atendimentoremoto.config.SecurityConfig;
-import br.gov.caixa.siavl.atendimentoremoto.filter.JwtAuthenticationFilter;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.dto.ValidaDesafioDTO;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.gateway.SiipcGateway;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.gateway.ValidateGateway;
@@ -65,18 +60,6 @@ class SiipcGatewayTest {
 
 	@Mock
 	private RestTemplateUtils restTemplateUtils;
-
-	@MockitoBean
-	AuthenticationConfiguration AuthenticationConfiguration;
-
-	@MockitoBean
-	JwtAuthenticationFilter JwtAuthenticationFilter;
-
-	@MockitoBean
-	SecurityConfig SecurityConfig;
-
-	@MockitoBean
-	HttpSecurity HttpSecurity;
 
 	@Mock
 	AtendimentoClienteRepository mockAtendimentoClienteRepository;

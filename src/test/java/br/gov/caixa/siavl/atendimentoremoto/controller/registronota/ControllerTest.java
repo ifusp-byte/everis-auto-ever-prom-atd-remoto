@@ -18,11 +18,8 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
@@ -33,9 +30,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-
-import br.gov.caixa.siavl.atendimentoremoto.config.SecurityConfig;
-import br.gov.caixa.siavl.atendimentoremoto.filter.JwtAuthenticationFilter;
 
 @SuppressWarnings("all")
 @RequestMapping(BASE_URL)
@@ -51,18 +45,6 @@ class ControllerTest {
 	public static final String AUDITORIA_URL = "/plataforma-unificada/trilha/v1/registros";
 
 	static WireMockServer wireMockServer;
-	
-	@MockitoBean
-	AuthenticationConfiguration AuthenticationConfiguration;
-
-	@MockitoBean
-	JwtAuthenticationFilter JwtAuthenticationFilter;
-
-	@MockitoBean
-	SecurityConfig SecurityConfig;
-
-	@MockitoBean
-	HttpSecurity HttpSecurity;
 
 	@LocalServerPort
 	public int port;

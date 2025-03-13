@@ -14,12 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import br.gov.caixa.siavl.atendimentoremoto.config.SecurityConfig;
-import br.gov.caixa.siavl.atendimentoremoto.filter.JwtAuthenticationFilter;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.siipc.gateway.SiipcGateway;
 import br.gov.caixa.siavl.atendimentoremoto.gateway.sipnc.gateway.SipncGateway;
 import br.gov.caixa.siavl.atendimentoremoto.model.AtendimentoCliente;
@@ -38,12 +33,6 @@ class DesafioServiceImplTest {
 	@Mock
 	private AtendimentoClienteRepository atendimentoClienteRepository;
 
-	@MockitoBean
-	AuthenticationConfiguration AuthenticationConfiguration;
-
-	@MockitoBean
-	JwtAuthenticationFilter JwtAuthenticationFilter;
-
 	@Mock
 	private AtendimentoCliente atendimentoCliente;
 
@@ -59,14 +48,8 @@ class DesafioServiceImplTest {
 	@Mock
 	private TokenUtils tokenUtils;
 
-	@MockitoBean
-	SecurityConfig SecurityConfig;
-
 	@Mock
 	private DataUtils dataUtils;
-
-	@MockitoBean
-	HttpSecurity HttpSecurity;
 
 	@Before(value = "")
 	public void setUp() {

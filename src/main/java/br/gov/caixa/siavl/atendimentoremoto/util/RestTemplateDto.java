@@ -1,6 +1,6 @@
 package br.gov.caixa.siavl.atendimentoremoto.util;
 
-import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.springframework.web.client.RestTemplate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,9 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RestTemplateDto {
-	
-	RestTemplate restTemplate;
-	
-	CloseableHttpClient httpClient;
-	
+
+    private RestTemplate restTemplate;
+    private CloseableHttpClient httpClient;
 }
