@@ -44,7 +44,7 @@ public class ModeloNotaOutputDto {
 
 	@Valid
 	@XmlElement(name = "tipoAutenticacao")
-	private List<String> tipoAutenticacao;
+	private List<TipoContratacaoDTO> tipoAutenticacao;
 
 	@Valid
 	@JsonIgnore
