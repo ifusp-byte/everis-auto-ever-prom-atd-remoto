@@ -27,9 +27,9 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.ModeloNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NegocioAgenciaVirtualRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.NotaNegociacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.RoteiroFechamentoNotaRepository;
-import br.gov.caixa.siavl.atendimentoremoto.repository.TipoContratacaoRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.TipoNotaRepository;
 import br.gov.caixa.siavl.atendimentoremoto.repository.impl.ModeloNotaRepositoryImpl;
+import br.gov.caixa.siavl.atendimentoremoto.repository.impl.TipoContratacaoRepositoryImpl;
 import br.gov.caixa.siavl.atendimentoremoto.service.ModeloNotaService;
 import br.gov.caixa.siavl.atendimentoremoto.util.DataUtils;
 import br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils;
@@ -68,7 +68,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 	CampoModeloNotaRepository campoModeloNotaRepository;
 
 	@Autowired
-	TipoContratacaoRepository tipoContratacaoRepository;
+	TipoContratacaoRepositoryImpl tipoContratacaoRepository;
 
 	@Autowired
 	FluxoAtendimentoRepository fluxoAtendimentoRepository;
@@ -101,7 +101,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 						.numeroAcaoProduto(String.valueOf(modeloNota[1]))
 						.descricaoAcaoProduto(String.valueOf(modeloNota[2]))
 						.numeroTipoNota(String.valueOf(modeloNota[3])).nomeTipoNota(String.valueOf(modeloNota[4]))
-						.tipoAutenticacao(tipoContratacaoRepository.tipoContratacao(Long.valueOf(String.valueOf(modeloNota[0]))))
+						.tipoAutenticacao(tipoContratacaoRepository.tiposContratacaoByModeloNota(Long.valueOf(String.valueOf(modeloNota[0]))))
 						.build();
 				Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository
 						.possuiFluxo(Long.parseLong(modeloNotaOutputDto.getNumeroModeloNota()));
@@ -126,7 +126,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 						.descricaoAcaoProduto(String.valueOf(modeloNota[3]))
 						.numeroTipoNota(String.valueOf(modeloNota[4]))
 						.nomeTipoNota(String.valueOf(modeloNota[5]))
-						.tipoAutenticacao(tipoContratacaoRepository.tipoContratacao(Long.valueOf(String.valueOf(modeloNota[1]))))
+						.tipoAutenticacao(tipoContratacaoRepository.tiposContratacaoByModeloNota(Long.valueOf(String.valueOf(modeloNota[1]))))
 						.build();
 				modelosNota.add(modeloNotaOutputDto);
 			});
@@ -154,7 +154,7 @@ public class ModeloNotaServiceImpl implements ModeloNotaService {
 						.dataEscolhaFavorito(dataUtils.formataDataModelo(modeloNotaFavorita[3]))
 						.numeroTipoNota(String.valueOf(modeloNotaFavorita[4]))
 						.nomeTipoNota(String.valueOf(modeloNotaFavorita[5]))
-						.tipoAutenticacao(tipoContratacaoRepository.tipoContratacao(Long.valueOf(String.valueOf(modeloNotaFavorita[0]))))
+						.tipoAutenticacao(tipoContratacaoRepository.tiposContratacaoByModeloNota(Long.valueOf(String.valueOf(modeloNotaFavorita[0]))))
 						.build();
 
 				Optional<FluxoAtendimento> fluxoAtendimento = fluxoAtendimentoRepository
