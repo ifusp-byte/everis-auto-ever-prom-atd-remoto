@@ -21,6 +21,10 @@ public final class ConstantsUtils {
 	public static final String REPLACE_CONTA_1 = "0000";
 	public static final String REPLACE_CONTA_2 = "000";
 	public static final String CHANNEL = "TLSv1.2";
+	
+	public static final String HTTPS = "https";
+	public static final String HTTP = "http";
+	
 	public static final String CONTA_SIART = "SIART";
 	public static final String CONTA_SIDEC = "SIDEC";
 	public static final String CONTA_SIIFX = "SIIFX";

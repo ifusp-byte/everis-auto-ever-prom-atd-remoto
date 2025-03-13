@@ -2,6 +2,7 @@ package br.gov.caixa.siavl.atendimentoremoto.util;
 
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.springframework.web.client.RestTemplate;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,8 +14,11 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@SuppressWarnings("all")
 public class RestTemplateDto {
 
-    private RestTemplate restTemplate;
-    private CloseableHttpClient httpClient;
+	RestTemplate RestTemplate;
+
+	CloseableHttpClient httpClient;
+
 }
