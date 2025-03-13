@@ -23,16 +23,16 @@ public class AnexoDocumentoSimtrServiceImpl implements AnexoDocumentoSimtrServic
 	private static final Logger LOG = Logger.getLogger(AnexoDocumentoSimtrServiceImpl.class.getName());
 
 	@Override
-	public SimtrOutputDto documentos(String token, String cpfCnpj) throws Exception {
+	public SimtrOutputDto documentos(String cpfCnpj) throws Exception {
 		SimtrOutputDto simtrOutputDto = null;
-		simtrOutputDto = simtrGateway.documentosCpfCnpjConsultar(token, cpfCnpj);
+		simtrOutputDto = simtrGateway.documentosCpfCnpjConsultar(cpfCnpj);
 		return simtrOutputDto;
 	}
 
 	@Override
-	public Object documentoConsulta(String token, String idDocumento) throws Exception {
+	public Object documentoConsulta(String idDocumento) throws Exception {
 		SimtrOutputDto simtrOutputDto = null;
-		simtrOutputDto = simtrGateway.documentoByIdConsultar(token, idDocumento);
+		simtrOutputDto = simtrGateway.documentoByIdConsultar(idDocumento);
 
 		if (StringUtils.isNotEmpty(simtrOutputDto.getBinario()) && StringUtils.isNotEmpty(simtrOutputDto.getTipologia())
 				&& StringUtils.isNotEmpty(simtrOutputDto.getExtensao())
