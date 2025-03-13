@@ -112,15 +112,17 @@ public class MetodosUtils {
 	public static ResponseEntity<?> downloadDocumento(SimtrOutputDto simtrOutputDto) {
 
 		byte[] resourceContent = simtrOutputDto.getBinario().getBytes();
+		byte[] resourceContentDecoded = Base64.getDecoder().decode(simtrOutputDto.getBinario());
 		String fileName = simtrOutputDto.getTipologia() + "." + simtrOutputDto.getExtensao();
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.valueOf(simtrOutputDto.getMimeType()));
+		headers.set(HttpHeaders.TRANSFER_ENCODING, "identity");
 		headers.setContentDisposition(ContentDisposition.attachment().filename(fileName).build());
-		headers.setContentLength(resourceContent.length);
+		headers.setContentLength(resourceContentDecoded.length);
 
-		return ResponseEntity.ok().headers(headers).contentLength(resourceContent.length)
-				.body(Base64.getDecoder().decode(simtrOutputDto.getBinario()));
+		return ResponseEntity.ok().headers(headers).contentLength(resourceContentDecoded.length)
+				.body(resourceContentDecoded);
 
 	}
 
