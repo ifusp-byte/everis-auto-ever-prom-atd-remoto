@@ -157,7 +157,7 @@ public class SimtrGateway {
 					if (TipologiaDocumentoEnum.DESCONHECIDO.getDescricao()
 							.equalsIgnoreCase(simtrDocumento.getAcordeonMfe())) {
 						desconhecidoLista.add(simtrDocumento);
-					}
+					} 
 
 				}
 
@@ -176,7 +176,7 @@ public class SimtrGateway {
 
 			simtrOutputDto = SimtrOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.statusMessage("Erro na consulta. Tente novamente mais tarde." + e.getMessage())
+					.statusMessage("Erro na consulta. Tente novamente mais tarde.")
 					.statusCreated(false).documentos(simtrDocumentoTipologia).tipoPessoa(StringUtils.EMPTY)
 					.idDossie(StringUtils.EMPTY).build();
 
@@ -229,7 +229,7 @@ public class SimtrGateway {
 
 			simtrOutputDto = SimtrOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.statusMessage("Erro na consulta. Tente novamente mais tarde." + e.getMessage())
+					.statusMessage("Erro na consulta. Tente novamente mais tarde.")
 					.statusCreated(false).binario(StringUtils.EMPTY).mimeType(StringUtils.EMPTY)
 					.extensao(StringUtils.EMPTY).tipologia(StringUtils.EMPTY).build();
 

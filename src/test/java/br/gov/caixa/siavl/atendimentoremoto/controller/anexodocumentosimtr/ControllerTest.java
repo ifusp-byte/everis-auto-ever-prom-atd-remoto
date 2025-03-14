@@ -1,4 +1,4 @@
-package br.gov.caixa.siavl.atendimentoremoto.controller.anexodocumento;
+package br.gov.caixa.siavl.atendimentoremoto.controller.anexodocumentosimtr;
 
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.TOKEN_VALIDO;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.BASE_URL;

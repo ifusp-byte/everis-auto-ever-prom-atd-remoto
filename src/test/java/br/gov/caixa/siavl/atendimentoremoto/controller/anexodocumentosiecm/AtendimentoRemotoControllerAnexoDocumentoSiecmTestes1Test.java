@@ -1,4 +1,4 @@
-package br.gov.caixa.siavl.atendimentoremoto.controller.anexodocumento;
+package br.gov.caixa.siavl.atendimentoremoto.controller.anexodocumentosiecm;
 
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.ANEXA_DOCUMENTO_ACEITE;
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.ANEXA_DOCUMENTO_OBRIGATORIO;
@@ -17,7 +17,7 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 
 @SuppressWarnings("all")
-class AtendimentoRemotoControllerAnexoDocumentoTestes1Test extends AtendimentoRemotoControllerAnexoDocumentoTest {
+class AtendimentoRemotoControllerAnexoDocumentoSiecmTestes1Test extends AtendimentoRemotoControllerAnexoDocumentoSiecmTest {
 
 	@BeforeEach
 	public void setUp() {
