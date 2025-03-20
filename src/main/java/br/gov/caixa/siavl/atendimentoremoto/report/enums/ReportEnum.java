@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.primitives.Ints;
+
 import br.gov.caixa.siavl.atendimentoremoto.enums.GeraProtocoloTipoAtendimentoEnum;
-import wiremock.com.google.common.primitives.Ints;
 
 @SuppressWarnings("all")
 public enum ReportEnum {

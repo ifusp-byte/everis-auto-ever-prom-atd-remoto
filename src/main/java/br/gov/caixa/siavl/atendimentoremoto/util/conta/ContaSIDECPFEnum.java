@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import wiremock.com.google.common.primitives.Ints;
+import com.google.common.primitives.Ints;
 
 @SuppressWarnings("all")
 public enum ContaSIDECPFEnum {

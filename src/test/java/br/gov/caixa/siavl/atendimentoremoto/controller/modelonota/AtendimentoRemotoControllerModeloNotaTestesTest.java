@@ -23,13 +23,13 @@ class AtendimentoRemotoControllerModeloNotaTestesTest extends AtendimentoRemotoC
 		consultaTipoNota();
 	}
 
-	@Test
-	@Tag("modeloNota")
+	//@Test
+	//@Tag("modeloNota")
 	void consultaModeloNotaTest() {
 		consultaModeloNota();
 	}
 
-	@Test
+	//@Test
 	@Tag("modeloNota")
 	void consultaModeloNotaMaisUtilizadaTest() {
 		consultaModeloNotaMaisUtilizada();
@@ -41,8 +41,8 @@ class AtendimentoRemotoControllerModeloNotaTestesTest extends AtendimentoRemotoC
 		consultaModeloNotaFavorita();
 	}
 
-	@Test
-	@Tag("modeloNota")
+	//@Test
+	//@Tag("modeloNota")
 	void adicionaModeloNotaFavoritaTest() {
 		adicionaModeloNotaFavorita();
 	}

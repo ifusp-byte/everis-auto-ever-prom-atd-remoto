@@ -5,6 +5,7 @@ import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoC
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 import org.apache.commons.lang3.StringUtils;
@@ -38,13 +39,15 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = { "env.url.ged.api=http://localhost:6060" })
+@TestPropertySource(properties = { "env.url.ged.api=http://localhost:6060",
+		"env.simtr.siavl.token.url=http://localhost:6065" })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class ControllerTest {
 
-	public static final String CONSUTA_SIECM_DOSSIE = "/dossie";
-	public static final String CONSUTA_SIECM_DOCUMENTO_INCLUIR = "/documentos/incluir";
-	public static final String CONSUTA_SIECM_DOCUMENTO_CONSULTAR = "/documentos/consultar";
+	private static String SIMTR_URL_BASE_DOCUMENTOS_CPF = "/negocio/v1/dossie-cliente/cpf/";
+	private static String SIMTR_URL_BASE_DOCUMENTOS_CNPJ = "/negocio/v1/dossie-cliente/cnpj/";
+	private static String SIMTR_URL_BASE_DOCUMENTO_ID = "/negocio/v2/documento/";
+	private static String SIMTR_URL_BASE_DOCUMENTO_ID_FLAG_BINARIO = "?binario=true";
 	static WireMockServer wireMockServer;
 
 	@LocalServerPort
@@ -72,26 +75,34 @@ class ControllerTest {
 		tearDownIntegracao();
 	}
 
-	public void setupIntegracao(int statusDossie, int statusDocumentoIncluir, int statusDocumentoConsultar, String siecmDossieBodyRetorno,
-			String siecmDocumentoIncluirBodyRetorno, String siecmDocumentoConsultarBodyRetorno) {
+	public void setupIntegracao(int statusToken, int statusDocumentos, int statusDocumentoById,
+			String simtrTokenRetorno, String simtrDocumentosRetorno, String simtrDocumentoByIdRetorno, String cpfCnpj,
+			String idDocumento) {
 		wireMockServer = new WireMockServer(wireMockConfig().dynamicPort().port(6060).bindAddress("localhost"));
 		wireMockServer.start();
 		WireMock.configureFor("localhost", wireMockServer.port());
 
-		stubFor(WireMock.post(urlPathMatching(CONSUTA_SIECM_DOSSIE))
-				.willReturn(aResponse().withStatus(statusDossie)
+		stubFor(WireMock.get(urlPathMatching(SIMTR_URL_BASE_DOCUMENTOS_CPF + cpfCnpj))
+				.willReturn(aResponse().withStatus(statusDocumentos)
 						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-						.withBodyFile(siecmDossieBodyRetorno)));
+						.withBodyFile(simtrDocumentosRetorno)));
 
-		stubFor(WireMock.post(urlPathMatching(CONSUTA_SIECM_DOCUMENTO_INCLUIR))
-				.willReturn(aResponse().withStatus(statusDocumentoIncluir)
+		stubFor(WireMock.get(urlPathMatching(SIMTR_URL_BASE_DOCUMENTOS_CNPJ + cpfCnpj))
+				.willReturn(aResponse().withStatus(statusDocumentos)
 						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-						.withBodyFile(siecmDocumentoIncluirBodyRetorno)));
-		
-		stubFor(WireMock.post(urlPathMatching(CONSUTA_SIECM_DOCUMENTO_CONSULTAR))
-				.willReturn(aResponse().withStatus(statusDocumentoConsultar)
+						.withBodyFile(simtrDocumentosRetorno)));
+
+		stubFor(WireMock.post(urlEqualTo("/"))
+				.willReturn(aResponse().withStatus(statusToken)
 						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-						.withBodyFile(siecmDocumentoConsultarBodyRetorno)));
+						.withBodyFile(simtrTokenRetorno)));
+
+		stubFor(WireMock
+				.post(urlPathMatching(
+						SIMTR_URL_BASE_DOCUMENTO_ID + idDocumento + SIMTR_URL_BASE_DOCUMENTO_ID_FLAG_BINARIO))
+				.willReturn(aResponse().withStatus(statusDocumentoById)
+						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+						.withBodyFile(statusDocumentoById)));
 
 	}
 
@@ -102,7 +113,7 @@ class ControllerTest {
 	public HttpEntity<?> newRequestEntity(Object object) {
 		return new HttpEntity<Object>(object, newHttpHeaders());
 	}
-	
+
 	public HttpEntity<?> newRequestEntity() {
 		return new HttpEntity<String>(newHttpHeaders());
 	}
