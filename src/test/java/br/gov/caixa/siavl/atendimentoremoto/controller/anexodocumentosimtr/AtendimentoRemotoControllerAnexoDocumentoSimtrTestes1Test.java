@@ -19,7 +19,7 @@ class AtendimentoRemotoControllerAnexoDocumentoSimtrTestes1Test extends Atendime
 	@BeforeEach
 	public void setUp() {
 		setUpTest();
-		setupIntegracao(HttpStatus.OK, HttpStatus.OK, HttpStatus.OK, "simtrTokenSucesso.json", "simtrDocumentosSucesso", "simtrDocumentoByIdSucesso");
+		setupIntegracao(HttpStatus.OK.value(), HttpStatus.OK.value(), HttpStatus.OK.value(), "simtrTokenSucesso.json", "simtrDocumentosSucesso", "simtrDocumentoByIdSucesso");
 	}
 	
 	@AfterEach
