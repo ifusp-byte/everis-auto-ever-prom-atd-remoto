@@ -92,7 +92,7 @@ class ControllerTest {
 						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 						.withBodyFile(simtrDocumentosRetorno)));
 
-		stubFor(WireMock.post(urlEqualTo("/"))
+		stubFor(WireMock.post(urlEqualTo(""))
 				.willReturn(aResponse().withStatus(statusToken)
 						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 						.withBodyFile(simtrTokenRetorno)));
