@@ -4,8 +4,8 @@ import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.TOKEN_VAL
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.BASE_URL;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,8 +39,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = { "env.url.ged.api=http://localhost:6060",
-		"env.simtr.siavl.token.url=http://localhost:6075/auth/realms/intranet/protocol/openid-connect/token" })
+@TestPropertySource(properties = { "env.url.ged.api=http://localhost:6060" })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class ControllerTest {
 
@@ -48,7 +47,10 @@ class ControllerTest {
 	private static String SIMTR_URL_BASE_DOCUMENTOS_CNPJ = "/negocio/v1/dossie-cliente/cnpj/";
 	private static String SIMTR_URL_BASE_DOCUMENTO_ID = "/negocio/v2/documento/";
 	private static String SIMTR_URL_BASE_DOCUMENTO_ID_FLAG_BINARIO = "?binario=true";
+	private static String SIMTR_SIAVL_TOKEN_URL = "http://localhost:6061/auth/realms/intranet/protocol/openid-connect/token";
 	static WireMockServer wireMockServer;
+	static WireMockServer wireMockServerToken;
+	static WireMockServer wireMockServerDocumento;
 
 	@LocalServerPort
 	public int port;
@@ -71,31 +73,44 @@ class ControllerTest {
 				VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.DEFAULT));
 	}
 
-	public void tearDownTest() throws Exception {
-		tearDownIntegracao();
-	}
-
-	public void setupIntegracao(int statusToken, int statusDocumentos, int statusDocumentoById,
-			String simtrTokenRetorno, String simtrDocumentosRetorno, String simtrDocumentoByIdRetorno, String cpfCnpj,
-			String idDocumento) {
-		wireMockServer = new WireMockServer(wireMockConfig().dynamicPort().port(6060).bindAddress("localhost"));
+	public void setupIntegracao(int statusDocumentos, String simtrDocumentosRetorno, String cpfCnpj) {
+		wireMockServer = new WireMockServer(wireMockConfig().dynamicPort().port(6068).bindAddress("localhost"));
 		wireMockServer.start();
 		WireMock.configureFor("localhost", wireMockServer.port());
 
 		stubFor(WireMock.get(urlPathMatching(SIMTR_URL_BASE_DOCUMENTOS_CPF + cpfCnpj))
 				.willReturn(aResponse().withStatus(statusDocumentos)
 						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+						.withFixedDelay(500)
 						.withBodyFile(simtrDocumentosRetorno)));
 
+		
 		stubFor(WireMock.get(urlPathMatching(SIMTR_URL_BASE_DOCUMENTOS_CNPJ + cpfCnpj))
 				.willReturn(aResponse().withStatus(statusDocumentos)
 						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 						.withBodyFile(simtrDocumentosRetorno)));
+		
 
-		stubFor(WireMock.post(urlEqualTo(""))
+	}
+
+	public void setupIntegracaoToken(int statusToken, String simtrTokenRetorno) {
+		wireMockServerToken = new WireMockServer(wireMockConfig().dynamicPort().port(6061).bindAddress("localhost"));
+		wireMockServerToken.start();
+		WireMock.configureFor("localhost", wireMockServerToken.port());
+
+		stubFor(WireMock.post(urlPathMatching(SIMTR_SIAVL_TOKEN_URL))
 				.willReturn(aResponse().withStatus(statusToken)
-						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)						
 						.withBodyFile(simtrTokenRetorno)));
+
+	}
+
+	public void setupIntegracaoDocumento(int statusDocumentoById, String simtrDocumentoByIdRetorno,
+			String idDocumento) {
+		wireMockServerDocumento = new WireMockServer(
+				wireMockConfig().dynamicPort().port(6062).bindAddress("localhost"));
+		wireMockServerDocumento.start();
+		WireMock.configureFor("localhost", wireMockServerDocumento.port());
 
 		stubFor(WireMock
 				.get(urlPathMatching(
@@ -106,8 +121,15 @@ class ControllerTest {
 
 	}
 
-	public void tearDownIntegracao() throws Exception {
+
+	public void tearDownIntegracaoDocumento() throws Exception {
+		wireMockServerToken.stop();
+		wireMockServerDocumento.stop();
+	}
+	
+	public void tearDownIntegracaoDossie() throws Exception {
 		wireMockServer.stop();
+		wireMockServerToken.stop();
 	}
 
 	public HttpEntity<?> newRequestEntity(Object object) {

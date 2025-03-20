@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.DatabindException;
 @SuppressWarnings("all")
 class AtendimentoRemotoControllerAnexoDocumentoSimtrTest extends ControllerTest {
 
-	void anexoDocumentoSimtr() throws StreamReadException, DatabindException, IOException {
+	void consultaDossieSimtr() throws StreamReadException, DatabindException, IOException {
 		String BASE_URL = atdremotoUrl + "/documentos/" + "10020030088";
 		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, newRequestEntity(),
 				Object.class);

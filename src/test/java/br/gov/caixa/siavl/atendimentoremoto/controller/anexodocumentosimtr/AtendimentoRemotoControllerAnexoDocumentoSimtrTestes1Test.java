@@ -1,7 +1,5 @@
 package br.gov.caixa.siavl.atendimentoremoto.controller.anexodocumentosimtr;
 
-import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.ANEXA_DOCUMENTO_OPCIONAL;
-
 import java.io.IOException;
 
 import org.junit.jupiter.api.AfterEach;
@@ -14,25 +12,30 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 
 @SuppressWarnings("all")
-class AtendimentoRemotoControllerAnexoDocumentoSimtrTestes1Test extends AtendimentoRemotoControllerAnexoDocumentoSimtrTest {
+class AtendimentoRemotoControllerAnexoDocumentoSimtrTestes1Test
+		extends AtendimentoRemotoControllerAnexoDocumentoSimtrTest {
 
 	@BeforeEach
-	public void setUp() {
+	public void setUp1() {
 		setUpTest();
-		setupIntegracao(HttpStatus.OK.value(), HttpStatus.OK.value(), HttpStatus.OK.value(), "simtrTokenSucesso.json", "simtrDocumentosSucesso", "simtrDocumentoByIdSucesso", "10020030088", "1837034");
+		setupIntegracaoToken(HttpStatus.OK.value(), "simtrTokenSucesso.json");
 	}
-	
+
+	@BeforeEach
+	public void setUp2() {
+		setUpTest();
+		setupIntegracao(HttpStatus.OK.value(), "simtrDocumentosSucesso.json", "10020030088");
+	}
+
 	@AfterEach
 	public void tearDownTest() throws Exception {
-		tearDownIntegracao();
+		tearDownIntegracaoDossie();
 	}
-	
+
 	@Test
-	@Tag("anexodocumentosimtr")
-	void anexoDocumentoOpcionalTest() throws StreamReadException, DatabindException, IOException {
-		anexoDocumentoSimtr();
+	@Tag("consultaDossieSimtr")
+	void consultaDossieSimtrTest() throws StreamReadException, DatabindException, IOException {
+		consultaDossieSimtr();
 	}
-	
-	
 
 }

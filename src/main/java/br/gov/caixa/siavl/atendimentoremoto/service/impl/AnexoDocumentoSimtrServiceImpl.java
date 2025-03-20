@@ -25,14 +25,14 @@ public class AnexoDocumentoSimtrServiceImpl implements AnexoDocumentoSimtrServic
 	@Override
 	public SimtrOutputDto documentos(String cpfCnpj) throws Exception {
 		SimtrOutputDto simtrOutputDto = null;
-		simtrOutputDto = simtrGateway.documentosCpfCnpjConsultar(cpfCnpj);
+		simtrOutputDto = simtrGateway.documentosCpfCnpjConsultar(cpfCnpj, simtrGateway.tokenServico());
 		return simtrOutputDto;
 	}
 
 	@Override
 	public Object documentoConsulta(String idDocumento) throws Exception {
 		SimtrOutputDto simtrOutputDto = null;
-		simtrOutputDto = simtrGateway.documentoByIdConsultar(idDocumento);
+		simtrOutputDto = simtrGateway.documentoByIdConsultar(idDocumento, simtrGateway.tokenServico());
 
 		if (StringUtils.isNotEmpty(simtrOutputDto.getBinario()) && StringUtils.isNotEmpty(simtrOutputDto.getTipologia())
 				&& StringUtils.isNotEmpty(simtrOutputDto.getExtensao())

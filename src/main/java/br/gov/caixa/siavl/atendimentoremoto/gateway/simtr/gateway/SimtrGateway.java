@@ -91,7 +91,7 @@ public class SimtrGateway {
 		return new HttpEntity<String>(newHttpHeaders(token));
 	}
 
-	public SimtrOutputDto documentosCpfCnpjConsultar(@Valid String cpfCnpj) throws Exception {
+	public SimtrOutputDto documentosCpfCnpjConsultar(@Valid String cpfCnpj, @Valid String tokenServico) throws Exception {
 
 		SimtrOutputDto simtrOutputDto = new SimtrOutputDto();
 		SimtrDocumentoTipologiaDto simtrDocumentoTipologia = new SimtrDocumentoTipologiaDto();
@@ -110,7 +110,7 @@ public class SimtrGateway {
 			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
 
 			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,
-					newRequestEntityDocumentosConsultar(tokenServico()), String.class);
+					newRequestEntityDocumentosConsultar(tokenServico), String.class);
 
 			body = StringToJson(String.valueOf(response.getBody()));
 			documentos = (ArrayNode) body.get("documentos");
@@ -188,7 +188,7 @@ public class SimtrGateway {
 		return simtrOutputDto;
 	}
 
-	public SimtrOutputDto documentoByIdConsultar(@Valid String idDocumento) throws Exception {
+	public SimtrOutputDto documentoByIdConsultar(@Valid String idDocumento, @Valid String tokenServico) throws Exception {
 
 		SimtrOutputDto simtrOutputDto = new SimtrOutputDto();
 		ResponseEntity<String> response = null;
@@ -207,7 +207,7 @@ public class SimtrGateway {
 			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
 
 			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,
-					newRequestEntityDocumentosConsultar(tokenServico()), String.class);
+					newRequestEntityDocumentosConsultar(tokenServico), String.class);
 
 			body = StringToJson(String.valueOf(response.getBody()));
 
