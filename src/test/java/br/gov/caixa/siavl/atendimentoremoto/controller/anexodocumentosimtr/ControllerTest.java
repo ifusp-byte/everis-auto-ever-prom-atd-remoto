@@ -40,7 +40,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = { "env.url.ged.api=http://localhost:6060",
-		"env.simtr.siavl.token.url=http://localhost:6075" })
+		"env.simtr.siavl.token.url=http://localhost:6075/auth/realms/intranet/protocol/openid-connect/token" })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class ControllerTest {
 
@@ -98,7 +98,7 @@ class ControllerTest {
 						.withBodyFile(simtrTokenRetorno)));
 
 		stubFor(WireMock
-				.post(urlPathMatching(
+				.get(urlPathMatching(
 						SIMTR_URL_BASE_DOCUMENTO_ID + idDocumento + SIMTR_URL_BASE_DOCUMENTO_ID_FLAG_BINARIO))
 				.willReturn(aResponse().withStatus(statusDocumentoById)
 						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
