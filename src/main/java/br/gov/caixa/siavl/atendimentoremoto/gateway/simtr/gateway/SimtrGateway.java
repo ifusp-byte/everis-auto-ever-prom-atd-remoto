@@ -5,6 +5,7 @@ import static br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils.isCpf;
 import static br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils.StringToJson;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -62,7 +63,7 @@ public class SimtrGateway {
 	private static String SIMTR_URL_BASE_DOCUMENTOS_CPF = "/negocio/v1/dossie-cliente/cpf/";
 	private static String SIMTR_URL_BASE_DOCUMENTOS_CNPJ = "/negocio/v1/dossie-cliente/cnpj/";
 	private static String SIMTR_URL_BASE_DOCUMENTO_ID = "/negocio/v2/documento/";
-	private static String SIMTR_URL_BASE_DOCUMENTO_ID_FLAG_BINARIO = "?binario=true";
+	private static String SIMTR_URL_BASE_DOCUMENTO_ID_FLAG_BINARIO = "\u003F" + "binario=true";
 
 	@Autowired
 	RestTemplateUtils restTemplateUtils;
@@ -91,7 +92,8 @@ public class SimtrGateway {
 		return new HttpEntity<String>(newHttpHeaders(token));
 	}
 
-	public SimtrOutputDto documentosCpfCnpjConsultar(@Valid String cpfCnpj, @Valid String tokenServico) throws Exception {
+	public SimtrOutputDto documentosCpfCnpjConsultar(@Valid String cpfCnpj, @Valid String tokenServico)
+			throws Exception {
 
 		SimtrOutputDto simtrOutputDto = new SimtrOutputDto();
 		SimtrDocumentoTipologiaDto simtrDocumentoTipologia = new SimtrDocumentoTipologiaDto();
@@ -121,9 +123,16 @@ public class SimtrGateway {
 					: documentos.size() + " documentos localizados.";
 
 			List<SimtrDocumentoDto> identidadeLista = new ArrayList<>();
+			List<SimtrDocumentoDto> listaIdentidade = new ArrayList<>();
+
 			List<SimtrDocumentoDto> enderecoLista = new ArrayList<>();
+			List<SimtrDocumentoDto> listaEndereco = new ArrayList<>();
+
 			List<SimtrDocumentoDto> rendaLista = new ArrayList<>();
+			List<SimtrDocumentoDto> listaRenda = new ArrayList<>();
+
 			List<SimtrDocumentoDto> desconhecidoLista = new ArrayList<>();
+			List<SimtrDocumentoDto> listaDesconhecido = new ArrayList<>();
 
 			if (!documentos.isEmpty()) {
 				for (JsonNode nodeDocumentos : documentos) {
@@ -157,14 +166,38 @@ public class SimtrGateway {
 					if (TipologiaDocumentoEnum.DESCONHECIDO.getDescricao()
 							.equalsIgnoreCase(simtrDocumento.getAcordeonMfe())) {
 						desconhecidoLista.add(simtrDocumento);
-					} 
+					}
 
 				}
 
-				simtrDocumentoTipologia.setIdentidade(identidadeLista);
-				simtrDocumentoTipologia.setEndereco(enderecoLista);
-				simtrDocumentoTipologia.setRenda(rendaLista);
-				simtrDocumentoTipologia.setDesconhecido(desconhecidoLista);
+				if (!identidadeLista.isEmpty()) {
+					listaIdentidade.add(identidadeLista.stream()
+							.sorted(Comparator.comparing(SimtrDocumentoDto::getDataCaptura).reversed()).findFirst()
+							.get());
+				}
+
+				if (!enderecoLista.isEmpty()) {
+					listaEndereco.add(enderecoLista.stream()
+							.sorted(Comparator.comparing(SimtrDocumentoDto::getDataCaptura).reversed()).findFirst()
+							.get());
+				}
+
+				if (!rendaLista.isEmpty()) {
+					listaRenda.add(rendaLista.stream()
+							.sorted(Comparator.comparing(SimtrDocumentoDto::getDataCaptura).reversed()).findFirst()
+							.get());
+				}
+
+				if (!desconhecidoLista.isEmpty()) {
+					listaDesconhecido.add(desconhecidoLista.stream()
+							.sorted(Comparator.comparing(SimtrDocumentoDto::getDataCaptura).reversed()).findFirst()
+							.get());
+				}
+
+				simtrDocumentoTipologia.setIdentidade(listaIdentidade);
+				simtrDocumentoTipologia.setEndereco(listaEndereco);
+				simtrDocumentoTipologia.setRenda(listaRenda);
+				simtrDocumentoTipologia.setDesconhecido(listaDesconhecido);
 			}
 
 			simtrOutputDto = SimtrOutputDto.builder()
@@ -176,9 +209,9 @@ public class SimtrGateway {
 
 			simtrOutputDto = SimtrOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.statusMessage("Erro na consulta. Tente novamente mais tarde.")
-					.statusCreated(false).documentos(simtrDocumentoTipologia).tipoPessoa(StringUtils.EMPTY)
-					.idDossie(StringUtils.EMPTY).build();
+					.statusMessage("Erro na consulta. Tente novamente mais tarde.").statusCreated(false)
+					.documentos(simtrDocumentoTipologia).tipoPessoa(StringUtils.EMPTY).idDossie(StringUtils.EMPTY)
+					.build();
 
 		} finally {
 
@@ -188,7 +221,8 @@ public class SimtrGateway {
 		return simtrOutputDto;
 	}
 
-	public SimtrOutputDto documentoByIdConsultar(@Valid String idDocumento, @Valid String tokenServico) throws Exception {
+	public SimtrOutputDto documentoByIdConsultar(@Valid String idDocumento, @Valid String tokenServico)
+			throws Exception {
 
 		SimtrOutputDto simtrOutputDto = new SimtrOutputDto();
 		ResponseEntity<String> response = null;
@@ -229,9 +263,9 @@ public class SimtrGateway {
 
 			simtrOutputDto = SimtrOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.statusMessage("Erro na consulta. Tente novamente mais tarde.")
-					.statusCreated(false).binario(StringUtils.EMPTY).mimeType(StringUtils.EMPTY)
-					.extensao(StringUtils.EMPTY).tipologia(StringUtils.EMPTY).build();
+					.statusMessage("Erro na consulta. Tente novamente mais tarde.").statusCreated(false)
+					.binario(StringUtils.EMPTY).mimeType(StringUtils.EMPTY).extensao(StringUtils.EMPTY)
+					.tipologia(StringUtils.EMPTY).build();
 
 		} finally {
 

@@ -19,5 +19,12 @@ class AtendimentoRemotoControllerAnexoDocumentoSimtrTest extends ControllerTest 
 				Object.class);
 		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
+	
+	void consultaDocumentoSimtr() throws StreamReadException, DatabindException, IOException {
+		String BASE_URL = atdremotoUrl + "/documentos/consultar/" + "1837034";
+		ResponseEntity<Object> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, newRequestEntity(),
+				Object.class);
+		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+	}
 
 }

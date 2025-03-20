@@ -1,0 +1,41 @@
+package br.gov.caixa.siavl.atendimentoremoto.controller.anexodocumentosimtr;
+
+import java.io.IOException;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
+
+@SuppressWarnings("all")
+class AtendimentoRemotoControllerAnexoDocumentoSimtrTestes2Test
+		extends AtendimentoRemotoControllerAnexoDocumentoSimtrTest {
+
+	@BeforeEach
+	public void setUp1() {
+		setUpTest();
+		setupIntegracaoToken(HttpStatus.OK.value(), "simtrTokenSucesso.json");
+	}
+
+	@BeforeEach
+	public void setUp2() {
+		setUpTest();
+		setupIntegracaoDocumento(HttpStatus.OK.value(), "simtrDocumentoByIdSucesso.json", "1837034");
+	}
+
+	@AfterEach
+	public void tearDownTest() throws Exception {
+		tearDownIntegracaoDocumento();
+	}
+
+	@Test
+	@Tag("consultaDocumentoSimtr")
+	void consultaDocumentoSimtrTest() throws StreamReadException, DatabindException, IOException {
+		consultaDocumentoSimtr();
+	}
+
+}

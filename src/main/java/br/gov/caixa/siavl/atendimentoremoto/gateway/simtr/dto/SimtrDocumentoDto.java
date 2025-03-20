@@ -1,5 +1,14 @@
 package br.gov.caixa.siavl.atendimentoremoto.gateway.simtr.dto;
 
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.BR;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.DATA_PADRAO;
+import static br.gov.caixa.siavl.atendimentoremoto.util.ConstantsUtils.PT;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -27,5 +36,21 @@ public class SimtrDocumentoDto {
 	private String situacaoDocumento;
 	private String dataHoraCaptura;
 	private String mimeType;
+	
+	
+	public Date getDataCaptura() {
+		
+		Date data = null;
+		Locale locale = new Locale(PT, BR);
+		SimpleDateFormat sdf = new SimpleDateFormat(DATA_PADRAO, locale);
+
+		try {
+			data = sdf.parse(dataHoraCaptura);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return data;
+		
+	}
 
 }
