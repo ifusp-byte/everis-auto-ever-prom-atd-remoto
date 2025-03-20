@@ -102,7 +102,7 @@ class ControllerTest {
 						SIMTR_URL_BASE_DOCUMENTO_ID + idDocumento + SIMTR_URL_BASE_DOCUMENTO_ID_FLAG_BINARIO))
 				.willReturn(aResponse().withStatus(statusDocumentoById)
 						.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-						.withBodyFile(statusDocumentoById)));
+						.withBodyFile(simtrDocumentoByIdRetorno)));
 
 	}
 
