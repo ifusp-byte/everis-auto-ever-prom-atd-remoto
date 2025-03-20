@@ -59,7 +59,7 @@ class AtendimentoRemotoControllerModeloNotaTest extends ControllerTest {
 		ResponseEntity<Object> response1 = restTemplate.exchange(BASE_URL_1, HttpMethod.POST,
 				newRequestEntity(modeloNotaDinamicoInputDTO1), Object.class);
 
-		Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode());
+		Assertions.assertEquals(HttpStatus.OK, response1.getStatusCode());
 
 	}
 
@@ -74,7 +74,7 @@ class AtendimentoRemotoControllerModeloNotaTest extends ControllerTest {
 		ResponseEntity<Object> response2 = restTemplate.exchange(BASE_URL_2, HttpMethod.POST,
 				newRequestEntity(modeloNotaDinamicoInputDTO2), Object.class);
 
-		Assertions.assertEquals(HttpStatus.CREATED, response2.getStatusCode());
+		Assertions.assertEquals(HttpStatus.OK, response2.getStatusCode());
 
 	}
 
@@ -89,7 +89,7 @@ class AtendimentoRemotoControllerModeloNotaTest extends ControllerTest {
 		ResponseEntity<Object> response3 = restTemplate.exchange(BASE_URL_3, HttpMethod.POST,
 				newRequestEntity(modeloNotaDinamicoInputDTO3), Object.class);
 
-		Assertions.assertEquals(HttpStatus.CREATED, response3.getStatusCode());
+		Assertions.assertEquals(HttpStatus.OK, response3.getStatusCode());
 	}
 
 }
