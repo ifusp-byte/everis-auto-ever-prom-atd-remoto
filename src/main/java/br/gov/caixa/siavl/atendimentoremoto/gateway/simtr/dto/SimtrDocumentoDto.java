@@ -47,7 +47,7 @@ public class SimtrDocumentoDto {
 		try {
 			data = sdf.parse(dataHoraCaptura);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return data;
 		

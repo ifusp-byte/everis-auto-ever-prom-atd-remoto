@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 import javax.validation.Valid;
@@ -96,6 +97,7 @@ public class SimtrGateway {
 			throws Exception {
 
 		SimtrOutputDto simtrOutputDto = new SimtrOutputDto();
+		String statusMessage = StringUtils.EMPTY;
 		SimtrDocumentoTipologiaDto simtrDocumentoTipologia = new SimtrDocumentoTipologiaDto();
 		ResponseEntity<String> response = null;
 		JsonNode body;
@@ -119,8 +121,6 @@ public class SimtrGateway {
 
 			String tipoPessoa = Objects.requireNonNull(body.path("tipo_pessoa")).asText();
 			String idDossie = Objects.requireNonNull(body.path("id")).asText();
-			String statusMessage = documentos.isEmpty() ? "Não foram localizados documentos."
-					: documentos.size() + " documentos localizados.";
 
 			List<SimtrDocumentoDto> identidadeLista = new ArrayList<>();
 			List<SimtrDocumentoDto> listaIdentidade = new ArrayList<>();
@@ -169,35 +169,45 @@ public class SimtrGateway {
 					}
 
 				}
+				
+				AtomicInteger contadorLista = new AtomicInteger(0);
+				int quantidadeDocumentos = 0;
 
 				if (!identidadeLista.isEmpty()) {
 					listaIdentidade.add(identidadeLista.stream()
 							.sorted(Comparator.comparing(SimtrDocumentoDto::getDataCaptura).reversed()).findFirst()
 							.get());
-				}
+					quantidadeDocumentos = contadorLista.incrementAndGet();		
+							}
 
 				if (!enderecoLista.isEmpty()) {
 					listaEndereco.add(enderecoLista.stream()
 							.sorted(Comparator.comparing(SimtrDocumentoDto::getDataCaptura).reversed()).findFirst()
 							.get());
+					quantidadeDocumentos = contadorLista.incrementAndGet();	
 				}
 
 				if (!rendaLista.isEmpty()) {
 					listaRenda.add(rendaLista.stream()
 							.sorted(Comparator.comparing(SimtrDocumentoDto::getDataCaptura).reversed()).findFirst()
 							.get());
+					quantidadeDocumentos = contadorLista.incrementAndGet();	
 				}
 
 				if (!desconhecidoLista.isEmpty()) {
 					listaDesconhecido.add(desconhecidoLista.stream()
 							.sorted(Comparator.comparing(SimtrDocumentoDto::getDataCaptura).reversed()).findFirst()
 							.get());
+					quantidadeDocumentos = contadorLista.incrementAndGet();	
 				}
 
 				simtrDocumentoTipologia.setIdentidade(listaIdentidade);
 				simtrDocumentoTipologia.setEndereco(listaEndereco);
 				simtrDocumentoTipologia.setRenda(listaRenda);
 				simtrDocumentoTipologia.setDesconhecido(listaDesconhecido);
+				
+				 statusMessage = quantidadeDocumentos == 0 ? "Não foram localizados documentos."
+						: quantidadeDocumentos + " documentos localizados.";
 			}
 
 			simtrOutputDto = SimtrOutputDto.builder()
