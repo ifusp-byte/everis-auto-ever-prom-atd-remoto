@@ -12,7 +12,7 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 
 @SuppressWarnings("all")
-class AtendimentoRemotoControllerAnexoDocumentoSimtrTestes1Test
+class AtendimentoRemotoControllerAnexoDocumentoSimtrTestes7Test
 		extends AtendimentoRemotoControllerAnexoDocumentoSimtrTest {
 
 	@BeforeEach
@@ -24,7 +24,7 @@ class AtendimentoRemotoControllerAnexoDocumentoSimtrTestes1Test
 	@BeforeEach
 	public void setUp2() {
 		setUpTest();
-		setupIntegracao(HttpStatus.OK.value(), "simtrDocumentosSucesso1.json", "10020030088");
+		setupIntegracao(HttpStatus.OK.value(), "simtrDocumentosSucesso6.json", "10020030088");
 	}
 
 	@AfterEach
