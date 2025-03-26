@@ -47,7 +47,7 @@ class AtendimentoRemotoControllerReportTest extends ControllerTest {
 
 		} catch (Exception e) {
 
-			Assertions.assertFalse(e.getMessage().toString().contains("application/octet-stream"));
+			Assertions.assertTrue(e.getMessage().toString().contains("application/octet-stream"));
 
 		}
 

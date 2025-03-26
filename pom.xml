@@ -258,6 +258,7 @@
 							</target>
 						</configuration>
 					</execution>
+					<!--
 					<execution>
 						<id>cleanup-dao-files-validate</id>
 						<phase>validate</phase>
@@ -272,7 +273,7 @@
 								</exec>
 							</target>
 						</configuration>
-					</execution>
+					</execution>										
 					<execution>
 						<id>cleanup-dao-files-compile</id>
 						<phase>generate-sources</phase>
@@ -288,6 +289,7 @@
 							</target>
 						</configuration>
 					</execution>
+					 -->
 					<execution>
 						<id>lombok-config</id>
 						<phase>initialize</phase>
