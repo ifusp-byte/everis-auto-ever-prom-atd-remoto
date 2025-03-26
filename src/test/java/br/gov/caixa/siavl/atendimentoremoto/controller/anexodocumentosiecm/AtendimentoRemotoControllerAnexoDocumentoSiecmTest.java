@@ -1,4 +1,4 @@
-package br.gov.caixa.siavl.atendimentoremoto.controller.anexodocumento;
+package br.gov.caixa.siavl.atendimentoremoto.controller.anexodocumentosiecm;
 
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.CLASSE_DOCUMENTOS;
 
@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.DatabindException;
 import br.gov.caixa.siavl.atendimentoremoto.dto.EnviaDocumentoInputDto;
 
 @SuppressWarnings("all")
-class AtendimentoRemotoControllerAnexoDocumentoTest extends ControllerTest {
+class AtendimentoRemotoControllerAnexoDocumentoSiecmTest extends ControllerTest {
 
 	void anexoDocumento(String anexoDocumentoInputDtoFile) throws StreamReadException, DatabindException, IOException {
 		String BASE_URL = atdremotoUrl + "/documento/" + "10020030088";

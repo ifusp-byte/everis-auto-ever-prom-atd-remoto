@@ -9,6 +9,7 @@
 	<packaging>jar</packaging>
 	<version>$(version.app)</version>
 	<properties>
+	    <configuration-forkMode>once</configuration-forkMode>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<maven.compiler.release>17</maven.compiler.release>
@@ -223,58 +224,70 @@
 		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.5.2</version>
-				<configuration>
-					<forkMode>once</forkMode>
-					<argLine>${coverageAgent}</argLine>
-					<includes>
-						<include>**/*Test.java</include>
-						<include>**/*Tests.java</include>
-					</includes>
-					<testFailureIgnore>false</testFailureIgnore>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.12</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.1.0</version>
 				<executions>
 					<execution>
-						<id>jacoco-initialize</id>
+						<id>remove-duplicate-files-validate</id>
+						<phase>validate</phase>
 						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>jacoco-site</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
+							<goal>run</goal>
 						</goals>
 						<configuration>
-							<dataFile>target/jacoco.exec</dataFile>
-							<destFile>target/site/coverage</destFile>
-							<outputDirectory>target/site/coverage</outputDirectory>
+							<target>
+								<exec executable="bash">
+									<arg
+										value="${project.basedir}/scripts/remove-duplicate-files.sh" />
+								</exec>
+							</target>
 						</configuration>
 					</execution>
 					<execution>
-						<id>jacoco-check</id>
-						<phase>test</phase>
+						<id>remove-duplicate-files-compile</id>
+						<phase>generate-sources</phase>
 						<goals>
-							<goal>report</goal>
+							<goal>run</goal>
 						</goals>
+						<configuration>
+							<target>
+								<exec executable="bash">
+									<arg
+										value="${project.basedir}/scripts/remove-duplicate-files.sh" />
+								</exec>
+							</target>
+						</configuration>
 					</execution>
-				</executions>
-				<configuration>
-					<propertyName>coverageAgent</propertyName>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>3.0.0</version>
-				<executions>
+					<execution>
+						<id>cleanup-dao-files-validate</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<exec executable="bash">
+									<arg
+										value="${project.basedir}/scripts/cleanup-dao-files.sh" />
+								</exec>
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>cleanup-dao-files-compile</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<exec executable="bash">
+									<arg
+										value="${project.basedir}/scripts/cleanup-dao-files.sh" />
+								</exec>
+							</target>
+						</configuration>
+					</execution>
 					<execution>
 						<id>lombok-config</id>
 						<phase>initialize</phase>
@@ -297,8 +310,72 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.5.2</version>
+				<configuration>
+					<argLine>${coverageAgent}</argLine>
+					<includes>
+						<include>**/*Test.java</include>
+						<include>**/*Tests.java</include>
+					</includes>
+					<testFailureIgnore>false</testFailureIgnore>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.12</version>
+				<executions>
+					<execution>
+						<id>jacoco-initialize</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-site</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<dataFile>target/jacoco.exec</dataFile>
+							<destFile>target/site/coverage</destFile>
+							<outputDirectory>target/site/coverage</outputDirectory>
+							<excludes>
+								<exclude>**/src/**</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>jacoco-check</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<propertyName>coverageAgent</propertyName>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>3.9.1.2184</version>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.2.0</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.11.0</version>
+				<configuration>
+					<release>17</release>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -314,9 +391,15 @@
 				</configuration>
 				<executions>
 					<execution>
+						<id>repackage</id>
+						<phase>package</phase>
 						<goals>
 							<goal>repackage</goal>
 						</goals>
+						<configuration>
+							<mainClass>
+								br.gov.caixa.siavl.atendimentoremoto.RunApplication</mainClass>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

@@ -1,0 +1,150 @@
+{
+    "id": 1837034,
+    "tipo_documento": {
+        "id": 1,
+        "nome": "RG - Documento de Identidade ",
+        "tipo_pessoa": "F",
+        "codigo_tipologia": "0001000100020005",
+        "permite_reuso": true,
+        "ativo": true,
+        "funcoes_documentais": [
+            {
+                "id": 1,
+                "nome": "DOCUMENTO DE IDENTIFICAÇÃO"
+            },
+            {
+                "id": 513,
+                "nome": "DOCUMENTO DE IDENTIFICAÇÃO - CCA DIGITAL"
+            },
+            {
+                "id": 293,
+                "nome": "DOCUMLENTO IDENTIFICAÇÃO"
+            },
+            {
+                "id": 613,
+                "nome": "DOCUMENTOS DE IDENTIFICAÇÃO AGRONEGÓCIO"
+            },
+            {
+                "id": 294,
+                "nome": "DOCUMENTO IDENTIFICAÇÃO"
+            },
+            {
+                "id": 393,
+                "nome": "DOCUMENTO DE IDENTIFICAÇÃO - MCMV RURAL"
+            },
+            {
+                "id": 553,
+                "nome": "IDENTIFICAÇÃO HABITAÇÃO SIPNC"
+            },
+            {
+                "id": 75,
+                "nome": "DOCUMENTO IDENTIFICAÇÃO TOMADOR FIES"
+            },
+            {
+                "id": 13,
+                "nome": "DOCUMENTO DE IDENTIFICAÇÃO SOCIAL"
+            },
+            {
+                "id": 493,
+                "nome": "DOCUMENTO DE IDENTIFICAÇÃO - FDS"
+            },
+            {
+                "id": 334,
+                "nome": "DOCUMENTAÇÃO DO AVALISTA"
+            },
+            {
+                "id": 654,
+                "nome": "DOCUMENTOS PROPONENTE IDENTIFICAÇÃO"
+            },
+            {
+                "id": 114,
+                "nome": "DOCUMENTOS DE IDENTIFICAÇÃO CCA"
+            },
+            {
+                "id": 594,
+                "nome": "DOCUMENTO IDENTIFICAÇÃO PRONAF B"
+            },
+            {
+                "id": 53,
+                "nome": "DOCUMENTO DE IDENTIFICAÇÃO FIES"
+            },
+            {
+                "id": 533,
+                "nome": "DOCUMENTOS PROPONENTE"
+            },
+            {
+                "id": 153,
+                "nome": "Documentos de Itentificação"
+            },
+            {
+                "id": 313,
+                "nome": "Representante Legal"
+            },
+            {
+                "id": 93,
+                "nome": "DOCUMENTO DE IDENTIFICAÇÃO OP.006"
+            }
+        ]
+    },
+    "situacao_documento": "Vencido",
+    "canal_captura": {
+        "sigla_canal": "SIPNC",
+        "descricao_canal": "Portal Negócios CAIXA",
+        "canal_caixa": "AGE"
+    },
+    "codigo_ged": "B04DB893-0000-CF1D-A982-E5F6C1AC8328",
+    "data_hora_captura": "11/12/2024 21:38:40",
+    "data_hora_validacao_assinatura": null,
+    "matricula_captura": "c897998",
+    "data_hora_validade": "12/12/2024 14:05:52",
+    "dossie_digital": false,
+    "origem_documento": "O",
+    "mime_type": "PNG",
+    "mimetype": "image/png",
+    "analise_outsourcing": false,
+    "binario": "iVBORw0KGgoAAAANSUhEUgAABLIAAACqCAYAAAC51mYcAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAWSSURBVHhe7d3RbaNAFEBR9+JiXItLcSUuxHW4FqKJjDSZdVbJfnFX50jzATz452oQpw0AAAAAAoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsAAAAABKELAAAAAAShCwAAAAAEoQsgAM5n8/b6XR6ux6Px2vq58bz7vf76wgAAKBNyAI4qH+NVzMhCwAA+J8IWQAHtYas5/P5ZYfW7XZ7Xdk+Y9V8bZ0daw9a4775/JgFAAAoELIADmpEpjlkzTFqmK+vs7t1R9YevHbjeMwAAAAUCFkABzXHqXfB6Xq9fq5hzM47tHZryLpcLn/MfRfBAAAAjkbIAjioNWSN43XtIWt4d+5dyJrv35eQBQAAFAhZAAc1B6bffAI47tvj1U92ZAEAAFQIWQAHte6UmgPV38zxag1X4/x4DgAAQJG3GYCDWkPWd38iHDPzufnTwj1cjbU/a/1r4VgAAAAF3l4AAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAASBCyAAAAAEgQsgAAAABIELIAAAAACNi2D9jHAwQQrrnQAAAAAElFTkSuQmCC",
+    "indice_avaliacao_autenticidade": null,
+    "atributos": [
+        {
+            "chave": "emissor_uf",
+            "valor": "SP",
+            "opcoes_selecionadas": []
+        },
+        {
+            "chave": "data_nascimento",
+            "valor": "17/10/1997",
+            "opcoes_selecionadas": []
+        },
+        {
+            "chave": "data_emissao",
+            "valor": "18/10/2019",
+            "opcoes_selecionadas": []
+        },
+        {
+            "chave": "naturalidade_cidade",
+            "valor": "SP/AGUAS DA PRATA (AGUAS DA PRATA)",
+            "opcoes_selecionadas": []
+        },
+        {
+            "chave": "cpf",
+            "valor": "10020030088",
+            "opcoes_selecionadas": []
+        },
+        {
+            "chave": "nome",
+            "valor": "CLARA MARIANA ROCHA",
+            "opcoes_selecionadas": []
+        },
+        {
+            "chave": "emissor_orgao",
+            "valor": "SSP",
+            "opcoes_selecionadas": []
+        },
+        {
+            "chave": "numero_documento",
+            "valor": "408954415",
+            "opcoes_selecionadas": []
+        }
+    ],
+    "assinaturas_digitais": []
+}

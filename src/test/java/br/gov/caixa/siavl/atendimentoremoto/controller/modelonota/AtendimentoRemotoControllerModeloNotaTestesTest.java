@@ -17,8 +17,8 @@ class AtendimentoRemotoControllerModeloNotaTestesTest extends AtendimentoRemotoC
 		setUpTest();
 	}
 		
-	//@Test
-	//@Tag("modeloNota")
+	@Test
+	@Tag("modeloNota")
 	void consultaTipoNotaTest() {
 		consultaTipoNota();
 	}
@@ -30,7 +30,7 @@ class AtendimentoRemotoControllerModeloNotaTestesTest extends AtendimentoRemotoC
 	}
 
 	//@Test
-	//@Tag("modeloNota")
+	@Tag("modeloNota")
 	void consultaModeloNotaMaisUtilizadaTest() {
 		consultaModeloNotaMaisUtilizada();
 	}
@@ -47,20 +47,20 @@ class AtendimentoRemotoControllerModeloNotaTestesTest extends AtendimentoRemotoC
 		adicionaModeloNotaFavorita();
 	}
 
-	//@Test
-	//@Tag("modeloNota")
+	@Test
+	@Tag("modeloNota")
 	void modeloNotaDinamico1Test() throws StreamReadException, DatabindException, IOException {
 		modeloNotaDinamico1();
 	}
 
-	//@Test
-	//@Tag("modeloNota")
+	@Test
+	@Tag("modeloNota")
 	void modeloNotaDinamico2Test() throws StreamReadException, DatabindException, IOException {
 		modeloNotaDinamico2();
 	}
 
-	//@Test
-	//@Tag("modeloNota")
+	@Test
+	@Tag("modeloNota")
 	void modeloNotaDinamico3Test() throws StreamReadException, DatabindException, IOException {
 		modeloNotaDinamico3();
 	}

@@ -40,5 +40,8 @@ public class AtendimentoNota {
 
 	@Column(name = "NU_EQUIPE_ATENDIMENTO")
 	private Long numeroEquipe;
+	
+	@Column(name = "CO_ACAO_ATENDIMENTO", columnDefinition = "CHAR(2)")
+	private String acaoAtendimento;
 
 }

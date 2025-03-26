@@ -1,4 +1,4 @@
-package br.gov.caixa.siavl.atendimentoremoto.controller.anexodocumento;
+package br.gov.caixa.siavl.atendimentoremoto.controller.anexodocumentosiecm;
 
 import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.TOKEN_VALIDO;
 import static br.gov.caixa.siavl.atendimentoremoto.controller.AtendimentoRemotoControllerEndpoints.BASE_URL;
@@ -19,7 +19,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
@@ -30,15 +29,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 @SuppressWarnings("all")
 @RequestMapping(BASE_URL)
+@WireMockTest(httpsPort = 7070)
 @AutoConfigureWireMock(port = 0)
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = { "env.url.ged.api=http://localhost:6060" })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class ControllerTest {
 
@@ -75,7 +75,7 @@ class ControllerTest {
 	public void setupIntegracao(int statusDossie, int statusDocumentoIncluir, int statusDocumentoConsultar,
 			String siecmDossieBodyRetorno, String siecmDocumentoIncluirBodyRetorno,
 			String siecmDocumentoConsultarBodyRetorno) {
-		wireMockServer = new WireMockServer(wireMockConfig().dynamicPort().port(6060).bindAddress("localhost"));
+		wireMockServer = new WireMockServer(wireMockConfig().httpsPort(7070).bindAddress("localhost"));
 		wireMockServer.start();
 		WireMock.configureFor("localhost", wireMockServer.port());
 

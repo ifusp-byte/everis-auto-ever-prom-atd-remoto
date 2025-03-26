@@ -1,4 +1,4 @@
-package br.gov.caixa.siavl.atendimentoremoto.controller.anexodocumento;
+package br.gov.caixa.siavl.atendimentoremoto.controller.anexodocumentosiecm;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 
 @SuppressWarnings("all")
-class AtendimentoRemotoControllerAnexoDocumentoTestes4Test extends AtendimentoRemotoControllerAnexoDocumentoTest {
+class AtendimentoRemotoControllerAnexoDocumentoSiecmTestes4Test extends AtendimentoRemotoControllerAnexoDocumentoSiecmTest {
 
 	@BeforeEach
 	public void setUp() {

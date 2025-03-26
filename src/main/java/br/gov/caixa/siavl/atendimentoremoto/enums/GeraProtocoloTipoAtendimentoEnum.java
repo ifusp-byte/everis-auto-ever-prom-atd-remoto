@@ -6,6 +6,7 @@ import java.util.List;
 
 import dev.mccue.guava.primitives.Ints;
 
+
 @SuppressWarnings("all")
 public enum GeraProtocoloTipoAtendimentoEnum {
 

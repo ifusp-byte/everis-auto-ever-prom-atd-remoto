@@ -38,7 +38,6 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = { "env.url.ged.api=http://localhost:6065" })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class ControllerTest {
 
@@ -73,7 +72,7 @@ class ControllerTest {
 
 	public void setupIntegracao(int statusRetorno, String gravaAduditoriaBodyRetorno, String consultaSicliBodyRetorno,
 			String cpfCnpj) {
-		wireMockServer = new WireMockServer(wireMockConfig().dynamicPort().port(6060).bindAddress("localhost"));
+		wireMockServer = new WireMockServer(wireMockConfig().httpsPort(6060).bindAddress("localhost"));
 		wireMockServer.start();
 		WireMock.configureFor("localhost", wireMockServer.port());
 

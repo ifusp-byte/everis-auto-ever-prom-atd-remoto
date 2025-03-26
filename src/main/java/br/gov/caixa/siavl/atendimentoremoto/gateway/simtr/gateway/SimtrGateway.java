@@ -5,8 +5,10 @@ import static br.gov.caixa.siavl.atendimentoremoto.util.DocumentoUtils.isCpf;
 import static br.gov.caixa.siavl.atendimentoremoto.util.MetodosUtils.StringToJson;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -46,10 +48,22 @@ public class SimtrGateway {
 	@Value("${env.url.simtr}")
 	private String URL_SIMTR;
 
+	@Value("${env.simtr.siavl.token.url}")
+	private String SIMTR_SIAVL_TOKEN_URL;
+
+	@Value("${env.simtr.siavl.grant.type}")
+	private String SIMTR_SIAVL_GRANT_TYPE;
+
+	@Value("${env.simtr.siavl.client.id}")
+	private String SIMTR_SIAVL_CLIENT_ID;
+
+	@Value("${env.simtr.siavl.client.secret}")
+	private String SIMTR_SIAVL_CLIENT_SECRET;
+
 	private static String SIMTR_URL_BASE_DOCUMENTOS_CPF = "/negocio/v1/dossie-cliente/cpf/";
 	private static String SIMTR_URL_BASE_DOCUMENTOS_CNPJ = "/negocio/v1/dossie-cliente/cnpj/";
 	private static String SIMTR_URL_BASE_DOCUMENTO_ID = "/negocio/v2/documento/";
-	private static String SIMTR_URL_BASE_DOCUMENTO_ID_FLAG_BINARIO = "?binario=true";
+	private static String SIMTR_URL_BASE_DOCUMENTO_ID_FLAG_BINARIO = "\u003F" + "binario=true";
 
 	@Autowired
 	RestTemplateUtils restTemplateUtils;
@@ -62,13 +76,27 @@ public class SimtrGateway {
 		return headers;
 	}
 
+	public HttpHeaders newHttpHeadersTokenServico() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		return headers;
+	}
+
+	public HttpEntity<?> newRequestEntityTokenServico() {
+		String params = "grant_type=" + SIMTR_SIAVL_GRANT_TYPE + "&client_id=" + SIMTR_SIAVL_CLIENT_ID
+				+ "&client_secret=" + SIMTR_SIAVL_CLIENT_SECRET;
+		return new HttpEntity<String>(params, newHttpHeadersTokenServico());
+	}
+
 	public HttpEntity<?> newRequestEntityDocumentosConsultar(String token) {
 		return new HttpEntity<String>(newHttpHeaders(token));
 	}
 
-	public SimtrOutputDto documentosCpfCnpjConsultar(@Valid String token, @Valid String cpfCnpj) throws Exception {
+	public SimtrOutputDto documentosCpfCnpjConsultar(@Valid String cpfCnpj, @Valid String tokenServico)
+			throws Exception {
 
 		SimtrOutputDto simtrOutputDto = new SimtrOutputDto();
+		String statusMessage = StringUtils.EMPTY;
 		SimtrDocumentoTipologiaDto simtrDocumentoTipologia = new SimtrDocumentoTipologiaDto();
 		ResponseEntity<String> response = null;
 		JsonNode body;
@@ -85,20 +113,25 @@ public class SimtrGateway {
 			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
 
 			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,
-					newRequestEntityDocumentosConsultar(token), String.class);
+					newRequestEntityDocumentosConsultar(tokenServico), String.class);
 
 			body = StringToJson(String.valueOf(response.getBody()));
 			documentos = (ArrayNode) body.get("documentos");
 
 			String tipoPessoa = Objects.requireNonNull(body.path("tipo_pessoa")).asText();
 			String idDossie = Objects.requireNonNull(body.path("id")).asText();
-			String statusMessage = documentos.isEmpty() ? "Não foram localizados documentos."
-					: documentos.size() + " documentos localizados.";
 
 			List<SimtrDocumentoDto> identidadeLista = new ArrayList<>();
+			List<SimtrDocumentoDto> listaIdentidade = new ArrayList<>();
+
 			List<SimtrDocumentoDto> enderecoLista = new ArrayList<>();
+			List<SimtrDocumentoDto> listaEndereco = new ArrayList<>();
+
 			List<SimtrDocumentoDto> rendaLista = new ArrayList<>();
+			List<SimtrDocumentoDto> listaRenda = new ArrayList<>();
+
 			List<SimtrDocumentoDto> desconhecidoLista = new ArrayList<>();
+			List<SimtrDocumentoDto> listaDesconhecido = new ArrayList<>();
 
 			if (!documentos.isEmpty()) {
 				for (JsonNode nodeDocumentos : documentos) {
@@ -135,11 +168,45 @@ public class SimtrGateway {
 					}
 
 				}
+				
+				AtomicInteger contadorLista = new AtomicInteger(0);
+				int quantidadeDocumentos = 0;
 
-				simtrDocumentoTipologia.setIdentidade(identidadeLista);
-				simtrDocumentoTipologia.setEndereco(enderecoLista);
-				simtrDocumentoTipologia.setRenda(rendaLista);
-				simtrDocumentoTipologia.setDesconhecido(desconhecidoLista);
+				if (!identidadeLista.isEmpty()) {
+					listaIdentidade.add(identidadeLista.stream()
+							.sorted(Comparator.comparing(SimtrDocumentoDto::getDataCaptura).reversed()).findFirst()
+							.get());
+					quantidadeDocumentos = contadorLista.incrementAndGet();		
+							}
+
+				if (!enderecoLista.isEmpty()) {
+					listaEndereco.add(enderecoLista.stream()
+							.sorted(Comparator.comparing(SimtrDocumentoDto::getDataCaptura).reversed()).findFirst()
+							.get());
+					quantidadeDocumentos = contadorLista.incrementAndGet();	
+				}
+
+				if (!rendaLista.isEmpty()) {
+					listaRenda.add(rendaLista.stream()
+							.sorted(Comparator.comparing(SimtrDocumentoDto::getDataCaptura).reversed()).findFirst()
+							.get());
+					quantidadeDocumentos = contadorLista.incrementAndGet();	
+				}
+
+				if (!desconhecidoLista.isEmpty()) {
+					listaDesconhecido.add(desconhecidoLista.stream()
+							.sorted(Comparator.comparing(SimtrDocumentoDto::getDataCaptura).reversed()).findFirst()
+							.get());
+					quantidadeDocumentos = contadorLista.incrementAndGet();	
+				}
+
+				simtrDocumentoTipologia.setIdentidade(listaIdentidade);
+				simtrDocumentoTipologia.setEndereco(listaEndereco);
+				simtrDocumentoTipologia.setRenda(listaRenda);
+				simtrDocumentoTipologia.setDesconhecido(listaDesconhecido);
+				
+				 statusMessage = quantidadeDocumentos == 0 ? "Não foram localizados documentos."
+						: quantidadeDocumentos + " documentos localizados.";
 			}
 
 			simtrOutputDto = SimtrOutputDto.builder()
@@ -151,9 +218,9 @@ public class SimtrGateway {
 
 			simtrOutputDto = SimtrOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.statusMessage("Erro na consulta. Tente novamente mais tarde." + e.getMessage())
-					.statusCreated(false).documentos(simtrDocumentoTipologia).tipoPessoa(StringUtils.EMPTY)
-					.idDossie(StringUtils.EMPTY).build();
+					.statusMessage("Erro na consulta. Tente novamente mais tarde.").statusCreated(false)
+					.documentos(simtrDocumentoTipologia).tipoPessoa(StringUtils.EMPTY).idDossie(StringUtils.EMPTY)
+					.build();
 
 		} finally {
 
@@ -163,7 +230,8 @@ public class SimtrGateway {
 		return simtrOutputDto;
 	}
 
-	public SimtrOutputDto documentoByIdConsultar(@Valid String token, @Valid String idDocumento) throws Exception {
+	public SimtrOutputDto documentoByIdConsultar(@Valid String idDocumento, @Valid String tokenServico)
+			throws Exception {
 
 		SimtrOutputDto simtrOutputDto = new SimtrOutputDto();
 		ResponseEntity<String> response = null;
@@ -182,7 +250,7 @@ public class SimtrGateway {
 			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
 
 			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.GET,
-					newRequestEntityDocumentosConsultar(token), String.class);
+					newRequestEntityDocumentosConsultar(tokenServico), String.class);
 
 			body = StringToJson(String.valueOf(response.getBody()));
 
@@ -198,16 +266,14 @@ public class SimtrGateway {
 					.statusCreated(true).statusMessage("Consulta realizada com sucesso." + statusMessage)
 					.binario(binario != null ? binario : StringUtils.EMPTY)
 					.mimeType(mimeType != null ? mimeType : StringUtils.EMPTY)
-					.extensao(extensao != null ? extensao : StringUtils.EMPTY)
-					.tipologia(tipologia).build();
+					.extensao(extensao != null ? extensao : StringUtils.EMPTY).tipologia(tipologia).build();
 
 		} catch (RestClientResponseException e) {
 
 			simtrOutputDto = SimtrOutputDto.builder()
 					.statusCode(String.valueOf(Objects.requireNonNull(e.getRawStatusCode())))
-					.statusMessage("Erro na consulta. Tente novamente mais tarde." + e.getMessage())
-					.statusCreated(false).binario(StringUtils.EMPTY).mimeType(StringUtils.EMPTY)
-					.extensao(StringUtils.EMPTY)
+					.statusMessage("Erro na consulta. Tente novamente mais tarde.").statusCreated(false)
+					.binario(StringUtils.EMPTY).mimeType(StringUtils.EMPTY).extensao(StringUtils.EMPTY)
 					.tipologia(StringUtils.EMPTY).build();
 
 		} finally {
@@ -216,6 +282,41 @@ public class SimtrGateway {
 		}
 
 		return simtrOutputDto;
+	}
+
+	public String tokenServico() throws Exception {
+
+		ResponseEntity<String> response = null;
+		JsonNode body;
+		String access_token = StringUtils.EMPTY;
+
+		String url = SIMTR_SIAVL_TOKEN_URL;
+
+		RestTemplateDto restTemplateDto = restTemplateUtils.newRestTemplate();
+
+		try {
+
+			String uri = url;
+			String finalUri = UriComponentsBuilder.fromHttpUrl(uri).toUriString();
+
+			response = restTemplateDto.getRestTemplate().exchange(finalUri, HttpMethod.POST,
+					newRequestEntityTokenServico(), String.class);
+
+			body = StringToJson(String.valueOf(response.getBody()));
+
+			access_token = Objects.requireNonNull(body.path("access_token")).asText().trim();
+
+		} catch (RestClientResponseException e) {
+
+			access_token = StringUtils.EMPTY;
+
+		} finally {
+
+			restTemplateDto.getHttpClient().close();
+		}
+
+		return access_token;
+
 	}
 
 	public String tipologiaDocumento(String tipologiaDocumento) {

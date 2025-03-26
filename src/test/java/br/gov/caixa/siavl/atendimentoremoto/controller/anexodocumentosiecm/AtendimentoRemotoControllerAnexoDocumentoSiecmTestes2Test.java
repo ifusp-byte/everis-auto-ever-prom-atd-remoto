@@ -1,4 +1,6 @@
-package br.gov.caixa.siavl.atendimentoremoto.controller.anexodocumento;
+package br.gov.caixa.siavl.atendimentoremoto.controller.anexodocumentosiecm;
+
+import static br.gov.caixa.siavl.atendimentoremoto.constants.Constants.ANEXA_DOCUMENTO_OPCIONAL;
 
 import java.io.IOException;
 
@@ -12,7 +14,7 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 
 @SuppressWarnings("all")
-class AtendimentoRemotoControllerAnexoDocumentoTestes3Test extends AtendimentoRemotoControllerAnexoDocumentoTest {
+class AtendimentoRemotoControllerAnexoDocumentoSiecmTestes2Test extends AtendimentoRemotoControllerAnexoDocumentoSiecmTest {
 
 	@BeforeEach
 	public void setUp() {
@@ -28,8 +30,8 @@ class AtendimentoRemotoControllerAnexoDocumentoTestes3Test extends AtendimentoRe
 
 	@Test
 	@Tag("anexoDocumento")
-	void consultaDocumentoErroTest() throws StreamReadException, DatabindException, IOException {
-		consultaDocumento();
+	void anexoDocumentoOpcionalTest() throws StreamReadException, DatabindException, IOException {
+		anexoDocumento(ANEXA_DOCUMENTO_OPCIONAL);
 	}
 
 }

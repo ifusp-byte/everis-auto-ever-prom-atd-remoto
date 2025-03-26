@@ -13,6 +13,7 @@ import java.util.List;
 import br.gov.caixa.siavl.atendimentoremoto.enums.GeraProtocoloTipoAtendimentoEnum;
 import dev.mccue.guava.primitives.Ints;
 
+
 @SuppressWarnings("all")
 public enum ReportEnum {
 

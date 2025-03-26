@@ -69,6 +69,21 @@ public class DataUtils {
 		}
 		return data;
 	}
+	
+	
+	public static Date formataData(String object) {
+
+		Date data = null;
+		Locale locale = new Locale(PT, BR);
+		SimpleDateFormat sdf = new SimpleDateFormat(DATA_PADRAO, locale);
+
+		try {
+			data = sdf.parse(object);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return data;
+	}
 
 	public String formataDataSiecmAnexo(Date dateInput) {
 		String data = null;
