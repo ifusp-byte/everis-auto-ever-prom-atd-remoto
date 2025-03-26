@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -24,7 +24,7 @@ import br.gov.caixa.siavl.atendimentoremoto.repository.impl.NotaNegociacaoReposi
 @SuppressWarnings("all")
 class AtendimentoRemotoControllerTokenSmsTest extends ControllerTest {
 	
-	@SpyBean
+	@MockitoSpyBean
 	NotaNegociacaoRepositoryImpl notaNegociacaoRepositoryImpl;
 
 	void identificacaoTokenSms() throws StreamReadException, DatabindException, IOException {

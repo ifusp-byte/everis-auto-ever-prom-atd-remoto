@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -22,7 +22,7 @@ import br.gov.caixa.siavl.atendimentoremoto.service.impl.DesafioServiceImpl;
 @SuppressWarnings("all")
 class AtendimentoRemotoControllerDesafioTestes2Test extends AtendimentoRemotoControllerDesafioTest {
 	
-	@SpyBean
+	@MockitoSpyBean
 	DesafioServiceImpl desafioServiceImpl;
 
 	@BeforeEach

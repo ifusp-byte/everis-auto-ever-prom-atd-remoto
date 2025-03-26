@@ -23,11 +23,11 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -46,7 +46,7 @@ import jakarta.xml.bind.JAXBException;
 @SuppressWarnings("all")
 class AtendimentoRemotoControllerRegistraNotaTest extends ControllerTest {
 
-	@SpyBean
+	@MockitoSpyBean
 	NotaNegociacaoRepositoryImpl notaNegociacaoRepositoryImpl;
 
 	@Mock
