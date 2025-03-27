@@ -54,9 +54,11 @@ public class AtendimentoCliente implements Serializable {
 	private Date dataFinalAtendimento;
 
 	@Column(name = "IC_SITUACAO_IDNFO_POSITIVA")
+	@Builder.Default
 	private Long situacaoIdPositiva = 0L;
 
 	@Column(name = "IC_VALIDACAO_TOKEN_ATENDIMENTO")
+	@Builder.Default
 	private Long validacaoTokenAtendimento = 0L;
 
 	@Column(name = "DT_INICIAL_CONTATO_CLNTE")
