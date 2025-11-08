@@ -1,69 +1,20 @@
+# Introduction 
+TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
 
-# Company Wex Project
+# Getting Started
+TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
+1.	Installation process
+2.	Software dependencies
+3.	Latest releases
+4.	API references
 
-## Overview
-This project is a backend application designed to handle purchase transactions and currency exchange conversions. It provides a robust implementation with test coverage for critical services.
+# Build and Test
+TODO: Describe and show how to build your code and run the tests. 
 
-## Features
-- Handle purchase transactions with CRUD operations.
-- Convert transaction amounts using currency exchange rates.
-- Integrated with external APIs for live currency rates.
-- Comprehensive unit tests using JUnit and WireMock.
+# Contribute
+TODO: Explain how other users and developers can contribute to make your code better. 
 
-## Prerequisites
-- **Java 17** or higher
-- **Maven 3.8** or higher
-
-## Setup Instructions
-1. Clone the repository or extract the ZIP file.
-2. Navigate to the project directory:
-   ```bash
-   cd company-wex
-   ```
-3. Install dependencies and build the project:
-   ```bash
-   mvn clean install
-   ```
-4. Run the application:
-   ```bash
-   mvn spring-boot:run
-   ```
-
-## Running Tests
-To execute unit tests:
-```bash
-mvn test
-```
-
-## Key Components
-### Service Implementation
-- **`PurchaseTransactionServiceImpl`**: Handles transaction management and currency conversions.
-
-### Test Frameworks
-- **JUnit 5**: Used for unit testing.
-- **WireMock**: Simulates external API calls for currency exchange.
-
-### API Endpoints
-- **Base URL**: `http://localhost:8080`
-- **Endpoints**:
-  - `/transactions` (GET, POST)
-  - `/transactions/convert` (POST)
-
-## Dependencies
-- **Spring Boot**: Application framework.
-- **Mockito**: Mocking framework for unit tests.
-- **WireMock**: Mock server for simulating external APIs.
-
-## Folder Structure
-- `src/main/java`: Application source code.
-- `src/test/java`: Unit tests.
-
-## Contribution Guidelines
-1. Fork the repository.
-2. Create a feature branch: `git checkout -b feature-name`.
-3. Commit your changes: `git commit -m "Add feature"`.
-4. Push the branch: `git push origin feature-name`.
-5. Open a pull request.
-
-## License
-This project is licensed under the MIT License.
+If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
+- [ASP.NET Core](https://github.com/aspnet/Home)
+- [Visual Studio Code](https://github.com/Microsoft/vscode)
+- [Chakra Core](https://github.com/Microsoft/ChakraCore)

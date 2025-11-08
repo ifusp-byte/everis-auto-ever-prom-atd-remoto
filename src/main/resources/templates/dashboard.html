@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Trading Dashboard</title>
+</head>
+<body>
+	<h1>Trading Bot Dashboard</h1>
+	<p>
+		Capital Inicial: <span th:text="${capitalInicial}" />
+	</p>
+	<p>
+		Capital Atual: <span th:text="${capitalAtual}" />
+	</p>
+	<p>
+		Lucro do Dia: <span th:text="${lucroDia}" />
+	</p>
+	<p>
+		Lucro (%): <span th:text="${lucroPercentual}" />%
+	</p>
+
+	<h2>Histórico de Ordens</h2>
+	<table border="1">
+		<tr>
+			<th>Horário</th>
+			<th>Side</th>
+			<th>Quantidade</th>
+			<th>Preço</th>
+		</tr>
+		<tr th:each="o : ${orders}">
+			<td th:text="${#temporals.format(o.time,'HH:mm:ss')}" />
+			<td th:text="${o.side}" />
+			<td th:text="${o.quantity}" />
+			<td th:text="${o.price}" />
+		</tr>
+	</table>
+</body>
+</html>
