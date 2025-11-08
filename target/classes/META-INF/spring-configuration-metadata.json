@@ -1,0 +1,12 @@
+{
+  "groups": [
+    {
+      "name": "datasource",
+      "type": "javax.sql.DataSource",
+      "sourceType": "br.com.baseerp.config.DataSourcesConfig",
+      "sourceMethod": "dataSource()"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}
