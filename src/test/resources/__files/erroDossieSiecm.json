@@ -1,5 +1,0 @@
-{
-    "operacao": "CRIA_DOSSIE",
-    "codigoRetorno": 1,
-    "mensagem": "NAO FOI POSSIVEL CRIAR O DOSSIE - ERRO = A pasta informada já existe: 10020030088 METODO: criarPasta"
-}

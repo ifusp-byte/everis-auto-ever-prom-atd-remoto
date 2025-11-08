@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="maven-antrun-" default="main">
+  <target name="main">
+    <propertyfile file="lombok.config">
+      <entry value="true" key="config.stopBubbling" />
+      <entry value="true" key="lombok.addLombokGenerateAnnotation" />
+    </propertyfile>
+  </target>
+</project>
