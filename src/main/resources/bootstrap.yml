@@ -1,0 +1,10 @@
+server:
+  port: 9119
+
+spring:
+  application:
+    name: on-demand
+  cloud:
+    config:
+      uri:
+      fail-fast: true
