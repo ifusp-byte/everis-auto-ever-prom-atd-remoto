@@ -71,6 +71,7 @@ public class AuditoriaRegistraNotaServiceImpl implements AuditoriaRegistraNotaSe
 			throw new RuntimeException(e);
 		}
 
+		/*
 		logPlataforma = LogPlataforma.builder()
 				.transacaoSistema(TRANSACAO_SISTEMA_SUCESSO_SICLI)
 				.matriculaAtendente(Long.parseLong(matriculaAtendente.replaceAll("[a-zA-Z]", "")))
@@ -83,6 +84,7 @@ public class AuditoriaRegistraNotaServiceImpl implements AuditoriaRegistraNotaSe
 				.jsonLogPlataforma(dsLogPlataformaClob)
 				.numeroNota(Long.parseLong(numeroNota))
 				.build();
+				*/
 
 		logPlataformaRepository.save(logPlataforma);
 

@@ -96,6 +96,7 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 			throw new RuntimeException(e);
 		}
 
+		/*
 		logPlataforma = LogPlataforma.builder().transacaoSistema(TRANSACAO_SISTEMA_CONTRATA_NOTA_ASSINATURA_ELETRONICA)
 				.matriculaAtendente(Long.parseLong(matriculaAtendente.replaceAll("[a-zA-Z]", "")))
 				.dataCriacaoLogPlataforma(formataDataBanco()).ipUsuario(tokenUtils.getIpFromToken(token))
@@ -103,6 +104,7 @@ public class AuditoriaEnviaNotaServiceImpl implements AuditoriaEnviaNotaService 
 				.cpfCnpj(Long.parseLong(cpfCnpj.replace(".", "").replace("-", "").trim())).tipoPessoa(tipoPessoa)
 				.anoMesReferencia(Long.parseLong(formataDataAnoMes(new Date()).replace("-", "")))
 				.jsonLogPlataforma(dsLogPlataformaClob).numeroNota(Long.parseLong(numeroNota)).build();
+				*/
 
 		logPlataformaRepository.save(logPlataforma);
 

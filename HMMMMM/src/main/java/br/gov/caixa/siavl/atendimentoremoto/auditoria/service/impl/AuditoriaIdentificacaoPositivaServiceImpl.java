@@ -78,6 +78,7 @@ public class AuditoriaIdentificacaoPositivaServiceImpl implements AuditoriaIdent
 			throw new RuntimeException(e); 
 		}
 
+		/*
 		logPlataforma = LogPlataforma.builder().transacaoSistema(TRANSACAO_SISTEMA)
 				.matriculaAtendente(Long.parseLong(tokenUtils.getMatriculaFromToken(token).replaceAll("[a-zA-Z]", "")))
 				.dataCriacaoLogPlataforma(formataDataBanco())
@@ -87,12 +88,13 @@ public class AuditoriaIdentificacaoPositivaServiceImpl implements AuditoriaIdent
 				.tipoPessoa(tipoPessoa)
 				.anoMesReferencia(Long.parseLong(formataDataAnoMes(new Date()).replace("-", "")))
 				.jsonLogPlataforma(dsLogPlataformaClob).build();
+				*/
 
 		logPlataforma = logPlataformaRepository.save(logPlataforma);
 
-		if (logPlataforma.getIdLogPlataforma() != null) {
+		//if (logPlataforma.getIdLogPlataforma() != null) {
 			statusAudtoria = true;
-		}
+		//}
 
 		return statusAudtoria;
 

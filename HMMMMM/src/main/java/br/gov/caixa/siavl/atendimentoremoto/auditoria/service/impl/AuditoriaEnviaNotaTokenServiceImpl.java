@@ -94,6 +94,7 @@ public class AuditoriaEnviaNotaTokenServiceImpl implements AuditoriaEnviaNotaTok
 			throw new RuntimeException(e);
 		}
 
+		/*
 		logPlataforma = LogPlataforma.builder().transacaoSistema(Boolean.TRUE.equals(Boolean.parseBoolean(tokenValido)) ? TRANSACAO_SISTEMA_CONTRATA_NOTA_SMS : TRANSACAO_SISTEMA_CONTRATA_NOTA_SMS_ERRO)
 				.matriculaAtendente(Long.parseLong(matriculaAtendente.replaceAll("[a-zA-Z]", "")))
 				.dataCriacaoLogPlataforma(formataDataBanco()).ipUsuario(tokenUtils.getIpFromToken(token))
@@ -102,6 +103,7 @@ public class AuditoriaEnviaNotaTokenServiceImpl implements AuditoriaEnviaNotaTok
 				.anoMesReferencia(Long.parseLong(formataDataAnoMes(new Date()).replace("-", "")))
 				.jsonLogPlataforma(dsLogPlataformaClob).numeroNota(Long.parseLong(numeroNota)).build();
 
+*/
 		logPlataformaRepository.save(logPlataforma);
 		
 	}

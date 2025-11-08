@@ -13,16 +13,16 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+//import lombok.AllArgsConstructor;
+//import lombok.Builder;
+//import lombok.Data;
+//import lombok.NoArgsConstructor;
 
 @SuppressWarnings("all")
-@Data
-@Builder(toBuilder = true)
-@NoArgsConstructor
-@AllArgsConstructor
+//@Data
+//@Builder(toBuilder = true)
+//@NoArgsConstructor
+//@AllArgsConstructor
 @Entity(name = "LogPlataforma")
 @Table(name = "AVLTB078_LOG_PLATAFORMA", schema = "AVL")
 public class LogPlataforma implements Serializable {
