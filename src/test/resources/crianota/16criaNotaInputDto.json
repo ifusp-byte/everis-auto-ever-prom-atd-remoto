@@ -1,0 +1,17 @@
+{
+    "idModeloNota": 10003,
+    "cpfCnpj": "07019532683",
+    "nomeCliente": "TESTE",
+    "numeroConta": "000237000000009999982200",
+    "valorMeta": 70.10,
+    "cpfSocio": "",
+    "nomeSocio": "",
+    "idProduto": 743,
+    "tipoDocumento": "CPF",
+    "campos": [
+        {
+            "id": "200",
+            "valor": "12"
+        }
+    ]
+}

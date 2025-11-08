@@ -1,0 +1,40 @@
+{
+  "nomeRelatorio": "roteiro-step4",
+  "parametrosRelatorio": {
+    "protocolo": "230607",
+    "nomeNota": "CAIXA GIRO SUS POS",
+    "assinaturaNota": "Aguardando assinatura do cliente",
+    "numeroNota": "90103",
+    "numeroModeloNota": "9183",
+    "contaAtendimento": "0005.0013.000000000000045-0",
+    "cpfCnpj": "100.200.300-88",
+    "nomeCliente": "CLARA MARIANA ROCHA",
+    "razaoSocial": "",
+    "cnpj": "",
+    "nomeSocio": "",
+    "cpfSocio": "",
+    "valorMeta": "R$ 0,89",
+    "relatorioNota": {
+      "Valor (meta)": "R$ 0,89",
+      "Nº do contrato  Nº Proposta": "879797",
+      "Valor": "R$ 8.749,87",
+      "Vencimento": "2024-10-26",
+      "Nome do Municipio": "SP ",
+      "Data de Nascimento": "2024-10-04",
+      "Profissão": "SOFTWARE",
+      "Documentação de Identificação": "897878",
+      "CPF do sócio": "5458",
+      "Estado Civil": "CASADO",
+      "Endereço Completo": "RUA UM",
+      "UF (Unidade Federativa)": "SP",
+      "CEP": "568486",
+      "Telefone": "541",
+      "Nome do Avalista": "MARI MARI TESTE",
+      "Limite de Credito pré-aprovado de": "54",
+      "Outras contas de outras agências que a Eminente solicita a indicação na relação abaixo": "7485",
+      "Autoriza débito - Prestações, Encargos e IOF, Encargos por inadimplemento, Obrigações Vencidas, Tarifas.": " Não se aplica",
+      "Data": "2024-10-10",
+      "Superintendência": "859"
+    }
+  }
+}
