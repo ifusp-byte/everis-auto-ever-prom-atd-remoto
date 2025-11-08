@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<HTML lang="pt">
+    <head>
+        <meta charset="UTF-8">
+        <title>Site do Felipe</title>
+        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+
+        <!--<div class="form-group">
+            <div class="col-sm-12">
+                <input type="text" id="filtro"
+                data-bind="value: filtro, valueUpdate: 'keyup'"
+                class="form-control">
+            </div>
+        </div>
+
+        <div class="row">
+            <ul id="lista" class="list-unstyled margens"
+            data-bind="foreach: alunosFiltrados">
+            <li>
+                <div class="col-xs-12">
+                    <a href="#"
+                    data-bind="click: $parent.selecionaAluno.bind($parent)">
+                <span class="text-left" data-bind="text: nome"></span>
+                <span class="badge" data-bind="text: contactos.length"></span>    
+                    </a>
+                </div>
+            </li>
+        </ul>
+        </div>-->
+
+       <!--<input type="text" name="nome" id="nome" class="form-control"
+        data-bind="value: nomeAtual, valueUpdate: 'keyup',
+        css: {'erro': !nomeAtual.isValid()}"
+        placeholder="Introduza o nome do contacto">
+
+        <button class="btn btn-default"
+        data-bind="enable: contactoAtual.isValid()">
+        <span class="glyphicon glyphicon-plus-sign"></span>
+        </button>
+
+        <a href="#" data-bind="confirmClick: 
+        {message: 'Deseja realmente eliminar o contacto?'
+        click: $root.removeContacto.bind($root, $data)">
+        <span class="glyphicon glyphicon-remove-sign text-danger"></span>
+        </a>
+        </input>-->
+
+        <nav class="navbar navbar-inverse">
+                <div class="container-fluid">
+                  <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Site Felipe</a>
+                  </div>
+              <ul class="nav navbar-nav">
+              <li class="active"><a href="#">Home</a></li>
+              </ul> 
+                </div>
+              </nav>
+
+        <div class="container">
+                <div class="col-xs-12">    
+                Olá Felipe Lucas Gewers
+        </br>
+                Benvindo ao seu site!
+        </br>
+                Ele gerencia uma agenda de contatos de alunos e foi desenvolvido em bibliotecas JavaScript.
+        </br>
+                Créditos: Mari 
+        </div>
+        </div>
+
+        <script src="node_modules/jquery/dist/jquery.min.js"></script>
+        <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="node_modules/knockout/build/output/knockout-latest.js"></script>
+        <script src="node_modules/knockout.validation/dist/knockout.validation.min.js"></script>
+        <script src="node_modules/systemjs/dist/system.js"></script>
+        <script src="js/SystemJS.config.js"></script>
+        <script>
+            System.import("app")
+            .catch(err => console.error(err));     
+        </script>
+    </body>
+</HTML>

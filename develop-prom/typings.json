@@ -1,0 +1,6 @@
+{
+  "globalDependencies": {
+    "jquery": "registry:dt/jquery#1.10.0+20170310222111",
+    "systemjs": "registry:dt/systemjs#0.20.0+20170310232558"
+  }
+}
