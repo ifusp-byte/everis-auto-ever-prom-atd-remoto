@@ -1,3 +1,0 @@
-hostPort: 0.0.0.0:9404
-rules:
-  - pattern: ".*"

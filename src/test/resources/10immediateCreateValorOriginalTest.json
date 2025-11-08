@@ -1,0 +1,35 @@
+{
+	"calendario": {
+		"expiracao": 3600
+	},
+	"txid": "7978c0c97ea847e78e88496667777777777",
+	"status": "ATIVA",
+	"devedor": {
+		"cnpj": "12345678000787",
+		"nome": "EmpresaSAEmpresaSA"
+	},
+	"valor": {
+		"original": "99.99",
+		"modalidadeAlteracao": 2
+	},
+	"chave": "7d9f0335-8dcc-4054-9bf9-0dbd61d36906",
+	"solicitacaoPagador": "SOLICTPGTOSOLICTPGTO",
+	"infoAdicionais": [
+		{
+			"nome": "Campo 1",
+			"valor": "Informacao Adicional 1 do PSP-Recebedor"
+		},
+		{
+			"nome": "Campo 2",
+			"valor": "Informacao Adicional 2 do PSP-Recebedor"
+		},
+				{
+			"nome": "Campo 1",
+			"valor": "Informacao Adicional 1 do PSP-Recebedor"
+		},
+				{
+			"nome": "Campo 1",
+			"valor": "Informacao Adicional 1 do PSP-Recebedor"
+		}
+	]
+}

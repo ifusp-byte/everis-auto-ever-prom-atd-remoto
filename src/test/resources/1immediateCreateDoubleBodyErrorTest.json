@@ -1,0 +1,40 @@
+{
+	"calendario": {
+		"expiracao": 432000
+	},
+	"txid": "QRIMM0010008610035100000001050",
+	"status": "ATIVA",
+	"devedor": {
+		"cnpj": "1234567800078788888888888888888888",
+		"nome": "EmpresaSAEmpresaSA"
+	},
+	"valor": {
+		"original": "30.80",
+		"modalidadeAlteracao": 1,
+		"retirada": {
+			"saque": {
+				"valor": "9.99"
+			}
+		}
+	},
+	"chave": "7d9f0335-8dcc-4054-9bf9-0dbd61d36906",
+	"solicitacaoPagador": "SOLICTPGTOSOLICTPGTO",
+	"infoAdicionais": [
+		{
+			"nome": "Campo 1",
+			"valor": "Informacao Adicional 1 do PSP-Recebedor"
+		},
+		{
+			"nome": "Campo 2",
+			"valor": "Informacao Adicional 2 do PSP-Recebedor"
+		},
+				{
+			"nome": "Campo 1",
+			"valor": "Informacao Adicional 1 do PSP-Recebedor"
+		},
+				{
+			"nome": "Campo 1",
+			"valor": "Informacao Adicional 1 do PSP-Recebedor"
+		}
+	]
+}
